@@ -293,7 +293,8 @@ void DrawScratchSpace::DrawLine(int x0, int y0, int x1, int y1, RGB color) {
     while (true) {
         if (x0 >= 0 && x0 < SCREEN_X && y0 >= 0 && y0 < SCREEN_Y) {
             int index = y0 * SCREEN_X + x0;
-            MainSpace[index] = MainSpace[index] * color;
+            MainSpace[index] = MainSpace[index] + color;
+            //MainSpace[index] = color;
         }
 
         if (x0 == x1 && y0 == y1) break;
@@ -359,14 +360,18 @@ mat4x4 DrawScratchSpace::IdentityMatrix()
     m.m[3][3] = 1.0f;
     return m;
 }
-void DrawScratchSpace::DrawMesh(Mesh m,float DeltaTime)
+void DrawScratchSpace::DrawMesh(Mesh m, float DeltaTime)
+{
+    DrawMesh(m, { 0,0,0 }, DeltaTime);
+}
+void DrawScratchSpace::DrawMesh(Mesh m,vec3d loc,float DeltaTime)
 {
     //for now we will pass in DeltaTime for testing the roation.
     //I'll do that some place else in the furure.
-
+    //UPDATE THIS IN THE GAME TICK, OR IT'll GET FASTER FOR EACH MESH!    fTheta += 12.0f * DeltaTime;
     // Set up rotation matrices
     mat4x4 matRotZ, matRotX;
-    fTheta += 12.0f *DeltaTime;
+    
 
     // Rotation Z
     matRotZ.m[0][0] = cosf(fTheta);
@@ -376,12 +381,13 @@ void DrawScratchSpace::DrawMesh(Mesh m,float DeltaTime)
     matRotZ.m[2][2] = 1;
     matRotZ.m[3][3] = 1;
 
+    float fThetaX = 2.5f;
     // Rotation X
     matRotX.m[0][0] = 1;
-    matRotX.m[1][1] = cosf(fTheta * 0.5f);
-    matRotX.m[1][2] = sinf(fTheta * 0.5f);
-    matRotX.m[2][1] = -sinf(fTheta * 0.5f);
-    matRotX.m[2][2] = cosf(fTheta * 0.5f);
+    matRotX.m[1][1] = cosf(fThetaX * 0.5f);
+    matRotX.m[1][2] = sinf(fThetaX * 0.5f);
+    matRotX.m[2][1] = -sinf(fThetaX * 0.5f);
+    matRotX.m[2][2] = cosf(fThetaX * 0.5f);
     matRotX.m[3][3] = 1;
 
    /* matRotZ = IdentityMatrix();
@@ -394,7 +400,8 @@ void DrawScratchSpace::DrawMesh(Mesh m,float DeltaTime)
         float zA = (a.p[0].z + a.p[1].z + a.p[2].z) / 3.0f;
         float zB = (b.p[0].z + b.p[1].z + b.p[2].z) / 3.0f;
        //OG winding order: return zA > zB;
-        return zA < zB;
+        //flipped return zA < zB;
+        return zA > zB;
     });
 
     for (auto tri : m.Tris)
@@ -411,12 +418,28 @@ void DrawScratchSpace::DrawMesh(Mesh m,float DeltaTime)
         MultiplyMatrixVector(triRotatedZ.p[1], triRotatedZX.p[1], matRotX);
         MultiplyMatrixVector(triRotatedZ.p[2], triRotatedZX.p[2], matRotX);
 
+
+
         // Offset into the screen
         float OffsetAmount = 2.0f;
         triTranslated = triRotatedZX;
         triTranslated.p[0].z = triRotatedZX.p[0].z + OffsetAmount;
         triTranslated.p[1].z = triRotatedZX.p[1].z + OffsetAmount;
         triTranslated.p[2].z = triRotatedZX.p[2].z + OffsetAmount;
+
+        //set mesh location -Experimental-BPA
+        triTranslated.p[0].x = triTranslated.p[0].x + loc.x;
+        triTranslated.p[0].y = triTranslated.p[0].y + loc.y;
+        triTranslated.p[0].z = triTranslated.p[0].z + loc.z;
+
+        triTranslated.p[1].x = triTranslated.p[1].x + loc.x;
+        triTranslated.p[1].y = triTranslated.p[1].y + loc.y;
+        triTranslated.p[1].z = triTranslated.p[1].z + loc.z;
+
+        triTranslated.p[2].x = triTranslated.p[2].x + loc.x;
+        triTranslated.p[2].y = triTranslated.p[2].y + loc.y;
+        triTranslated.p[2].z = triTranslated.p[2].z + loc.z;
+
 
         // Project triangles from 3D --> 2D
         MultiplyMatrixVector(triTranslated.p[0], triProjected.p[0], MatrixProj);
@@ -437,14 +460,15 @@ void DrawScratchSpace::DrawMesh(Mesh m,float DeltaTime)
        
         // Distance shading
         float avgZ = (triTranslated.p[0].z + triTranslated.p[1].z + triTranslated.p[2].z) / 3.0f;
-        float brightness = Clamp(1.0f - avgZ / 3.0f, 0.12f, 1.0f);
+        float min = 2.0f;
+        float brightness = Clamp(1.0f - avgZ / min, 0.12f, 1.0f);
 
 
         
         RGB Red = {255,0,0,255};
         RGB Green = { 0,100,0,255 };
         RGB Blue = { 0,0,255,255 };
-        RGB Dark = { 2,2,2,255 };
+        RGB Dark = {2,2,static_cast<int>(255 * brightness),255 };
 
 
         RGB shadedRed = {
@@ -476,9 +500,17 @@ void DrawScratchSpace::DrawMesh(Mesh m,float DeltaTime)
 
 
         DrawTriangle(p0,p1,p2);
-       // DrawLine(p0.x, p0.y, p1.x, p1.y, Dark);
-      //  DrawLine(p1.x, p1.y, p2.x, p2.y, Dark);
-       // DrawLine(p2.x, p2.y, p0.x, p0.y, Dark);
+        int offset = -1;
+        p0.x += offset;
+        p0.y += offset;
+        p1.x += offset;
+        p1.y += offset;
+        p2.x += offset;
+        p2.y += offset;
+
+        DrawLine(p0.x, p0.y, p1.x, p1.y, Dark);
+        DrawLine(p1.x, p1.y, p2.x, p2.y, Dark);
+        DrawLine(p2.x, p2.y, p0.x, p0.y, Dark);
        
     }
 }

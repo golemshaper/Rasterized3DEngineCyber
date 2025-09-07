@@ -110,6 +110,7 @@ public:
 //3D Functions:
     void MultiplyMatrixVector(vec3d& i, vec3d& o, mat4x4& m);
     mat4x4 IdentityMatrix();
-    void DrawMesh(Mesh m,float fElapsedTime);
+    void DrawMesh(Mesh m, float DeltaTime);
+    void DrawMesh(Mesh m, vec3d loc,float DeltaTime);
 
 };

@@ -97,10 +97,13 @@ void Game::Tick(float DeltaTime)
 
     //Monkey
     MonkeyMesh monkey;
-    MyScratch->DrawMesh(monkey.GetMonkeyMesh(), DeltaTime);
-  
+    MyScratch->fTheta += 12.0f * DeltaTime;
+    MyScratch->DrawMesh(monkey.GetMonkeyMesh(), vec3d{ 1.25f,0.0f,0 }, DeltaTime);
+    MyScratch->DrawMesh(monkey.GetTeapotMesh(), vec3d{ -1.12f,0.5f,0}, DeltaTime);
+    //MyScratch->DrawMesh(monkey.GetTeapotMesh(), DeltaTime);
+    
     //Now add the buffers for cool additive effect
-    MyScratch->AddBuffers();
+ //   MyScratch->AddBuffers(); //<-Remove this to only see the last thing drawn
 
 
    
