@@ -98,6 +98,8 @@ public:
     void DrawSpriteAdd(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight);
     void DrawLine(int x0, int y0, int x1, int y1, RGB color);
     int GetRandom(int a,int b);
+    float Clamp(float value, float min, float max);
+    
     Point RotatePoint(Point p, Point pivot, float angle);
 
 

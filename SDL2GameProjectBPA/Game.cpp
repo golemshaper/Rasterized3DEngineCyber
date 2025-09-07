@@ -89,14 +89,14 @@ void Game::Tick(float DeltaTime)
 
 
     // Draw Cube Triangles in 3D
-    MyScratch->DrawMesh(MyScratch->MeshCube, DeltaTime);
+    //MyScratch->DrawMesh(MyScratch->MeshCube, DeltaTime);
 
     //Store and clear the buffer
     MyScratch->MoveMainspaceToExtraBuffer();
     MyScratch->Clear();//Clear the scren now that it's backed up 
 
     //Monkey
-     MonkeyMesh monkey;
+    MonkeyMesh monkey;
     MyScratch->DrawMesh(monkey.GetMonkeyMesh(), DeltaTime);
   
     //Now add the buffers for cool additive effect

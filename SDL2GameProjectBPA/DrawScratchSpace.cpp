@@ -312,6 +312,13 @@ int DrawScratchSpace::GetRandom(int a, int b)
     return dist(gen);
 }
 
+float DrawScratchSpace::Clamp(float value, float min, float max)
+{
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
+}
+
 Point DrawScratchSpace::RotatePoint(Point p, Point pivot, float angle) {
     float s = sinf(angle);
     float c = cosf(angle);
@@ -381,6 +388,15 @@ void DrawScratchSpace::DrawMesh(Mesh m,float DeltaTime)
     matRotX = IdentityMatrix();
     MatrixProj = IdentityMatrix();*/
 
+
+    //OPTIONAL PAINTERS SORT
+    std::sort(m.Tris.begin(), m.Tris.end(), [](const triangle& a, const triangle& b) {
+        float zA = (a.p[0].z + a.p[1].z + a.p[2].z) / 3.0f;
+        float zB = (b.p[0].z + b.p[1].z + b.p[2].z) / 3.0f;
+       //OG winding order: return zA > zB;
+        return zA < zB;
+    });
+
     for (auto tri : m.Tris)
     {
         triangle triProjected, triTranslated, triRotatedZ, triRotatedZX;
@@ -419,23 +435,50 @@ void DrawScratchSpace::DrawMesh(Mesh m,float DeltaTime)
         triProjected.p[2].y *= 0.5f * (float)SCREEN_Y;
 
        
+        // Distance shading
+        float avgZ = (triTranslated.p[0].z + triTranslated.p[1].z + triTranslated.p[2].z) / 3.0f;
+        float brightness = Clamp(1.0f - avgZ / 3.0f, 0.12f, 1.0f);
 
 
         
-        RGB Red = { 255,0,0,255};
+        RGB Red = {255,0,0,255};
         RGB Green = { 0,100,0,255 };
         RGB Blue = { 0,0,255,255 };
+        RGB Dark = { 2,2,2,255 };
+
+
+        RGB shadedRed = {
+            static_cast<int>(255 * brightness),
+            0,
+            0,
+            255
+        };
+
+
+        /*
+        * //YOU MIGHT BE ABLE TO CULL THE FACES DOING THIS IF YOU MAKE A CROSS AND DOT PRODUCT FUNCTION
+        vec3d line1 = triTranslated.p[1] - triTranslated.p[0];
+        vec3d line2 = triTranslated.p[2] - triTranslated.p[0];
+        vec3d normal = CrossProduct(line1, line2);
+        normal = Normalize(normal);
+
+        vec3d cameraRay = triTranslated.p[0] - vec3d{ 0, 0, 0 }; // assuming camera at origin
+        if (DotProduct(normal, cameraRay) < 0.0f) {
+            // Triangle is visible—draw it
+        }
+        */
+
 
         //Rasterize Triangle
-        Vertex p0 = {triProjected.p[0].x,triProjected.p[0].y,Red};
-        Vertex p1 = {triProjected.p[1].x,triProjected.p[1].y,Green};
-        Vertex p2 = {triProjected.p[2].x,triProjected.p[2].y,Blue};
+        Vertex p0 = {triProjected.p[0].x,triProjected.p[0].y,shadedRed };
+        Vertex p1 = {triProjected.p[1].x,triProjected.p[1].y,shadedRed };
+        Vertex p2 = {triProjected.p[2].x,triProjected.p[2].y,shadedRed };
 
 
         DrawTriangle(p0,p1,p2);
-       // DrawLine(p0.x, p0.y, p1.x, p1.y, Green);
-       // DrawLine(p1.x, p1.y, p2.x, p2.y, Green);
-       // DrawLine(p2.x, p2.y, p0.x, p0.y, Green);
+       // DrawLine(p0.x, p0.y, p1.x, p1.y, Dark);
+      //  DrawLine(p1.x, p1.y, p2.x, p2.y, Dark);
+       // DrawLine(p2.x, p2.y, p0.x, p0.y, Dark);
        
     }
 }
