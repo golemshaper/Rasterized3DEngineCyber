@@ -1,0 +1,35 @@
+﻿  DrawScratchSpace.cpp
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(245,33): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(245,33): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(245,54): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(245,54): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(249,48): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(249,48): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(249,71): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(249,71): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(320,13): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(321,13): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(430,39): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(430,39): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(430,59): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(430,59): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(431,39): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(431,39): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(431,59): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(431,59): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(432,39): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(432,39): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(432,59): warning C4838: conversion from 'float' to 'int' requires a narrowing conversion
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\DrawScratchSpace.cpp(432,59): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  Game.cpp
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\Game.cpp(89,43): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\Game.cpp(89,32): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  main.cpp
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\main.cpp(10,18): warning C4244: 'initializing': conversion from 'Uint64' to 'Uint32', possible loss of data
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\main.cpp(32,46): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\main.cpp(32,42): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\main.cpp(32,38): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\main.cpp(32,34): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\SDL2GameProjectBPA\main.cpp(82,29): warning C4244: 'initializing': conversion from 'Uint64' to 'Uint32', possible loss of data
+  Generating Code...
+  SDL2GameProjectBPA.vcxproj -> C:\Users\brian\source\repos\SDL2GameProjectBPA\Rasterized3DEngine\x64\Debug\SDL2GameProjectBPA.exe
