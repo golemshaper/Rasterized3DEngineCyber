@@ -6,11 +6,10 @@
 
 void Game::Initialize()
 {
-    MonkeyMesh monkey;
 
     MyScratch = new DrawScratchSpace();
     MyScratch->Initialize();
-    MyScratch->MeshCube.Tris = monkey.GetMonkeyMesh().Tris;
+    
 }
 void Game::Tick(float DeltaTime)
 {
@@ -89,15 +88,22 @@ void Game::Tick(float DeltaTime)
     MyScratch->DrawSprite(angle*32.0f, 100+(sin(angle*5.0f)*32.0f), Sprite_Smile, 8, 8);
 
 
+    // Draw Cube Triangles in 3D
+    MyScratch->DrawMesh(MyScratch->MeshCube, DeltaTime);
+
     //Store and clear the buffer
     MyScratch->MoveMainspaceToExtraBuffer();
     MyScratch->Clear();//Clear the scren now that it's backed up 
 
-
-    // Draw Cube Triangles in 3D
-    MyScratch->DrawMesh(MyScratch->MeshCube, DeltaTime);
+    //Monkey
+     MonkeyMesh monkey;
+    MyScratch->DrawMesh(monkey.GetMonkeyMesh(), DeltaTime);
+  
     //Now add the buffers for cool additive effect
     MyScratch->AddBuffers();
+
+
+   
 
     //Noise pass
     //MyScratch->MoveMainspaceToExtraBuffer();

@@ -76,6 +76,7 @@ struct mat4x4
 
 //CLASS
 
+
 class DrawScratchSpace {
 public:
     RGB MainSpace[TOTAL_PIXELS]; //Screen X * Screen Y size
