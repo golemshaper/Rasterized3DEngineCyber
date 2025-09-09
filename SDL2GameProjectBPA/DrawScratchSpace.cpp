@@ -23,6 +23,15 @@ void DrawScratchSpace::AddBuffers()
         MainSpace[i] = MainSpace[i] + ExtraBuffer[i];
     }
 }
+
+void DrawScratchSpace::AverageBuffers()
+{
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+        MainSpace[i] = (MainSpace[i] + ExtraBuffer[i])/2;
+    }
+}
+
 /// <summary>
 /// Only call me once. Use Clear() after if you want to clear the screen buffer
 /// </summary>
@@ -83,6 +92,10 @@ void DrawScratchSpace::Initialize(RGB wipe)
     MatrixProj.m[3][2] = (-fFar * fNear) / (fFar - fNear);
     MatrixProj.m[2][3] = 1.0f;
     MatrixProj.m[3][3] = 0.0f;
+
+    //Font Stuff
+    //Look at how OliveC does the font...https://github.com/tsoding/olive.c/blob/master/olive.c
+
 }
 
 void DrawScratchSpace::Clear()
@@ -171,6 +184,73 @@ void DrawScratchSpace::DrawTriangle(Point p0, Point p1, Point p2, RGB color) {
 }
 void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2)
 {
+    // Sort vertices by y-coordinate
+    if (v1.y < v0.y) std::swap(v0, v1);
+    if (v2.y < v0.y) std::swap(v0, v2);
+    if (v2.y < v1.y) std::swap(v1, v2);
+
+    auto interpolate = [](int y, const Vertex& a, const Vertex& b) -> Vertex {
+        if (b.y == a.y) return a;
+        float t = static_cast<float>(y - a.y) / (b.y - a.y);
+        return {
+            static_cast<int>(a.x + t * (b.x - a.x)),
+            y,
+            {
+                static_cast<int>(a.color.r + t * (b.color.r - a.color.r)),
+                static_cast<int>(a.color.g + t * (b.color.g - a.color.g)),
+                static_cast<int>(a.color.b + t * (b.color.b - a.color.b))
+            }
+        };
+    };
+
+    // First, draw the top part of the triangle (from v0 to v1)
+    for (int y = v0.y; y < v1.y; ++y) {
+        if (y < 0 || y >= SCREEN_Y) continue;
+
+        Vertex va = interpolate(y, v0, v1);
+        Vertex vb = interpolate(y, v0, v2);
+
+        if (va.x > vb.x) std::swap(va, vb);
+
+        for (int x = va.x; x <= vb.x; ++x) {
+            if (x < 0 || x >= SCREEN_X) continue;
+            float t = (vb.x == va.x) ? 0.0f : static_cast<float>(x - va.x) / (vb.x - va.x);
+
+            RGB color = {
+                static_cast<int>(va.color.r + t * (vb.color.r - va.color.r)),
+                static_cast<int>(va.color.g + t * (vb.color.g - va.color.g)),
+                static_cast<int>(va.color.b + t * (vb.color.b - va.color.b))
+            };
+
+            MainSpace[y * SCREEN_X + x] = color;
+        }
+    }
+
+    // Now, draw the bottom part of the triangle (from v1 to v2)
+    for (int y = v1.y; y <= v2.y; ++y) {
+        if (y < 0 || y >= SCREEN_Y) continue;
+
+        Vertex va = interpolate(y, v1, v2);
+        Vertex vb = interpolate(y, v0, v2);
+
+        if (va.x > vb.x) std::swap(va, vb);
+
+        for (int x = va.x; x <= vb.x; ++x) {
+            if (x < 0 || x >= SCREEN_X) continue;
+            float t = (vb.x == va.x) ? 0.0f : static_cast<float>(x - va.x) / (vb.x - va.x);
+
+            RGB color = {
+                static_cast<int>(va.color.r + t * (vb.color.r - va.color.r)),
+                static_cast<int>(va.color.g + t * (vb.color.g - va.color.g)),
+                static_cast<int>(va.color.b + t * (vb.color.b - va.color.b))
+            };
+
+            MainSpace[y * SCREEN_X + x] = color;
+        }
+    }
+}
+void DrawScratchSpace::DrawTriangleGlitchy(Vertex v0, Vertex v1, Vertex v2)
+{
     // Sort vertices by y
     if (v1.y < v0.y) std::swap(v0, v1);
     if (v2.y < v0.y) std::swap(v0, v2);
@@ -214,28 +294,35 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2)
     }
 
 }
+void DrawScratchSpace::DrawSprite(int startX, int startY, Sprite sprite)
+{
+    DrawSprite(startX,startY,sprite.pixels,sprite.width,sprite.height);
+}
 void DrawScratchSpace::DrawSprite(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight) {
+
     RGB Black = { 0,0,0,255 };
-    RGB Black2 = { 0,0,0,0};
+    RGB Black2 = { 0,0,0,0 };
 
     for (int y = 0; y < spriteHeight; ++y) {
         for (int x = 0; x < spriteWidth; ++x) {
-            int screenX = startX + x;
-            int screenY = startY + y;
 
-            if (screenX >= 0 && screenX < SCREEN_X && screenY >= 0 && screenY < SCREEN_Y) {
-                int screenIndex = screenY * SCREEN_X + screenX;
-                int spriteIndex = y * spriteWidth + x;
-                if (SpriteData[spriteIndex] == Black)
-                {
-                    continue;
-                }
-                if (SpriteData[spriteIndex] == Black2)
-                {
-                    continue;
-                }
-                MainSpace[screenIndex] = SpriteData[spriteIndex];
+            //Wrap around
+            int screenX = (startX + x) % SCREEN_X;
+            int screenY = (startY + y) % SCREEN_Y;
+
+            // Handle negative wrapping
+            if (screenX < 0) screenX += SCREEN_X;
+            if (screenY < 0) screenY += SCREEN_Y;
+
+            int screenIndex = screenY * SCREEN_X + screenX;
+            int spriteIndex = y * spriteWidth + x;
+
+            RGB pixel = SpriteData[spriteIndex];
+            if (pixel == Black || pixel == Black2) {
+                continue;
             }
+
+            MainSpace[screenIndex] = pixel;
         }
     }
 }
@@ -293,7 +380,7 @@ void DrawScratchSpace::DrawLine(int x0, int y0, int x1, int y1, RGB color) {
     while (true) {
         if (x0 >= 0 && x0 < SCREEN_X && y0 >= 0 && y0 < SCREEN_Y) {
             int index = y0 * SCREEN_X + x0;
-            MainSpace[index] = MainSpace[index] + color;
+            MainSpace[index] = (MainSpace[index] + color) /2;
             //MainSpace[index] = color;
         }
 
@@ -319,6 +406,8 @@ float DrawScratchSpace::Clamp(float value, float min, float max)
     if (value > max) return max;
     return value;
 }
+
+
 
 Point DrawScratchSpace::RotatePoint(Point p, Point pivot, float angle) {
     float s = sinf(angle);
@@ -390,6 +479,10 @@ void DrawScratchSpace::DrawMesh(Mesh m,vec3d loc,float DeltaTime)
     matRotX.m[2][2] = cosf(fThetaX * 0.5f);
     matRotX.m[3][3] = 1;
 
+    // Store triagles for rastering later
+    vector<triangle> vecTrianglesToRaster;
+
+
    /* matRotZ = IdentityMatrix();
     matRotX = IdentityMatrix();
     MatrixProj = IdentityMatrix();*/
@@ -457,26 +550,48 @@ void DrawScratchSpace::DrawMesh(Mesh m,vec3d loc,float DeltaTime)
         triProjected.p[2].x *= 0.5f * (float)SCREEN_X;
         triProjected.p[2].y *= 0.5f * (float)SCREEN_Y;
 
+        // Store triangle for sorting
+        vecTrianglesToRaster.push_back(triProjected);
+
+
        
+    }
+
+    // Sort triangles from back to front
+    sort(vecTrianglesToRaster.begin(), vecTrianglesToRaster.end(), [](triangle& t1, triangle& t2)
+    {
+        float z1 = (t1.p[0].z + t1.p[1].z + t1.p[2].z) / 3.0f;
+        float z2 = (t2.p[0].z + t2.p[1].z + t2.p[2].z) / 3.0f;
+        return z1 > z2;
+    });
+
+
+    float depth = 0.0f;
+    for (auto& triProjected : vecTrianglesToRaster)
+    {
         // Distance shading
-        float avgZ = (triTranslated.p[0].z + triTranslated.p[1].z + triTranslated.p[2].z) / 3.0f;
-        float min = 2.0f;
-        float brightness = Clamp(1.0f - avgZ / min, 0.12f, 1.0f);
+      //  float avgZ = (triTranslated.p[0].z + triTranslated.p[1].z + triTranslated.p[2].z) / 5.0f;
+        float min = 1.0f;
+        depth += 0.001f;
+        // Clamp(1.0f - depth / min, 0.01f, 1.0f);
+        depth = Clamp(depth, 0.01f, 1.5f);
+        float brightness = depth;// ;
 
 
-        
-        RGB Red = {255,0,0,255};
+
+        RGB Red = { 255,0,0,255 };
         RGB Green = { 0,100,0,255 };
         RGB Blue = { 0,0,255,255 };
-        RGB Dark = {2,2,static_cast<int>(255 * brightness),255 };
+        RGB Dark = { 0,0,static_cast<int>(78 * brightness),255 };
 
 
-        RGB shadedRed = {
-            static_cast<int>(255 * brightness),
+        RGB MeshColor = {
             0,
             0,
+            static_cast<int>(128 * brightness),
             255
         };
+
 
 
         /*
@@ -494,13 +609,13 @@ void DrawScratchSpace::DrawMesh(Mesh m,vec3d loc,float DeltaTime)
 
 
         //Rasterize Triangle
-        Vertex p0 = {triProjected.p[0].x,triProjected.p[0].y,shadedRed };
-        Vertex p1 = {triProjected.p[1].x,triProjected.p[1].y,shadedRed };
-        Vertex p2 = {triProjected.p[2].x,triProjected.p[2].y,shadedRed };
+        Vertex p0 = { triProjected.p[0].x,triProjected.p[0].y,MeshColor };
+        Vertex p1 = { triProjected.p[1].x,triProjected.p[1].y,MeshColor };
+        Vertex p2 = { triProjected.p[2].x,triProjected.p[2].y,MeshColor };
 
 
-        DrawTriangle(p0,p1,p2);
-        int offset = -1;
+        DrawTriangle(p0, p1, p2);
+        int offset = 0;
         p0.x += offset;
         p0.y += offset;
         p1.x += offset;
@@ -511,6 +626,7 @@ void DrawScratchSpace::DrawMesh(Mesh m,vec3d loc,float DeltaTime)
         DrawLine(p0.x, p0.y, p1.x, p1.y, Dark);
         DrawLine(p1.x, p1.y, p2.x, p2.y, Dark);
         DrawLine(p2.x, p2.y, p0.x, p0.y, Dark);
-       
     }
+    
+
 }

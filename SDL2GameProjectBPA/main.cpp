@@ -112,7 +112,7 @@ int main(int argc, char* argv[]) {
                         ColorChangeTwo = 0;
                     }
 
-                    color = color + LocalColor;
+                    color = color + LocalColor /2;
                     
                 }
                 //Fix clip

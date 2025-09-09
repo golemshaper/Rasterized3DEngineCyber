@@ -43,6 +43,14 @@ struct RGB {
             a / other.a
         };
     }
+    RGB operator/(const int& other) const {
+        return {
+            r / other,
+            g / other,
+            b / other,
+            a / other
+        };
+    }
     bool operator==(const RGB& other) const {
         return r == other.r && g == other.g && b == other.b && b == other.a;
     }
@@ -55,8 +63,18 @@ struct Point {
 struct Vertex {
     int x, y;
     RGB color;
+    Vertex operator*(const int& other)const {
+        return{
+            x * other,
+            y * other,
+            color
+        };
+    }
 };
-
+struct Sprite {
+    RGB* pixels;
+    int width, height;
+};
 //3D
 struct vec3d {
     float x, y, z;
@@ -74,6 +92,7 @@ struct mat4x4
 };
 
 
+
 //CLASS
 
 
@@ -84,6 +103,7 @@ public:
     void MoveMainspaceToExtraBuffer();
     void MultiplyBuffers();
     void AddBuffers();
+    void AverageBuffers();
     void Initialize();
     void Initialize(RGB wipe);
     void Clear();
@@ -93,13 +113,15 @@ public:
     void DrawSquareMultiply(int x, int y, int size, RGB color);
     void DrawTriangle(Point p0, Point p1, Point p2, RGB color);
     void DrawTriangle(Vertex v0, Vertex v1, Vertex v2);
+    void DrawTriangleGlitchy(Vertex v0, Vertex v1, Vertex v2);
+    void DrawSprite(int startX, int startY, Sprite sprite);
     void DrawSprite(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight);
     void DrawSprite(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight,float angle);
     void DrawSpriteAdd(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight);
     void DrawLine(int x0, int y0, int x1, int y1, RGB color);
     int GetRandom(int a,int b);
     float Clamp(float value, float min, float max);
-    
+   
     Point RotatePoint(Point p, Point pivot, float angle);
 
 

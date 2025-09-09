@@ -14,10 +14,10 @@ void Game::Initialize()
 void Game::Tick(float DeltaTime)
 {
     totalTime += DeltaTime;
-    MyScratch->Clear(RGB{ 0,0,0 });
+    MyScratch->Clear(RGB{ 0,2,8 });
 
     //Draw using my function
-    RGB MyColor = { 0 ,0,32 };
+    RGB MyColor = { 0 ,0,0 };
     RGB Red = { 255,0,0 };
     RGB Green = { 0,255,0 };
     RGB Blue = {0,0,255};
@@ -34,11 +34,11 @@ void Game::Tick(float DeltaTime)
     Vertex p3 = {200,92,Green+Blue};
 
     Vertex px = { 0,0, Red };
-    Vertex pz = {240,160, Green};
+    Vertex pz = { 240,160, Green };
+    Vertex pq = {88,35, Green};
 
 
-    MyScratch->Clear(MyColor);
-    MyScratch->DrawTriangle(p1, p2, p3);
+ 
 
 
 
@@ -59,9 +59,14 @@ void Game::Tick(float DeltaTime)
     p3.x = MyScratch->RotatePoint({ p3.x, p3.y }, pivot, angle).x;
     p3.y = MyScratch->RotatePoint({ p3.x, p3.y }, pivot, angle).y;
 
+    pq.x = MyScratch->RotatePoint({ pq.x, pq.y }, pivot, angle).x;
+    pq.y = MyScratch->RotatePoint({ pq.x, pq.y }, pivot, angle).y;
+
     MyScratch->DrawTriangle(p1, p2, p3);
     MyScratch->DrawTriangle(px, p2, p1);
-    
+
+   // MyScratch->DrawTriangle(px, pq, pz);
+
     //Now add the buffers
     MyScratch->AddBuffers();
 
@@ -84,27 +89,28 @@ void Game::Tick(float DeltaTime)
         // Row 7
         {0,0,0}, {0,0,0}, {255,255,0}, {255,255,0}, {255,255,0}, {255,255,0}, {0,0,0}, {0,0,0}
     };
-    MyScratch->DrawSpriteAdd(64, 64, Sprite_Smile, 8, 8);
-    MyScratch->DrawSprite(angle*32.0f, 100+(sin(angle*5.0f)*32.0f), Sprite_Smile, 8, 8);
+    //MyScratch->DrawSpriteAdd(64, 64, Sprite_Smile, 8, 8);
+    MyScratch->DrawSprite(angle * 164.0f, 100 + (sin(angle * 5.0f) * 32.0f), Sprite_Smile, 8, 8);
 
 
     // Draw Cube Triangles in 3D
     //MyScratch->DrawMesh(MyScratch->MeshCube, DeltaTime);
 
     //Store and clear the buffer
-    MyScratch->MoveMainspaceToExtraBuffer();
-    MyScratch->Clear();//Clear the scren now that it's backed up 
+   // MyScratch->MoveMainspaceToExtraBuffer();
+    //MyScratch->Clear();//Clear the scren now that it's backed up 
 
     //Monkey
     MonkeyMesh monkey;
     MyScratch->fTheta += 12.0f * DeltaTime;
-    MyScratch->DrawMesh(monkey.GetMonkeyMesh(), vec3d{ 1.25f,0.0f,0 }, DeltaTime);
-    MyScratch->DrawMesh(monkey.GetTeapotMesh(), vec3d{ -1.12f,0.5f,0}, DeltaTime);
-    //MyScratch->DrawMesh(monkey.GetTeapotMesh(), DeltaTime);
-    
-    //Now add the buffers for cool additive effect
- //   MyScratch->AddBuffers(); //<-Remove this to only see the last thing drawn
 
+    //you'll want to maybe make a list of meshes to render, and sort those by z position if you draw them one by one
+    //Or i'll want to merge them in to one mesh and draw at once...
+    MyScratch->DrawMesh(monkey.GetTeapotMesh(), vec3d{ (sinf(totalTime * 8.0f)*4.0f) - 1.12f,0.5f,4}, DeltaTime);
+    MyScratch->DrawMesh(monkey.GetMonkeyMesh(), vec3d{ 0.0f,sinf(totalTime * 8.0f) * 0.40f,0 }, DeltaTime);
+
+    //Now add the buffers for cool additive effect
+    MyScratch->AddBuffers(); //<-Remove this to only see the last thing drawn
 
    
 
