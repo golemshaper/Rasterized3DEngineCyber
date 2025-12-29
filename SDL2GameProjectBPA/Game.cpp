@@ -103,7 +103,7 @@ void Game::Tick(float DeltaTime)
     Uint32 buttons = SDL_GetMouseState(&mouseX, &mouseY);
     //CAMERA
 
-    MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -2.0f+ sin(totalTime*4.0f)}, vec3d{sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f});
+    MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f+ sin(totalTime*4.0f)}, vec3d{sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f});
 
 
     //MESH
