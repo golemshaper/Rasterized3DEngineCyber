@@ -102,14 +102,20 @@ void Game::Tick(float DeltaTime)
     float mouseX, mouseY;
     Uint32 buttons = SDL_GetMouseState(&mouseX, &mouseY);
     //CAMERA
-
-    MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f+ sin(totalTime*2.0f)}, vec3d{sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f});
+    MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f}, vec3d{0.0f,0.0f, 1.0f});  //By calling multiple SetCamera calls during drawing, you can make things like a skybox, that don't move, but follow the rest of the worlds rotation!
 
 
     //MESH
     MonkeyMesh monkeymesher; //Mesh loading tool
     //I'll want to maybe make a list of meshes to render, and sort those by z position if you draw them one by one
     MyScratch->DrawMesh(monkeymesher.GetTeapotMesh(), vec3d{ (sinf(totalTime * 4.0f) * 0.2f) - 1.12f,0.5f,2 }, vec3d{1.0, 1.0, totalTime, });
+
+
+
+    //CAMERA
+    MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f + sin(totalTime * 2.0f) }, vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f });
+
+
 
     //Store and clear the buffer
    // MyScratch->MoveMainspaceToExtraBuffer();
@@ -118,6 +124,12 @@ void Game::Tick(float DeltaTime)
     MyScratch->DrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, 0.0f, });
    
     
+
+
+    //If you want, you can move the camera mid- model drawing:
+    MyScratch->SetCamera(vec3d{ 0.0f, -8.0f, -4.0f + sin(totalTime * 2.0f) }, vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f });
+
+
     //lerp/arc example
     MyScratch->DrawMesh(monkeymesher.GetBoxMesh(), 
         MyScratch->Arc(vec3d{ 2.0f,0.0f,-0.25f }, vec3d{ 0.0f,0.0f,-0.25f },1.0f,abs(sin(totalTime*2.0f))) 
