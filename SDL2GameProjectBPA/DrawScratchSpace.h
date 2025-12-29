@@ -150,10 +150,14 @@ public:
     Mesh MeshCube;
     mat4x4 MatrixProj;
     float fTheta;
+    vec3d CameraLoc;
+    vec3d CameraTargetLoc;
 //3D Functions:
     void MultiplyMatrixVector(vec3d& i, vec3d& o, mat4x4& m);
     mat4x4 IdentityMatrix();
+    void SetCamera(vec3d loc, vec3d target);
     void DrawMesh(Mesh m, float DeltaTime);
-    void DrawMesh(Mesh m, vec3d loc,float DeltaTime);
+    void DrawMesh(Mesh m, vec3d loc, float DeltaTime);
+    void DrawMesh(Mesh m, vec3d loc, vec3d rot,float DeltaTime);
 
 };
