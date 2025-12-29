@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
         lastTicks = currentTicks;
 
 
-        TheGame->Tick(0.01f);
+        TheGame->Tick(deltaTime);
     
         //SCAN LINE DATA
         bool ScanLineOn = false;
