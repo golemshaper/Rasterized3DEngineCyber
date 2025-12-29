@@ -159,5 +159,6 @@ public:
     void SetCamera(vec3d loc, vec3d target);
     void DrawMesh(Mesh m);
     void DrawMesh(Mesh m, vec3d loc, vec3d rot);
+    void DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale);
 
 };

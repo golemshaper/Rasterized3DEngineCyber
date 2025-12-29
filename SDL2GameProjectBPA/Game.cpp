@@ -125,15 +125,12 @@ void Game::Tick(float DeltaTime)
    
     
 
-
-    //If you want, you can move the camera mid- model drawing:
-    MyScratch->SetCamera(vec3d{ 0.0f, -8.0f, -4.0f + sin(totalTime * 2.0f) }, vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f });
-
-
     //lerp/arc example
-    MyScratch->DrawMesh(monkeymesher.GetBoxMesh(), 
+    MyScratch->DrawMesh(monkeymesher.GetTinyBoxMesh(),
         MyScratch->Arc(vec3d{ 2.0f,0.0f,-0.25f }, vec3d{ 0.0f,0.0f,-0.25f },1.0f,abs(sin(totalTime*2.0f))) 
-        , vec3d{1.0f, 0.0f, 0.0f,});
+        , vec3d{1.0f, 0.0f, 0.0f,}
+        , vec3d{ 5.0f, 1.0f, 1.0f, }
+    );
 
 
   //  MyScratch->DrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,-3.0f,-0.25f }, vec3d{ 1.0f, 0.0f, 0.0f, }, 0.5f * DeltaTime);

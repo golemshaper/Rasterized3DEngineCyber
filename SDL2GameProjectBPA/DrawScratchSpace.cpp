@@ -594,6 +594,10 @@ void DrawScratchSpace::DrawMesh(Mesh m)
 
 void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot)
 {
+    DrawMesh(m, loc, rot, { 1,1,1 });
+}
+void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
+{
     // -----------------------------
     // BUILD ROTATION MATRICES
     // -----------------------------
@@ -623,12 +627,21 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot)
     matTrans.m[3][0] = loc.x;
     matTrans.m[3][1] = loc.y;
     matTrans.m[3][2] = loc.z;
+    // -----------------------------
+    //SCALE MATRIX
+    // -----------------------------
+    mat4x4 matScale = {};
+    matScale.m[0][0] = scale.x;
+    matScale.m[1][1] = scale.y;
+    matScale.m[2][2] = scale.z;
+    matScale.m[3][3] = 1.0f;
 
     // -----------------------------
     // COMPOSE WORLD MATRIX
     // world = rotZ * rotX * translation
     // -----------------------------
     mat4x4 matWorld = Matrix_MultiplyMatrix(matRotZ, matRotX);
+    matWorld = Matrix_MultiplyMatrix(matWorld, matScale);
     matWorld = Matrix_MultiplyMatrix(matWorld, matTrans);
 
     // -----------------------------

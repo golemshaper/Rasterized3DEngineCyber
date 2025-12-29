@@ -1011,7 +1011,36 @@ public:
         };
         return Data;
     }
+    Mesh GetTinyBoxMesh()
+    {
+        Mesh Data;
+        Data.Tris = {
+            // FRONT (+Z)
+            triangle{ -0.1f, -0.1f,  0.1f,   0.1f, -0.1f,  0.1f,   0.1f,  0.1f,  0.1f },
+            triangle{ -0.1f, -0.1f,  0.1f,   0.1f,  0.1f,  0.1f,  -0.1f,  0.1f,  0.1f },
 
+            // BACK (−Z)
+            triangle{  0.1f, -0.1f, -0.1f,  -0.1f, -0.1f, -0.1f,  -0.1f,  0.1f, -0.1f },
+            triangle{  0.1f, -0.1f, -0.1f,  -0.1f,  0.1f, -0.1f,   0.1f,  0.1f, -0.1f },
+
+            // LEFT (−X)
+            triangle{ -0.1f, -0.1f, -0.1f,  -0.1f, -0.1f,  0.1f,  -0.1f,  0.1f,  0.1f },
+            triangle{ -0.1f, -0.1f, -0.1f,  -0.1f,  0.1f,  0.1f,  -0.1f,  0.1f, -0.1f },
+
+            // RIGHT (+X)
+            triangle{  0.1f, -0.1f,  0.1f,   0.1f, -0.1f, -0.1f,   0.1f,  0.1f, -0.1f },
+            triangle{  0.1f, -0.1f,  0.1f,   0.1f,  0.1f, -0.1f,   0.1f,  0.1f,  0.1f },
+
+            // TOP (+Y)
+            triangle{ -0.1f,  0.1f,  0.1f,   0.1f,  0.1f,  0.1f,   0.1f,  0.1f, -0.1f },
+            triangle{ -0.1f,  0.1f,  0.1f,   0.1f,  0.1f, -0.1f,  -0.1f,  0.1f, -0.1f },
+
+            // BOTTOM (−Y)
+            triangle{ -0.1f, -0.1f, -0.1f,   0.1f, -0.1f, -0.1f,   0.1f, -0.1f,  0.1f },
+            triangle{ -0.1f, -0.1f, -0.1f,   0.1f, -0.1f,  0.1f,  -0.1f, -0.1f,  0.1f }
+        };
+        return Data;
+    }
     Mesh GetTeapotMesh() {
         Mesh Data;
         Data.Tris = {
