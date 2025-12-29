@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "DrawScratchSpace.h"
 
@@ -6,7 +6,7 @@ class MonkeyMesh {
 
     std::vector<triangle> Tris;
 public:
-   
+    
     Mesh GetMonkeyMesh(){
         Mesh Data;
 
@@ -978,6 +978,36 @@ public:
             triangle{ -0.789062f, 0.328125f, -0.125000f, -0.859375f, 0.382812f, 0.382812f, -0.773438f, 0.437500f, 0.265625f },
             triangle{ 0.593750f, 0.164062f, -0.125000f, 0.640625f, 0.429688f, -0.007812f, 0.789062f, 0.328125f, -0.125000f },
             triangle{ -0.789062f, 0.328125f, -0.125000f, -0.640625f, 0.429688f, -0.007812f, -0.593750f, 0.164062f, -0.125000f },
+        };
+        return Data;
+    }
+    Mesh GetBoxMesh()
+    {
+        Mesh Data;
+        Data.Tris = {
+            // FRONT (+Z)
+            triangle{ -0.5f, -0.5f,  0.5f,   0.5f, -0.5f,  0.5f,   0.5f,  0.5f,  0.5f },
+            triangle{ -0.5f, -0.5f,  0.5f,   0.5f,  0.5f,  0.5f,  -0.5f,  0.5f,  0.5f },
+
+            // BACK (−Z)
+            triangle{  0.5f, -0.5f, -0.5f,  -0.5f, -0.5f, -0.5f,  -0.5f,  0.5f, -0.5f },
+            triangle{  0.5f, -0.5f, -0.5f,  -0.5f,  0.5f, -0.5f,   0.5f,  0.5f, -0.5f },
+
+            // LEFT (−X)
+            triangle{ -0.5f, -0.5f, -0.5f,  -0.5f, -0.5f,  0.5f,  -0.5f,  0.5f,  0.5f },
+            triangle{ -0.5f, -0.5f, -0.5f,  -0.5f,  0.5f,  0.5f,  -0.5f,  0.5f, -0.5f },
+
+            // RIGHT (+X)
+            triangle{  0.5f, -0.5f,  0.5f,   0.5f, -0.5f, -0.5f,   0.5f,  0.5f, -0.5f },
+            triangle{  0.5f, -0.5f,  0.5f,   0.5f,  0.5f, -0.5f,   0.5f,  0.5f,  0.5f },
+
+            // TOP (+Y)
+            triangle{ -0.5f,  0.5f,  0.5f,   0.5f,  0.5f,  0.5f,   0.5f,  0.5f, -0.5f },
+            triangle{ -0.5f,  0.5f,  0.5f,   0.5f,  0.5f, -0.5f,  -0.5f,  0.5f, -0.5f },
+
+            // BOTTOM (−Y)
+            triangle{ -0.5f, -0.5f, -0.5f,   0.5f, -0.5f, -0.5f,   0.5f, -0.5f,  0.5f },
+            triangle{ -0.5f, -0.5f, -0.5f,   0.5f, -0.5f,  0.5f,  -0.5f, -0.5f,  0.5f }
         };
         return Data;
     }

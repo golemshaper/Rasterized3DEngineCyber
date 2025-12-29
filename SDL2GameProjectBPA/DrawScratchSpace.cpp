@@ -1,4 +1,4 @@
-#include "DrawScratchSpace.h"
+ï»¿#include "DrawScratchSpace.h"
 #include <random>
 #include <algorithm>
 
@@ -369,7 +369,7 @@ void DrawScratchSpace::DrawSpriteAdd(int startX, int startY, RGB* SpriteData, in
         }
     }
 }
-//Bresenham’s line algorithm
+//Bresenhamâ€™s line algorithm
 void DrawScratchSpace::DrawLine(int x0, int y0, int x1, int y1, RGB color) {
     int dx = abs(x1 - x0);
     int dy = abs(y1 - y0);
@@ -407,6 +407,25 @@ float DrawScratchSpace::Clamp(float value, float min, float max)
     return value;
 }
 
+vec3d DrawScratchSpace::Lerp(vec3d a, vec3d b, float c)
+{
+    return a + (b - a) * c;
+}
+
+vec3d DrawScratchSpace::Arc(vec3d a, vec3d b, float h, float c)
+{
+    h = -h;
+    // Base straight-line interpolation
+    vec3d pos = Lerp(a, b, c);
+
+    // Parabolic height factor (0 â†’ 1 â†’ 0)
+    float arc = 4.0f * c * (1.0f - c);
+
+    // Add height along Y axis
+    pos.y += arc * h;
+
+    return pos;
+}
 
 
 Point DrawScratchSpace::RotatePoint(Point p, Point pivot, float angle) {
@@ -430,8 +449,6 @@ Point DrawScratchSpace::RotatePoint(Point p, Point pivot, float angle) {
 
 void DrawScratchSpace::MultiplyMatrixVector(vec3d& i, vec3d& o, mat4x4& m)
 {
-    
-   
     o.x = i.x * m.m[0][0] + i.y * m.m[1][0] + i.z * m.m[2][0] + m.m[3][0];
     o.y = i.x * m.m[0][1] + i.y * m.m[1][1] + i.z * m.m[2][1] + m.m[3][1];
     o.z = i.x * m.m[0][2] + i.y * m.m[1][2] + i.z * m.m[2][2] + m.m[3][2];
@@ -487,10 +504,7 @@ mat4x4 Matrix_MultiplyMatrix(mat4x4& m1, mat4x4& m2)
     return matrix;
 }
 
-void DrawScratchSpace::DrawMesh(Mesh m, float DeltaTime)
-{
-    DrawMesh(m, { 0,0,0 }, DeltaTime);
-}
+
 mat4x4 Matrix_QuickInverse(mat4x4& m)
 {
     mat4x4 matrix = {};
@@ -573,145 +587,13 @@ mat4x4 Matrix_PointAt(vec3d pos, vec3d target, vec3d up)
     return matrix;
 }
 
-
-
-void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, float DeltaTime)
+void DrawScratchSpace::DrawMesh(Mesh m)
 {
-    // Update rotation
-    fTheta += 1.0f * DeltaTime;
-
-    // -----------------------------
-    // BUILD ROTATION MATRICES
-    // -----------------------------
-    mat4x4 matRotZ = {};
-    mat4x4 matRotX = {};
-
-    float fRotZ = 1.0;
-    // Rotation Z
-    matRotZ.m[0][0] = cosf(fRotZ);
-    matRotZ.m[0][1] = sinf(fRotZ);
-    matRotZ.m[1][0] = -sinf(fRotZ);
-    matRotZ.m[1][1] = cosf(fRotZ);
-    matRotZ.m[2][2] = 1.0f;
-    matRotZ.m[3][3] = 1.0f;
-
-    // Rotation X
-    float fThetaX = 1.0f;
-    matRotX.m[0][0] = 1.0f;
-    matRotX.m[1][1] = cosf(fThetaX);
-    matRotX.m[1][2] = sinf(fThetaX);
-    matRotX.m[2][1] = -sinf(fThetaX);
-    matRotX.m[2][2] = cosf(fThetaX);
-    matRotX.m[3][3] = 1.0f;
-
-    // -----------------------------
-    // BUILD TRANSLATION MATRIX
-    // -----------------------------
-    mat4x4 matTrans = IdentityMatrix();
-    matTrans.m[3][0] = loc.x;
-    matTrans.m[3][1] = loc.y;
-    matTrans.m[3][2] = loc.z;
-
-    // -----------------------------
-    // COMPOSE WORLD MATRIX
-    // world = rotZ * rotX * translation
-    // -----------------------------
-    mat4x4 matWorld = Matrix_MultiplyMatrix(matRotZ, matRotX);
-    matWorld = Matrix_MultiplyMatrix(matWorld, matTrans);
-
-    // -----------------------------
-    // CAMERA (still at origin for now)
-    // view = identity (until you add a real camera)
-    // -----------------------------
-    mat4x4 matView = IdentityMatrix(); // camera view matrix
-    //old translation style: matView.m[3][2] = -1.5f - sin(fTheta); //move camera back a bit (subtract fTheta for moving over-time)
-    // -----------------------------
-    // Point the CAMERA
-    // -----------------------------
-    vec3d newForward;
-    vec3d up = { 0.0f, 1.0f, 0.0f };
-    vec3d a = newForward * DotProduct(up, newForward);
-    vec3d newUp = up - a;
-    vec3d vCamera = { cos(fTheta) * 0.75f, 0, -5 }; //camera position
-    vec3d vLookDir = { sin(fTheta)* 0.75f, cos(fTheta) * 0.5f, 1 }; // forward direction
-    vec3d vTarget = vCamera + vLookDir;
-    mat4x4 matCamera = Matrix_PointAt(vCamera, vTarget, { 2,1,0 });
-    matView = Matrix_QuickInverse(matCamera);
-    matView = Matrix_PointAt(vCamera, vCamera + vLookDir, up);
-    matView = Matrix_QuickInverse(matView); //flip it upside down!
-
-    //TODO: Make some global values that hold the camera location and rotation, and make a function to set them from the Game.cpp file.
-    //TODO: Find and fix all functions that are not defined in the .h file, but are instead defined in the .cpp file! It's terrible!
-
-    // -----------------------------
-    // FULL TRANSFORM PIPELINE
-    // final = proj * view * world * vertex
-    // -----------------------------
-
-    vector<triangle> vecTrianglesToRaster;
-
-    for (auto tri : m.Tris)
-    {
-        triangle triWorld, triViewed, triProjected;
-
-        // Apply WORLD transform
-        MultiplyMatrixVector(tri.p[0], triWorld.p[0], matWorld);
-        MultiplyMatrixVector(tri.p[1], triWorld.p[1], matWorld);
-        MultiplyMatrixVector(tri.p[2], triWorld.p[2], matWorld);
-
-        // Apply VIEW transform (identity for now)
-        MultiplyMatrixVector(triWorld.p[0], triViewed.p[0], matView);
-        MultiplyMatrixVector(triWorld.p[1], triViewed.p[1], matView);
-        MultiplyMatrixVector(triWorld.p[2], triViewed.p[2], matView);
-
-        // Apply PROJECTION transform
-        MultiplyMatrixVector(triViewed.p[0], triProjected.p[0], MatrixProj);
-        MultiplyMatrixVector(triViewed.p[1], triProjected.p[1], MatrixProj);
-        MultiplyMatrixVector(triViewed.p[2], triProjected.p[2], MatrixProj);
-
-        // Scale into view space
-        triProjected.p[0].x = (triProjected.p[0].x + 1.0f) * 0.5f * SCREEN_X;
-        triProjected.p[0].y = (triProjected.p[0].y + 1.0f) * 0.5f * SCREEN_Y;
-
-        triProjected.p[1].x = (triProjected.p[1].x + 1.0f) * 0.5f * SCREEN_X;
-        triProjected.p[1].y = (triProjected.p[1].y + 1.0f) * 0.5f * SCREEN_Y;
-
-        triProjected.p[2].x = (triProjected.p[2].x + 1.0f) * 0.5f * SCREEN_X;
-        triProjected.p[2].y = (triProjected.p[2].y + 1.0f) * 0.5f * SCREEN_Y;
-
-        vecTrianglesToRaster.push_back(triProjected);
-    }
-
-    // Painter’s sort
-    sort(vecTrianglesToRaster.begin(), vecTrianglesToRaster.end(),
-        [](triangle& t1, triangle& t2)
-    {
-        float z1 = (t1.p[0].z + t1.p[1].z + t1.p[2].z) / 3.0f;
-        float z2 = (t2.p[0].z + t2.p[1].z + t2.p[2].z) / 3.0f;
-        return z1 > z2;
-    });
-
-    // Rasterize
-    for (auto& triProjected : vecTrianglesToRaster)
-    {
-        Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {255,0,0,255} };
-        Vertex p1 = { triProjected.p[1].x, triProjected.p[1].y, {0,255,0,255} };
-        Vertex p2 = { triProjected.p[2].x, triProjected.p[2].y, {0,0,255,255} };
-
-        DrawTriangle(p0, p1, p2);
-    }
+    DrawMesh(m, { 0,0,0 }, { 1,0,0 });
 }
 
-void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, float DeltaTime)
+void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot)
 {
-    /*
-                    *CAMERA VALUES 
-                    CameraLoc = loc;
-                    CameraTargetLoc = target;
-    */
-    // Update rotation
-    fTheta += 1.0f * DeltaTime;
-
     // -----------------------------
     // BUILD ROTATION MATRICES
     // -----------------------------
@@ -754,7 +636,6 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, float DeltaTime)
     // view = identity (until you add a real camera)
     // -----------------------------
     mat4x4 matView = IdentityMatrix(); // camera view matrix
-    //old translation style: matView.m[3][2] = -1.5f - sin(fTheta); //move camera back a bit (subtract fTheta for moving over-time)
     // -----------------------------
     // Point the CAMERA
     // -----------------------------
@@ -770,14 +651,10 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, float DeltaTime)
     matView = Matrix_PointAt(vCamera, vCamera + vLookDir, up);
     matView = Matrix_QuickInverse(matView); //flip it upside down!
 
-    //TODO: Make some global values that hold the camera location and rotation, and make a function to set them from the Game.cpp file.
-    //TODO: Find and fix all functions that are not defined in the .h file, but are instead defined in the .cpp file! It's terrible!
 
     // -----------------------------
-    // FULL TRANSFORM PIPELINE
-    // final = proj * view * world * vertex
-    // -----------------------------
-
+    //DRAW
+    //-----------------------------
     vector<triangle> vecTrianglesToRaster;
 
     for (auto tri : m.Tris)
@@ -794,10 +671,24 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, float DeltaTime)
         MultiplyMatrixVector(triWorld.p[1], triViewed.p[1], matView);
         MultiplyMatrixVector(triWorld.p[2], triViewed.p[2], matView);
 
+        // Back-face cull
+        vec3d line1 = triViewed.p[1] - triViewed.p[0];
+        vec3d line2 = triViewed.p[2] - triViewed.p[0];
+        vec3d normal = Normalize(CrossProduct(line1, line2));
+        if (DotProduct(normal, triViewed.p[0]) >= 0.0f)
+            continue;
+
+        // Near-plane cull
+        if (triViewed.p[0].z <= 0.1f ||
+            triViewed.p[1].z <= 0.1f ||
+            triViewed.p[2].z <= 0.1f)
+            continue;
+
         // Apply PROJECTION transform
         MultiplyMatrixVector(triViewed.p[0], triProjected.p[0], MatrixProj);
         MultiplyMatrixVector(triViewed.p[1], triProjected.p[1], MatrixProj);
         MultiplyMatrixVector(triViewed.p[2], triProjected.p[2], MatrixProj);
+
 
         // Scale into view space
         triProjected.p[0].x = (triProjected.p[0].x + 1.0f) * 0.5f * SCREEN_X;
@@ -812,7 +703,7 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, float DeltaTime)
         vecTrianglesToRaster.push_back(triProjected);
     }
 
-    // Painter’s sort
+    // Painterâ€™s sort
     sort(vecTrianglesToRaster.begin(), vecTrianglesToRaster.end(),
         [](triangle& t1, triangle& t2)
     {
@@ -820,13 +711,17 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, float DeltaTime)
         float z2 = (t2.p[0].z + t2.p[1].z + t2.p[2].z) / 3.0f;
         return z1 > z2;
     });
-
+    float ZFog = 0.0f;
     // Rasterize
     for (auto& triProjected : vecTrianglesToRaster)
     {
-        Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {255,0,0,255} };
-        Vertex p1 = { triProjected.p[1].x, triProjected.p[1].y, {0,255,0,255} };
-        Vertex p2 = { triProjected.p[2].x, triProjected.p[2].y, {0,0,255,255} };
+        //dumb fog
+        ZFog += 4.0/vecTrianglesToRaster.size() * 0.2f;
+
+
+        Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {255 * ZFog,0,0,255} };
+        Vertex p1 = { triProjected.p[1].x, triProjected.p[1].y, {0,255 * ZFog,0,255} };
+        Vertex p2 = { triProjected.p[2].x, triProjected.p[2].y, {0,0,255 * ZFog,255} };
 
         DrawTriangle(p0, p1, p2);
     }

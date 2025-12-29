@@ -142,7 +142,8 @@ public:
     void DrawLine(int x0, int y0, int x1, int y1, RGB color);
     int GetRandom(int a,int b);
     float Clamp(float value, float min, float max);
-   
+    vec3d Lerp(vec3d a, vec3d b, float c);
+    vec3d Arc(vec3d a, vec3d b,float h, float c);
     Point RotatePoint(Point p, Point pivot, float angle);
 
 
@@ -156,8 +157,7 @@ public:
     void MultiplyMatrixVector(vec3d& i, vec3d& o, mat4x4& m);
     mat4x4 IdentityMatrix();
     void SetCamera(vec3d loc, vec3d target);
-    void DrawMesh(Mesh m, float DeltaTime);
-    void DrawMesh(Mesh m, vec3d loc, float DeltaTime);
-    void DrawMesh(Mesh m, vec3d loc, vec3d rot,float DeltaTime);
+    void DrawMesh(Mesh m);
+    void DrawMesh(Mesh m, vec3d loc, vec3d rot);
 
 };
