@@ -103,24 +103,24 @@ void Game::Tick(float DeltaTime)
     Uint32 buttons = SDL_GetMouseState(&mouseX, &mouseY);
     //CAMERA
 
-    MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f+ sin(totalTime*4.0f)}, vec3d{sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f});
+    MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f+ sin(totalTime*2.0f)}, vec3d{sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f});
 
 
     //MESH
     MonkeyMesh monkeymesher; //Mesh loading tool
     //I'll want to maybe make a list of meshes to render, and sort those by z position if you draw them one by one
-    MyScratch->DrawMesh(monkeymesher.GetTeapotMesh(), vec3d{ (sinf(totalTime * 8.0f) * 0.2f) - 1.12f,0.5f,2 }, vec3d{1.0, 1.0, totalTime, });
+    MyScratch->DrawMesh(monkeymesher.GetTeapotMesh(), vec3d{ (sinf(totalTime * 4.0f) * 0.2f) - 1.12f,0.5f,2 }, vec3d{1.0, 1.0, totalTime, });
 
     //Store and clear the buffer
    // MyScratch->MoveMainspaceToExtraBuffer();
    // MyScratch->Clear();//Clear the scren now that it's backed up 
-    MyScratch->DrawMesh(monkeymesher.GetMonkeyMesh(), vec3d{ 2.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime*12.0f),});
+    MyScratch->DrawMesh(monkeymesher.GetMonkeyMesh(), vec3d{ 2.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime*6.0f),});
     MyScratch->DrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, 0.0f, });
    
     
     //lerp/arc example
     MyScratch->DrawMesh(monkeymesher.GetBoxMesh(), 
-        MyScratch->Arc(vec3d{ 2.0f,0.0f,-0.25f }, vec3d{ 0.0f,0.0f,-0.25f },1.0f,abs(sin(totalTime*4.0f))) 
+        MyScratch->Arc(vec3d{ 2.0f,0.0f,-0.25f }, vec3d{ 0.0f,0.0f,-0.25f },1.0f,abs(sin(totalTime*2.0f))) 
         , vec3d{1.0f, 0.0f, 0.0f,});
 
 
