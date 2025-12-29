@@ -1,7 +1,7 @@
 #pragma once
 
 #define SCREEN_X 240
-#define SCREEN_Y 160
+#define SCREEN_Y 240//160
 #define TOTAL_PIXELS (SCREEN_X * SCREEN_Y)
 
 
@@ -78,6 +78,27 @@ struct Sprite {
 //3D
 struct vec3d {
     float x, y, z;
+    // Vector subtraction
+    vec3d operator-(const vec3d& rhs) const
+    {
+        return { x - rhs.x, y - rhs.y, z - rhs.z };
+    }
+    vec3d operator+(const vec3d& rhs) const
+    {
+        return { x + rhs.x, y + rhs.y, z + rhs.z };
+    }
+    // Scalar multiplication
+    vec3d operator*(float k) const
+    {
+        return { x * k, y * k, z * k };
+    }
+
+    // Scalar division (optional but useful)
+    vec3d operator/(float k) const
+    {
+        return { x / k, y / k, z / k };
+    }
+
 };
 struct triangle{
     vec3d p[3];

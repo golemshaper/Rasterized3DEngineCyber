@@ -96,21 +96,26 @@ void Game::Tick(float DeltaTime)
     // Draw Cube Triangles in 3D
     //MyScratch->DrawMesh(MyScratch->MeshCube, DeltaTime);
 
-    //Store and clear the buffer
-   // MyScratch->MoveMainspaceToExtraBuffer();
-    //MyScratch->Clear();//Clear the scren now that it's backed up 
+   
 
     //Monkey
     MonkeyMesh monkey;
-    MyScratch->fTheta += 12.0f * DeltaTime;
+    MyScratch->fTheta += 3.0f * DeltaTime;
 
     //you'll want to maybe make a list of meshes to render, and sort those by z position if you draw them one by one
     //Or i'll want to merge them in to one mesh and draw at once...
-    MyScratch->DrawMesh(monkey.GetTeapotMesh(), vec3d{ (sinf(totalTime * 8.0f)*4.0f) - 1.12f,0.5f,4}, DeltaTime);
-    MyScratch->DrawMesh(monkey.GetMonkeyMesh(), vec3d{ 0.0f,sinf(totalTime * 8.0f) * 0.40f,0 }, DeltaTime);
+    MyScratch->DrawMesh(monkey.GetTeapotMesh(), vec3d{ (sinf(totalTime * 8.0f)*4.0f) - 1.12f,0.5f,2}, 0.5f * DeltaTime);
 
+    //Store and clear the buffer
+
+   // MyScratch->MoveMainspaceToExtraBuffer();
+   // MyScratch->Clear();//Clear the scren now that it's backed up 
+
+
+    MyScratch->DrawMesh(monkey.GetBoyMesh(), vec3d{ 0.0f,sinf(totalTime * 8.0f) * 0.10f,-0.25f }, 0.5f * DeltaTime);
+  
     //Now add the buffers for cool additive effect
-    MyScratch->AddBuffers(); //<-Remove this to only see the last thing drawn
+    //MyScratch->AddBuffers(); //<-Remove this to only see the last thing drawn
 
    
 

@@ -10,10 +10,10 @@ Game* TheGame = new Game();
 Uint32 lastTicks = SDL_GetTicks();  // Store this at the end of your previous frame
 
 
-const int PIXEL_SCALE = 8;
+const int PIXEL_SCALE = 6;
 //CHANGE HERE TO MATCH SCRATCH SIZE
 const int SCREEN_NATIVE_X = 240;
-const int SCREEN_NATIVE_Y = 160;
+const int SCREEN_NATIVE_Y = 240;// 160;
 const int SCREEN_WIDTH = SCREEN_NATIVE_X * PIXEL_SCALE;
 const int SCREEN_HEIGHT = SCREEN_NATIVE_Y * PIXEL_SCALE;
 
@@ -91,9 +91,9 @@ int main(int argc, char* argv[]) {
         int ColorChangeTwo = 0;
         RGB ScanLineColor = { 0,0,16 };
         RGB ScanLineColor2 = {18,0,0 };
-
+        float TrueScanlineHeight = 0.75f;
         //DRAW
-        for (int y = 0; y < SCREEN_NATIVE_Y; ++y)  //do y+=2 for scan lines
+        for (int y = 0; y < SCREEN_NATIVE_Y; y+=1)  //do y+=2 for scan lines
         {
             ScanLineOn = !ScanLineOn;
             ColorChangeTwo++;
@@ -112,7 +112,8 @@ int main(int argc, char* argv[]) {
                         ColorChangeTwo = 0;
                     }
 
-                    color = color + LocalColor /2;
+                    //apply dither:
+                    color = color + LocalColor ;
                     
                 }
                 //Fix clip
@@ -131,7 +132,7 @@ int main(int argc, char* argv[]) {
                     static_cast<float>(x * PIXEL_SCALE),
                     static_cast<float>(y * PIXEL_SCALE),
                     static_cast<float>(PIXEL_SCALE),
-                    static_cast<float>(PIXEL_SCALE)
+                    static_cast<float>(PIXEL_SCALE* TrueScanlineHeight)
                 };
 
                 SDL_RenderFillRect(renderer, &pixelRect); 
