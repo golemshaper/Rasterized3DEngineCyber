@@ -35,6 +35,24 @@ struct RGB {
             a* other.a
         };
     }
+
+    RGB operator*(float other) const
+    {
+        auto clamp255 = [](float v) -> uint8_t {
+            if (v < 0.0f) return 0;
+            if (v > 255.0f) return 255;
+            return static_cast<uint8_t>(v + 0.5f); // round instead of truncate
+        };
+
+        return {
+            clamp255(r * other),
+            clamp255(g * other),
+            clamp255(b * other),
+            clamp255(a * other)
+        };
+    }
+
+
     RGB operator/(const RGB& other) const {
         return {
             r / other.r,
@@ -125,6 +143,7 @@ public:
     void MultiplyBuffers();
     void AddBuffers();
     void AverageBuffers();
+    void BlendBuffers(float amount);
     void Initialize();
     void Initialize(RGB wipe);
     void Clear();
@@ -142,6 +161,7 @@ public:
     void DrawLine(int x0, int y0, int x1, int y1, RGB color);
     int GetRandom(int a,int b);
     float Clamp(float value, float min, float max);
+    RGB Lerp(RGB a, RGB b, float c);
     vec3d Lerp(vec3d a, vec3d b, float c);
     vec3d Arc(vec3d a, vec3d b,float h, float c);
     Point RotatePoint(Point p, Point pivot, float angle);

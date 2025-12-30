@@ -32,6 +32,15 @@ void DrawScratchSpace::AverageBuffers()
     }
 }
 
+void DrawScratchSpace::BlendBuffers(float amount)
+{
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+
+        MainSpace[i] = Lerp(MainSpace[i] , ExtraBuffer[i] ,amount);
+    }
+}
+
 /// <summary>
 /// Only call me once. Use Clear() after if you want to clear the screen buffer
 /// </summary>
@@ -407,6 +416,30 @@ float DrawScratchSpace::Clamp(float value, float min, float max)
     return value;
 }
 
+
+
+
+
+RGB DrawScratchSpace::Lerp(RGB a, RGB b, float c)
+{
+    auto lerpChannel = [&](int A, int B) -> uint8_t
+    {
+        float v = A + (B - A) * c;
+
+        // clamp to 0–255
+        if (v < 0.0f) v = 0.0f;
+        if (v > 255.0f) v = 255.0f;
+
+        return static_cast<uint8_t>(v + 0.5f); // rounded
+    };
+
+    return {
+        lerpChannel(a.r, b.r),
+        lerpChannel(a.g, b.g),
+        lerpChannel(a.b, b.b),
+        lerpChannel(a.a, b.a)
+    };
+}
 vec3d DrawScratchSpace::Lerp(vec3d a, vec3d b, float c)
 {
     return a + (b - a) * c;

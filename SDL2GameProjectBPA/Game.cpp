@@ -116,13 +116,14 @@ void Game::Tick(float DeltaTime)
     MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f + sin(totalTime * 2.0f) }, vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f });
 
 
-
+    //OPTIONAL
     //Store and clear the buffer
-   // MyScratch->MoveMainspaceToExtraBuffer();
-   // MyScratch->Clear();//Clear the scren now that it's backed up 
-    MyScratch->DrawMesh(monkeymesher.GetMonkeyMesh(), vec3d{ 2.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime*6.0f),});
+    //MyScratch->MoveMainspaceToExtraBuffer(); MyScratch->Clear();//Clear the scren now that it's backed up 
+
+    //MESH
+    MyScratch->DrawMesh(monkeymesher.GetMonkeyMesh(), vec3d{ 2.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime*6.0f),} , MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))));
     MyScratch->DrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, 0.0f, });
-   
+
     
 
     //lerp/arc example
@@ -134,17 +135,14 @@ void Game::Tick(float DeltaTime)
     );
 
 
-  //  MyScratch->DrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,-3.0f,-0.25f }, vec3d{ 1.0f, 0.0f, 0.0f, }, 0.5f * DeltaTime);
-  //  MyScratch->DrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,.0f,-0.25f }, vec3d{ 1.0f, 0.0f, 0.0f, }, 0.5f * DeltaTime);
-  
     //Now add the buffers for cool additive effect
     //MyScratch->AddBuffers(); //<-Remove this to only see the last thing drawn
 
    
 
     //Noise pass
-    //MyScratch->MoveMainspaceToExtraBuffer();
-    //MyScratch->Random();//Clear the scren now that it's backed up 
-    //MyScratch->MultiplyBuffers();
+    MyScratch->MoveMainspaceToExtraBuffer();
+    MyScratch->RandomScreenFill();//Clear the scren now that it's backed up 
+    MyScratch->BlendBuffers(0.95f);
 
 }
