@@ -774,3 +774,71 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
     }
 
 }
+
+void DrawScratchSpace::DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale)
+{
+    // Build WORLD matrix (Scale → RotZ → RotX → Trans)
+    mat4x4 matScale = {};
+    matScale.m[0][0] = scale.x;
+    matScale.m[1][1] = scale.y;
+    matScale.m[2][2] = scale.z;
+    matScale.m[3][3] = 1.0f;
+
+    mat4x4 matRotZ = {};
+    matRotZ.m[0][0] = cosf(rot.z);
+    matRotZ.m[0][1] = sinf(rot.z);
+    matRotZ.m[1][0] = -sinf(rot.z);
+    matRotZ.m[1][1] = cosf(rot.z);
+    matRotZ.m[2][2] = 1.0f;
+    matRotZ.m[3][3] = 1.0f;
+
+    mat4x4 matRotX = {};
+    matRotX.m[0][0] = 1.0f;
+    matRotX.m[1][1] = cosf(rot.x);
+    matRotX.m[1][2] = sinf(rot.x);
+    matRotX.m[2][1] = -sinf(rot.x);
+    matRotX.m[2][2] = cosf(rot.x);
+    matRotX.m[3][3] = 1.0f;
+
+    mat4x4 matTrans = IdentityMatrix();
+    matTrans.m[3][0] = loc.x;
+    matTrans.m[3][1] = loc.y;
+    matTrans.m[3][2] = loc.z;
+
+    mat4x4 matWorld = Matrix_MultiplyMatrix(matScale, matRotZ);
+    matWorld = Matrix_MultiplyMatrix(matWorld, matRotX);
+    matWorld = Matrix_MultiplyMatrix(matWorld, matTrans);
+
+    // CAMERA VIEW MATRIX
+    vec3d up = { 0,1,0 };
+    vec3d vCamera = CameraLoc;
+    vec3d vLookDir = CameraTargetLoc;
+    vec3d vTarget = vCamera + vLookDir;
+
+    mat4x4 matCamera = Matrix_PointAt(vCamera, vTarget, up);
+    mat4x4 matView = Matrix_QuickInverse(matCamera);
+
+    // ------------------------------------
+    // Transform sprite origin (0,0,0)
+    // ------------------------------------
+    vec3d pWorld, pView, pProj;
+
+    vec3d origin = { 0,0,0 };
+
+    MultiplyMatrixVector(origin, pWorld, matWorld);
+    MultiplyMatrixVector(pWorld, pView, matView);
+
+    // Cull if behind camera
+    if (pView.z <= 0.1f)
+        return;
+
+    // Project
+    MultiplyMatrixVector(pView, pProj, MatrixProj);
+
+    // Convert to screen space
+    int spriteX = (pProj.x + 1.0f) * 0.5f * SCREEN_X;
+    int spriteY = (pProj.y + 1.0f) * 0.5f * SCREEN_Y;
+
+    // Draw the sprite
+    DrawSprite(spriteX, spriteY, s);
+}

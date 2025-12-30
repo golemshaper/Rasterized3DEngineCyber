@@ -158,6 +158,8 @@ public:
     void DrawSprite(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight);
     void DrawSprite(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight,float angle);
     void DrawSpriteAdd(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight);
+
+
     void DrawLine(int x0, int y0, int x1, int y1, RGB color);
     int GetRandom(int a,int b);
     float Clamp(float value, float min, float max);
@@ -180,5 +182,6 @@ public:
     void DrawMesh(Mesh m);
     void DrawMesh(Mesh m, vec3d loc, vec3d rot);
     void DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale);
+    void DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale);
 
 };

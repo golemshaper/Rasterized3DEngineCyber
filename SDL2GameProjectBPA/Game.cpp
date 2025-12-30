@@ -72,7 +72,7 @@ void Game::Tick(float DeltaTime)
     MyScratch->AddBuffers();
 
     //SPRITE
-    RGB Sprite_Smile[64] = {
+    RGB Smile_RGB[64] = {
         // Row 0
         {0,0,0}, {0,0,0}, {255,255,0}, {255,255,0}, {255,255,0}, {255,255,0}, {0,0,0}, {0,0,0},
         // Row 1
@@ -91,7 +91,14 @@ void Game::Tick(float DeltaTime)
         {0,0,0}, {0,0,0}, {255,255,0}, {255,255,0}, {255,255,0}, {255,255,0}, {0,0,0}, {0,0,0}
     };
     //MyScratch->DrawSpriteAdd(64, 64, Sprite_Smile, 8, 8);
-    MyScratch->DrawSprite(angle * 164.0f, 100 + (sin(angle * 5.0f) * 32.0f), Sprite_Smile, 8, 8);
+    MyScratch->DrawSprite(angle * 164.0f, 100 + (sin(angle * 5.0f) * 32.0f), Smile_RGB, 8, 8);
+
+    //Real Sprite
+    Sprite Smile_Sprite;
+    Smile_Sprite.pixels = Smile_RGB;
+    Smile_Sprite.width = 8;
+    Smile_Sprite.height = 8;
+
 
 
     // Draw Cube Triangles in 3D
@@ -124,6 +131,8 @@ void Game::Tick(float DeltaTime)
     MyScratch->DrawMesh(monkeymesher.GetMonkeyMesh(), vec3d{ 2.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime*6.0f),} , MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))));
     MyScratch->DrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, 0.0f, });
 
+    //3D Sprite LOC
+    MyScratch->DrawSprite3D(Smile_Sprite, vec3d{ 2.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, 0.0f, }, vec3d{ 1.0f, 1.0f, 1.0f, });
     
 
     //lerp/arc example
