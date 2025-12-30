@@ -401,6 +401,41 @@ void DrawScratchSpace::DrawText(int X, int Y, RGB color, const char* text, TextS
 
 }
 
+void DrawScratchSpace::DrawText(int X, int Y, RGB color, const char* text, TextSprites* tSprites, float amount_revealed)
+{
+    int cursorX = X;
+    int cursorY = Y;
+
+    // Count characters
+    int length = 0;
+    while (text[length] != '\0')
+        length++;
+
+    // Clamp amount_revealed
+    if (amount_revealed < 0.0f) amount_revealed = 0.0f;
+    if (amount_revealed > 1.0f) amount_revealed = 1.0f;
+
+    // Compute how many characters to show
+    int chars_to_show = (int)(length * amount_revealed);
+
+    // Draw only that many characters
+    for (int i = 0; i < chars_to_show; i++)
+    {
+        char c = text[i];
+        if (c == '\n')
+        {
+            cursorX = X;
+            cursorY += 7;
+            continue;
+        }
+        Sprite s = tSprites->GetSpriteForChar(c);
+
+        DrawSprite(cursorX, cursorY, s.pixels, s.width, s.height);
+
+        cursorX += 7; // 6px glyph + 1px spacing
+    }
+}
+
 //Bresenham’s line algorithm
 void DrawScratchSpace::DrawLine(int x0, int y0, int x1, int y1, RGB color) {
     int dx = abs(x1 - x0);

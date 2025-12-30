@@ -100,8 +100,7 @@ void Game::Tick(float DeltaTime)
     Smile_Sprite.width = 8;
     Smile_Sprite.height = 8;
 
-    MyScratch->DrawText(32, 32, { 255, 255, 255, 255, },"HELLO WORLD!", MyTextSprites);
-
+    
 
 
     // Draw Cube Triangles in 3D
@@ -161,5 +160,16 @@ void Game::Tick(float DeltaTime)
     //MyScratch->MoveMainspaceToExtraBuffer();
     //MyScratch->RandomScreenFill();//Clear the scren now that contents are in the second buffer
     //MyScratch->BlendBuffers(0.12f);
+
+
+    //TYPE TEXT 
+    typingEffect += 2*DeltaTime;
+    MyScratch->DrawText(32, 32, { 255, 0, 0, 255, }, "HELLO \nWORLD!", MyTextSprites, typingEffect);
+    if (typingEffect >= 1.5f)
+    {
+        //reset typing effect
+        typingEffect = -1.0f;
+    }
+
 
 }
