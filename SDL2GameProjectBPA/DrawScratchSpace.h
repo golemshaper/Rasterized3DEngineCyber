@@ -155,6 +155,7 @@ public:
     void DrawTriangle(Point p0, Point p1, Point p2, RGB color);
     void DrawTriangle(Vertex v0, Vertex v1, Vertex v2);
     void DrawTriangleGlitchy(Vertex v0, Vertex v1, Vertex v2);
+    RGB* ColorizeSpriteData(RGB* data, int spriteWidth, int spriteHeight, RGB color);
     void DrawSprite(int startX, int startY, Sprite sprite);
     void DrawSprite(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight);
     void DrawSprite(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight, bool wrap);

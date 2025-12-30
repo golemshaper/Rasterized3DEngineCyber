@@ -164,7 +164,7 @@ void Game::Tick(float DeltaTime)
 
     //TYPE TEXT 
     typingEffect += 2*DeltaTime;
-    MyScratch->DrawText(32, 32, { 255, 0, 0, 255, }, "HELLO \nWORLD!", MyTextSprites, typingEffect);
+    MyScratch->DrawText(32, 32, { 255, 255, 0, 255, }, "HELLO \nWORLD!", MyTextSprites, typingEffect);
     if (typingEffect >= 1.5f)
     {
         //reset typing effect
@@ -173,7 +173,7 @@ void Game::Tick(float DeltaTime)
 
     //TEXT AT 3D LOCATION
     vec3d textCoordinates2D = MyScratch->Get2DPointInFromSpace(vec3d{ 2.0f,0.0f,-0.25f });
-    MyScratch->DrawText((int)textCoordinates2D.x-(10*6), (int)textCoordinates2D.y-12.0, { 255, 0, 0, 255, }, "Text labels go here!", MyTextSprites, typingEffect*2.0f);
+    MyScratch->DrawText((int)textCoordinates2D.x-(10*6), (int)textCoordinates2D.y-12.0, { 0, 255, 0, 255, }, "Text labels go here!", MyTextSprites, typingEffect*2.0f);
 
 
 

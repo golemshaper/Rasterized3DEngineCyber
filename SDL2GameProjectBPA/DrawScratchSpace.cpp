@@ -305,6 +305,33 @@ void DrawScratchSpace::DrawTriangleGlitchy(Vertex v0, Vertex v1, Vertex v2)
     }
 
 }
+RGB* DrawScratchSpace::ColorizeSpriteData(RGB* data, int spriteWidth, int spriteHeight, RGB color)
+{
+    int totalPixels = spriteWidth * spriteHeight;
+
+    // Output buffer (static so the pointer stays valid)
+    static RGB out[1024]; // enough for any small sprite; or allocate dynamically if needed
+
+    for (int i = 0; i < totalPixels; i++)
+    {
+        RGB p = data[i];
+
+        // Detect white pixel
+        if (p.r == 255 && p.g == 255 && p.b == 255)
+        {
+            out[i].r = (p.r * color.r) / 255;
+            out[i].g = (p.g * color.g) / 255;
+            out[i].b = (p.b * color.b) / 255;
+            out[i].a = 255;
+        }
+        else
+        {
+            out[i] = p;
+        }
+    }
+
+    return out;
+}
 void DrawScratchSpace::DrawSprite(int startX, int startY, Sprite sprite)
 {
     DrawSprite(startX,startY,sprite.pixels,sprite.width,sprite.height);
@@ -422,27 +449,12 @@ void DrawScratchSpace::DrawSpriteAdd(int startX, int startY, RGB* SpriteData, in
 }
 void DrawScratchSpace::DrawText(int X, int Y, RGB color, const char* text, TextSprites* tSprites)
 {
-    int cursorX = X;
-    int cursorY = Y;
-
-    for (int i = 0; text[i] != '\0'; i++)
-    {
-        char c = text[i];
-
-        // Get the sprite for this character
-        Sprite s = tSprites->GetSpriteForChar(c);
-
-        // Draw it
-        DrawSprite(cursorX, cursorY, s.pixels, s.width, s.height,false);
-
-        // Advance cursor (6px glyph + 1px spacing)
-        cursorX += 7;
-    }
-
+    DrawText(X,Y,color,text,tSprites,1.0f);
 }
 
 void DrawScratchSpace::DrawText(int X, int Y, RGB color, const char* text, TextSprites* tSprites, float amount_revealed)
 {
+    
     int cursorX = X;
     int cursorY = Y;
 
@@ -469,6 +481,8 @@ void DrawScratchSpace::DrawText(int X, int Y, RGB color, const char* text, TextS
             continue;
         }
         Sprite s = tSprites->GetSpriteForChar(c);
+        s.pixels = ColorizeSpriteData(s.pixels,s.width,s.height,color);
+
 
         DrawSprite(cursorX, cursorY, s.pixels, s.width, s.height,false);
 
