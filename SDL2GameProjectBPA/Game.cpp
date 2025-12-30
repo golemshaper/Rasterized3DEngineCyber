@@ -126,10 +126,11 @@ void Game::Tick(float DeltaTime)
     
 
     //lerp/arc example
-    MyScratch->DrawMesh(monkeymesher.GetTinyBoxMesh(),
-        MyScratch->Arc(vec3d{ 2.0f,0.0f,-0.25f }, vec3d{ 0.0f,0.0f,-0.25f },1.0f,abs(sin(totalTime*2.0f))) 
-        , vec3d{1.0f, 0.0f, 0.0f,}
-        , vec3d{ 5.0f, 1.0f, 1.0f, }
+    MyScratch->DrawMesh(
+        monkeymesher.GetTinyBoxMesh(),
+        MyScratch->Arc(vec3d{ 2.0f,0.0f,-0.25f }, vec3d{ 0.0f,0.0f,-0.25f },1.0f,abs(sin(totalTime*2.0f))),
+        vec3d{ 1.0f, 0.0f, 0.0f },
+        MyScratch->Lerp(vec3d{ 1.5f,1.0f,1.5f }, vec3d{ 0.5f, 2.0f, 0.5f }, abs(sin(totalTime * 4.0f)))
     );
 
 
