@@ -142,7 +142,7 @@ void Game::Tick(float DeltaTime)
 
     //Noise pass
     MyScratch->MoveMainspaceToExtraBuffer();
-    MyScratch->RandomScreenFill();//Clear the scren now that it's backed up 
-    MyScratch->BlendBuffers(0.95f);
+    MyScratch->RandomScreenFill();//Clear the scren now that contents are in the second buffer
+    MyScratch->BlendBuffers(0.12f);
 
 }

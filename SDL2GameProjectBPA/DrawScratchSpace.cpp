@@ -34,6 +34,7 @@ void DrawScratchSpace::AverageBuffers()
 
 void DrawScratchSpace::BlendBuffers(float amount)
 {
+    amount = 1.0f - amount;
     for (int i = 0; i < TOTAL_PIXELS; ++i)
     {
 
