@@ -145,6 +145,7 @@
     <ClInclude Include="DrawScratchSpace.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="MonkeyMesh.h" />
+    <ClInclude Include="TextSprites.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
