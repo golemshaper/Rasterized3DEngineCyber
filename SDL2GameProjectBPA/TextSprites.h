@@ -716,6 +716,23 @@ public:
         return ToSprite(data);
     }
 
+    static Sprite Get_Space()
+    {
+        const int R = 255;
+        const int G = 255;
+        const int B = 255;
+
+        static RGB data[36] = {
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0}
+        };
+        return ToSprite(data);
+    }
+
     static Sprite Get_Question()
     {
         const int R = 255;
@@ -818,8 +835,8 @@ public:
         if (it != map.end())
             return it->second(); // call the function
 
-        // fallback: maybe return a blank sprite or '?'
-        return Get_Question();
+        // fallback: return space
+        return Get_Space();
     }
 
 

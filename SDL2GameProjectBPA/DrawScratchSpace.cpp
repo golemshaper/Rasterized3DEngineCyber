@@ -1,6 +1,7 @@
 ﻿#include "DrawScratchSpace.h"
 #include <random>
 #include <algorithm>
+#include "TextSprites.h"
 
 void DrawScratchSpace::MoveMainspaceToExtraBuffer() 
 {
@@ -379,6 +380,27 @@ void DrawScratchSpace::DrawSpriteAdd(int startX, int startY, RGB* SpriteData, in
         }
     }
 }
+void DrawScratchSpace::DrawText(int X, int Y, RGB color, const char* text, TextSprites* tSprites)
+{
+    int cursorX = X;
+    int cursorY = Y;
+
+    for (int i = 0; text[i] != '\0'; i++)
+    {
+        char c = text[i];
+
+        // Get the sprite for this character
+        Sprite s = tSprites->GetSpriteForChar(c);
+
+        // Draw it
+        DrawSprite(cursorX, cursorY, s.pixels, s.width, s.height);
+
+        // Advance cursor (6px glyph + 1px spacing)
+        cursorX += 7;
+    }
+
+}
+
 //Bresenham’s line algorithm
 void DrawScratchSpace::DrawLine(int x0, int y0, int x1, int y1, RGB color) {
     int dx = abs(x1 - x0);

@@ -8,6 +8,7 @@
 using namespace std; 
 #include <vector>
 
+class TextSprites;
 
 //STRUCTS
 struct RGB {
@@ -158,7 +159,7 @@ public:
     void DrawSprite(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight);
     void DrawSprite(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight,float angle);
     void DrawSpriteAdd(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight);
-
+    void DrawText(int X, int Y, RGB color, const char* text, TextSprites* tSprites);
 
     void DrawLine(int x0, int y0, int x1, int y1, RGB color);
     int GetRandom(int a,int b);

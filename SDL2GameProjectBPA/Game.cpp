@@ -100,7 +100,7 @@ void Game::Tick(float DeltaTime)
     Smile_Sprite.width = 8;
     Smile_Sprite.height = 8;
 
-    MyScratch->DrawSprite(32,32, MyTextSprites->GetSpriteForChar('A'));
+    MyScratch->DrawText(32, 32, { 255, 255, 255, 255, },"HELLO WORLD!", MyTextSprites);
 
 
 
