@@ -337,6 +337,46 @@ void DrawScratchSpace::DrawSprite(int startX, int startY, RGB* SpriteData, int s
         }
     }
 }
+void DrawScratchSpace::DrawSprite(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight, bool wrap)
+{
+    RGB Black = { 0,0,0,255 };
+    RGB Black2 = { 0,0,0,0 };
+
+    for (int y = 0; y < spriteHeight; ++y) {
+        for (int x = 0; x < spriteWidth; ++x) {
+
+            int screenX = startX + x;
+            int screenY = startY + y;
+
+            if (wrap)
+            {
+                screenX %= SCREEN_X;
+                screenY %= SCREEN_Y;
+
+                if (screenX < 0) screenX += SCREEN_X;
+                if (screenY < 0) screenY += SCREEN_Y;
+            }
+            else
+            {
+                // If not wrapping, skip pixels outside the screen
+                if (screenX < 0 || screenX >= SCREEN_X ||
+                    screenY < 0 || screenY >= SCREEN_Y)
+                {
+                    continue;
+                }
+            }
+
+            int screenIndex = screenY * SCREEN_X + screenX;
+            int spriteIndex = y * spriteWidth + x;
+
+            RGB pixel = SpriteData[spriteIndex];
+            if (pixel == Black || pixel == Black2)
+                continue;
+
+            MainSpace[screenIndex] = pixel;
+        }
+    }
+}
 void DrawScratchSpace::DrawSprite(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight, float angle)
 {
     RGB Black = { 0, 0, 0 };
@@ -393,7 +433,7 @@ void DrawScratchSpace::DrawText(int X, int Y, RGB color, const char* text, TextS
         Sprite s = tSprites->GetSpriteForChar(c);
 
         // Draw it
-        DrawSprite(cursorX, cursorY, s.pixels, s.width, s.height);
+        DrawSprite(cursorX, cursorY, s.pixels, s.width, s.height,false);
 
         // Advance cursor (6px glyph + 1px spacing)
         cursorX += 7;
@@ -430,7 +470,7 @@ void DrawScratchSpace::DrawText(int X, int Y, RGB color, const char* text, TextS
         }
         Sprite s = tSprites->GetSpriteForChar(c);
 
-        DrawSprite(cursorX, cursorY, s.pixels, s.width, s.height);
+        DrawSprite(cursorX, cursorY, s.pixels, s.width, s.height,false);
 
         cursorX += 7; // 6px glyph + 1px spacing
     }

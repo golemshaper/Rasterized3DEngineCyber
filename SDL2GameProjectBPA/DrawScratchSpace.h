@@ -157,6 +157,7 @@ public:
     void DrawTriangleGlitchy(Vertex v0, Vertex v1, Vertex v2);
     void DrawSprite(int startX, int startY, Sprite sprite);
     void DrawSprite(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight);
+    void DrawSprite(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight, bool wrap);
     void DrawSprite(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight,float angle);
     void DrawSpriteAdd(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight);
     void DrawText(int X, int Y, RGB color, const char* text, TextSprites* tSprites);
