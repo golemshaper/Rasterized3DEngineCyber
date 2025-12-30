@@ -899,3 +899,37 @@ void DrawScratchSpace::DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale)
     // Draw the sprite
     DrawSprite(spriteX, spriteY, s);
 }
+
+vec3d DrawScratchSpace::Get2DPointInFromSpace(vec3d loc)
+{
+    mat4x4 matTrans = IdentityMatrix();
+    matTrans.m[3][0] = loc.x;
+    matTrans.m[3][1] = loc.y;
+    matTrans.m[3][2] = loc.z;
+    mat4x4 matWorld  = matTrans;
+    vec3d origin = { 0,0,0 };
+
+
+    // CAMERA VIEW MATRIX
+    vec3d up = { 0,1,0 };
+    vec3d vCamera = CameraLoc;
+    vec3d vLookDir = CameraTargetLoc;
+    vec3d vTarget = vCamera + vLookDir;
+
+    mat4x4 matCamera = Matrix_PointAt(vCamera, vTarget, up);
+
+
+    mat4x4 matView = Matrix_QuickInverse(matCamera);
+    vec3d pWorld, pView, pProj;
+    MultiplyMatrixVector(origin, pWorld, matWorld);
+    MultiplyMatrixVector(pWorld, pView, matView);
+
+    // Project
+    MultiplyMatrixVector(pView, pProj, MatrixProj);
+
+    int X = (pProj.x + 1.0f) * 0.5f * SCREEN_X;
+    int Y = (pProj.y + 1.0f) * 0.5f * SCREEN_Y;
+
+
+    return vec3d{ (float)X, (float)Y, 0 };
+}

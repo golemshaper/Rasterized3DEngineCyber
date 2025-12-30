@@ -185,5 +185,6 @@ public:
     void DrawMesh(Mesh m, vec3d loc, vec3d rot);
     void DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale);
     void DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale);
+    vec3d Get2DPointInFromSpace(vec3d loc);
 
 };

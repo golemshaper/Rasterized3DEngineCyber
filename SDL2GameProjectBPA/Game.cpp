@@ -157,9 +157,9 @@ void Game::Tick(float DeltaTime)
    
 
     //Noise pass
-    //MyScratch->MoveMainspaceToExtraBuffer();
-    //MyScratch->RandomScreenFill();//Clear the scren now that contents are in the second buffer
-    //MyScratch->BlendBuffers(0.12f);
+    MyScratch->MoveMainspaceToExtraBuffer();
+    MyScratch->RandomScreenFill();//Clear the scren now that contents are in the second buffer
+    MyScratch->BlendBuffers(0.12f);
 
 
     //TYPE TEXT 
@@ -170,6 +170,11 @@ void Game::Tick(float DeltaTime)
         //reset typing effect
         typingEffect = -1.0f;
     }
+
+    //TEXT AT 3D LOCATION
+    vec3d textCoordinates2D = MyScratch->Get2DPointInFromSpace(vec3d{ 2.0f,0.0f,-0.25f });
+    MyScratch->DrawText((int)textCoordinates2D.x, (int)textCoordinates2D.y, { 255, 0, 0, 255, }, "HELLO \nWORLD!", MyTextSprites, typingEffect);
+
 
 
 }
