@@ -118,7 +118,7 @@ void Game::Tick(float DeltaTime)
     float mouseX, mouseY;
     Uint32 buttons = SDL_GetMouseState(&mouseX, &mouseY);
     //CAMERA
-    MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f}, vec3d{0.0f,0.0f, 1.0f});  //By calling multiple SetCamera calls during drawing, you can make things like a skybox, that don't move, but follow the rest of the worlds rotation!
+    MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f}, vec3d{0.0f,1.0f, 1.0f});  //By calling multiple SetCamera calls during drawing, you can make things like a skybox, that don't move, but follow the rest of the worlds rotation!
 
 
     //MESH
@@ -129,20 +129,31 @@ void Game::Tick(float DeltaTime)
 
 
 
-    //CAMERA
-    MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f + sin(totalTime * 2.0f) }, vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f });
+//CAMERA
+    MyScratch->SetCamera(vec3d{ 0.0f, -1.5f, -5.0f + sin(totalTime * 2.0f) }, vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f });
 
 
-    //OPTIONAL
+//OPTIONAL
     //Store and clear the buffer
     //MyScratch->MoveMainspaceToExtraBuffer(); MyScratch->Clear();//Clear the scren now that it's backed up 
 
-    //MESH
+//MESH
+    //Monkey
     MyScratch->MeshColor = { 0,0,255,255 };
-    MyScratch->DrawMesh(monkeymesher.GetMonkeyMesh(), vec3d{ 2.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime*6.0f),} , MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))));
-   
+    MyScratch->DrawMesh(monkeymesher.GetMonkeyMesh(), vec3d{ 4.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime * 6.0f), }, MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))));
+    //Boy
     MyScratch->MeshColor = { 255,0,0,255};
-    MyScratch->DrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, 0.0f, });
+    MyScratch->DrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,-0.0f,0.0f }, vec3d{ 1.0f, 0.0f, 0.0f, }, vec3d{ 2.0f, 2.0f, 2.0f, });
+
+    //Athena
+    MyScratch->MeshColor = { (int)abs(sin(totalTime*4.0f)*255),(int)abs(sin(totalTime * 2.0f) * 255),(int)abs(cos(totalTime * 4.0f) * 255),255};
+    MyScratch->DrawMesh(monkeymesher.GetAthenaMesh(), vec3d{ -2.0f,-0.5f,-2.25f }, vec3d{ 1.0f,0.0f,3.0f }, MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))));
+    //TEXT AT LAST MESH LOCATION
+    MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y-8, { 255, 255, 255, 255, }, "LV 1", MyTextSprites, 1.0f);
+    MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y, { 0, 255, 0, 255, }, "HP 25", MyTextSprites, 1.0f);
+    MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y+8, { 0, 0, 255, 255, }, "MP 10", MyTextSprites, 1.0f );
+
+
 
     //  Color it
     MyScratch->MeshColor = { 255,255,255,255 };
@@ -151,7 +162,7 @@ void Game::Tick(float DeltaTime)
     //3D Sprite LOC
     MyScratch->DrawSprite3D(
         Smile_Sprite, 
-        vec3d{ 2.0f,0.0f,-0.25f }, 
+        vec3d{ 4.0f,0.0f,-0.25f }, 
         vec3d{ 1.0f, 0.0f, 0.0f, }, 
         vec3d{ 1.0f, 1.0f, 1.0f, }
     );
@@ -188,7 +199,7 @@ void Game::Tick(float DeltaTime)
     
 
     typingEffect += 2*DeltaTime;
-    MyScratch->DrawText(32, 32, { 255, 255, 0, 255, }, "HELLO \nWORLD!", MyTextSprites, typingEffect);
+    MyScratch->DrawText(32, 32, { 255, 255, 0, 255, }, "GOODBYE \nWORLD!", MyTextSprites, typingEffect);
     if (typingEffect >= 1.5f)
     {
         //reset typing effect
@@ -197,8 +208,9 @@ void Game::Tick(float DeltaTime)
 
     //TEXT AT 3D LOCATION
     vec3d textCoordinates2D = MyScratch->Get2DPointInFromSpace(vec3d{ 2.0f,0.0f,-0.25f });
-    MyScratch->DrawText((int)textCoordinates2D.x-(10*6), (int)textCoordinates2D.y-12.0, { 0, 255, 0, 255, }, "Text labels go here!", MyTextSprites, typingEffect*2.0f);
+    MyScratch->DrawText((int)textCoordinates2D.x-(10*6), (int)textCoordinates2D.y-12.0, { 0, 255, 0, 255, }, "Target!", MyTextSprites, typingEffect*2.0f);
 
+    
 
 
     MyScratch->MoveMainspaceToExtraBuffer();
@@ -212,10 +224,10 @@ void Game::Tick(float DeltaTime)
             bullets[i].z = 0.0f;
         }
         MyScratch->DrawMesh(
-            monkeymesher.GetTeapotMesh(),
+            monkeymesher.GetAthenaMesh(),
             bullets[i],
             vec3d{ 1.0f, 0.0f, 0.0f },
-            vec3d{ 0.1f,0.1f,0.1f }
+            vec3d{ 0.9f,0.9f,0.9f }
 
         );
         MyScratch->MeshColor = { (int)bullets[i].z,255,255,255 };

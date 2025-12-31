@@ -762,9 +762,16 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot)
 void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
 {
     // -----------------------------
+    // STORE DATA OTHER FUNCTIONS MAY NEED
+    // -----------------------------
+    LastLocation = loc;
+
+
+    // -----------------------------
     // BUILD ROTATION MATRICES
     // -----------------------------
     mat4x4 matRotZ = {};
+    mat4x4 matRotY = {};
     mat4x4 matRotX = {};
 
     // Rotation Z
@@ -782,6 +789,16 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
     matRotX.m[2][1] = -sinf(rot.x);
     matRotX.m[2][2] = cosf(rot.x);
     matRotX.m[3][3] = 1.0f;
+
+   //Rotation Y
+    // Rotation Y
+    matRotY.m[0][0] = cosf(rot.y);
+    matRotY.m[0][2] = -sinf(rot.y);
+    matRotY.m[1][1] = 1.0f;
+    matRotY.m[2][0] = sinf(rot.y);
+    matRotY.m[2][2] = cosf(rot.y);
+    matRotY.m[3][3] = 1.0f;
+
 
     // -----------------------------
     // BUILD TRANSLATION MATRIX
@@ -804,6 +821,7 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
     // world = rotZ * rotX * translation
     // -----------------------------
     mat4x4 matWorld = Matrix_MultiplyMatrix(matRotZ, matRotX);
+    matWorld = Matrix_MultiplyMatrix(matWorld, matRotY);
     matWorld = Matrix_MultiplyMatrix(matWorld, matScale);
     matWorld = Matrix_MultiplyMatrix(matWorld, matTrans);
 
@@ -923,9 +941,11 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         DrawTriangle(p0, p1, p2);
 
         //DRAW VERTICIES
-        DrawSquare(p0.x, p0.y, 1, { 255,0,0,128 });
+        /*DrawSquare(p0.x, p0.y, 1, { 255,0,0,128 });
         DrawSquare(p1.x, p1.y, 2, { 0,255,0,128 });
-        DrawSquare(p2.x, p2.y, 3, { 0,0,255,128 });
+        DrawSquare(p2.x, p2.y, 3, { 0,0,255,128 });*/
+        
+        
     }
 
 }
@@ -1038,4 +1058,9 @@ vec3d DrawScratchSpace::Get2DPointInFromSpace(vec3d loc)
 
 
     return vec3d{ (float)X, (float)Y, 0 };
+}
+
+vec3d DrawScratchSpace::Get2DPointFromLastLocation()
+{
+   return Get2DPointInFromSpace(LastLocation);
 }

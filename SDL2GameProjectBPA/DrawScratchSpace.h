@@ -183,6 +183,7 @@ public:
     Mesh MeshCube;
     mat4x4 MatrixProj;
     float fTheta;
+    vec3d LastLocation;
     vec3d CameraLoc;
     vec3d CameraTargetLoc;
 //3D Functions:
@@ -194,5 +195,5 @@ public:
     void DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale);
     void DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale);
     vec3d Get2DPointInFromSpace(vec3d loc);
-
+    vec3d Get2DPointFromLastLocation();
 };
