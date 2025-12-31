@@ -170,6 +170,7 @@ public:
     void DrawLine(int x0, int y0, int x1, int y1, RGB color);
     int GetRandom(int a,int b);
     float Clamp(float value, float min, float max);
+    RGB AlphaBlend(const RGB& dst, const RGB& src);
     RGB Lerp(RGB a, RGB b, float c);
     vec3d Lerp(vec3d a, vec3d b, float c);
     vec3d Arc(vec3d a, vec3d b,float h, float c);

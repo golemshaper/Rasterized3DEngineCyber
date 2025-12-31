@@ -145,7 +145,10 @@ void DrawScratchSpace::DrawSquare(int x, int y, int size, RGB color) {
             // Bounds check
             if (px >= 0 && px < SCREEN_X && py >= 0 && py < SCREEN_Y) {
                 int index = py * SCREEN_X + px;
-                MainSpace[index] = color;
+                //MainSpace[index] = color;
+                RGB& dst = MainSpace[index];
+                MainSpace[index] = AlphaBlend(dst, color);
+
             }
         }
     }
@@ -528,6 +531,21 @@ float DrawScratchSpace::Clamp(float value, float min, float max)
     return value;
 }
 
+RGB DrawScratchSpace::AlphaBlend(const RGB& dst, const RGB& src)
+{
+    float a = src.a / 255.0f;       // incoming alpha
+    float ia = 1.0f - a;            // inverse alpha
+
+    RGB out;
+    out.r = static_cast<uint8_t>(src.r * a + dst.r * ia);
+    out.g = static_cast<uint8_t>(src.g * a + dst.g * ia);
+    out.b = static_cast<uint8_t>(src.b * a + dst.b * ia);
+    out.a = 255; // or keep dst.a, or compute new alpha — your choice
+
+    return out;
+
+}
+
 
 
 
@@ -903,6 +921,11 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         Vertex p2 = { triProjected.p[2].x, triProjected.p[2].y, {R,G,2 * B} };*/
 
         DrawTriangle(p0, p1, p2);
+
+        //DRAW VERTICIES
+        DrawSquare(p0.x, p0.y, 1, { 255,0,0,128 });
+        DrawSquare(p1.x, p1.y, 2, { 0,255,0,128 });
+        DrawSquare(p2.x, p2.y, 3, { 0,0,255,128 });
     }
 
 }
