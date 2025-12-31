@@ -122,6 +122,7 @@ void Game::Tick(float DeltaTime)
 
 
     //MESH
+    MyScratch->MeshColor = { 255,255,255,255 };
     MonkeyMesh monkeymesher; //Mesh loading tool
     //I'll want to maybe make a list of meshes to render, and sort those by z position if you draw them one by one
     MyScratch->DrawMesh(monkeymesher.GetTeapotMesh(), vec3d{ (sinf(totalTime * 4.0f) * 0.2f) - 1.12f,0.5f,2 }, vec3d{1.0, 1.0, totalTime, });
@@ -137,8 +138,15 @@ void Game::Tick(float DeltaTime)
     //MyScratch->MoveMainspaceToExtraBuffer(); MyScratch->Clear();//Clear the scren now that it's backed up 
 
     //MESH
+    MyScratch->MeshColor = { 0,0,255,255 };
     MyScratch->DrawMesh(monkeymesher.GetMonkeyMesh(), vec3d{ 2.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime*6.0f),} , MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))));
+   
+    MyScratch->MeshColor = { 255,0,0,255};
     MyScratch->DrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, 0.0f, });
+
+    //  Color it
+    MyScratch->MeshColor = { 255,255,255,255 };
+
 
     //3D Sprite LOC
     MyScratch->DrawSprite3D(
@@ -210,7 +218,7 @@ void Game::Tick(float DeltaTime)
             vec3d{ 0.1f,0.1f,0.1f }
 
         );
-
+        MyScratch->MeshColor = { (int)bullets[i].z,255,255,255 };
        
         //Label on bullets
         vec3d textCoordinates2D = MyScratch->Get2DPointInFromSpace(bullets[i]);

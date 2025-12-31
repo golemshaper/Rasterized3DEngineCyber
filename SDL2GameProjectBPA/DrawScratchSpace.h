@@ -176,6 +176,8 @@ public:
     Point RotatePoint(Point p, Point pivot, float angle);
 
 
+//DRAW MODE:
+    RGB MeshColor = { 255,255,255,255 };
 //3D Primitives:
     Mesh MeshCube;
     mat4x4 MatrixProj;

@@ -888,10 +888,19 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         Vertex p2 = { triProjected.p[2].x, triProjected.p[2].y, {255, 255, ZFog,255} };*/
 
 
-        //RED
-        Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {255 * ZFog,0,0,255} };
-        Vertex p1 = { triProjected.p[1].x, triProjected.p[1].y, {255 * ZFog,0,0,255} };
-        Vertex p2 = { triProjected.p[2].x, triProjected.p[2].y, {255 * ZFog,0,0,255} };
+        //Rainbow tinted + fog (divided by 2 to bring down brightness)
+        int R = MeshColor.r * ZFog * 0.75f;
+        int G = MeshColor.g * ZFog * 0.75f;
+        int B = MeshColor.b * ZFog * 0.75f;
+
+        Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {1*R,G,B} };
+        Vertex p1 = { triProjected.p[1].x, triProjected.p[1].y, {R,1*G,B} };
+        Vertex p2 = { triProjected.p[2].x, triProjected.p[2].y, {R,G,1*B} };
+
+        //PURE
+       /* Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {2 * R,G,B} };
+        Vertex p1 = { triProjected.p[1].x, triProjected.p[1].y, {R,2 * G,B} };
+        Vertex p2 = { triProjected.p[2].x, triProjected.p[2].y, {R,G,2 * B} };*/
 
         DrawTriangle(p0, p1, p2);
     }
