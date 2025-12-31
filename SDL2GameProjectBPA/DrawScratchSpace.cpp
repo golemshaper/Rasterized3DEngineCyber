@@ -876,10 +876,22 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         //dumb fog
         ZFog += 4.0/vecTrianglesToRaster.size() * 0.2f;
 
-
-        Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {255 * ZFog,0,0,255} };
+        //STANDARD
+       /* Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {255 * ZFog,0,0,255} };
         Vertex p1 = { triProjected.p[1].x, triProjected.p[1].y, {0,255 * ZFog,0,255} };
-        Vertex p2 = { triProjected.p[2].x, triProjected.p[2].y, {0,0,255 * ZFog,255} };
+        Vertex p2 = { triProjected.p[2].x, triProjected.p[2].y, {0,0,255 * ZFog,255} };*/
+
+
+        //CRAZY
+        /*Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {ZFog,255,255,255} };
+        Vertex p1 = { triProjected.p[1].x, triProjected.p[1].y, {255, ZFog,255,255} };
+        Vertex p2 = { triProjected.p[2].x, triProjected.p[2].y, {255, 255, ZFog,255} };*/
+
+
+        //RED
+        Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {255 * ZFog,0,0,255} };
+        Vertex p1 = { triProjected.p[1].x, triProjected.p[1].y, {255 * ZFog,0,0,255} };
+        Vertex p2 = { triProjected.p[2].x, triProjected.p[2].y, {255 * ZFog,0,0,255} };
 
         DrawTriangle(p0, p1, p2);
     }
@@ -973,6 +985,8 @@ vec3d DrawScratchSpace::Get2DPointInFromSpace(vec3d loc)
     mat4x4 matCamera = Matrix_PointAt(vCamera, vTarget, up);
 
 
+
+
     mat4x4 matView = Matrix_QuickInverse(matCamera);
     vec3d pWorld, pView, pProj;
     MultiplyMatrixVector(origin, pWorld, matWorld);
@@ -983,6 +997,12 @@ vec3d DrawScratchSpace::Get2DPointInFromSpace(vec3d loc)
 
     int X = (pProj.x + 1.0f) * 0.5f * SCREEN_X;
     int Y = (pProj.y + 1.0f) * 0.5f * SCREEN_Y;
+
+
+    // Cull if behind camera
+    if (pView.z <= 0.1f)
+        return vec3d{ -32, -32, 0 };
+
 
 
     return vec3d{ (float)X, (float)Y, 0 };

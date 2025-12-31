@@ -14,6 +14,9 @@ const int PIXEL_SCALE = 6;
 //CHANGE HERE TO MATCH SCRATCH SIZE
 const int SCREEN_NATIVE_X = 240;
 const int SCREEN_NATIVE_Y = 240;// 160;
+//const int SCREEN_NATIVE_X = 135; //youtube shorts aspect
+//const int SCREEN_NATIVE_Y = 240;// 160;
+
 const int SCREEN_WIDTH = SCREEN_NATIVE_X * PIXEL_SCALE;
 const int SCREEN_HEIGHT = SCREEN_NATIVE_Y * PIXEL_SCALE;
 
@@ -82,7 +85,7 @@ int main(int argc, char* argv[]) {
         Uint32 currentTicks = SDL_GetTicks();
         float deltaTime = (currentTicks - lastTicks) / 1000.0f;  // Convert to seconds
         lastTicks = currentTicks;
-
+        
 
         TheGame->Tick(deltaTime);
     

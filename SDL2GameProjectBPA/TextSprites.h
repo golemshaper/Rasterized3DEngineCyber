@@ -749,8 +749,38 @@ public:
         };
         return ToSprite(data);
     }
+    static Sprite Get_Minus()
+    {
+        const int R = 255;
+        const int G = 255;
+        const int B = 255;
 
+        static RGB data[36] = {
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},
+            {0,0,0},{R,G,B},{R,G,B},{R,G,B},{R,G,B},{0,0,0},
+            {0,0,0},{R,G,B},{R,G,B},{R,G,B},{R,G,B},{0,0,0},
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},
+        };
+        return ToSprite(data);
+    }
+    static Sprite Get_Period()
+    {
+        const int R = 255;
+        const int G = 255;
+        const int B = 255;
 
+        static RGB data[36] = {
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},
+            {0,0,0},{0,0,0},{R,G,B},{R,G,B},{0,0,0},{0,0,0},
+            {0,0,0},{0,0,0},{R,G,B},{R,G,B},{0,0,0},{0,0,0},
+        };
+        return ToSprite(data);
+    }
     static Sprite Get_Percent()
     {
         const int R = 255;
@@ -827,6 +857,8 @@ public:
             {'!', TextSprites::Get_Exclamation},
             {'?', TextSprites::Get_Question},
             {'%', TextSprites::Get_Percent},
+            {'.', TextSprites::Get_Period},
+            {'-', TextSprites::Get_Minus},
         };
 
         c = toupper(c); // optional, if you want case-insensitivity

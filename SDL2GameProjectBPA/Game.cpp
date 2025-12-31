@@ -12,6 +12,13 @@ void Game::Initialize()
     MyScratch = new DrawScratchSpace();
     MyScratch->Initialize();
     MyTextSprites = new TextSprites();
+
+    for (int i = 0; i < bullet_count; ++i)
+    {
+        bullets[i].x = sin(0.2f*i);
+        bullets[i].y = cos(i)* 0.2f;
+        bullets[i].z = 0;
+    }
 }
 void Game::Tick(float DeltaTime)
 {
@@ -157,12 +164,21 @@ void Game::Tick(float DeltaTime)
    
 
     //Noise pass
-    MyScratch->MoveMainspaceToExtraBuffer();
-    MyScratch->RandomScreenFill();//Clear the scren now that contents are in the second buffer
-    MyScratch->BlendBuffers(0.12f);
+    //MyScratch->MoveMainspaceToExtraBuffer();
+    //MyScratch->RandomScreenFill();//Clear the scren now that contents are in the second buffer
+    //MyScratch->BlendBuffers(0.12f);
 
 
     //TYPE TEXT 
+    float cam_x = MyScratch->CameraTargetLoc.x;
+    float cam_y = MyScratch->CameraTargetLoc.y;
+    float cam_z = MyScratch->CameraTargetLoc.z;
+    char buffer[64];
+    snprintf(buffer, sizeof(buffer), "Look X %.2f,\nLook Y %.2f,\nLook Z %.2f", cam_x, cam_y, cam_z);   // format however you want
+    MyScratch->DrawText(4, 4, { 255,255,255,255 }, buffer, MyTextSprites);
+
+    
+
     typingEffect += 2*DeltaTime;
     MyScratch->DrawText(32, 32, { 255, 255, 0, 255, }, "HELLO \nWORLD!", MyTextSprites, typingEffect);
     if (typingEffect >= 1.5f)
@@ -177,6 +193,31 @@ void Game::Tick(float DeltaTime)
 
 
 
+    MyScratch->MoveMainspaceToExtraBuffer();
+    MyScratch->Clear();
+    //Bullets
+    for (int i = 0; i < bullet_count; ++i)
+    {
+        bullets[i].z -= (0.02f+i)*DeltaTime;
+        if (bullets[i].z < -30)
+        {
+            bullets[i].z = 0.0f;
+        }
+        MyScratch->DrawMesh(
+            monkeymesher.GetTeapotMesh(),
+            bullets[i],
+            vec3d{ 1.0f, 0.0f, 0.0f },
+            vec3d{ 0.1f,0.1f,0.1f }
+
+        );
+
+       
+        //Label on bullets
+        vec3d textCoordinates2D = MyScratch->Get2DPointInFromSpace(bullets[i]);
+        MyScratch->DrawText((int)textCoordinates2D.x, (int)textCoordinates2D.y, { 64, 128, 255, 255, }, "B", MyTextSprites, 1.0f);
+
+    }
+    MyScratch->AddBuffers();
 
 
 }
