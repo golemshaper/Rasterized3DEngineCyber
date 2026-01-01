@@ -193,6 +193,7 @@ public:
     void MultiplyMatrixVector(vec3d& i, vec3d& o, mat4x4& m);
     mat4x4 IdentityMatrix();
     void SetCamera(vec3d loc, vec3d target);
+    void SetCameraFOV(float nFov);
     void DrawMesh(Mesh m);
     void DrawMesh(Mesh m, vec3d loc, vec3d rot);
     void DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale);

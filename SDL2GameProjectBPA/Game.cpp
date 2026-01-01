@@ -25,6 +25,7 @@ void Game::Tick(float DeltaTime)
     totalTime += DeltaTime;
     MyScratch->Clear(RGB{ 0,2,8 });
 
+
     //Draw using my function
     RGB MyColor = { 0 ,0,0 };
     RGB Red = { 255,0,0 };
@@ -163,6 +164,7 @@ void Game::Tick(float DeltaTime)
 
 
 //CAMERA
+    MyScratch->SetCameraFOV(90);
     MyScratch->SetCamera(vec3d{ 0.0f, -1.5f, -5.0f + sin(totalTime * 2.0f) }, vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f });
 
 

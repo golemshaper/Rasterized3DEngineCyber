@@ -646,6 +646,22 @@ void DrawScratchSpace::SetCamera(vec3d loc, vec3d target)
     CameraLoc = loc;
     CameraTargetLoc = target;
 }
+void DrawScratchSpace::SetCameraFOV(float nFov)
+{
+    // Projection Matrix
+    float fNear = 0.1f;
+    float fFar = 1000.0f;
+    float fFov = nFov;
+    float fAspectRatio = (float)SCREEN_Y / (float)SCREEN_X;
+    float fFovRad = 1.0f / tanf(fFov * 0.5f / 180.0f * 3.14159f);
+
+    MatrixProj.m[0][0] = fAspectRatio * fFovRad;
+    MatrixProj.m[1][1] = fFovRad;
+    MatrixProj.m[2][2] = fFar / (fFar - fNear);
+    MatrixProj.m[3][2] = (-fFar * fNear) / (fFar - fNear);
+    MatrixProj.m[2][3] = 1.0f;
+    MatrixProj.m[3][3] = 0.0f;
+}
 mat4x4 Matrix_MakeTranslation(float x, float y, float z)
 {
     mat4x4 m = IdentityMatrix();
