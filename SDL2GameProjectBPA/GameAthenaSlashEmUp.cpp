@@ -326,6 +326,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->AddBuffers();
 
     //TEXTBOX
+    
     TextBoxDraw("You can display characters in \na box using this helper function. \nThis is part of this game, \nnot part of the engine!");
 
 
@@ -607,6 +608,11 @@ void GameAthenaSlashEmUp::TextBoxDraw(const char* input)
         textBoxProgressTick = 0.0f;
         previous_text = input;
     }
+    if (textBoxProgressTick > 5.0f)
+    {
+        //Auto-Advanced text
+        return;
+    }
     //TEXT BOX
     int boarder = 2;
     //Fill
@@ -627,6 +633,7 @@ void GameAthenaSlashEmUp::TextBoxDraw(const char* input)
     //Blinking cursor 
     if (sin(totalTime * 8.0f) > 0.0f)
     {
+        
         MyScratch->DrawText(SCREEN_X - 10, SCREEN_Y - boarder - 7, { 0, 255, 255, 255, }, "|", MyTextSprites, 1.0f);
 
     }
