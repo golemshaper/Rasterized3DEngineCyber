@@ -5,8 +5,10 @@
 #include "DrawScratchSpace.h"
 #include "Game.h"
 #include "GameTwo.h"
+#include "GameAthenaSlashEmUp.h"
 //
-Game* TheGame = new Game();
+//Game* TheGame = new Game();
+GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
 //For another game example, inherit the base class, and override the Tick function. GameTwo* TheGame = new GameTwo();
 //You can also make different tick function with different states for different game modes/screens/scenes in the Game class!
 
