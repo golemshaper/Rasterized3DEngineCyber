@@ -14,6 +14,7 @@ const int PIXEL_SCALE = 8;
 //CHANGE HERE TO MATCH SCRATCH SIZE
 const int SCREEN_NATIVE_X = 240;
 const int SCREEN_NATIVE_Y = 240;// 160;
+
 //const int SCREEN_NATIVE_X = 135; //youtube shorts aspect
 //const int SCREEN_NATIVE_Y = 240;// 160;
 
