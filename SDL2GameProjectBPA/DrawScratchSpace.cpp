@@ -474,9 +474,20 @@ void DrawScratchSpace::DrawText(int X, int Y, RGB color, const char* text, TextS
     int chars_to_show = (int)(length * amount_revealed);
 
     // Draw only that many characters
-    for (int i = 0; i < chars_to_show; i++)
+    for (int j = 0; j < chars_to_show+1; j++)
     {
+        int i = j;
+        if (i > chars_to_show)
+        {
+            i = chars_to_show;
+        }
         char c = text[i];
+       /* if (j >= chars_to_show)
+        {
+        //debug cursor
+            c = 'x';
+        }*/
+
         if (c == '\n')
         {
             cursorX = X;
@@ -486,8 +497,14 @@ void DrawScratchSpace::DrawText(int X, int Y, RGB color, const char* text, TextS
         Sprite s = tSprites->GetSpriteForChar(c);
         s.pixels = ColorizeSpriteData(s.pixels,s.width,s.height,color);
 
-
-        DrawSprite(cursorX, cursorY, s.pixels, s.width, s.height,false);
+        int offsetY = 0;
+        if (i == chars_to_show-1 && chars_to_show!=length)
+        {
+            offsetY = -2;
+        }
+        if (j < chars_to_show) {
+            DrawSprite(cursorX, cursorY + offsetY, s.pixels, s.width, s.height, false);
+        }
 
         cursorX += 7; // 6px glyph + 1px spacing
     }

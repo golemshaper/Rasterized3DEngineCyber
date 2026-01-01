@@ -46,7 +46,7 @@ void GameAthenaSlashEmUp::TitleScreenTick(float DeltaTime)
     MyScratch->MeshColor = { (int)abs(sin(totalTime * 4.0f) * 255),(int)abs(sin(totalTime * 2.0f) * 255),(int)abs(cos(totalTime * 4.0f) * 255),255 };
     MyScratch->DrawMesh(monkeymesher.GetAthenaMesh(), vec3d{ 0,0,0 }, vec3d{ 1.35f,totalTime*2.0f,0 }, vec3d{ 1,1,1 } );
     //TXT
-    MyScratch->DrawText(32, 32, { 255, 255, 255, 255, }, "ATHENA", MyTextSprites, totalTime * 0.5f);
+    MyScratch->DrawText(32, 32, { 255, 255, 255, 255, }, "ATHENA ", MyTextSprites, totalTime * 0.5f);
 
 
     if (totalTime >= 4.0f)

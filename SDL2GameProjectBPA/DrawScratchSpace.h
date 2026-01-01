@@ -176,7 +176,8 @@ public:
     vec3d Arc(vec3d a, vec3d b,float h, float c);
     Point RotatePoint(Point p, Point pivot, float angle);
 
-
+//HELPERS:
+    int lastTextAmountRevealed = 0;
 //DRAW MODE:
     RGB MeshColor = { 255,255,255,255 };
     bool DrawVerticies = false;
