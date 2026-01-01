@@ -139,12 +139,14 @@
   <ItemGroup>
     <ClCompile Include="DrawScratchSpace.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameTwo.cpp" />
     <ClCompile Include="InputWraper.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DrawScratchSpace.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameTwo.h" />
     <ClInclude Include="InputWraper.h" />
     <ClInclude Include="MonkeyMesh.h" />
     <ClInclude Include="TextSprites.h" />

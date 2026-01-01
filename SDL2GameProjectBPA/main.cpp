@@ -4,9 +4,12 @@
 
 #include "DrawScratchSpace.h"
 #include "Game.h"
-
+#include "GameTwo.h"
 //
 Game* TheGame = new Game();
+//For another game example, inherit the base class, and override the Tick function. GameTwo* TheGame = new GameTwo();
+//You can also make different tick function with different states for different game modes/screens/scenes in the Game class!
+
 Uint32 lastTicks = SDL_GetTicks();  // Store this at the end of your previous frame
 
 
