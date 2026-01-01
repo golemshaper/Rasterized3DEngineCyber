@@ -230,8 +230,11 @@ void Game::Tick(float DeltaTime)
             vec3d{ 0.9f,0.9f,0.9f }
 
         );
-        MyScratch->MeshColor = { (int)bullets[i].z,255,255,255 };
        
+
+        MyScratch->MeshColor = { (int)abs(sin(totalTime + bullets[i].z * 4.0f) * 255),(int)abs(sin(totalTime + bullets[i].z * 2.0f) * 255),(int)abs(cos(totalTime + bullets[i].z * 4.0f) * 255),255 };
+
+
         //Label on bullets
         vec3d textCoordinates2D = MyScratch->Get2DPointInFromSpace(bullets[i]);
         MyScratch->DrawText((int)textCoordinates2D.x, (int)textCoordinates2D.y, { 64, 128, 255, 255, }, "B", MyTextSprites, 1.0f);
