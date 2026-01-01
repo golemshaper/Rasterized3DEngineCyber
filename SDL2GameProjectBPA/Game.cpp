@@ -149,9 +149,10 @@ void Game::Tick(float DeltaTime)
     MyScratch->MeshColor = { (int)abs(sin(totalTime*4.0f)*255),(int)abs(sin(totalTime * 2.0f) * 255),(int)abs(cos(totalTime * 4.0f) * 255),255};
     MyScratch->DrawMesh(monkeymesher.GetAthenaMesh(), vec3d{ -2.0f,-0.5f,-2.25f }, vec3d{ 1.0f,0.0f,3.0f }, MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))));
     //TEXT AT LAST MESH LOCATION
-    MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y-8, { 255, 255, 255, 255, }, "LV 1", MyTextSprites, 1.0f);
-    MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y, { 0, 255, 0, 255, }, "HP 25", MyTextSprites, 1.0f);
-    MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y+8, { 0, 0, 255, 255, }, "MP 10", MyTextSprites, 1.0f );
+    MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y -8 , { 255, 255, 255, 255, }, "LV 1", MyTextSprites, 1.0f);
+    MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y,  {0, 255, 0, 255, }, "HP 25", MyTextSprites, 1.0f);
+    MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y + 8, { 0, 0, 255, 255, }, "MP 10", MyTextSprites, 1.0f);
+    MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y + 16, { 255, 0, 255, 255, }, "EXP 000", MyTextSprites, 1.0f );
 
 
 
