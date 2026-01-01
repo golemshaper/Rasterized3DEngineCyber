@@ -3,7 +3,7 @@
 #include "MonkeyMesh.h"
 void GameTwo::Tick(float DeltaTime)
 {
-	//Just the basics of how you draw and manipulate objects
+	//Basic example of drawing model to the screen
 	MyScratch->Clear();
 	totalTime += DeltaTime;
 	MonkeyMesh monkeymesher; //Mesh loading tool

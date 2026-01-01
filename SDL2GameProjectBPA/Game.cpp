@@ -1,9 +1,9 @@
 
 #include "Game.h"
 #include "DrawScratchSpace.h"
-#include "MonkeyMesh.h"
-#include <cmath>
-#include <SDL3/SDL_mouse.h>
+//#include "MonkeyMesh.h"
+//#include <cmath>
+//#include <SDL3/SDL_mouse.h>
 #include "TextSprites.h"
 
 void Game::Initialize()
@@ -16,4 +16,5 @@ void Game::Tick(float DeltaTime)
 {
     totalTime += DeltaTime;
     MyScratch->Clear(RGB{ 255,2,8 });
+
 }

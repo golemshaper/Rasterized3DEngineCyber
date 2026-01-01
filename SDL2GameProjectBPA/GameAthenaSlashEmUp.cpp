@@ -20,6 +20,44 @@ void GameAthenaSlashEmUp::Initialize()
 }
 void GameAthenaSlashEmUp::Tick(float DeltaTime)
 {
+    //GameModeTick(DeltaTime);
+    switch (mode)
+    {
+    case 0:
+        TitleScreenTick(DeltaTime);
+
+        break;
+
+    case 1:
+        GameModeTick(DeltaTime);
+
+        break;
+    }
+}
+
+void GameAthenaSlashEmUp::TitleScreenTick(float DeltaTime)
+{
+    //SETUP
+    totalTime += DeltaTime;
+    MyScratch->Clear(RGB{ 0,2,8 });
+    MonkeyMesh monkeymesher; //Mesh loading tool
+    //GFX
+    MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f }, vec3d{ 0.0f,1.0f, 1.0f });
+    MyScratch->MeshColor = { (int)abs(sin(totalTime * 4.0f) * 255),(int)abs(sin(totalTime * 2.0f) * 255),(int)abs(cos(totalTime * 4.0f) * 255),255 };
+    MyScratch->DrawMesh(monkeymesher.GetAthenaMesh(), vec3d{ 0,0,0 }, vec3d{ 1.35f,totalTime*2.0f,0 }, vec3d{ 1,1,1 } );
+    //TXT
+    MyScratch->DrawText(32, 32, { 255, 255, 255, 255, }, "ATHENA", MyTextSprites, totalTime * 0.5f);
+
+
+    if (totalTime >= 4.0f)
+    {
+        totalTime = 0.0f;
+        mode = 1;
+    }
+}
+
+void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
+{
     //Count and clear
     totalTime += DeltaTime;
     MyScratch->Clear(RGB{ 0,2,8 });
@@ -280,3 +318,4 @@ void GameAthenaSlashEmUp::Tick(float DeltaTime)
     }
     MyScratch->AddBuffers();
 }
+

@@ -5,6 +5,7 @@ class GameAthenaSlashEmUp : public Game
 
 public:
 
+	int mode = 0;
 	float typingEffect = -1.0f;
 	float angle = 0.0f;
 	int bullet_count = 64;
@@ -13,6 +14,10 @@ public:
 
 	void Initialize();
 	void Tick(float DeltaTime);
+	void TitleScreenTick(float DeltaTime);
+	void GameModeTick(float DeltaTime);
+
+
 
 };
 

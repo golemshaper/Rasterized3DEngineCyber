@@ -8,7 +8,10 @@
 #include "GameAthenaSlashEmUp.h"
 //
 //Game* TheGame = new Game();
+//GameTwo* TheGame = new GameTwo();
 GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
+
+
 //For another game example, inherit the base class, and override the Tick function. GameTwo* TheGame = new GameTwo();
 //You can also make different tick function with different states for different game modes/screens/scenes in the Game class!
 
