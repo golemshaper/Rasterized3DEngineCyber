@@ -941,10 +941,19 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         DrawTriangle(p0, p1, p2);
 
         //DRAW VERTICIES
-        /*DrawSquare(p0.x, p0.y, 1, { 255,0,0,128 });
-        DrawSquare(p1.x, p1.y, 2, { 0,255,0,128 });
-        DrawSquare(p2.x, p2.y, 3, { 0,0,255,128 });*/
-        
+        if (DrawVerticies) {
+            DrawSquare(p0.x, p0.y, 1, { 255,0,0,128 });
+            DrawSquare(p1.x, p1.y, 2, { 0,255,0,128 });
+            DrawSquare(p2.x, p2.y, 3, { 0,0,255,128 });
+        }
+        if (DrawEdges)
+        {
+            DrawLine(p0.x, p0.y, p1.x, p1.y, { EdgeBrightness,EdgeBrightness,0,255 });
+            DrawLine(p1.x, p1.y, p2.x, p2.y, { EdgeBrightness,0,EdgeBrightness ,255 });
+            DrawLine(p2.x, p2.y, p0.x, p0.y, { 0,EdgeBrightness,EdgeBrightness,255 });
+        }
+      
+
         
     }
 

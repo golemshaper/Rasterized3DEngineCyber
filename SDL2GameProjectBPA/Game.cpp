@@ -114,21 +114,23 @@ void Game::Tick(float DeltaTime)
     //MyScratch->DrawMesh(MyScratch->MeshCube, DeltaTime);
 
 
-    //MOUSE USING SDL
+//MOUSE USING SDL
     float mouseX, mouseY;
     Uint32 buttons = SDL_GetMouseState(&mouseX, &mouseY);
-    //CAMERA
+//CAMERA
     MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f}, vec3d{0.0f,1.0f, 1.0f});  //By calling multiple SetCamera calls during drawing, you can make things like a skybox, that don't move, but follow the rest of the worlds rotation!
 
 
-    //MESH
+//MESH
     MyScratch->MeshColor = { 255,255,255,255 };
     MonkeyMesh monkeymesher; //Mesh loading tool
 
 //--
-    //SKYBOX MESH
-   /* MyScratch->MoveMainspaceToExtraBuffer();
-    MyScratch->Clear();*/
+//ENVIRONMENT
+    MyScratch->DrawVerticies = sin(totalTime*8.0f)<0.0f; //Results in true or false
+    //Edges
+    MyScratch->DrawEdges = cos(totalTime * 8.0f) < 0.0f; //Results in true or false
+    MyScratch->EdgeBrightness = (int)((abs(sin(totalTime)) + 0.5f) * 222);
     float SinMouseX = sin(mouseX * 0.01f) * 0.01f;
     float CosMouseY = cos(mouseY * 0.01f) * 0.01f;
     MyScratch->MeshColor = { 
@@ -139,12 +141,12 @@ void Game::Tick(float DeltaTime)
     };
     MyScratch->SetCamera(vec3d{ 0.0f, -8.0f, -3.5f }, vec3d{ cos(totalTime)*0.01f + SinMouseX,2-sin(totalTime)*0.01f + CosMouseY, 1.0f});
     MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ 0.0f,0.0f, -4 }, vec3d{ totalTime, 0.0, 0.0, }, vec3d{ 8.0, 4.0, 4.0, });
-    MyScratch->AddBuffers();
+    MyScratch->DrawEdges = false;
 //NOTE: I'll want to maybe make a list of meshes to render, and sort those by z position if you draw them one by one
     MyScratch->MeshColor = { 255,255,255,255 };
     MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f }, vec3d{ 0.0f,1.0f, 1.0f });  //By calling multiple SetCamera calls during drawing, you can make things like a skybox, that don't move, but follow the rest of the worlds rotation!
     MyScratch->DrawMesh(monkeymesher.GetTeapotMesh(), vec3d{ (sinf(totalTime * 4.0f) * 0.2f) - 1.12f,0.5f,2 }, vec3d{1.0, 1.0, totalTime, });
-
+    MyScratch->DrawVerticies = false;;
 
 
 //CAMERA

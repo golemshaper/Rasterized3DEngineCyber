@@ -179,6 +179,9 @@ public:
 
 //DRAW MODE:
     RGB MeshColor = { 255,255,255,255 };
+    bool DrawVerticies = false;
+    int EdgeBrightness = 255;
+    bool DrawEdges = false;
 //3D Primitives:
     Mesh MeshCube;
     mat4x4 MatrixProj;
