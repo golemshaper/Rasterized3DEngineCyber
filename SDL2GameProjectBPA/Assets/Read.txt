@@ -1,0 +1,6 @@
+Welcome to the universe!
+
+This is text from Read.txt!
+
+We need a text system for 
+selecting strings from this file.

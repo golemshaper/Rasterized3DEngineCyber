@@ -1,6 +1,11 @@
 #pragma once
+#include <string>
 class TextFileReader
 {
-	//TODO: https://stackoverflow.com/questions/13035674/how-to-read-a-file-line-by-line-or-a-whole-text-file-at-once
+
+	std::string file_contents; // owns the memory
+public:
+	const char* ReadText();
+	bool limit_once = false;
 };
 

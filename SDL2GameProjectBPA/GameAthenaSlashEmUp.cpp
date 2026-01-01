@@ -4,6 +4,7 @@
 #include <cmath>
 #include <SDL3/SDL_mouse.h>
 #include "TextSprites.h"
+#include "TextFileReader.h"
 
 void GameAthenaSlashEmUp::Initialize()
 {
@@ -327,7 +328,8 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
     //TEXTBOX
     
-    TextBoxDraw("You can display characters in \na box using this helper function. \nThis is part of this game, \nnot part of the engine!");
+   // TextBoxDraw("You can display characters in \na box using this helper function. \nThis is part of this game, \nnot part of the engine!");
+    TextBoxDraw(Reader.ReadText());
 
 
 }

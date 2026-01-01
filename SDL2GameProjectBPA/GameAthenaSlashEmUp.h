@@ -1,11 +1,13 @@
 #pragma once
 #include "Game.h"
+#include "TextFileReader.h"
+
 class GameAthenaSlashEmUp : public Game
 {
 
 public:
 
-	int mode = 0;
+	int mode = 1;
 	float typingEffect = -1.0f;
 	float textBoxProgressTick = 0.0f;
 	const char* previous_text;
@@ -13,6 +15,8 @@ public:
 	float angle = 0.0f;
 	int bullet_count = 64;
 	vec3d bullets[64];
+
+	TextFileReader Reader;
 
 
 	void Initialize();
