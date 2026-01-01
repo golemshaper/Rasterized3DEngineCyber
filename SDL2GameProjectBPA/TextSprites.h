@@ -797,7 +797,38 @@ public:
         };
         return ToSprite(data);
     }
+    static Sprite Get_Comma()
+    {
+        const int R = 255;
+        const int G = 255;
+        const int B = 255;
 
+        static RGB data[36] = {
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},
+            {0,0,0},{R,G,B},{R,G,B},{0,0,0},{0,0,0},{0,0,0},
+            {0,0,0},{R,G,B},{R,G,B},{0,0,0},{0,0,0},{0,0,0},
+            {0,0,0},{R,G,B},{R,G,B},{0,0,0},{0,0,0},{0,0,0},
+            {R,G,B},{R,G,B},{0,0,0},{0,0,0},{0,0,0},{0,0,0}
+        };
+        return ToSprite(data);
+    }
+    static Sprite Get_Square()
+    {
+        const int R = 255;
+        const int G = 255;
+        const int B = 255;
+
+        static RGB data[36] = {
+            {R,G,B},{R,G,B},{R,G,B},{R,G,B},{R,G,B},{R,G,B},
+            {R,G,B},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{R,G,B},
+            {R,G,B},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{R,G,B},
+            {R,G,B},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{R,G,B},
+            {R,G,B},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{R,G,B},
+            {R,G,B},{R,G,B},{R,G,B},{R,G,B},{R,G,B},{R,G,B}
+        };
+        return ToSprite(data);
+    }
 
 
     static Sprite ToSprite(RGB data[36])
@@ -859,6 +890,8 @@ public:
             {'%', TextSprites::Get_Percent},
             {'.', TextSprites::Get_Period},
             {'-', TextSprites::Get_Minus},
+            {',', TextSprites::Get_Comma},
+            {'|', TextSprites::Get_Square},
         };
 
         c = toupper(c); // optional, if you want case-insensitivity

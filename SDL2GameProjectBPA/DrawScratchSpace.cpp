@@ -136,6 +136,23 @@ void DrawScratchSpace::RandomScreenFill()
     }
 }
 
+void DrawScratchSpace::DrawRectangle(int x, int y, int width, int height, RGB color)
+{
+    for (int dy = 0; dy < height; ++dy) {
+        for (int dx = 0; dx < width; ++dx) {
+            int px = x + dx;
+            int py = y + dy;
+
+            // Bounds check
+            if (px >= 0 && px < SCREEN_X && py >= 0 && py < SCREEN_Y) {
+                int index = py * SCREEN_X + px;
+                RGB& dst = MainSpace[index];
+                MainSpace[index] = AlphaBlend(dst, color);
+            }
+        }
+    }
+}
+
 void DrawScratchSpace::DrawSquare(int x, int y, int size, RGB color) {
     for (int dy = 0; dy < size; ++dy) {
         for (int dx = 0; dx < size; ++dx) {

@@ -16,7 +16,7 @@ public:
 	void Tick(float DeltaTime);
 	void TitleScreenTick(float DeltaTime);
 	void GameModeTick(float DeltaTime);
-
+	void TextBoxDraw(const char* input);
 
 
 };

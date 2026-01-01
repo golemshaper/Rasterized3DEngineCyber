@@ -33,6 +33,9 @@
     <ClCompile Include="GameAthenaSlashEmUp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TextFileReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DrawScratchSpace.h">
@@ -54,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameAthenaSlashEmUp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextFileReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

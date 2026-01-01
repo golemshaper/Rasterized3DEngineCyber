@@ -54,6 +54,9 @@ void GameAthenaSlashEmUp::TitleScreenTick(float DeltaTime)
         totalTime = 0.0f;
         mode = 1;
     }
+
+    TextBoxDraw("Hello world! ");
+
 }
 
 void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
@@ -317,5 +320,37 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
     }
     MyScratch->AddBuffers();
+
+    //TEXTBOX
+    TextBoxDraw("You can display characters in \na box using this helper function. \nThis is part of this game, \nnot part of the engine!");
+
+
+}
+
+void GameAthenaSlashEmUp::TextBoxDraw(const char* input)
+{
+    //TEXT BOX
+    int boarder = 2;
+    //Fill
+    MyScratch->DrawRectangle(boarder, SCREEN_Y - (64 + boarder), SCREEN_X - (boarder * 2), 64, RGB{ 0,0,255,128 });
+
+    //Top Line
+    MyScratch->DrawLine(boarder, SCREEN_Y - (64 + boarder), SCREEN_X - boarder-1, SCREEN_Y - (64 + boarder), RGB{ 222,222,222,255 });
+    //Bottom Line
+    MyScratch->DrawLine(boarder, SCREEN_Y - boarder, SCREEN_X - boarder - 1, SCREEN_Y -boarder, RGB{ 222,222,222,255 });
+    //Right Side
+    MyScratch->DrawLine(SCREEN_X - boarder - 1, SCREEN_Y - (64 + boarder), SCREEN_X - boarder - 1, SCREEN_Y - boarder, RGB{ 222,222,222,255 });
+    //Left Side
+    MyScratch->DrawLine(boarder , SCREEN_Y - (64 + boarder), boarder , SCREEN_Y - boarder, RGB{ 222,222,222,255 });
+
+    //Text
+    MyScratch->DrawText(boarder + 2, SCREEN_Y - (64), { 255, 255, 255, 255, }, input, MyTextSprites, totalTime * 0.8f);
+
+    //Blinking cursor 
+    if (sin(totalTime * 8.0f) > 0.0f)
+    {
+        MyScratch->DrawText(SCREEN_X - 10, SCREEN_Y - boarder - 7, { 0, 255, 255, 255, }, "|", MyTextSprites, 1.0f);
+
+    }
 }
 

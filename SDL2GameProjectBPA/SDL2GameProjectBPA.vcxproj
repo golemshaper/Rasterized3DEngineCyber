@@ -143,6 +143,7 @@
     <ClCompile Include="GameTwo.cpp" />
     <ClCompile Include="InputWraper.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TextFileReader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DrawScratchSpace.h" />
@@ -151,6 +152,7 @@
     <ClInclude Include="GameTwo.h" />
     <ClInclude Include="InputWraper.h" />
     <ClInclude Include="MonkeyMesh.h" />
+    <ClInclude Include="TextFileReader.h" />
     <ClInclude Include="TextSprites.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

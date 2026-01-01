@@ -153,6 +153,7 @@ public:
     void Clear();
     void Clear(RGB wipe);
     void RandomScreenFill();
+    void DrawRectangle(int x, int y, int width, int height, RGB color);
     void DrawSquare(int x, int y, int size, RGB color);
     void DrawSquareMultiply(int x, int y, int size, RGB color);
     void DrawTriangle(Point p0, Point p1, Point p2, RGB color);
