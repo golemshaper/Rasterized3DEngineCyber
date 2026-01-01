@@ -25,6 +25,9 @@ void Game::Tick(float DeltaTime)
     totalTime += DeltaTime;
     MyScratch->Clear(RGB{ 0,2,8 });
 
+    //CAMERA FOV
+    MyScratch->SetCameraFOV(90 +(abs(cos(totalTime * 2.0f))*4));
+
 
     //Draw using my function
     RGB MyColor = { 0 ,0,0 };
@@ -141,7 +144,7 @@ void Game::Tick(float DeltaTime)
         (int)((abs(sin(totalTime * 4)) + 0.5f) * 55),
         255 
     };
-    MyScratch->SetCamera(vec3d{ 0.0f, -8.0f, -3.5f }, vec3d{ cos(totalTime)*0.01f + SinMouseX,2-sin(totalTime)*0.01f + CosMouseY, 1.0f});
+    MyScratch->SetCamera(vec3d{ 0.0f, -8.0f, -3.5f }, vec3d{ (sin(mouseX * 0.01f)*0.1f) + cos(totalTime)*0.01f + SinMouseX,2-sin(totalTime)*0.01f + CosMouseY, 1.0f});
     MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ 0.0f,0.0f, -4 }, vec3d{ totalTime, 0.0, 0.0, }, vec3d{ 8.0, 4.0, 4.0, });
     MyScratch->DrawEdges = false;
     MyScratch->DrawVerticies = false;
@@ -164,8 +167,8 @@ void Game::Tick(float DeltaTime)
 
 
 //CAMERA
-    MyScratch->SetCameraFOV(90);
-    MyScratch->SetCamera(vec3d{ 0.0f, -1.5f, -5.0f + sin(totalTime * 2.0f) }, vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f });
+   
+    MyScratch->SetCamera(vec3d{ 0.0f, -1.5f, -5.0f + (sin(totalTime * 2.0f)*0.5f) }, vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f });
 
 
 //OPTIONAL
