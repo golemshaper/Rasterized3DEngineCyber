@@ -29,3 +29,7 @@ set_target_properties(Rasterized3DEngineCyber PROPERTIES
 
 # Link SDL3
 target_link_libraries(${PROJECT_NAME} SDL3::SDL3)
+
+if(EMSCRIPTEN)
+  set(CMAKE_EXECUTABLE_SUFFIX ".html")
+endif()
