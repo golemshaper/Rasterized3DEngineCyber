@@ -57,18 +57,18 @@ Unix:
 
 ### Running a Release
 
-To run a release, simply run the `release.py` script:
+To run a release, simply run the `build` script:
 
 Windows:
 
 ```sh
-.\release.py
+.\scripts\build.bat
 ```
 
 Unix:
 
 ```sh
-./release.py
+./scripts/build.sh
 ```
 
 After the script completes, run the game with
@@ -76,11 +76,11 @@ After the script completes, run the game with
 Windows:
 
 ```bat
-.\build\Rasterized3DEngineCyber
+.\build\bin\Release\Rasterized3DEngineCyber
 ```
 
 Unix:
 
 ```sh
-./build/Rasterized3DEngineCyber
+./build/bin/Rasterized3DEngineCyber
 ```

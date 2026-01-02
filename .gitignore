@@ -72,3 +72,5 @@
 CMakeUserPresets.json
 # The generated build files
 build/
+# Ignore Git Ignore
+.venv/
