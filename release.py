@@ -51,3 +51,14 @@ run(["conan", "install", ".", "--output-folder=build", "--build=missing"])
 run(["cmake", ".", "--preset", conan_release_profile])
 # Run actual build and release
 run(["cmake", "--build", "./build",  "--config Release"])
+
+# Fix silly windows related asset issues
+if platform.system() == "Windows":
+    try:
+        # Copy the entire directory
+        shutil.copytree(src="./build/bin/Assets", dst="./build/bin/Release/Assets")
+        print(f"Directory Copied Assets")
+    except FileExistsError:
+        print(f"Error: Destination directory Assets already exists.")
+    except OSError as e:
+        print(f"Error: {e}")
