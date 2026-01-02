@@ -698,7 +698,22 @@ public:
         };
         return ToSprite(data);
     }
+    static Sprite Get_Apostrophe()
+    {
+        const int R = 255;
+        const int G = 255;
+        const int B = 255;
 
+        static RGB data[36] = {
+            {0,0,0},{0,0,0},{R,G,B},{R,G,B},{0,0,0},{0,0,0},
+            {0,0,0},{0,0,0},{R,G,B},{R,G,B},{0,0,0},{0,0,0},
+            {0,0,0},{0,0,0},{R,G,B},{R,G,B},{0,0,0},{0,0,0},
+            {0,0,0},{R,G,B},{R,G,B},{R,G,B},{0,0,0},{0,0,0},
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},
+            {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0}
+        };
+        return ToSprite(data);
+    }
     static Sprite Get_Exclamation()
     {
         const int R = 255;
@@ -886,6 +901,7 @@ public:
             {'9', TextSprites::Get_9},
 
             {'!', TextSprites::Get_Exclamation},
+            {'\'', TextSprites::Get_Apostrophe},
             {'?', TextSprites::Get_Question},
             {'%', TextSprites::Get_Percent},
             {'.', TextSprites::Get_Period},
