@@ -65,3 +65,12 @@
 *.pdb
 *.vsidx
 /.vs/SDL2GameProjectBPA/v17
+
+# MacOS Metadata folder
+.DS_STORE
+# User-specific presets for building
+CMakeUserPresets.json
+# The generated build files
+build/
+# Ignore Git Ignore
+.venv/
