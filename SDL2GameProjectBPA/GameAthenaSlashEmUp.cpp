@@ -63,8 +63,8 @@ void GameAthenaSlashEmUp::TitleScreenTick(float DeltaTime)
 
     MyScratch->MeshColor = working_color;
     MyScratch->DrawMesh(monkeymesher.GetAthenaMesh(), working_vector, vec3d{ 1.35f,totalTime*2.0f,0 }, vec3d{ 1,1,1 } );
-    //TXT
-    MyScratch->DrawText(32, 32, { 255, 255, 255, 255, }, "ATHENA ", MyTextSprites, 1.0f);
+    //TXT  (Center text by subtracting half the character count, and multiplying by character text width)
+    MyScratch->DrawText((SCREEN_X/2)-(3*6), 32, { 255, 255, 255, 255, }, "ATHENA ", MyTextSprites, 1.0f);
 
     MyScratch->SetFade({0,0,0,0}, working_float);
     

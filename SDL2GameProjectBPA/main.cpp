@@ -18,7 +18,7 @@ GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
 Uint32 lastTicks = SDL_GetTicks();  // Store this at the end of your previous frame
 
 
-const int PIXEL_SCALE = 8;
+const int PIXEL_SCALE = 4;
 //CHANGE HERE TO MATCH SCRATCH SIZE
 const int SCREEN_NATIVE_X = 240;
 const int SCREEN_NATIVE_Y = 240;// 160;
