@@ -74,7 +74,46 @@ void TextFileReader::FileToSpreadsheet()
 
 
 }
-const char* TextFileReader::GetStringFromSheet(const char* input)
+const char* TextFileReader::GetStringFromSheetTag(const char* input)
+{
+    ReadText();
+    std::string key = input;
+    //LastRequest must never be changed when using the index version of this function. it's text only
+    
+    // 
+    // 
+    //should I use size_t instead of int for loops?
+    for (int i = 0; i < (int)StoredRowData.size(); ++i)
+    {
+        //The tag index  is (int) i 
+        if (StoredRowData[i].Tag == key)
+        {
+            if (LastRequest == i)
+            {
+                //Okay, so we are going to ignore the request if the input is identical.
+                //And that's because we are going to read until we hit the end or begin tag!
+                return GetStringFromSheetIndex(CurrentLine);
+            }
+            CurrentLine = i;
+            
+            LastRequest = i;
+            ReplaceBackslashWithNewline(StoredRowData[i].Dialogue);
+            return  StoredRowData[i].Dialogue.c_str();
+        }
+    }
+    return "Tag not found!";
+
+}
+
+const char* TextFileReader::GetStringFromSheetIndex(int index)
+{
+    ReadText();
+    CurrentLine = index;
+    ReplaceBackslashWithNewline(StoredRowData[index].Dialogue);
+    return StoredRowData[index].Dialogue.c_str();
+}
+
+int TextFileReader::GetSheetIndexFromString(const char* input)
 {
     ReadText();
     std::string key = input;
@@ -86,11 +125,23 @@ const char* TextFileReader::GetStringFromSheet(const char* input)
         if (StoredRowData[i].Tag == key)
         {
             ReplaceBackslashWithNewline(StoredRowData[i].Dialogue);
-            return  StoredRowData[i].Dialogue.c_str();
+            return i;
         }
     }
-    return "Tag not found!";
+    return 0;
+}
 
+bool TextFileReader::HasTagAtIndex(int curIndex, const char* tag)
+{
+    //PLEAE DON'T DO STRING COMPARISONS!
+    //FIND A BETTER WAY!
+    return StoredRowData[curIndex].Tag == tag;
+
+}
+
+bool TextFileReader::HasEventAtIndex(int curIndex, const char* tag)
+{
+    return StoredRowData[curIndex].Event == tag;
 }
 
 void TextFileReader::ReplaceBackslashWithNewline(std::string& s)

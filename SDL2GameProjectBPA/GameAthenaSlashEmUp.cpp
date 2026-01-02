@@ -329,7 +329,8 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //TEXTBOX
     
    // TextBoxDraw("You can display characters in \na box using this helper function. \nThis is part of this game, \nnot part of the engine!");
-    TextBoxDraw(Reader.GetStringFromSheet("Intro"));
+    TextBoxDraw(Reader.GetStringFromSheetTag("Intro"));
+   // TextBoxDraw(Reader.GetStringFromSheetIndex(1));
 
 
 }
@@ -610,11 +611,28 @@ void GameAthenaSlashEmUp::TextBoxDraw(const char* input)
         textBoxProgressTick = 0.0f;
         previous_text = input;
     }
+
+    char buffer[64];
+    snprintf(buffer, sizeof(buffer), "Index %.2f", (float)Reader.CurrentLine);
+    MyScratch->DrawText(12, 132, { 0, 255, 255, 255, }, buffer, MyTextSprites, 1.0f);
+    MyScratch->DrawText(12,152, { 0, 255, 255, 255, }, Reader.StoredRowData[Reader.CurrentLine].Event.c_str(), MyTextSprites, 1.0f);
+
+
+
+
     if (textBoxProgressTick > 5.0f)
     {
-        //Auto-Advanced text
+        //Auto-Advanced text until "End" tag found
+        if (Reader.HasEventAtIndex(Reader.CurrentLine,"End")==false && Reader.HasEventAtIndex(Reader.CurrentLine + 1, "Start") == false)
+        {
+            textBoxProgressTick = 0.0f;
+            TextBoxDraw(Reader.GetStringFromSheetIndex(Reader.CurrentLine+1));
+        }
+        
         return;
     }
+
+
     //TEXT BOX
     int boarder = 2;
     //Fill

@@ -8,6 +8,7 @@ class GameAthenaSlashEmUp : public Game
 public:
 
 	int mode = 1;
+
 	float typingEffect = -1.0f;
 	float textBoxProgressTick = 0.0f;
 	const char* previous_text;
