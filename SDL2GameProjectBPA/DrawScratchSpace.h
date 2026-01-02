@@ -154,6 +154,14 @@ public:
     void Clear(RGB wipe);
     void RandomScreenFill();
     void DrawRectangle(int x, int y, int width, int height, RGB color);
+    void DrawRectangle(
+        int x, int y,
+        int width, int height,
+        RGB topLeft,
+        RGB topRight,
+        RGB bottomLeft,
+        RGB bottomRight);
+
     void DrawSquare(int x, int y, int size, RGB color);
     void DrawSquareMultiply(int x, int y, int size, RGB color);
     void DrawTriangle(Point p0, Point p1, Point p2, RGB color);
@@ -202,4 +210,14 @@ public:
     void DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale);
     vec3d Get2DPointInFromSpace(vec3d loc);
     vec3d Get2DPointFromLastLocation();
+
+ //FX
+    void SetFade(RGB color, float a);
+    void SetFade(
+        RGB topLeft,
+        RGB topRight,
+        RGB bottomLeft,
+        RGB bottomRight, 
+        float a
+    );
 };

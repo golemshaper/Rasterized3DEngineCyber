@@ -21,6 +21,11 @@ void GameAthenaSlashEmUp::Initialize()
 }
 void GameAthenaSlashEmUp::Tick(float DeltaTime)
 {
+    //GAME DESCRIPTION
+    //This is an Auto scrolling slash-em-up action RPG (HP should be drawn on all enemies, maybe have a menu for attacking?)
+    //Try to level up as much as possible before hitting the boss. Combo chains will grant more EXP
+    // 
+    // 
     //text timer for text box. resets when new string is sent
     textBoxProgressTick += DeltaTime;
     //GameModeTick(DeltaTime);
@@ -44,18 +49,39 @@ void GameAthenaSlashEmUp::TitleScreenTick(float DeltaTime)
     totalTime += DeltaTime;
     MyScratch->Clear(RGB{ 0,2,8 });
     MonkeyMesh monkeymesher; //Mesh loading tool
+    //Vectors
+    vec3d start_pos = vec3d{ 0,0,0 };
+    vec3d end_pos = vec3d{ 0,0,-4.0f };
+
+    working_vector = MyScratch->Lerp(working_vector,end_pos,0.5f*DeltaTime);
+
     //GFX
     MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f }, vec3d{ 0.0f,1.0f, 1.0f });
-    MyScratch->MeshColor = { (int)abs(sin(totalTime * 4.0f) * 255),(int)abs(sin(totalTime * 2.0f) * 255),(int)abs(cos(totalTime * 4.0f) * 255),255 };
-    MyScratch->DrawMesh(monkeymesher.GetAthenaMesh(), vec3d{ 0,0,0 }, vec3d{ 1.35f,totalTime*2.0f,0 }, vec3d{ 1,1,1 } );
+    RGB end_color = { (int)abs(sin(totalTime * 4.0f) * 255),(int)abs(sin(totalTime * 2.0f) * 255),(int)abs(cos(totalTime * 4.0f) * 255),255 };
+    
+    working_color = MyScratch->Lerp(working_color, end_color ,0.5f * DeltaTime);
+
+    MyScratch->MeshColor = working_color;
+    MyScratch->DrawMesh(monkeymesher.GetAthenaMesh(), working_vector, vec3d{ 1.35f,totalTime*2.0f,0 }, vec3d{ 1,1,1 } );
     //TXT
     MyScratch->DrawText(32, 32, { 255, 255, 255, 255, }, "ATHENA ", MyTextSprites, 1.0f);
 
-
-    if (totalTime >= 4.0f)
+    MyScratch->SetFade({0,0,0,0}, working_float);
+    
+    //EXIT OVER TIME
+    float timeTillEnd = 5.0f;
+    if (totalTime > timeTillEnd-1.0f)
+    {
+        working_float += 1.0*DeltaTime;
+    }
+    if (totalTime >= timeTillEnd)
     {
         totalTime = 0.0f;
+        //EXIT SCENE
+        working_float = 1.0f;
         mode = 1;
+        
+        //reset working float
     }
 
     /*TextBoxDraw("Hello world! ");*/
@@ -168,6 +194,11 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     Uint32 buttons = SDL_GetMouseState(&mouseX, &mouseY);
     //CAMERA
     MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f }, vec3d{ 0.0f,1.0f, 1.0f });  //By calling multiple SetCamera calls during drawing, you can make things like a skybox, that don't move, but follow the rest of the worlds rotation!
+
+    //SKY FX___
+    MyScratch->SetFade({ 0,0,0,0 }, { 0,0,0,0 }, { 0,64,64,255 }, { 35,0,164,255 }, sin(totalTime));
+    //SKY FX___
+
 
 
     //MESH
@@ -332,6 +363,14 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     TextBoxDraw(Reader.GetStringFromSheetTag("Intro"));
    // TextBoxDraw(Reader.GetStringFromSheetIndex(1));
 
+
+
+    //FADE IN HERE!
+    if (working_float > 0.0f) {
+        //fade in
+        working_float -= 0.5f * DeltaTime;
+        MyScratch->SetFade({ 0,0,0,0 }, working_float);
+    }
 
 }
 
@@ -637,7 +676,16 @@ void GameAthenaSlashEmUp::TextBoxDraw(const char* input)
     //TEXT BOX
     int boarder = 2;
     //Fill
-    MyScratch->DrawRectangle(boarder, SCREEN_Y - (64 + boarder), SCREEN_X - (boarder * 2), 64, RGB{ 0,0,255,128 });
+    MyScratch->DrawRectangle(
+        boarder, SCREEN_Y - (64 + boarder), 
+        SCREEN_X - (boarder * 2), 
+        64, 
+        RGB{ 0,0,255,128 },
+        RGB{ 0,0,222,128 },
+        RGB{ 0,0,255,0 },
+        RGB{ 0,0,111,0 }
+
+    );
 
     //Top Line
     MyScratch->DrawLine(boarder, SCREEN_Y - (64 + boarder), SCREEN_X - boarder-1, SCREEN_Y - (64 + boarder), RGB{ 222,222,222,255 });

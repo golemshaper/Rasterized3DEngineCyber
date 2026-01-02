@@ -153,6 +153,54 @@ void DrawScratchSpace::DrawRectangle(int x, int y, int width, int height, RGB co
     }
 }
 
+void DrawScratchSpace::DrawRectangle(
+    int x, int y,
+    int width, int height,
+    RGB topLeft,
+    RGB topRight,
+    RGB bottomLeft,
+    RGB bottomRight)
+{
+    for (int dy = 0; dy < height; ++dy)
+    {
+        float ty = (height > 1) ? (float)dy / (float)(height - 1) : 0.0f;
+
+        for (int dx = 0; dx < width; ++dx)
+        {
+            float tx = (width > 1) ? (float)dx / (float)(width - 1) : 0.0f;
+
+            int px = x + dx;
+            int py = y + dy;
+
+            if (px >= 0 && px < SCREEN_X && py >= 0 && py < SCREEN_Y)
+            {
+                // Interpolate top row
+                RGB top;
+                top.r = (uint8_t)((1 - tx) * topLeft.r + tx * topRight.r);
+                top.g = (uint8_t)((1 - tx) * topLeft.g + tx * topRight.g);
+                top.b = (uint8_t)((1 - tx) * topLeft.b + tx * topRight.b);
+                top.a = (uint8_t)((1 - tx) * topLeft.a + tx * topRight.a);
+                // Interpolate bottom row
+                RGB bottom;
+                bottom.r = (uint8_t)((1 - tx) * bottomLeft.r + tx * bottomRight.r);
+                bottom.g = (uint8_t)((1 - tx) * bottomLeft.g + tx * bottomRight.g);
+                bottom.b = (uint8_t)((1 - tx) * bottomLeft.b + tx * bottomRight.b);
+                bottom.a = (uint8_t)((1 - tx) * bottomLeft.a + tx * bottomLeft.a);
+                // Interpolate vertically between top and bottom
+                RGB finalColor;
+                finalColor.r = (uint8_t)((1 - ty) * top.r + ty * bottom.r);
+                finalColor.g = (uint8_t)((1 - ty) * top.g + ty * bottom.g);
+                finalColor.b = (uint8_t)((1 - ty) * top.b + ty * bottom.b);
+                finalColor.a = (uint8_t)((1 - ty) * top.a + ty * bottom.a);
+
+                int index = py * SCREEN_X + px;
+                RGB& dst = MainSpace[index];
+                MainSpace[index] = AlphaBlend(dst, finalColor);
+            }
+        }
+    }
+}
+
 void DrawScratchSpace::DrawSquare(int x, int y, int size, RGB color) {
     for (int dy = 0; dy < size; ++dy) {
         for (int dx = 0; dx < size; ++dx) {
@@ -1122,4 +1170,26 @@ vec3d DrawScratchSpace::Get2DPointInFromSpace(vec3d loc)
 vec3d DrawScratchSpace::Get2DPointFromLastLocation()
 {
    return Get2DPointInFromSpace(LastLocation);
+}
+
+void DrawScratchSpace::SetFade(RGB color, float a)
+{
+    if (a < 0.0f) { a = 0.0f; }
+    if (a > 1.0f) { a = 1.0f; }
+    int alpha = (int)(a * 255);
+    
+    color.a = alpha;
+    DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, color);
+}
+
+void DrawScratchSpace::SetFade(RGB topLeft, RGB topRight, RGB bottomLeft, RGB bottomRight, float a)
+{
+    if (a < 0.0f) { a = 0.0f; }
+    if (a > 1.0f) { a = 1.0f; }
+    int alpha = (int)(a * 255);
+    topLeft.a = alpha;
+    topRight.a = alpha;
+    bottomLeft.a = alpha;
+    bottomRight.a = alpha;
+    DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, topLeft, topRight, bottomLeft, bottomRight);
 }
