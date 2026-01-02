@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.15)
 project(Rasterized3DEngineCyber CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # Find all required packages
 find_package(SDL3 REQUIRED)
@@ -12,7 +11,7 @@ find_package(SDL3 REQUIRED)
 include(${CMAKE_BINARY_DIR}/conan_toolchain.cmake)
 
 # Copy assets folder to output
-file(COPY SDL2GameProjectBPA/Assets DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY SDL2GameProjectBPA/Assets DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
 # Find all the source files
 file(GLOB SOURCES
@@ -22,6 +21,11 @@ file(GLOB SOURCES
 
 # Add source files to the executables
 add_executable(${PROJECT_NAME} ${SOURCES})
+
+# Set the output folder name
+set_target_properties(Rasterized3DEngineCyber PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
 
 # Link SDL3
 target_link_libraries(${PROJECT_NAME} SDL3::SDL3)
