@@ -1,11 +1,11 @@
 REM Create a Virtual Environment
-python3 -m venv .venv
+py -m venv .venv
 
 REM Activate the virtual environment
-.\.venv\Scripts\activate
+CALL .\.venv\Scripts\activate
 
 REM Install Conan and any other python dependencies
-pip3 install -r requirements.txt
+py -m pip install -r requirements.txt
 
 REM Create a profile for Conan
 conan profile detect --force

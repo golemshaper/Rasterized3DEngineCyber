@@ -1,14 +1,20 @@
-#!./.venv/bin/python 
 from pathlib import Path
 import os
 import shutil
 import os
 import subprocess
+import platform
 
 build_dir = Path("./build")
 venv = Path("./.venv")
 
-CXX_FLAGS="-Wno-c++11-narrowing"
+CXX_FLAGS=""
+conan_release_profile = "conan-release"
+
+if platform.system() == "Windows":
+    print("Running on Microsoft Windows")
+    conan_release_profile = "conan-default"
+
 
 def run(cmd):
     """Runs a command via the shell"""
@@ -40,6 +46,6 @@ except Exception as e:
 # Download 3rd party libraries
 run(["conan", "install", ".", "--output-folder=build", "--build=missing"])
 # Generate build files (such as Makefile)
-run(["cmake", ".", "--preset", "conan-release"])
+run(["cmake", ".", "--preset", conan_release_profile])
 # Run actual build and release
 run(["cmake", "--build", "./build",  "--config Release"])
