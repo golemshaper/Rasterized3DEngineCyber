@@ -1,6 +1,6 @@
 Tag,Event,Dialogue
 Intro,Start,Hello World! \This text is from Read.txt\Backslash for a new line | !
-Intro2,None,You can keep reading \until the end Event is hit, or the next Start event.
+Intro2,None,You can keep reading \until the end Event is hit- \or the next Start event.
 Intro3,End,You'll read the last line\and then close the text.
 AnotherBitOfDialogue1,tart,Dialogue we won't hit.
 EndOfFile,End,End...?!

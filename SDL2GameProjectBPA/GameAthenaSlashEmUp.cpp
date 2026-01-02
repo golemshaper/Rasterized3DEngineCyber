@@ -681,7 +681,7 @@ void GameAthenaSlashEmUp::TextBoxDraw(const char* input)
         SCREEN_X - (boarder * 2), 
         64, 
         RGB{ 0,0,255,128 },
-        RGB{ 0,0,222,128 },
+        RGB{ 0,222,0,128 },
         RGB{ 0,0,255,0 },
         RGB{ 0,0,111,0 }
 
