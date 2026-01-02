@@ -612,11 +612,12 @@ void GameAthenaSlashEmUp::TextBoxDraw(const char* input)
         previous_text = input;
     }
 
-    char buffer[64];
-    snprintf(buffer, sizeof(buffer), "Index %.2f", (float)Reader.CurrentLine);
-    MyScratch->DrawText(12, 132, { 0, 255, 255, 255, }, buffer, MyTextSprites, 1.0f);
-    MyScratch->DrawText(12,152, { 0, 255, 255, 255, }, Reader.StoredRowData[Reader.CurrentLine].Event.c_str(), MyTextSprites, 1.0f);
-
+    //Debug
+    //char buffer[64];
+    //snprintf(buffer, sizeof(buffer), "Index %.2f", (float)Reader.CurrentLine);
+    //MyScratch->DrawText(12, 132, { 0, 255, 255, 255, }, buffer, MyTextSprites, 1.0f);
+    //MyScratch->DrawText(12,152, { 0, 255, 255, 255, }, Reader.StoredRowData[Reader.CurrentLine].Event.c_str(), MyTextSprites, 1.0f);
+    
 
 
 
