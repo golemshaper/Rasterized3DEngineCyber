@@ -14,6 +14,8 @@ conan_release_profile = "conan-release"
 if platform.system() == "Windows":
     print("Running on Microsoft Windows")
     conan_release_profile = "conan-default"
+else:
+    CXX_FLAGS="-Wno-c++11-narrowing"
 
 
 def run(cmd):
