@@ -1,6 +1,3 @@
-Welcome to the universe!
-
-This is text from Read.txt!
-
-We need a text system for 
-selecting strings from this file.
+Tag,Event,Dialogue
+Intro,Start,Hello World! \This text is from Read.txt\Backslash for a new line | !
+EndOfFile,End,End...?!

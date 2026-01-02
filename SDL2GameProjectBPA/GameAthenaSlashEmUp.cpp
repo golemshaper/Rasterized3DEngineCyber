@@ -329,7 +329,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //TEXTBOX
     
    // TextBoxDraw("You can display characters in \na box using this helper function. \nThis is part of this game, \nnot part of the engine!");
-    TextBoxDraw(Reader.ReadText());
+    TextBoxDraw(Reader.GetStringFromSheet("Intro"));
 
 
 }
