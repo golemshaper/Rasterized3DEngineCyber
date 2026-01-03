@@ -26,30 +26,35 @@ void InputWraper::Tick(float DeltaTime)
     }
 
     //flush movement
-    float factor = 10.0f;
-    lx = Lerp(lx, 0.0f, factor * DeltaTime);
-    ly = Lerp(ly, 0.0f, factor * DeltaTime);
+    float grow = 30.0f;
+    float shrink = 10.0f;
+    lx = Lerp(lx, 0.0f, shrink * DeltaTime);
+    ly = Lerp(ly, 0.0f, shrink * DeltaTime);
 
 
 
     //Walking input
     if (keyboard[SDL_SCANCODE_A])
     {
-        lx = -1.0f;
+        //lx = -1.0f;
+        lx = Lerp(lx, -1.0f, grow * DeltaTime);
     }
     
     if (keyboard[SDL_SCANCODE_D])
     {
-        lx = 1.0f;
+        //lx = 1.0f;
+        lx = Lerp(lx, 1.0f, grow * DeltaTime);
     }
     
     if (keyboard[SDL_SCANCODE_W])
     {
-        ly = 1.0f;
+       // ly = 1.0f;
+        ly = Lerp(ly, 1.0f, grow * DeltaTime);
     }
     if (keyboard[SDL_SCANCODE_S])
     {
-        ly = -1.0f;
+        //ly = -1.0f;
+        ly = Lerp(ly, -1.0f, grow * DeltaTime);
     }
     
 }

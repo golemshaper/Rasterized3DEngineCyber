@@ -63,6 +63,7 @@ void GameAthenaSlashEmUp::TitleScreenTick(float DeltaTime)
     
     working_color = MyScratch->Lerp(working_color, end_color ,0.5f * DeltaTime);
 
+    
     MyScratch->MeshColor = working_color;
     MyScratch->DrawMesh(monkeymesher.GetAthenaMesh(), working_vector, vec3d{ 1.35f,totalTime*2.0f,0 }, vec3d{ 1,1,1 } );
     //TXT  (Center text by subtracting half the character count, and multiplying by character text width)
@@ -282,8 +283,14 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->MeshColor = { (int)abs(sin(totalTime * 4.0f) * 255),(int)abs(sin(totalTime * 2.0f) * 255),(int)abs(cos(totalTime * 4.0f) * 255),255 };
    
     player_position = player_position + MyScratch->GetMovementInput()*player_speed*DeltaTime;
+
     //vec3d{ -2.0f,-0.5f,-2.25f }
-    MyScratch->DrawMesh(monkeymesher.GetAthenaMesh(), player_position, vec3d{ 1.0f,0.0f,3.0f }, MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))));
+    MyScratch->DrawMesh(monkeymesher.GetAthenaMesh(), 
+        player_position, 
+        vec3d{1.0f + (MyScratch->Input->GetMovementY()*-0.3f),0.0f,3.0f + (MyScratch->Input->GetMovementX() * 0.35f) },
+        MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, 
+            vec3d{ 1.2f, 0.9f, 1.2f }, 
+            abs(sin(totalTime * 4.0f))));
     
     //TEXT AT LAST MESH LOCATION
     MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y - 8, { 255, 255, 255, 255, }, "LV 1", MyTextSprites, 1.0f);
