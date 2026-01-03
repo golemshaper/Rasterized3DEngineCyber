@@ -8,7 +8,7 @@ class GameAthenaSlashEmUp : public Game
 public:
 
 	//Current game mode
-	int mode = 1;
+	int mode = 0;
 
 	//primitive
 	float typingEffect = -1.0f;
