@@ -18,7 +18,7 @@ void GameAthenaSlashEmUp::Initialize()
         bullets[i].y = cos(i) * 0.2f;
         bullets[i].z = 0;
     }
-    player_position = { -2.0f,-0.5f,-2.25f };
+    player_position = { 0.0f,-0.5f,-2.25f };
 }
 void GameAthenaSlashEmUp::Tick(float DeltaTime)
 {
@@ -256,13 +256,15 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
     //CAMERA
 
-    MyScratch->SetCamera(vec3d{ 0.0f, -1.5f, -5.0f + (sin(totalTime * 2.0f) * 0.5f) }, vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f });
+    //MyScratch->SetCamera(vec3d{ 0.0f, -1.5f, -5.0f + (sin(totalTime * 2.0f) * 0.5f) }, vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f });
+    vec3d camLocation = vec3d{ 0.0f, -1.5f, -5.0f + (sin(totalTime * 2.0f) * 0.5f) };
+    //      YOU MUST SUBTRACT THE CAMERA LOCATION FROM THE TARGET LOCATION! ALSO, MOUSE POSITION OPTIONAL 
+    vec3d camLookTarget = player_position - camLocation + vec3d{0,0,2} + vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f };
+   
+    MyScratch->SetCamera(camLocation, camLookTarget);
 
 
-    //OPTIONAL
-        //Store and clear the buffer
-        //MyScratch->MoveMainspaceToExtraBuffer(); MyScratch->Clear();//Clear the scren now that it's backed up 
-
+    
     //MESH
         //Monkey
     MyScratch->MeshColor = { 0,0,255,255 };
@@ -554,13 +556,7 @@ void GameAthenaSlashEmUp::UnhingedModeTick(float DeltaTime)
 
 
     //CAMERA
-
-    MyScratch->SetCamera(vec3d{ 0.0f, -1.5f, -5.0f + (sin(totalTime * 2.0f) * 0.5f) }, vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f });
-
-
-    //OPTIONAL
-        //Store and clear the buffer
-        //MyScratch->MoveMainspaceToExtraBuffer(); MyScratch->Clear();//Clear the scren now that it's backed up 
+    MyScratch->SetCamera(vec3d{ 0.0f, -1.5f, -5.0f + (sin(totalTime * 2.0f) * 0.5f) }, player_position+vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f });
 
     //MESH
         //Monkey
