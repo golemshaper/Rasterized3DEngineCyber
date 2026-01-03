@@ -84,3 +84,20 @@ Unix:
 ```sh
 ./build/bin/Rasterized3DEngineCyber
 ```
+
+### Web Assembly
+
+
+Windows:
+
+```sh
+.\scripts\wasm.bat
+```
+
+Unix:
+
+```sh
+./scripts/wasm.sh
+```
+
+There will then be an HTML file, Javascript file, and WASM file in the `bin` folder.

@@ -23,9 +23,16 @@ file(GLOB SOURCES
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Set the output folder name
-set_target_properties(Rasterized3DEngineCyber PROPERTIES
+set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
 
 # Link SDL3
 target_link_libraries(${PROJECT_NAME} SDL3::SDL3)
+
+if(EMSCRIPTEN)
+  set(CMAKE_EXECUTABLE_SUFFIX ".html")
+  set_target_properties(${PROJECT_NAME} PROPERTIES
+      LINK_FLAGS "--preload-file ${CMAKE_BINARY_DIR}/bin/Assets@Assets"
+  )
+endif()
