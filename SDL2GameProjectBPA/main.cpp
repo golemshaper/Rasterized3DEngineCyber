@@ -19,10 +19,10 @@ GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
 //For another game example, inherit the base class, and override the Tick function. GameTwo* TheGame = new GameTwo();
 //You can also make different tick function with different states for different game modes/screens/scenes in the Game class!
 
-Uint32 lastTicks = SDL_GetTicks();  // Store this at the end of your previous frame
+Uint64 lastTicks = SDL_GetTicks();  // Store this at the end of your previous frame
 
 
-const int PIXEL_SCALE = 4;
+const int PIXEL_SCALE = 6;
 //CHANGE HERE TO MATCH SCRATCH SIZE
 const int SCREEN_NATIVE_X = 240;
 const int SCREEN_NATIVE_Y = 240;// 160;
@@ -34,20 +34,20 @@ const int SCREEN_WIDTH = SCREEN_NATIVE_X * PIXEL_SCALE;
 const int SCREEN_HEIGHT = SCREEN_NATIVE_Y * PIXEL_SCALE;
 
 
-void DrawCircle(SDL_Renderer* renderer, int centerX, int centerY, int radius) {
-    const int sides = 64; // More sides = smoother circle
-    for (int i = 0; i < sides; ++i) {
-        float theta1 = 2.0f * SDL_PI_F * i / sides;
-        float theta2 = 2.0f * SDL_PI_F * (i + 1) / sides;
-
-        int x1 = centerX + static_cast<int>(radius * SDL_cosf(theta1));
-        int y1 = centerY + static_cast<int>(radius * SDL_sinf(theta1));
-        int x2 = centerX + static_cast<int>(radius * SDL_cosf(theta2));
-        int y2 = centerY + static_cast<int>(radius * SDL_sinf(theta2));
-
-        SDL_RenderLine(renderer, x1, y1, x2, y2);
-    }
-}
+//void DrawCircle(SDL_Renderer* renderer, int centerX, int centerY, int radius) {
+//    const int sides = 64; // More sides = smoother circle
+//    for (int i = 0; i < sides; ++i) {
+//        float theta1 = 2.0f * SDL_PI_F * i / sides;
+//        float theta2 = 2.0f * SDL_PI_F * (i + 1) / sides;
+//
+//        int x1 = centerX + static_cast<int>(radius * SDL_cosf(theta1));
+//        int y1 = centerY + static_cast<int>(radius * SDL_sinf(theta1));
+//        int x2 = centerX + static_cast<int>(radius * SDL_cosf(theta2));
+//        int y2 = centerY + static_cast<int>(radius * SDL_sinf(theta2));
+//
+//        SDL_RenderLine(renderer, x1, y1, x2, y2);
+//    }
+//}
 
 bool run(SDL_Renderer* renderer) {
     SDL_Event event;
@@ -61,13 +61,12 @@ bool run(SDL_Renderer* renderer) {
         }
     }
 
-    
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
 
     //GAME UPDATE
     
     // At the start of your current frame
-    Uint32 currentTicks = SDL_GetTicks();
+    Uint64 currentTicks = SDL_GetTicks();
     float deltaTime = (currentTicks - lastTicks) / 1000.0f;  // Convert to seconds
     lastTicks = currentTicks;
     
@@ -131,6 +130,7 @@ bool run(SDL_Renderer* renderer) {
     // update the screen
     SDL_RenderPresent(renderer);
     SDL_Delay(16); // ~60 FPS cap
+
     return true;
 }
 
@@ -152,7 +152,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    SDL_Window* window = SDL_CreateWindow("Game", SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+    SDL_Window* window = SDL_CreateWindow("CyberAthena", SCREEN_WIDTH, SCREEN_HEIGHT, 0);
     if (!window) {
         std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
         SDL_Quit();

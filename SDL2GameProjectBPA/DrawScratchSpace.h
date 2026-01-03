@@ -10,7 +10,7 @@
 
 using namespace std; 
 #include <vector>
-
+#include "InputWraper.h"
 class TextSprites;
 
 //STRUCTS
@@ -115,6 +115,11 @@ struct vec3d {
         return { x * k, y * k, z * k };
     }
 
+    vec3d operator*(vec3d k) const
+    {
+        return { x * k.x, y * k.y, z * k.z };
+    }
+
     // Scalar division (optional but useful)
     vec3d operator/(float k) const
     {
@@ -185,6 +190,9 @@ public:
     vec3d Arc(vec3d a, vec3d b,float h, float c);
     Point RotatePoint(Point p, Point pivot, float angle);
 
+//INPUT:
+    InputWraper* Input = nullptr;
+    vec3d GetMovementInput();
 //HELPERS:
     int lastTextAmountRevealed = 0;
 //DRAW MODE:

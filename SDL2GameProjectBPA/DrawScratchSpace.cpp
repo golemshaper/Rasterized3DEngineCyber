@@ -50,6 +50,7 @@ void DrawScratchSpace::BlendBuffers(float amount)
 void DrawScratchSpace::Initialize()
 {
     Initialize(RGB{ 0,0,0 });
+    Input = new InputWraper();
 }
 /// <summary>
 /// Only call me once. Use Clear() after if you want to clear the screen buffer
@@ -586,7 +587,13 @@ void DrawScratchSpace::DrawLine(int x0, int y0, int x1, int y1, RGB color) {
     while (true) {
         if (x0 >= 0 && x0 < SCREEN_X && y0 >= 0 && y0 < SCREEN_Y) {
             int index = y0 * SCREEN_X + x0;
-            MainSpace[index] = (MainSpace[index] + color) /2;
+            //old blend: MainSpace[index] = (MainSpace[index] + color) /2;
+
+
+            RGB& dst = MainSpace[index];
+            MainSpace[index] = AlphaBlend(dst, color);
+
+
             //MainSpace[index] = color;
         }
 
@@ -689,6 +696,13 @@ Point DrawScratchSpace::RotatePoint(Point p, Point pivot, float angle) {
     return {
         static_cast<int>(xNew + pivot.x),
         static_cast<int>(yNew + pivot.y)
+    };
+}
+
+vec3d DrawScratchSpace::GetMovementInput()
+{
+    return vec3d{
+        Input->GetMovementX(), 0, Input->GetMovementY()
     };
 }
 
