@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    SDL_Window* window = SDL_CreateWindow("Game", SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+    SDL_Window* window = SDL_CreateWindow("CyberAthena", SCREEN_WIDTH, SCREEN_HEIGHT, 0);
     if (!window) {
         std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
         SDL_Quit();

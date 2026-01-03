@@ -264,7 +264,16 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->MeshColor = { 0,0,255,255 };
     MyScratch->DrawMesh(monkeymesher.GetMonkeyMesh(), vec3d{ 4.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime * 6.0f), }, MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))));
     //Boy
-    MyScratch->MeshColor = { 255,0,0,255 };
+    float flash_color_select = sin(totalTime*60.0f);
+    if (flash_color_select > 0.0f)
+    {
+        MyScratch->MeshColor = { 255,100,100,255 };
+    }
+    else
+    {
+        MyScratch->MeshColor = { 255,0,0,255 };
+    }
+    
     MyScratch->DrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,-0.0f,0.0f }, vec3d{ 1.0f, 0.0f, 0.0f, }, vec3d{ 2.0f, 2.0f, 2.0f, });
 
     //Athena
