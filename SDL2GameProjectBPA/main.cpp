@@ -1,6 +1,10 @@
 #include <SDL3/SDL.h>
 #include <iostream>
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <emscripten/html5.h>
+#endif
 
 #include "DrawScratchSpace.h"
 #include "Game.h"
@@ -18,7 +22,7 @@ GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
 Uint32 lastTicks = SDL_GetTicks();  // Store this at the end of your previous frame
 
 
-const int PIXEL_SCALE = 8;
+const int PIXEL_SCALE = 4;
 //CHANGE HERE TO MATCH SCRATCH SIZE
 const int SCREEN_NATIVE_X = 240;
 const int SCREEN_NATIVE_Y = 240;// 160;
@@ -43,6 +47,97 @@ void DrawCircle(SDL_Renderer* renderer, int centerX, int centerY, int radius) {
 
         SDL_RenderLine(renderer, x1, y1, x2, y2);
     }
+}
+
+bool run(SDL_Renderer* renderer) {
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_EVENT_QUIT) {
+            return false;
+        } else if (event.type == SDL_EVENT_KEY_DOWN) {
+            if (event.key.key == SDLK_ESCAPE) {
+                return false;
+            }
+        }
+    }
+
+    
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
+
+    //GAME UPDATE
+    
+    // At the start of your current frame
+    Uint32 currentTicks = SDL_GetTicks();
+    float deltaTime = (currentTicks - lastTicks) / 1000.0f;  // Convert to seconds
+    lastTicks = currentTicks;
+    
+
+    TheGame->Tick(deltaTime);
+
+    //SCAN LINE DATA
+    bool ScanLineOn = false;
+    int ColorChangeTwo = 0;
+    RGB ScanLineColor = { 0,0,16 };
+    RGB ScanLineColor2 = {18,0,0 };
+    float TrueScanlineHeight = 0.75f;
+    //DRAW
+    for (int y = 0; y < SCREEN_NATIVE_Y; y+=1)  //do y+=2 for scan lines
+    {
+        ScanLineOn = !ScanLineOn;
+        ColorChangeTwo++;
+        for (int x = 0; x < SCREEN_NATIVE_X; ++x) {
+            ScanLineOn = !ScanLineOn;
+
+
+            int index = y * SCREEN_NATIVE_X + x;
+            RGB color = TheGame->MyScratch->MainSpace[index];
+            if (ScanLineOn)
+            {
+                RGB LocalColor = ScanLineColor;
+                if (ColorChangeTwo>=2)
+                {
+                    LocalColor = ScanLineColor2;
+                    ColorChangeTwo = 0;
+                }
+
+                //apply dither:
+                color = color + LocalColor ;
+                
+            }
+            //Fix clip
+            if (color.r > 255)color.r = 255;
+            if (color.g > 255)color.g = 255;
+            if (color.b > 255)color.b = 255;
+            if (color.r < 0)color.r = 0;
+            if (color.g < 0)color.g = 0;
+            if (color.b < 0)color.b = 0;
+
+            SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
+
+            // SDL_RenderPoint(renderer, x, y); // SDL3 renamed this from SDL_RenderDrawPoint
+
+            SDL_FRect pixelRect = {
+                static_cast<float>(x * PIXEL_SCALE),
+                static_cast<float>(y * PIXEL_SCALE),
+                static_cast<float>(PIXEL_SCALE),
+                static_cast<float>(PIXEL_SCALE* TrueScanlineHeight)
+            };
+
+            SDL_RenderFillRect(renderer, &pixelRect); 
+        }
+    }
+
+
+    // update the screen
+    SDL_RenderPresent(renderer);
+    SDL_Delay(16); // ~60 FPS cap
+    return true;
+}
+
+// The entry point for the browser. Called every frame
+bool wasm_main(double time, void* renderer) {
+    std::cout << "Tick: " << time << std::endl;
+    return run((SDL_Renderer *) renderer);
 }
 
 int main(int argc, char* argv[]) {
@@ -72,93 +167,21 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    bool running = true;
+#ifdef __EMSCRIPTEN__
+  // Register the `wasm_main` as the entry point for the browser
+  emscripten_request_animation_frame_loop(wasm_main, renderer);
+#else
+    // Standard dekstop logic
     SDL_Event event;
-    while (running) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_EVENT_QUIT) {
-                running = false;
-            } else if (event.type == SDL_EVENT_KEY_DOWN) {
-                if (event.key.key == SDLK_ESCAPE) {
-                    running = false;
-                }
-            }
+    while (true) {
+        if (!run(renderer)) {
+            break;
         }
-
-        
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
-
-        //GAME UPDATE
-       
-        // At the start of your current frame
-        Uint32 currentTicks = SDL_GetTicks();
-        float deltaTime = (currentTicks - lastTicks) / 1000.0f;  // Convert to seconds
-        lastTicks = currentTicks;
-        
-
-        TheGame->Tick(deltaTime);
-    
-        //SCAN LINE DATA
-        bool ScanLineOn = false;
-        int ColorChangeTwo = 0;
-        RGB ScanLineColor = { 0,0,16 };
-        RGB ScanLineColor2 = {18,0,0 };
-        float TrueScanlineHeight = 0.75f;
-        //DRAW
-        for (int y = 0; y < SCREEN_NATIVE_Y; y+=1)  //do y+=2 for scan lines
-        {
-            ScanLineOn = !ScanLineOn;
-            ColorChangeTwo++;
-            for (int x = 0; x < SCREEN_NATIVE_X; ++x) {
-                ScanLineOn = !ScanLineOn;
-
-
-                int index = y * SCREEN_NATIVE_X + x;
-                RGB color = TheGame->MyScratch->MainSpace[index];
-                if (ScanLineOn)
-                {
-                    RGB LocalColor = ScanLineColor;
-                    if (ColorChangeTwo>=2)
-                    {
-                        LocalColor = ScanLineColor2;
-                        ColorChangeTwo = 0;
-                    }
-
-                    //apply dither:
-                    color = color + LocalColor ;
-                    
-                }
-                //Fix clip
-                if (color.r > 255)color.r = 255;
-                if (color.g > 255)color.g = 255;
-                if (color.b > 255)color.b = 255;
-                if (color.r < 0)color.r = 0;
-                if (color.g < 0)color.g = 0;
-                if (color.b < 0)color.b = 0;
-
-                SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
-
-               // SDL_RenderPoint(renderer, x, y); // SDL3 renamed this from SDL_RenderDrawPoint
-
-                SDL_FRect pixelRect = {
-                    static_cast<float>(x * PIXEL_SCALE),
-                    static_cast<float>(y * PIXEL_SCALE),
-                    static_cast<float>(PIXEL_SCALE),
-                    static_cast<float>(PIXEL_SCALE* TrueScanlineHeight)
-                };
-
-                SDL_RenderFillRect(renderer, &pixelRect); 
-            }
-        }
-
-
-        // update the screen
-        SDL_RenderPresent(renderer);
-        SDL_Delay(16); // ~60 FPS cap
     }
-
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
+#endif
+
     return 0;
 }
