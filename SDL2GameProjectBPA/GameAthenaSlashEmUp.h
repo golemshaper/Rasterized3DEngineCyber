@@ -23,6 +23,7 @@ public:
 
 	//actors
 	vec3d player_position = { 0,0,0 };
+	vec3d player_move = { 0,0,0 };
 	float player_speed = 4.0f;
 
 	//re-usable
@@ -49,5 +50,6 @@ public:
 	void TextBoxDraw(const char* input);
 	void LightningFX(int phase, float progress);
 
+	void MovementUpdate(float DeltaTime);
 };
 

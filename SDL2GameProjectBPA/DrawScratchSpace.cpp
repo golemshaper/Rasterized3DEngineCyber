@@ -780,7 +780,7 @@ mat4x4 Matrix_MultiplyMatrix(mat4x4& m1, mat4x4& m2)
 }
 
 
-mat4x4 Matrix_QuickInverse(mat4x4& m)
+mat4x4 DrawScratchSpace::Matrix_QuickInverse(mat4x4& m)
 {
     mat4x4 matrix = {};
 
@@ -805,11 +805,33 @@ mat4x4 Matrix_QuickInverse(mat4x4& m)
 
     return matrix;
 }
+
 float DotProduct(const vec3d& a, const vec3d& b)
 {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
-vec3d CrossProduct(const vec3d& a, const vec3d& b)
+mat4x4 DrawScratchSpace::CalculateViewMatrix()
+{
+    // -----------------------------
+ // Point the CAMERA
+ // -----------------------------
+    mat4x4 matView = IdentityMatrix();
+    vec3d newForward;
+    vec3d up = { 0.0f, 1.0f, 0.0f };
+    vec3d a = newForward * DotProduct(up, newForward);
+    vec3d newUp = up - a;
+    vec3d vCamera = CameraLoc;
+    vec3d vLookDir = CameraTargetLoc;
+    vec3d vTarget = vCamera + vLookDir;
+    mat4x4 matCamera = Matrix_PointAt(vCamera, vTarget, { 2,1,0 });
+    matView = Matrix_QuickInverse(matCamera);
+    matView = Matrix_PointAt(vCamera, vCamera + vLookDir, up);
+    matView = Matrix_QuickInverse(matView); //flip it upside down!
+    // store camera-to-world for movement
+    StoredCameraMatView = matView;
+    return matView;
+}
+vec3d DrawScratchSpace::CrossProduct(const vec3d& a, const vec3d& b)
 {
     vec3d r;
     r.x = a.y * b.z - a.z * b.y;
@@ -825,7 +847,8 @@ vec3d Normalize(const vec3d& v)
 
     return { v.x / length, v.y / length, v.z / length };
 }
-mat4x4 Matrix_PointAt(vec3d pos, vec3d target, vec3d up)
+
+mat4x4 DrawScratchSpace::Matrix_PointAt(vec3d pos, vec3d target, vec3d up)
 {
     // Calculate new forward direction
     vec3d newForward = target - pos;
@@ -945,17 +968,20 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
     // -----------------------------
     // Point the CAMERA
     // -----------------------------
-    vec3d newForward;
-    vec3d up = { 0.0f, 1.0f, 0.0f };
-    vec3d a = newForward * DotProduct(up, newForward);
-    vec3d newUp = up - a;
-    vec3d vCamera = CameraLoc;
-    vec3d vLookDir = CameraTargetLoc;
-    vec3d vTarget = vCamera + vLookDir;
-    mat4x4 matCamera = Matrix_PointAt(vCamera, vTarget, { 2,1,0 });
-    matView = Matrix_QuickInverse(matCamera);
-    matView = Matrix_PointAt(vCamera, vCamera + vLookDir, up);
-    matView = Matrix_QuickInverse(matView); //flip it upside down!
+    matView = CalculateViewMatrix();
+    //vec3d newForward;
+    //vec3d up = { 0.0f, 1.0f, 0.0f };
+    //vec3d a = newForward * DotProduct(up, newForward);
+    //vec3d newUp = up - a;
+    //vec3d vCamera = CameraLoc;
+    //vec3d vLookDir = CameraTargetLoc;
+    //vec3d vTarget = vCamera + vLookDir;
+    //mat4x4 matCamera = Matrix_PointAt(vCamera, vTarget, { 2,1,0 });
+    //matView = Matrix_QuickInverse(matCamera);
+    //matView = Matrix_PointAt(vCamera, vCamera + vLookDir, up);
+    //matView = Matrix_QuickInverse(matView); //flip it upside down!
+    //StoredCameraMatView = matView;
+
 
 
     // -----------------------------
@@ -1156,14 +1182,12 @@ vec3d DrawScratchSpace::Get2DPointInFromSpace(vec3d loc)
     vec3d vTarget = vCamera + vLookDir;
 
     mat4x4 matCamera = Matrix_PointAt(vCamera, vTarget, up);
-
-
-
-
     mat4x4 matView = Matrix_QuickInverse(matCamera);
     vec3d pWorld, pView, pProj;
     MultiplyMatrixVector(origin, pWorld, matWorld);
     MultiplyMatrixVector(pWorld, pView, matView);
+
+
 
     // Project
     MultiplyMatrixVector(pView, pProj, MatrixProj);
@@ -1184,6 +1208,22 @@ vec3d DrawScratchSpace::Get2DPointInFromSpace(vec3d loc)
 vec3d DrawScratchSpace::Get2DPointFromLastLocation()
 {
    return Get2DPointInFromSpace(LastLocation);
+}
+
+vec3d DrawScratchSpace::Normalize(vec3d input)
+{
+    float len = std::sqrt(input.x * input.x + input.y * input.y + input.z * input.z);
+    if (len == 0.0f)
+    {
+        return vec3d{ 0.0f, 0.0f, 0.0f };
+    }
+    float inv = 1.0f / len;
+    return vec3d
+    {
+        input.x * inv,
+        input.y * inv,
+        input.z * inv 
+    };
 }
 
 void DrawScratchSpace::SetFade(RGB color, float a)

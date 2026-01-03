@@ -285,12 +285,15 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //Athena
     MyScratch->MeshColor = { (int)abs(sin(totalTime * 4.0f) * 255),(int)abs(sin(totalTime * 2.0f) * 255),(int)abs(cos(totalTime * 4.0f) * 255),255 };
    
-    player_position = player_position + MyScratch->GetMovementInput()*player_speed*DeltaTime;
+    //player_position = player_position + MyScratch->GetMovementInput()*player_speed*DeltaTime;
+
+    MovementUpdate(DeltaTime);
 
     //vec3d{ -2.0f,-0.5f,-2.25f }
     MyScratch->DrawMesh(monkeymesher.GetAthenaMesh(), 
         player_position, 
         vec3d{1.0f + (MyScratch->Input->GetMovementY()*-0.3f),0.0f,3.0f + (MyScratch->Input->GetMovementX() * 0.35f) },
+
         MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, 
             vec3d{ 1.2f, 0.9f, 1.2f }, 
             abs(sin(totalTime * 4.0f))));
@@ -771,4 +774,25 @@ void GameAthenaSlashEmUp::LightningFX(int phase, float progress)
 
         prev = halfway;
     }
+}
+
+void GameAthenaSlashEmUp::MovementUpdate(float DeltaTime)
+{
+    vec3d forward = MyScratch->Normalize(MyScratch->CameraTargetLoc);
+
+    vec3d up = { 0, 1, 0 };
+    vec3d right = MyScratch->Normalize(MyScratch->CrossProduct(up, forward));
+
+    // flatten for ground movement
+    forward.y = 0;
+    right.y = 0;
+
+    forward = MyScratch->Normalize(forward);
+    right = MyScratch->Normalize(right);
+
+    // movement
+    vec3d move = (right * MyScratch->Input->GetMovementX()) + (forward * MyScratch->Input->GetMovementY());
+    player_position = player_position + move *player_speed* DeltaTime;
+
+
 }

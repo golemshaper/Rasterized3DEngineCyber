@@ -181,6 +181,8 @@ public:
     void DrawText(int X, int Y, RGB color, const char* text, TextSprites* tSprites);
     void DrawText(int X, int Y, RGB color, const char* text, TextSprites* tSprites, float amount_revealed);
 
+
+
     void DrawLine(int x0, int y0, int x1, int y1, RGB color);
     int GetRandom(int a,int b);
     float Clamp(float value, float min, float max);
@@ -203,6 +205,7 @@ public:
 //3D Primitives:
     Mesh MeshCube;
     mat4x4 MatrixProj;
+    mat4x4 StoredCameraMatView;
     float fTheta;
     vec3d LastLocation;
     vec3d CameraLoc;
@@ -210,6 +213,9 @@ public:
 //3D Functions:
     void MultiplyMatrixVector(vec3d& i, vec3d& o, mat4x4& m);
     mat4x4 IdentityMatrix();
+    mat4x4 Matrix_PointAt(vec3d pos, vec3d target, vec3d up);
+    mat4x4 Matrix_QuickInverse(mat4x4& m);
+    mat4x4 CalculateViewMatrix();
     void SetCamera(vec3d loc, vec3d target);
     void SetCameraFOV(float nFov);
     void DrawMesh(Mesh m);
@@ -218,7 +224,8 @@ public:
     void DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale);
     vec3d Get2DPointInFromSpace(vec3d loc);
     vec3d Get2DPointFromLastLocation();
-
+    vec3d Normalize(vec3d input);
+    vec3d CrossProduct(const vec3d& a, const vec3d& b);
  //FX
     void SetFade(RGB color, float a);
     void SetFade(
