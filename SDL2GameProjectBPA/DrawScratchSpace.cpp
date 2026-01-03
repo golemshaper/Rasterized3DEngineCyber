@@ -50,6 +50,7 @@ void DrawScratchSpace::BlendBuffers(float amount)
 void DrawScratchSpace::Initialize()
 {
     Initialize(RGB{ 0,0,0 });
+    Input = new InputWraper();
 }
 /// <summary>
 /// Only call me once. Use Clear() after if you want to clear the screen buffer
@@ -695,6 +696,13 @@ Point DrawScratchSpace::RotatePoint(Point p, Point pivot, float angle) {
     return {
         static_cast<int>(xNew + pivot.x),
         static_cast<int>(yNew + pivot.y)
+    };
+}
+
+vec3d DrawScratchSpace::GetMovementInput()
+{
+    return vec3d{
+        Input->GetMovementX(), 0, Input->GetMovementY()
     };
 }
 

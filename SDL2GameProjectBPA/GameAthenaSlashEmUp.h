@@ -21,6 +21,10 @@ public:
 	int bullet_count = 64;
 	vec3d bullets[64];
 
+	//actors
+	vec3d player_position = { 0,0,0 };
+	float player_speed = 4.0f;
+
 	//re-usable
 	vec3d working_vector = { 0,0,0 };
 	RGB working_color = { 0,0,0,0 };

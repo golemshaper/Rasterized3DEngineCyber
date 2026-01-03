@@ -18,6 +18,7 @@ void GameAthenaSlashEmUp::Initialize()
         bullets[i].y = cos(i) * 0.2f;
         bullets[i].z = 0;
     }
+    player_position = { -2.0f,-0.5f,-2.25f };
 }
 void GameAthenaSlashEmUp::Tick(float DeltaTime)
 {
@@ -28,6 +29,7 @@ void GameAthenaSlashEmUp::Tick(float DeltaTime)
     // 
     //text timer for text box. resets when new string is sent
     textBoxProgressTick += DeltaTime;
+    MyScratch->Input->Tick(DeltaTime);
     //GameModeTick(DeltaTime);
     switch (mode)
     {
@@ -278,7 +280,11 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
     //Athena
     MyScratch->MeshColor = { (int)abs(sin(totalTime * 4.0f) * 255),(int)abs(sin(totalTime * 2.0f) * 255),(int)abs(cos(totalTime * 4.0f) * 255),255 };
-    MyScratch->DrawMesh(monkeymesher.GetAthenaMesh(), vec3d{ -2.0f,-0.5f,-2.25f }, vec3d{ 1.0f,0.0f,3.0f }, MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))));
+   
+    player_position = player_position + MyScratch->GetMovementInput()*player_speed*DeltaTime;
+    //vec3d{ -2.0f,-0.5f,-2.25f }
+    MyScratch->DrawMesh(monkeymesher.GetAthenaMesh(), player_position, vec3d{ 1.0f,0.0f,3.0f }, MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))));
+    
     //TEXT AT LAST MESH LOCATION
     MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y - 8, { 255, 255, 255, 255, }, "LV 1", MyTextSprites, 1.0f);
     MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y, { 0, 255, 0, 255, }, "HP 25", MyTextSprites, 1.0f);
