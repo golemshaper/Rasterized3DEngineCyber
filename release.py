@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 import shutil
-import os
+import sys
 import subprocess
 import platform
 
@@ -10,6 +10,7 @@ venv = Path("./.venv")
 
 CXX_FLAGS=""
 conan_release_profile = "conan-release"
+WASM = len(sys.argv) > 1
 
 if platform.system() == "Windows":
     print("Running on Microsoft Windows")
@@ -45,8 +46,12 @@ try:
 except Exception as e:
     print(f"Failed to delete CMake file. Reason: {e}")
 
-# Download 3rd party libraries
-run(["conan", "install", ".", "--output-folder=build", "--build=missing"])
+if WASM:
+    run(["conan", "install", ".", "-pr:b", "default", "-pr:h", "wasm.profile", "-s", "build_type=Release", "--build", "missing", "-of", "build"])
+else:
+    # Download 3rd party libraries
+    run(["conan", "install", ".", "--output-folder=build", "--build=missing"])
+
 # Generate build files (such as Makefile)
 run(["cmake", ".", "--preset", conan_release_profile])
 # Run actual build and release
