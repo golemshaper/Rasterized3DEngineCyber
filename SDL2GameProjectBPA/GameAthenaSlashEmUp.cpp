@@ -202,6 +202,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->SetFade({ 0,0,0,0 }, { 0,0,0,0 }, { 0,64,64,255 }, { 35,0,164,255 }, sin(totalTime));
    
     LightningFX(lightning_phase, lightning);
+    LightningFX(lightning_phase+3, lightning*1.5f);
     lightning += DeltaTime;
     if (lightning >= 1.5f)
     {
