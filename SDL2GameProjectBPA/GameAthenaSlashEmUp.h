@@ -8,7 +8,7 @@ class GameAthenaSlashEmUp : public Game
 public:
 
 	//Current game mode
-	int mode = 0;
+	int mode = 1;
 
 	//primitive
 	float typingEffect = -1.0f;
@@ -25,7 +25,8 @@ public:
 	vec3d working_vector = { 0,0,0 };
 	RGB working_color = { 0,0,0,0 };
 	float working_float = 0.0f;
-
+	float lightning = 0.0f;
+	int lightning_phase = 0;
 
 	//Objects
 	TextFileReader Reader;
@@ -42,7 +43,7 @@ public:
 	void GameModeTick(float DeltaTime);
 	void UnhingedModeTick(float DeltaTime);
 	void TextBoxDraw(const char* input);
-
+	void LightningFX(int phase, float progress);
 
 };
 

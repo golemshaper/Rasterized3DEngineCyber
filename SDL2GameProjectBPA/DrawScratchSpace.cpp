@@ -586,7 +586,13 @@ void DrawScratchSpace::DrawLine(int x0, int y0, int x1, int y1, RGB color) {
     while (true) {
         if (x0 >= 0 && x0 < SCREEN_X && y0 >= 0 && y0 < SCREEN_Y) {
             int index = y0 * SCREEN_X + x0;
-            MainSpace[index] = (MainSpace[index] + color) /2;
+            //old blend: MainSpace[index] = (MainSpace[index] + color) /2;
+
+
+            RGB& dst = MainSpace[index];
+            MainSpace[index] = AlphaBlend(dst, color);
+
+
             //MainSpace[index] = color;
         }
 

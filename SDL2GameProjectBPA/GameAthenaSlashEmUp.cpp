@@ -197,6 +197,14 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
     //SKY FX___
     MyScratch->SetFade({ 0,0,0,0 }, { 0,0,0,0 }, { 0,64,64,255 }, { 35,0,164,255 }, sin(totalTime));
+   
+    LightningFX(lightning_phase, lightning);
+    lightning += DeltaTime;
+    if (lightning >= 1.5f)
+    {
+        lightning = 0.0f;
+        lightning_phase++;
+    }
     //SKY FX___
 
 
@@ -708,3 +716,40 @@ void GameAthenaSlashEmUp::TextBoxDraw(const char* input)
     }
 }
 
+void GameAthenaSlashEmUp::LightningFX(int phase, float progress)
+{
+    const int total_verts = 23;
+    const int total_rand = 16;
+    const int pseudo_random[16] =
+    {
+        1, -1, 4, -9, 12, -19, 17, -5,1, -5, 9, -3, 3, -1, 4, -15
+    };
+
+    int offset = (phase % total_verts) * 3;
+    vec3d start = { SCREEN_X * 0.5f + offset, 0, 0 };
+    vec3d end = { SCREEN_X * 0.25f + offset+2, SCREEN_Y, 0 };
+    vec3d prev = start;
+
+    float additional_progress_time = 0.0f;
+   
+
+    RGB StartColor = { 255,0,255,(int)(255*(1-progress))};
+    RGB EndColor = {255,255,0,0};
+
+    
+    for (int i = 0; i < total_verts; i++)
+    {
+        float t0 = (float)(i + 1) / (float)total_verts;
+
+        // Step toward the end point
+        vec3d halfway = MyScratch->Lerp(start, end, t0);
+
+        // Apply horizontal offset
+        halfway.x += pseudo_random[(int)(i+ phase)% total_rand];
+
+        // Draw segment
+        MyScratch->DrawLine(prev.x, prev.y, halfway.x, halfway.y,MyScratch->Lerp(StartColor, EndColor, t0*2.0f));
+
+        prev = halfway;
+    }
+}
