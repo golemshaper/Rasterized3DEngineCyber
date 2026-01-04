@@ -849,7 +849,7 @@ void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
         
         MyScratch->MeshColor = { (int)abs(sin(totalTime + bullet_arcshots[i].z * 4.0f) * 355),(int)abs(sin(totalTime + bullet_arcshots[i].z * 2.0f) * 355),(int)abs(cos(totalTime + bullet_arcshots[i].z * 4.0f) * 355),255 };
        // MyScratch->MeshColor = { 255,0,255 };
-        float offset_time_progress = (progress_for_arc_shots + (i*0.5f));
+        float offset_time_progress = (progress_for_arc_shots + (i*0.1f));
         float wrapped = fmod(offset_time_progress, 1.0f);
 
         vec3d offset = { i * 0.05f,i * 0.05f,i * 0.05f };
