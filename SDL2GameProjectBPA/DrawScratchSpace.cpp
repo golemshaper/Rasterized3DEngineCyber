@@ -839,6 +839,15 @@ vec3d DrawScratchSpace::CrossProduct(const vec3d& a, const vec3d& b)
     r.z = a.x * b.y - a.y * b.x;
     return r;
 }
+float DrawScratchSpace::Distance(const vec3d& a, const vec3d& b)
+{
+    vec3d d = b - a;
+    return sqrtf(d.x*d.x + d.y*d.y + d.z*d.z);
+}
+float DrawScratchSpace::Distance2D(const vec3d& a, const vec3d& b)
+{
+    return Distance(vec3d{a.x,0.0f,a.z}, vec3d{b.x,0.0f,b.z});
+}
 vec3d Normalize(const vec3d& v)
 {
     float length = sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
@@ -981,7 +990,8 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
     //matView = Matrix_PointAt(vCamera, vCamera + vLookDir, up);
     //matView = Matrix_QuickInverse(matView); //flip it upside down!
     //StoredCameraMatView = matView;
-
+//leaving the old camera stuff here but commented out. I like it in this function, and I thought I needed it in another, but it turns out I do not...
+//Will decide if I want to keep  CalculateViewMatrix() or not soon...
 
 
     // -----------------------------

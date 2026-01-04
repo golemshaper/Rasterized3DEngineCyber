@@ -119,7 +119,10 @@ struct vec3d {
     {
         return { x * k.x, y * k.y, z * k.z };
     }
-
+    bool operator==(const vec3d& rhs) const
+    {
+        return x == rhs.x && y == rhs.y && z == rhs.z;
+    }
     // Scalar division (optional but useful)
     vec3d operator/(float k) const
     {
@@ -226,6 +229,8 @@ public:
     vec3d Get2DPointFromLastLocation();
     vec3d Normalize(vec3d input);
     vec3d CrossProduct(const vec3d& a, const vec3d& b);
+    float Distance(const vec3d& a, const vec3d& b);
+    float Distance2D(const vec3d& a, const vec3d& b);
  //FX
     void SetFade(RGB color, float a);
     void SetFade(

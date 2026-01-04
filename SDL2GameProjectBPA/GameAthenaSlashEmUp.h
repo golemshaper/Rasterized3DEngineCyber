@@ -8,7 +8,7 @@ class GameAthenaSlashEmUp : public Game
 public:
 
 	//Current game mode
-	int mode = 1;
+	int mode = 0;
 
 	//primitive
 	float typingEffect = -1.0f;
@@ -24,6 +24,7 @@ public:
 	//actors
 	vec3d player_position = { 0,0,0 };
 	vec3d player_move = { 0,0,0 };
+	vec3d last_safe_look = { 0,0,0 };
 	float player_speed = 4.0f;
 
 	//re-usable

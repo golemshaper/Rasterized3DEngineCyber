@@ -260,7 +260,19 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     vec3d camLocation = vec3d{ 0.0f, -1.5f, -5.0f + (sin(totalTime * 2.0f) * 0.5f) };
     //      YOU MUST SUBTRACT THE CAMERA LOCATION FROM THE TARGET LOCATION! ALSO, MOUSE POSITION OPTIONAL 
     vec3d camLookTarget = player_position - camLocation + vec3d{0,0,2} + vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f };
-   
+    if (last_safe_look == vec3d{ 0.0f, 0.0f, 0.0f})
+    {
+        last_safe_look = camLookTarget;
+    }
+    if (MyScratch->Distance2D(camLocation, player_position) < 0.2f)
+    {
+        camLookTarget = last_safe_look;
+
+    }
+    else
+    {
+        last_safe_look = camLookTarget;
+    }
     MyScratch->SetCamera(camLocation, camLookTarget);
 
 
@@ -778,19 +790,19 @@ void GameAthenaSlashEmUp::LightningFX(int phase, float progress)
 
 void GameAthenaSlashEmUp::MovementUpdate(float DeltaTime)
 {
-    vec3d forward = MyScratch->Normalize(MyScratch->CameraTargetLoc);
+    vec3d forward = MyScratch->Normalize(MyScratch->CameraTargetLoc); //is this always correct if the camera moves? No idea...But I suspect so...
 
     vec3d up = { 0, 1, 0 };
     vec3d right = MyScratch->Normalize(MyScratch->CrossProduct(up, forward));
 
-    // flatten for ground movement
+    //Flatten ground movement
     forward.y = 0;
     right.y = 0;
 
     forward = MyScratch->Normalize(forward);
     right = MyScratch->Normalize(right);
 
-    // movement
+    //Apply Movement
     vec3d move = (right * MyScratch->Input->GetMovementX()) + (forward * MyScratch->Input->GetMovementY());
     player_position = player_position + move *player_speed* DeltaTime;
 
