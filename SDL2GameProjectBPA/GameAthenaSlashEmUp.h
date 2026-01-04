@@ -10,6 +10,9 @@ public:
 	//Current game mode
 	int mode = 1;
 
+
+
+	float demoWait = 4.0f;
 	//primitive
 	float typingEffect = -1.0f;
 	float textBoxProgressTick = 0.0f;
