@@ -33,6 +33,8 @@ void GameAthenaSlashEmUp::Initialize()
 }
 void GameAthenaSlashEmUp::Tick(float DeltaTime)
 {
+    //Modify the speed of the game by changing GameSpeed
+    DeltaTime = DeltaTime * GameSpeed;
     //GAME DESCRIPTION
     //This is an Auto scrolling slash-em-up action RPG (HP should be drawn on all enemies, maybe have a menu for attacking?)
     //Try to level up as much as possible before hitting the boss. Combo chains will grant more EXP
