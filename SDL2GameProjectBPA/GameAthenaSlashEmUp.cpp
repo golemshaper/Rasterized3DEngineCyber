@@ -12,6 +12,7 @@ void GameAthenaSlashEmUp::Initialize()
     MyScratch->Initialize();
     MyTextSprites = new TextSprites();
 
+    //athena body bullets
     for (int i = 0; i < bullet_count; ++i)
     {
         bullets[i].x = sin(0.2f * i);
@@ -19,6 +20,16 @@ void GameAthenaSlashEmUp::Initialize()
         bullets[i].z = 0;
     }
     player_position = { 0.0f,-0.5f,-2.25f };
+
+    //bullet arc shots
+    for (int i = 0; i < bullet_arcshots_count; ++i)
+    {
+        bullet_arcshots[i].x = sin(0.2f * i);
+        bullet_arcshots[i].y = cos(i) * 0.2f;
+        bullet_arcshots[i].z = 0;
+    }
+
+
 }
 void GameAthenaSlashEmUp::Tick(float DeltaTime)
 {
@@ -235,6 +246,10 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     };
     MyScratch->SetCamera(vec3d{ 0.0f, -8.0f, -3.5f }, vec3d{ (sin(mouseX * 0.01f) * 0.1f) + cos(totalTime) * 0.01f + SinMouseX,2 - sin(totalTime) * 0.01f + CosMouseY, 1.0f });
     MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ 0.0f,0.0f, -4 }, vec3d{ totalTime, 0.0, 0.0, }, vec3d{ 8.0, 4.0, 4.0, });
+
+
+
+
     MyScratch->DrawEdges = false;
     MyScratch->DrawVerticies = false;
 
@@ -249,6 +264,8 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //NOTE: I'll want to maybe make a list of meshes to render, and sort those by z position if you draw them one by one
        //teapot
     MyScratch->MeshColor = { 255,255,255,255 };
+
+
     MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f }, vec3d{ 0.0f,1.0f, 1.0f });  //By calling multiple SetCamera calls during drawing, you can make things like a skybox, that don't move, but follow the rest of the worlds rotation!
     MyScratch->DrawVerticies = true;
     MyScratch->DrawMesh(monkeymesher.GetTeapotMesh(), vec3d{ (sinf(totalTime * 4.0f) * 0.2f) - 1.12f,0.5f,2 }, vec3d{ 1.0, 1.0, totalTime, }, vec3d{ 1,1,1 });
@@ -313,13 +330,17 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
             abs(sin(totalTime * 4.0f))),
         true
     );
-    
+ 
+
     //TEXT AT LAST MESH LOCATION
     MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y - 8, { 255, 255, 255, 255, }, "LV 1", MyTextSprites, 1.0f);
     MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y, { 0, 255, 0, 255, }, "HP 25", MyTextSprites, 1.0f);
     MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y + 8, { 0, 0, 255, 255, }, "MP 10", MyTextSprites, 1.0f);
     MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y + 16, { 255, 0, 255, 255, }, "EXP 000", MyTextSprites, 1.0f);
 
+
+    //Bullets
+    TickArcShots(player_position, vec3d{ 0.0f,-1.0f,0.0f }, DeltaTime);
 
 
     //  Color it
@@ -811,4 +832,63 @@ void GameAthenaSlashEmUp::MovementUpdate(float DeltaTime)
     player_position = player_position + move *player_speed* DeltaTime;
 
 
+}
+
+void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
+{
+    MyScratch->MoveMainspaceToExtraBuffer();
+    MyScratch->Clear();
+
+    progress_for_arc_shots += 1.0f*DeltaTime;
+    
+    MonkeyMesh monkeymesher;
+    int shotType = 0;
+    //bullet_arcshots_count
+    for (int i = 0; i< bullet_arcshots_count; ++i)
+    {
+        
+        MyScratch->MeshColor = { (int)abs(sin(totalTime + bullet_arcshots[i].z * 4.0f) * 355),(int)abs(sin(totalTime + bullet_arcshots[i].z * 2.0f) * 355),(int)abs(cos(totalTime + bullet_arcshots[i].z * 4.0f) * 355),255 };
+       // MyScratch->MeshColor = { 255,0,255 };
+        float offset_time_progress = (progress_for_arc_shots + (i*0.5f));
+        float wrapped = fmod(offset_time_progress, 1.0f);
+
+        vec3d offset = { i * 0.05f,i * 0.05f,i * 0.05f };
+
+        float direction = 1.0f;
+        direction = sin(offset_time_progress * 2.0f);
+        
+        switch (shotType)
+        {
+            case 0:
+                bullet_arcshots[i] = MyScratch->ArcHorizontal(start+ offset, end, 2.0f, wrapped, direction);
+                break;
+            case 1:
+                bullet_arcshots[i] = MyScratch->ArcHorizontal(start+ offset, end, 2.0f, wrapped, direction);
+                break;
+            case 2: 
+                bullet_arcshots[i] = MyScratch->Arc(start+ offset, end, 2.0f, wrapped, direction);
+                break;
+            case 3:
+                bullet_arcshots[i] = MyScratch->Arc(start+ offset, end, 2.0f, wrapped, direction);
+                break;
+
+        }
+       
+
+        MyScratch->DrawMesh(
+            monkeymesher.GetBoxMesh(),
+            bullet_arcshots[i],
+            vec3d{ 1.0f, 0.0f, 0.0f },
+            vec3d{ 0.2f,0.2f,0.2f }
+
+        );
+
+        shotType++;
+        if (shotType >= 4)shotType = 0;
+        //Label on bullets
+      /*  vec3d textCoordinates2D = MyScratch->Get2DPointInFromSpace(bullet_arcshots[i]);
+        MyScratch->DrawText((int)textCoordinates2D.x, (int)textCoordinates2D.y, { 255, 255, 0, 255, }, "X", MyTextSprites, 1.0f);*/
+
+    }
+    MyScratch->AddBuffers();
 }

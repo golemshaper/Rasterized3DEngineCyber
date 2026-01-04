@@ -199,7 +199,9 @@ public:
     RGB AlphaBlend(const RGB& dst, const RGB& src);
     RGB Lerp(RGB a, RGB b, float c);
     vec3d Lerp(vec3d a, vec3d b, float c);
-    vec3d Arc(vec3d a, vec3d b,float h, float c);
+    vec3d Arc(vec3d a, vec3d b, float h, float c);
+    vec3d Arc(vec3d a, vec3d b, float h, float c,float direction);
+    vec3d ArcHorizontal(vec3d a, vec3d b,float h, float c,float direction);
     Point RotatePoint(Point p, Point pivot, float angle);
 
 //INPUT:

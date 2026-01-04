@@ -679,6 +679,36 @@ vec3d DrawScratchSpace::Arc(vec3d a, vec3d b, float h, float c)
     return pos;
 }
 
+vec3d DrawScratchSpace::Arc(vec3d a, vec3d b, float h, float c, float direction)
+{
+    h = -h;
+    // Base straight-line interpolation
+    vec3d pos = Lerp(a, b, c);
+
+    // Parabolic height factor (0 → 1 → 0)
+    float arc = 4.0f * c * (1.0f - c);
+
+    // Add height along Y axis
+    pos.y += (arc * h)* direction;
+
+    return pos;
+}
+
+vec3d DrawScratchSpace::ArcHorizontal(vec3d a, vec3d b, float h, float c, float direction)
+{
+    h = -h;
+    // Base straight-line interpolation
+    vec3d pos = Lerp(a, b, c);
+
+    // Parabolic height factor (0 → 1 → 0)
+    float arc = 4.0f * c * (1.0f - c);
+
+    // Add height along Y axis
+    pos.x += (arc * h)* direction;
+
+    return pos;
+}
+
 
 Point DrawScratchSpace::RotatePoint(Point p, Point pivot, float angle) {
     float s = sinf(angle);

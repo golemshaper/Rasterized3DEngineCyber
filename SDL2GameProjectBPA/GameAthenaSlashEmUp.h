@@ -18,8 +18,13 @@ public:
 	float angle = 0.0f;
 
 	//pools
+		//athena body
 	int bullet_count = 64;
 	vec3d bullets[64];
+		//arc shots
+	int bullet_arcshots_count = 44;
+	vec3d bullet_arcshots[44];
+	float progress_for_arc_shots=0.0f;
 
 	//actors
 	vec3d player_position = { 0,0,0 };
@@ -52,5 +57,7 @@ public:
 	void LightningFX(int phase, float progress);
 
 	void MovementUpdate(float DeltaTime);
+
+	void TickArcShots(vec3d start, vec3d end, float DeltaTime);
 };
 
