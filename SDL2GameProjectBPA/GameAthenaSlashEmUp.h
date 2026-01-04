@@ -8,7 +8,7 @@ class GameAthenaSlashEmUp : public Game
 public:
 	float GameSpeed = 1.0f;
 	//Current game mode
-	int mode = 0;
+	int mode = 1;
 
 
 
@@ -65,5 +65,7 @@ public:
 	void TickArcShots(vec3d start, vec3d end, float DeltaTime);
 
 	void CircleTransition(float reveal);
+
+	void DrawReticle(int x, int y, int radius, float progress);
 };
 

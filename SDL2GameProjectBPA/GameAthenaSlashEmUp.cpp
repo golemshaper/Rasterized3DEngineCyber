@@ -325,6 +325,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     
     MyScratch->DifferDrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,-1.0f,0.0f }, vec3d{ 1.0f, 0.0f, 0.0f, } + MyScratch->LookAtRotation2D(vec3d{ 0.0f,-1.0f,0.0f },player_position*-1), vec3d{2.0f, 2.0f, 2.0f,},true);
 
+
     //Athena
     MyScratch->MeshColor = { (int)abs(sin(totalTime * 4.0f) * 255),(int)abs(sin(totalTime * 2.0f) * 255),(int)abs(cos(totalTime * 4.0f) * 255),255 };
    
@@ -465,9 +466,9 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     }
     MyScratch->AddBuffers();
 
-   
-
-
+   //Reticle
+    vec3d TargetPos2D = MyScratch->Get2DPointInFromSpace(vec3d{ 0.0f,-1.0f,0.0f });
+    DrawReticle(int(TargetPos2D.x),(int)TargetPos2D.y, 12.0f, totalTime * 2.0f);
 
     //FADE IN HERE!
     if (working_float > 0.0f) {
@@ -479,6 +480,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     }
     else
     {
+
         //TEXTBOX
         TextBoxDraw(Reader.GetStringFromSheetTag("Intro"));
     }
@@ -948,4 +950,19 @@ void GameAthenaSlashEmUp::CircleTransition(float reveal)
     MyScratch->DrawCircle(SCREEN_X / 2, SCREEN_Y / 2, (int)((SCREEN_X * 1.5f) * reveal * 0.5f), RGB{ 23,255,166,255 });
 
 
+}
+
+void GameAthenaSlashEmUp::DrawReticle(int x, int y, int radius, float progress)
+{
+    const int orbitCount = 4;
+
+    for (int i = 0; i < orbitCount; ++i)
+    {
+        float angle = progress + (i * (MyScratch->PI / 2.0f)); 
+
+        int ox = x + static_cast<int>(SDL_cosf(angle) * radius);
+        int oy = y + static_cast<int>(SDL_sinf(angle) * radius);
+
+        MyScratch->DrawCircle(ox, oy, 4, RGB{ 255, 255, 0, 160 });
+    }
 }

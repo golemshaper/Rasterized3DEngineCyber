@@ -349,10 +349,10 @@ void DrawScratchSpace::DrawCircle(int x, int y, int radius, RGB color)
             float theta1 = 2.0f * PI * i / sides;
             float theta2 = 2.0f * PI * (i + 1) / sides;
     
-            int x1 = x + static_cast<int>(radius * SDL_cosf(theta1));
-            int y1 = y + static_cast<int>(radius * SDL_sinf(theta1));
-            int x2 = x + static_cast<int>(radius * SDL_cosf(theta2));
-            int y2 = y + static_cast<int>(radius * SDL_sinf(theta2));
+            int x1 = x + static_cast<int>(radius * cos(theta1));
+            int y1 = y + static_cast<int>(radius * sin(theta1));
+            int x2 = x + static_cast<int>(radius * cos(theta2));
+            int y2 = y + static_cast<int>(radius * sin(theta2));
     
             DrawLine(x1, y1, x2, y2, color);
             
