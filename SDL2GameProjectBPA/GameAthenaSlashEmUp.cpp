@@ -334,7 +334,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
     //vec3d{ -2.0f,-0.5f,-2.25f }
 
-   //MULTI PASS RENDER (Done in a loop to prevent copy-paste. TODO: Make a single function that draws with highlight to avoid needing to do this)
+   //Note DifferDrawMesh is a drop-in replacement for the regular DrawMesh function. It'll only draw when DrawSortedDifferedMeshes() is called
     MyScratch->DifferDrawMesh(monkeymesher.GetAthenaMesh(),
         player_position,
         vec3d{ 1.0f + (MyScratch->Input->GetMovementY() * -0.3f),0.0f,3.0f + (MyScratch->Input->GetMovementX() * 0.35f) },

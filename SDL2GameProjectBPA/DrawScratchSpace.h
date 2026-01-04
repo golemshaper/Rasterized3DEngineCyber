@@ -248,9 +248,14 @@ public:
     void SetCamera(vec3d loc, vec3d target);
     void SetCameraFOV(float nFov);
     void DrawMesh(Mesh m);
+    void DrawMesh(Mesh m,vec3d loc);
     void DrawMesh(Mesh m, vec3d loc, vec3d rot);
     void DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale);
     void DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool edge_light);
+    void DifferDrawMesh(Mesh m);
+    void DifferDrawMesh(Mesh m, vec3d loc);
+    void DifferDrawMesh(Mesh m, vec3d loc, vec3d rot);
+    void DifferDrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale);
     void DifferDrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool edge_light);
     void DrawSortedDifferedMeshes();
 

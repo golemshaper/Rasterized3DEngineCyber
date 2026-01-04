@@ -957,6 +957,11 @@ void DrawScratchSpace::DrawMesh(Mesh m)
     DrawMesh(m, { 0,0,0 }, { 1,0,0 });
 }
 
+void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc)
+{
+    DrawMesh(m, { 0,0,0 }, { 1,0,0 });
+}
+
 void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot)
 {
     DrawMesh(m, loc, rot, { 1,1,1 });
@@ -1199,6 +1204,26 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool 
     {
         DrawMesh(m,loc,rot,scale);
     }
+}
+
+void DrawScratchSpace::DifferDrawMesh(Mesh m)
+{
+    recipes.push_back({ m, vec3d{1,1,1}, vec3d{1,0,0}, vec3d{1,1,1}, false,MeshColor });
+}
+
+void DrawScratchSpace::DifferDrawMesh(Mesh m, vec3d loc)
+{
+    recipes.push_back({ m, loc, vec3d{1,0,0}, vec3d{1,1,1}, false,MeshColor });
+}
+
+void DrawScratchSpace::DifferDrawMesh(Mesh m, vec3d loc, vec3d rot)
+{
+    recipes.push_back({ m, loc, rot, vec3d{1,1,1}, false,MeshColor });
+}
+
+void DrawScratchSpace::DifferDrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
+{
+    recipes.push_back({ m, loc, rot, scale, false,MeshColor });
 }
 
 void DrawScratchSpace::DifferDrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool edge_light)
