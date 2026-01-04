@@ -886,8 +886,11 @@ void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
         shotType++;
         if (shotType >= 4)shotType = 0;
         //Label on bullets
-      /*  vec3d textCoordinates2D = MyScratch->Get2DPointInFromSpace(bullet_arcshots[i]);
-        MyScratch->DrawText((int)textCoordinates2D.x, (int)textCoordinates2D.y, { 255, 255, 0, 255, }, "X", MyTextSprites, 1.0f);*/
+        vec3d textCoordinates2D = MyScratch->Get2DPointInFromSpace(bullet_arcshots[i]);
+        const char* AlphabetSoup = "LuckyBonusLuckyBonus";
+        char letter[2] = { AlphabetSoup[i], '\0' };
+
+        MyScratch->DrawText((int)textCoordinates2D.x, (int)textCoordinates2D.y, { 155 + i, 155 + i, 155 + i, 255, }, letter, MyTextSprites, 1.0f);
 
     }
     MyScratch->AddBuffers();
