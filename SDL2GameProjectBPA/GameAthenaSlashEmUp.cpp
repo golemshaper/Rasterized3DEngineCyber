@@ -465,11 +465,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     }
     MyScratch->AddBuffers();
 
-    //TEXTBOX
-    
-   // TextBoxDraw("You can display characters in \na box using this helper function. \nThis is part of this game, \nnot part of the engine!");
-    TextBoxDraw(Reader.GetStringFromSheetTag("Intro"));
-   // TextBoxDraw(Reader.GetStringFromSheetIndex(1));
+   
 
 
 
@@ -478,8 +474,13 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         //fade in
         working_float -= 0.5f * DeltaTime;
         MyScratch->SetFade({ 0,0,0,0 }, working_float);
-        CircleTransition((1.0f- working_float)*2.0f);
+        CircleTransition((1.0f- working_float)*1.5f);
        
+    }
+    else
+    {
+        //TEXTBOX
+        TextBoxDraw(Reader.GetStringFromSheetTag("Intro"));
     }
 
     
@@ -943,5 +944,8 @@ void GameAthenaSlashEmUp::CircleTransition(float reveal)
     MyScratch->Clear(RGB{ 0,0,0,0 });
     MyScratch->DrawFilledCircle(SCREEN_X / 2, SCREEN_Y / 2, (int)((SCREEN_X*1.5f )* reveal*0.5f) , RGB{ 255,255,255,255 });
     MyScratch->ApplyMask();
+    //extra color around circle cutout
+    MyScratch->DrawCircle(SCREEN_X / 2, SCREEN_Y / 2, (int)((SCREEN_X * 1.5f) * reveal * 0.5f), RGB{ 23,255,166,255 });
+
 
 }
