@@ -92,6 +92,13 @@ struct Vertex {
             color
         };
     }
+    Vertex operator-(const int& other)const {
+        return{
+            x - other,
+            y - other,
+            color
+        };
+    }
 };
 struct Sprite {
     RGB* pixels;
@@ -205,6 +212,7 @@ public:
     bool DrawVerticies = false;
     int EdgeBrightness = 255;
     bool DrawEdges = false;
+    bool DrawHighlightEdgeOnly = false;
 //3D Primitives:
     Mesh MeshCube;
     mat4x4 MatrixProj;

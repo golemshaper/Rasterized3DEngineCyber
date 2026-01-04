@@ -1088,11 +1088,10 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         //dumb fog
         ZFog += 4.0/vecTrianglesToRaster.size() * 0.2f;
 
-        //STANDARD
+        //STANDARD RAINBOW COLOR TRIS
        /* Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {255 * ZFog,0,0,255} };
         Vertex p1 = { triProjected.p[1].x, triProjected.p[1].y, {0,255 * ZFog,0,255} };
         Vertex p2 = { triProjected.p[2].x, triProjected.p[2].y, {0,0,255 * ZFog,255} };*/
-
 
         //CRAZY
         /*Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {ZFog,255,255,255} };
@@ -1105,16 +1104,38 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         int G = MeshColor.g * ZFog * 0.75f;
         int B = MeshColor.b * ZFog * 0.75f;
 
+        //COLOR FROM F+GLOBAL MESH COLOR:
         Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {1*R,G,B} };
         Vertex p1 = { triProjected.p[1].x, triProjected.p[1].y, {R,1*G,B} };
         Vertex p2 = { triProjected.p[2].x, triProjected.p[2].y, {R,G,1*B} };
 
-        //PURE
-       /* Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {2 * R,G,B} };
-        Vertex p1 = { triProjected.p[1].x, triProjected.p[1].y, {R,2 * G,B} };
-        Vertex p2 = { triProjected.p[2].x, triProjected.p[2].y, {R,G,2 * B} };*/
 
-        DrawTriangle(p0, p1, p2);
+        ////LIGHT FX (Won't work since you draw on top of tris that are already connected to the next one...
+        //Either do the stamp buffer, or collect all tris and draw at the end in 2 passes...
+        /*Vertex light_fx_p0 = { triProjected.p[0].x, triProjected.p[0].y, {255,255,255,122} };
+        Vertex light_fx_p1 = { triProjected.p[1].x, triProjected.p[1].y, {255,255,255,122} };
+        Vertex light_fx_p2 = { triProjected.p[2].x, triProjected.p[2].y, {255,255,255,122} };
+        DrawTriangle(light_fx_p0 -1, light_fx_p1-1, light_fx_p2-0);*/
+
+        //The outline is triangles that connect to a front facing triangle and a backfacing one I think...
+        //use that info for outline only drawing in the future.
+        //only do upper left, and left side for more style...
+
+        //NORMAL DRAW or Highlight offset
+        if (DrawHighlightEdgeOnly)
+        {
+            //Highlight the Game needs to turn this on, and then draw two mesh passes (It auto-turns off after the mesh is done rendering.
+            Vertex light_fx_p0 = { triProjected.p[0].x, triProjected.p[0].y, RGB{R,G,B}*2 };
+            Vertex light_fx_p1 = { triProjected.p[1].x, triProjected.p[1].y, RGB{R,G,B}*2 };
+            Vertex light_fx_p2 = { triProjected.p[2].x, triProjected.p[2].y, RGB{R,G,B}*2 };
+            DrawTriangle(light_fx_p0 - 2, light_fx_p1 - 1, light_fx_p2 - 1);
+        }
+        else
+        {
+            //Normal
+            DrawTriangle(p0, p1, p2);
+        }
+        
 
         //DRAW VERTICIES
         if (DrawVerticies) {
@@ -1132,7 +1153,7 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
 
         
     }
-
+    DrawHighlightEdgeOnly = false;
 }
 
 void DrawScratchSpace::DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale)
