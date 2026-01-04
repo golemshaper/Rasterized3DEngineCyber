@@ -251,7 +251,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->MeshColor = { 255,255,255,255 };
     MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f }, vec3d{ 0.0f,1.0f, 1.0f });  //By calling multiple SetCamera calls during drawing, you can make things like a skybox, that don't move, but follow the rest of the worlds rotation!
     MyScratch->DrawVerticies = true;
-    MyScratch->DrawMesh(monkeymesher.GetTeapotMesh(), vec3d{ (sinf(totalTime * 4.0f) * 0.2f) - 1.12f,0.5f,2 }, vec3d{ 1.0, 1.0, totalTime, });
+    MyScratch->DrawMesh(monkeymesher.GetTeapotMesh(), vec3d{ (sinf(totalTime * 4.0f) * 0.2f) - 1.12f,0.5f,2 }, vec3d{ 1.0, 1.0, totalTime, }, vec3d{ 1,1,1 });
     MyScratch->DrawVerticies = false;
 
 
@@ -281,7 +281,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //MESH
         //Monkey
     MyScratch->MeshColor = { 0,0,255,255 };
-    MyScratch->DrawMesh(monkeymesher.GetMonkeyMesh(), vec3d{ 4.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime * 6.0f), }, MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))));
+    MyScratch->DrawMesh(monkeymesher.GetMonkeyMesh(), vec3d{ 4.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime * 6.0f), }, MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))),true);
     //Boy
     float flash_color_select = sin(totalTime*60.0f);
     if (flash_color_select > 0.0f)
@@ -293,7 +293,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         MyScratch->MeshColor = { 255,0,0,255 };
     }
     
-    MyScratch->DrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,-1.0f,0.0f }, vec3d{ 1.0f, 0.0f, 0.0f, } + MyScratch->LookAtRotation2D(vec3d{ 0.0f,-1.0f,0.0f },player_position*-1), vec3d{2.0f, 2.0f, 2.0f,});
+    MyScratch->DrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,-1.0f,0.0f }, vec3d{ 1.0f, 0.0f, 0.0f, } + MyScratch->LookAtRotation2D(vec3d{ 0.0f,-1.0f,0.0f },player_position*-1), vec3d{2.0f, 2.0f, 2.0f,},true);
 
     //Athena
     MyScratch->MeshColor = { (int)abs(sin(totalTime * 4.0f) * 255),(int)abs(sin(totalTime * 2.0f) * 255),(int)abs(cos(totalTime * 4.0f) * 255),255 };
@@ -304,18 +304,15 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
     //vec3d{ -2.0f,-0.5f,-2.25f }
 
-    MyScratch->DrawHighlightEdgeOnly = true;//auto-draw highlight pass once!
-    for (int i = 0; i < 2; ++i)
-    {
-        //MULTI PASS RENDER
-        MyScratch->DrawMesh(monkeymesher.GetAthenaMesh(),
-            player_position,
-            vec3d{ 1.0f + (MyScratch->Input->GetMovementY() * -0.3f),0.0f,3.0f + (MyScratch->Input->GetMovementX() * 0.35f) },
-            MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f },
-                vec3d{ 1.2f, 0.9f, 1.2f },
-                abs(sin(totalTime * 4.0f)))
-        );
-    }
+   //MULTI PASS RENDER (Done in a loop to prevent copy-paste. TODO: Make a single function that draws with highlight to avoid needing to do this)
+    MyScratch->DrawMesh(monkeymesher.GetAthenaMesh(),
+        player_position,
+        vec3d{ 1.0f + (MyScratch->Input->GetMovementY() * -0.3f),0.0f,3.0f + (MyScratch->Input->GetMovementX() * 0.35f) },
+        MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f },
+            vec3d{ 1.2f, 0.9f, 1.2f },
+            abs(sin(totalTime * 4.0f))),
+        true
+    );
     
     //TEXT AT LAST MESH LOCATION
     MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y - 8, { 255, 255, 255, 255, }, "LV 1", MyTextSprites, 1.0f);

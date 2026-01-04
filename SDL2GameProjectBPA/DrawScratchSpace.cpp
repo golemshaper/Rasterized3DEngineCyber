@@ -1156,6 +1156,21 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
     DrawHighlightEdgeOnly = false;
 }
 
+void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool edge_light)
+{
+    if (edge_light)
+    {
+        //multipass
+        DrawHighlightEdgeOnly = true;
+        DrawMesh(m, loc, rot, scale);
+        DrawMesh(m, loc, rot, scale);
+    }
+    else
+    {
+        DrawMesh(m,loc,rot,scale);
+    }
+}
+
 void DrawScratchSpace::DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale)
 {
     // Build WORLD matrix (Scale → RotZ → RotX → Trans)
