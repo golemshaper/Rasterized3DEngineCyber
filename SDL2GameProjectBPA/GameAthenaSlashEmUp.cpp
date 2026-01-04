@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "GameAthenaSlashEmUp.h"
 #include "MonkeyMesh.h"
 #include <cmath>
@@ -350,18 +350,35 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
 
 
-    //TEXT AT LAST MESH LOCATION
+    //------------------------------
+    // STATS
+    //------------------------------
     MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y - 8, { 255, 255, 255, 255, }, "LV 1", MyTextSprites, 1.0f);
     MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y, { 0, 255, 0, 255, }, "HP 25", MyTextSprites, 1.0f);
     MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y + 8, { 0, 0, 255, 255, }, "MP 10", MyTextSprites, 1.0f);
-    MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y + 16, { 255, 0, 255, 255, }, "EXP 000", MyTextSprites, 1.0f);
+    //MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y + 16, { 255, 0, 255, 255, }, "EXP 000", MyTextSprites, 1.0f);
+    fake_exp_until_stats_container_added+=5;
+    if (fake_exp_until_stats_container_added >= 999)fake_exp_until_stats_container_added = 0;
+    int expValue = fake_exp_until_stats_container_added;
+    std::string expText = "EXP " + std::to_string(expValue);
+    if(expValue < 100 )expText = "EXP 0" + std::to_string(expValue);
+    MyScratch->DrawText(
+        (int)MyScratch->Get2DPointInFromSpace(player_position).x - 12,
+        (int)MyScratch->Get2DPointInFromSpace(player_position).y + 16,
+        { 255, 0, 255, 255 },
+        expText.c_str(),
+        MyTextSprites,
+        1.0f
+    );
+    
 
-
-    //Bullets
+    //------------------------------
+    // Bullets
+    //------------------------------
     TickArcShots(player_position, vec3d{ 0.0f,-1.0f,0.0f }, DeltaTime);
 
 
-    //  Color it
+    //Reset Draw color to white.
     MyScratch->MeshColor = { 255,255,255,255 };
 
 

@@ -41,6 +41,7 @@ public:
 	float working_float = 0.0f;
 	float lightning = 0.0f;
 	int lightning_phase = 0;
+	int fake_exp_until_stats_container_added = 0;
 
 	//Objects
 	TextFileReader Reader;
