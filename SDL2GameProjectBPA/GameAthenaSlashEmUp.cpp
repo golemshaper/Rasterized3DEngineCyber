@@ -967,6 +967,16 @@ void GameAthenaSlashEmUp::DrawReticle(int x, int y, int radius, float progress)
         int ox = x + static_cast<int>(SDL_cosf(angle) * radius);
         int oy = y + static_cast<int>(SDL_sinf(angle) * radius);
 
-        MyScratch->DrawCircle(ox, oy, 4, RGB{ 255, 255, 0, 160 });
+        float outline_flag = sin(progress*4.0f);
+        if (outline_flag > 0.0f)
+        {
+            MyScratch->DrawCircle(ox, oy, 5, RGB{ 255, 255, 0, 255 });
+            MyScratch->DrawFilledCircle(ox, oy, 3, RGB{ 255, 255, 0, 255 });
+
+        }
+        else {
+            MyScratch->DrawCircle(ox, oy, 4, RGB{ 255, 255, 0, 160 });
+
+        }
     }
 }
