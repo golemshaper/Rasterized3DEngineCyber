@@ -135,6 +135,13 @@ struct vec3d {
     {
         return { x / k, y / k, z / k };
     }
+    float length_squared() const {
+        return x * x + y * y + z * z;
+    }
+
+    float length() const {
+        return sqrt(length_squared());
+    }
 
 };
 struct triangle{
@@ -149,7 +156,15 @@ struct mat4x4
     float m[4][4] = { 0 };
 };
 
-
+struct SortedMeshRecipe {
+    //all of the data needed to render a differed model that is sorted by Z
+    Mesh m;
+    vec3d loc;
+    vec3d rot; 
+    vec3d scale;
+    bool edge_light;
+    RGB MeshColor;
+};
 
 //CLASS
 
@@ -209,6 +224,7 @@ public:
     vec3d GetMovementInput();
 //HELPERS:
     int lastTextAmountRevealed = 0;
+    std::vector<SortedMeshRecipe> recipes;
 //DRAW MODE:
     RGB MeshColor = { 255,255,255,255 };
     bool DrawVerticies = false;
@@ -235,7 +251,11 @@ public:
     void DrawMesh(Mesh m, vec3d loc, vec3d rot);
     void DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale);
     void DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool edge_light);
+    void DifferDrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool edge_light);
+    void DrawSortedDifferedMeshes();
+
     void DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale);
+
     vec3d Get2DPointInFromSpace(vec3d loc);
     vec3d Get2DPointFromLastLocation();
     vec3d Normalize(vec3d input);

@@ -1201,6 +1201,29 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool 
     }
 }
 
+void DrawScratchSpace::DifferDrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool edge_light)
+{
+    recipes.push_back({ m, loc, rot, scale, edge_light,MeshColor });
+}
+
+void DrawScratchSpace::DrawSortedDifferedMeshes()
+{
+    std::sort(recipes.begin(), recipes.end(),
+        [&](const SortedMeshRecipe& a, const SortedMeshRecipe& b)
+    {
+        double da = (a.loc - CameraLoc).length_squared();
+        double db = (b.loc - CameraLoc).length_squared();
+        return da > db;   // nearest first
+    });
+
+    for (int i = 0; i < recipes.size(); ++i)
+    {
+        MeshColor = recipes[i].MeshColor;
+        DrawMesh(recipes[i].m, recipes[i].loc, recipes[i].rot, recipes[i].scale ,recipes[i].edge_light );
+    }
+    recipes.clear();
+}
+
 void DrawScratchSpace::DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale)
 {
     // Build WORLD matrix (Scale → RotZ → RotX → Trans)
