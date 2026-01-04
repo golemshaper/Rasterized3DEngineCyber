@@ -33,6 +33,19 @@ void DrawScratchSpace::AverageBuffers()
     }
 }
 
+void DrawScratchSpace::ApplyMask()
+{
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+        if (MainSpace[i].a ==255)
+        {
+            MainSpace[i] = ExtraBuffer[i];
+        }
+       // MainSpace[i] = ExtraBuffer[i];
+    }
+
+}
+
 void DrawScratchSpace::BlendBuffers(float amount)
 {
     amount = 1.0f - amount;
@@ -327,6 +340,35 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2)
 
             MainSpace[y * SCREEN_X + x] = color;
         }
+    }
+}
+void DrawScratchSpace::DrawCircle(int x, int y, int radius, RGB color)
+{
+    const int sides = 64; // More sides = smoother circle
+        for (int i = 0; i < sides; ++i) {
+            float theta1 = 2.0f * PI * i / sides;
+            float theta2 = 2.0f * PI * (i + 1) / sides;
+    
+            int x1 = x + static_cast<int>(radius * SDL_cosf(theta1));
+            int y1 = y + static_cast<int>(radius * SDL_sinf(theta1));
+            int x2 = x + static_cast<int>(radius * SDL_cosf(theta2));
+            int y2 = y + static_cast<int>(radius * SDL_sinf(theta2));
+    
+            DrawLine(x1, y1, x2, y2, color);
+            
+        }
+}
+void DrawScratchSpace::DrawFilledCircle(int x, int y, int radius, RGB color)
+{
+    for (int dy = -radius; dy <= radius; ++dy)
+    {
+        int dx = static_cast<int>(SDL_sqrtf(radius * radius - dy * dy));
+
+        int x1 = x - dx;
+        int x2 = x + dx;
+        int yy = y + dy;
+
+        DrawLine(x1, yy, x2, yy, color);
     }
 }
 void DrawScratchSpace::DrawTriangleGlitchy(Vertex v0, Vertex v1, Vertex v2)

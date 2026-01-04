@@ -177,6 +177,7 @@ public:
     void MultiplyBuffers();
     void AddBuffers();
     void AverageBuffers();
+    void ApplyMask();
     void BlendBuffers(float amount);
     void Initialize();
     void Initialize(RGB wipe);
@@ -196,6 +197,8 @@ public:
     void DrawSquareMultiply(int x, int y, int size, RGB color);
     void DrawTriangle(Point p0, Point p1, Point p2, RGB color);
     void DrawTriangle(Vertex v0, Vertex v1, Vertex v2);
+    void DrawCircle(int x, int y, int radius, RGB color);
+    void DrawFilledCircle(int x, int y, int radius, RGB color);
     void DrawTriangleGlitchy(Vertex v0, Vertex v1, Vertex v2);
     RGB* ColorizeSpriteData(RGB* data, int spriteWidth, int spriteHeight, RGB color);
     void DrawSprite(int startX, int startY, Sprite sprite);
@@ -223,6 +226,7 @@ public:
     InputWraper* Input = nullptr;
     vec3d GetMovementInput();
 //HELPERS:
+    const float PI = 3.141592653589793238462643383279502884F;
     int lastTextAmountRevealed = 0;
     std::vector<SortedMeshRecipe> recipes;
 //DRAW MODE:
