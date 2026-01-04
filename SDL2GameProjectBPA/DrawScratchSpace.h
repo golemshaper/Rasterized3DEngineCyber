@@ -273,6 +273,8 @@ public:
     vec3d LookAtRotation2D(const vec3d& from, const vec3d& to);
     float Distance(const vec3d& a, const vec3d& b);
     float Distance2D(const vec3d& a, const vec3d& b);
+    float SquaredDistance(const vec3d& a, const vec3d& b);
+    float SquaredDistance2D(const vec3d& a, const vec3d& b);
  //FX
     void SetFade(RGB color, float a);
     void SetFade(

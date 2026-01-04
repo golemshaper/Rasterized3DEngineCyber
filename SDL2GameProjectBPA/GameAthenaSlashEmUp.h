@@ -30,6 +30,8 @@ public:
 	float progress_for_arc_shots=0.0f;
 
 	//actors
+	vec3d camLocation = { 0,0,0 };
+	vec3d psudoCamLocation= { 0,0,0 };
 	vec3d player_position = { 0,0,0 };
 	vec3d player_move = { 0,0,0 };
 	vec3d last_safe_look = { 0,0,0 };
@@ -67,5 +69,7 @@ public:
 	void CircleTransition(float reveal);
 
 	void DrawReticle(int x, int y, int radius, float progress);
+
+	void CameraCollision2D();
 };
 

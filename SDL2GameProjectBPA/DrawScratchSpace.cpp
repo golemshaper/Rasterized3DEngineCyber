@@ -944,6 +944,18 @@ float DrawScratchSpace::Distance(const vec3d& a, const vec3d& b)
     vec3d d = b - a;
     return sqrtf(d.x*d.x + d.y*d.y + d.z*d.z);
 }
+
+float DrawScratchSpace::SquaredDistance(const vec3d & a, const vec3d & b)
+{
+    vec3d d = b - a;
+    return (d.x * d.x + d.y * d.y + d.z * d.z);
+}
+
+float DrawScratchSpace::SquaredDistance2D(const vec3d& a, const vec3d& b)
+{
+    return SquaredDistance(vec3d{ a.x,0.0f,a.z }, vec3d{ b.x,0.0f,b.z });
+}
+
 float DrawScratchSpace::Distance2D(const vec3d& a, const vec3d& b)
 {
     return Distance(vec3d{a.x,0.0f,a.z}, vec3d{b.x,0.0f,b.z});

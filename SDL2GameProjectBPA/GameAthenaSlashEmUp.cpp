@@ -284,12 +284,11 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->DrawMesh(monkeymesher.GetTeapotMesh(), vec3d{ (sinf(totalTime * 4.0f) * 0.2f) - 1.12f,0.5f,2 }, vec3d{ 1.0, 1.0, totalTime, }, vec3d{ 1,1,1 });
     MyScratch->DrawVerticies = false;
 
-
-    //CAMERA
-
-    //MyScratch->SetCamera(vec3d{ 0.0f, -1.5f, -5.0f + (sin(totalTime * 2.0f) * 0.5f) }, vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f });
-    vec3d camLocation = vec3d{ 0.0f, -1.5f, -5.0f + (sin(totalTime * 2.0f) * 0.5f) };
-    //      YOU MUST SUBTRACT THE CAMERA LOCATION FROM THE TARGET LOCATION! ALSO, MOUSE POSITION OPTIONAL 
+    //----------------------
+    // CAMERA MAIN CAM
+    //----------------------
+    camLocation = vec3d{ 0.0f, -1.5f, -5.0f + (sin(totalTime * 2.0f) * 0.5f) };
+    psudoCamLocation = vec3d{ 0.0f, -1.5f, -5.0f };
     vec3d camLookTarget = player_position - camLocation + vec3d{0,0,2} + vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f };
     if (last_safe_look == vec3d{ 0.0f, 0.0f, 0.0f})
     {
@@ -862,6 +861,9 @@ void GameAthenaSlashEmUp::LightningFX(int phase, float progress)
 
 void GameAthenaSlashEmUp::MovementUpdate(float DeltaTime)
 {
+
+
+    vec3d last_safe_pos = player_position;
     vec3d forward = MyScratch->Normalize(MyScratch->CameraTargetLoc); //is this always correct if the camera moves? No idea...But I suspect so...
 
     vec3d up = { 0, 1, 0 };
@@ -878,6 +880,16 @@ void GameAthenaSlashEmUp::MovementUpdate(float DeltaTime)
     vec3d move = (right * MyScratch->Input->GetMovementX()) + (forward * MyScratch->Input->GetMovementY());
     player_position = player_position + move *player_speed* DeltaTime;
 
+
+    //CAMERA COLLIDER:
+    if (MyScratch->SquaredDistance2D(player_position, psudoCamLocation) < 0.3f)
+    {
+        player_position = last_safe_pos;
+    }
+    if (MyScratch->SquaredDistance2D(player_position, psudoCamLocation) > 140.0f)
+    {
+        player_position = last_safe_pos;
+    }
 
 }
 
@@ -980,3 +992,5 @@ void GameAthenaSlashEmUp::DrawReticle(int x, int y, int radius, float progress)
         }
     }
 }
+
+
