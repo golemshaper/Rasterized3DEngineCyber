@@ -224,7 +224,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     LightningFX(lightning_phase, lightning);
     LightningFX(lightning_phase+3, lightning*1.5f);
     lightning += DeltaTime;
-    if (lightning >= 1.5f)
+    if (lightning >= 2.5f)
     {
         lightning = 0.0f;
         lightning_phase++;
@@ -820,6 +820,10 @@ void GameAthenaSlashEmUp::TextBoxDraw(const char* input)
 
 void GameAthenaSlashEmUp::LightningFX(int phase, float progress)
 {
+    if (progress <= 0.02f)
+    {
+        MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y/2, RGB{ 255,255,0,64 }, RGB{ 255,255,255,64 }, RGB{ 255,255,255,0 }, RGB{ 255,255,0,0 });
+    }
     const int total_verts = 23;
     const int total_rand = 16;
     const int pseudo_random[16] =
