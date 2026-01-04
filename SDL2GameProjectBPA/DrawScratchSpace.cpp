@@ -839,6 +839,34 @@ vec3d DrawScratchSpace::CrossProduct(const vec3d& a, const vec3d& b)
     r.z = a.x * b.y - a.y * b.x;
     return r;
 }
+vec3d DrawScratchSpace::LookAtRotation(const vec3d& from, const vec3d& to)
+{
+    vec3d dir = to - from;
+
+    //replace with normalize function?
+    // Normalize direction
+    float len = sqrtf(dir.x * dir.x + dir.y * dir.y + dir.z * dir.z);
+    if (len > 0.0001f)
+        dir = { dir.x / len, dir.y / len, dir.z / len };
+
+    vec3d rot;
+
+    // YAW (rotation around Y axis)
+    rot.y = atan2f(dir.x, dir.z);
+
+    // PITCH (rotation around X axis)
+    rot.x = -asinf(dir.y);
+
+    // ROLL (no roll for now)
+    rot.z = 0.0f;
+
+    return rot;
+
+}
+vec3d DrawScratchSpace::LookAtRotation2D(const vec3d& from, const vec3d& to)
+{
+    return LookAtRotation(vec3d{from.x,from.y,from.z}, vec3d{to.x,from.y,to.z});
+}
 float DrawScratchSpace::Distance(const vec3d& a, const vec3d& b)
 {
     vec3d d = b - a;

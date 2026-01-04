@@ -292,7 +292,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         MyScratch->MeshColor = { 255,0,0,255 };
     }
     
-    MyScratch->DrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,-0.0f,0.0f }, vec3d{ 1.0f, 0.0f, 0.0f, }, vec3d{ 2.0f, 2.0f, 2.0f, });
+    MyScratch->DrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,-1.0f,0.0f }, vec3d{ 1.0f, 0.0f, 0.0f, } + MyScratch->LookAtRotation2D(vec3d{ 0.0f,-1.0f,0.0f },player_position*-1), vec3d{2.0f, 2.0f, 2.0f,});
 
     //Athena
     MyScratch->MeshColor = { (int)abs(sin(totalTime * 4.0f) * 255),(int)abs(sin(totalTime * 2.0f) * 255),(int)abs(cos(totalTime * 4.0f) * 255),255 };
