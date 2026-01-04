@@ -303,7 +303,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     float flash_color_select = sin(totalTime*60.0f);
     if (flash_color_select > 0.0f)
     {
-        MyScratch->MeshColor = { 255,100,100,255 };
+        MyScratch->MeshColor = { 255,160,160,255 };
     }
     else
     {
