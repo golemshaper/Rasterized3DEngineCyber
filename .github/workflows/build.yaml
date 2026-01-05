@@ -43,7 +43,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git pull
           git checkout gh_pages --
-          docker create golemshaper/build:${{ github.ref_name }}" -n cyber-athena
+          docker create golemshaper/build:${{ github.ref_name }} -n cyber-athena
           docker cp cyber-athena:/app ./root
           git add .
           git commit -m "feat: Release $(date)"
