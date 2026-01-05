@@ -35,7 +35,7 @@ jobs:
 
       - name: Update gh_pages
         run: |
-          git checkout gh_pages
+          git checkout gh_pages --
           docker create cyber-athena -n cyber-athena
           docker cp cyber-athena:/app ./root
           git add .
