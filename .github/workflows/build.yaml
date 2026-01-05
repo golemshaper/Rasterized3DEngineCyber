@@ -27,7 +27,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: golemshaper/build:latest
+          images: golemshaper/build
 
       - name: Build Docker image
         uses: docker/build-push-action@v6
@@ -43,7 +43,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git pull
           git checkout gh_pages --
-          docker create golemshaper/build:latest -n cyber-athena
+          docker create golemshaper/build:${{ github.ref_name }}" -n cyber-athena
           docker cp cyber-athena:/app ./root
           git add .
           git commit -m "feat: Release $(date)"
