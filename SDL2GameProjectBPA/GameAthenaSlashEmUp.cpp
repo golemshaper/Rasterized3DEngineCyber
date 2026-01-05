@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "GameAthenaSlashEmUp.h"
 #include "MonkeyMesh.h"
 #include <cmath>
@@ -87,7 +87,7 @@ void GameAthenaSlashEmUp::TitleScreenTick(float DeltaTime)
    
     MyScratch->DrawMesh(monkeymesher.GetAthenaMesh(), working_vector, vec3d{ 1.35f,totalTime*2.0f,0 }, vec3d{ 1,1,1 } );
     //TXT  (Center text by subtracting half the character count, and multiplying by character text width)
-    MyScratch->DrawText((SCREEN_X/2)-(3*6), 32, { 255, 255, 255, 255, }, "ATHENA ", MyTextSprites, 1.0f);
+    MyScratch->DrawText((SCREEN_X/2)-(3*12), 32, { 255, 255, 255, 255, }, "CYBER-ATHENA ", MyTextSprites, 1.0f);
 
     MyScratch->SetFade({0,0,0,0}, working_float);
     
@@ -224,7 +224,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     LightningFX(lightning_phase, lightning);
     LightningFX(lightning_phase+3, lightning*1.5f);
     lightning += DeltaTime;
-    if (lightning >= 1.5f)
+    if (lightning >= 2.5f)
     {
         lightning = 0.0f;
         lightning_phase++;
@@ -284,12 +284,11 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->DrawMesh(monkeymesher.GetTeapotMesh(), vec3d{ (sinf(totalTime * 4.0f) * 0.2f) - 1.12f,0.5f,2 }, vec3d{ 1.0, 1.0, totalTime, }, vec3d{ 1,1,1 });
     MyScratch->DrawVerticies = false;
 
-
-    //CAMERA
-
-    //MyScratch->SetCamera(vec3d{ 0.0f, -1.5f, -5.0f + (sin(totalTime * 2.0f) * 0.5f) }, vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f });
-    vec3d camLocation = vec3d{ 0.0f, -1.5f, -5.0f + (sin(totalTime * 2.0f) * 0.5f) };
-    //      YOU MUST SUBTRACT THE CAMERA LOCATION FROM THE TARGET LOCATION! ALSO, MOUSE POSITION OPTIONAL 
+    //----------------------
+    // CAMERA MAIN CAM
+    //----------------------
+    camLocation = vec3d{ 0.0f, -1.5f, -5.0f + (sin(totalTime * 2.0f) * 0.5f) };
+    psudoCamLocation = vec3d{ 0.0f, -1.5f, -5.0f };
     vec3d camLookTarget = player_position - camLocation + vec3d{0,0,2} + vec3d{ sin(mouseX * 0.01f), cos(mouseY * 0.01f), 1.0f };
     if (last_safe_look == vec3d{ 0.0f, 0.0f, 0.0f})
     {
@@ -325,6 +324,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     
     MyScratch->DifferDrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,-1.0f,0.0f }, vec3d{ 1.0f, 0.0f, 0.0f, } + MyScratch->LookAtRotation2D(vec3d{ 0.0f,-1.0f,0.0f },player_position*-1), vec3d{2.0f, 2.0f, 2.0f,},true);
 
+
     //Athena
     MyScratch->MeshColor = { (int)abs(sin(totalTime * 4.0f) * 255),(int)abs(sin(totalTime * 2.0f) * 255),(int)abs(cos(totalTime * 4.0f) * 255),255 };
    
@@ -350,18 +350,35 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
 
 
-    //TEXT AT LAST MESH LOCATION
-    MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y - 8, { 255, 255, 255, 255, }, "LV 1", MyTextSprites, 1.0f);
-    MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y, { 0, 255, 0, 255, }, "HP 25", MyTextSprites, 1.0f);
-    MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y + 8, { 0, 0, 255, 255, }, "MP 10", MyTextSprites, 1.0f);
-    MyScratch->DrawText((int)MyScratch->Get2DPointFromLastLocation().x - 12, (int)MyScratch->Get2DPointFromLastLocation().y + 16, { 255, 0, 255, 255, }, "EXP 000", MyTextSprites, 1.0f);
+    //------------------------------
+    // STATS
+    //------------------------------
+    MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y - 8, { 255, 255, 255, 255, }, "LV 1", MyTextSprites, 1.0f);
+    MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y, { 0, 255, 0, 255, }, "HP 25", MyTextSprites, 1.0f);
+    MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y + 8, { 0, 0, 255, 255, }, "MP 10", MyTextSprites, 1.0f);
+    //MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y + 16, { 255, 0, 255, 255, }, "EXP 000", MyTextSprites, 1.0f);
+    fake_exp_until_stats_container_added+=5;
+    if (fake_exp_until_stats_container_added >= 999)fake_exp_until_stats_container_added = 0;
+    int expValue = fake_exp_until_stats_container_added;
+    std::string expText = "EXP " + std::to_string(expValue);
+    if(expValue < 100 )expText = "EXP 0" + std::to_string(expValue);
+    MyScratch->DrawText(
+        (int)MyScratch->Get2DPointInFromSpace(player_position).x - 12,
+        (int)MyScratch->Get2DPointInFromSpace(player_position).y + 16,
+        { 255, 0, 255, 255 },
+        expText.c_str(),
+        MyTextSprites,
+        1.0f
+    );
+    
 
-
-    //Bullets
+    //------------------------------
+    // Bullets
+    //------------------------------
     TickArcShots(player_position, vec3d{ 0.0f,-1.0f,0.0f }, DeltaTime);
 
 
-    //  Color it
+    //Reset Draw color to white.
     MyScratch->MeshColor = { 255,255,255,255 };
 
 
@@ -448,20 +465,26 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     }
     MyScratch->AddBuffers();
 
-    //TEXTBOX
-    
-   // TextBoxDraw("You can display characters in \na box using this helper function. \nThis is part of this game, \nnot part of the engine!");
-    TextBoxDraw(Reader.GetStringFromSheetTag("Intro"));
-   // TextBoxDraw(Reader.GetStringFromSheetIndex(1));
-
-
+   //Reticle
+    vec3d TargetPos2D = MyScratch->Get2DPointInFromSpace(vec3d{ 0.0f,-1.0f,0.0f });
+    DrawReticle(int(TargetPos2D.x),(int)TargetPos2D.y, 12.0f, totalTime * 2.0f);
 
     //FADE IN HERE!
     if (working_float > 0.0f) {
         //fade in
         working_float -= 0.5f * DeltaTime;
         MyScratch->SetFade({ 0,0,0,0 }, working_float);
+        CircleTransition((1.0f- working_float)*1.5f);
+       
     }
+    else
+    {
+
+        //TEXTBOX
+        TextBoxDraw(Reader.GetStringFromSheetTag("Intro"));
+    }
+
+    
 
 }
 
@@ -725,6 +748,7 @@ void GameAthenaSlashEmUp::UnhingedModeTick(float DeltaTime)
     //TEXTBOX
     TextBoxDraw("You can display characters in \na box using this helper function. \nThis is part of this game, \nnot part of the engine!");
 
+  
 
 }
 
@@ -795,6 +819,10 @@ void GameAthenaSlashEmUp::TextBoxDraw(const char* input)
 
 void GameAthenaSlashEmUp::LightningFX(int phase, float progress)
 {
+    if (progress <= 0.02f)
+    {
+        MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y/2, RGB{ 255,255,0,64 }, RGB{ 255,255,255,64 }, RGB{ 255,255,255,0 }, RGB{ 255,255,0,0 });
+    }
     const int total_verts = 23;
     const int total_rand = 16;
     const int pseudo_random[16] =
@@ -833,6 +861,9 @@ void GameAthenaSlashEmUp::LightningFX(int phase, float progress)
 
 void GameAthenaSlashEmUp::MovementUpdate(float DeltaTime)
 {
+
+
+    vec3d last_safe_pos = player_position;
     vec3d forward = MyScratch->Normalize(MyScratch->CameraTargetLoc); //is this always correct if the camera moves? No idea...But I suspect so...
 
     vec3d up = { 0, 1, 0 };
@@ -849,6 +880,16 @@ void GameAthenaSlashEmUp::MovementUpdate(float DeltaTime)
     vec3d move = (right * MyScratch->Input->GetMovementX()) + (forward * MyScratch->Input->GetMovementY());
     player_position = player_position + move *player_speed* DeltaTime;
 
+
+    //CAMERA COLLIDER:
+    if (MyScratch->SquaredDistance2D(player_position, psudoCamLocation) < 0.3f)
+    {
+        player_position = last_safe_pos;
+    }
+    if (MyScratch->SquaredDistance2D(player_position, psudoCamLocation) > 140.0f)
+    {
+        player_position = last_safe_pos;
+    }
 
 }
 
@@ -891,6 +932,7 @@ void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
                 break;
 
         }
+        //calculate both arc vectors, and lerp between them for angle arcs
        
 
         MyScratch->DrawMesh(
@@ -913,3 +955,42 @@ void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
     }
     MyScratch->AddBuffers();
 }
+
+void GameAthenaSlashEmUp::CircleTransition(float reveal)
+{
+    MyScratch->MoveMainspaceToExtraBuffer();
+    MyScratch->Clear(RGB{ 0,0,0,0 });
+    MyScratch->DrawFilledCircle(SCREEN_X / 2, SCREEN_Y / 2, (int)((SCREEN_X*1.5f )* reveal*0.5f) , RGB{ 255,255,255,255 });
+    MyScratch->ApplyMask();
+    //extra color around circle cutout
+    MyScratch->DrawCircle(SCREEN_X / 2, SCREEN_Y / 2, (int)((SCREEN_X * 1.5f) * reveal * 0.5f), RGB{ 23,255,166,255 });
+
+
+}
+
+void GameAthenaSlashEmUp::DrawReticle(int x, int y, int radius, float progress)
+{
+    const int orbitCount = 4;
+
+    for (int i = 0; i < orbitCount; ++i)
+    {
+        float angle = progress + (i * (MyScratch->PI / 2.0f)); 
+
+        int ox = x + static_cast<int>(SDL_cosf(angle) * radius);
+        int oy = y + static_cast<int>(SDL_sinf(angle) * radius);
+
+        float outline_flag = sin(progress*4.0f);
+        if (outline_flag > 0.0f)
+        {
+            MyScratch->DrawCircle(ox, oy, 5, RGB{ 255, 255, 0, 255 });
+            MyScratch->DrawFilledCircle(ox, oy, 3, RGB{ 255, 255, 0, 255 });
+
+        }
+        else {
+            MyScratch->DrawCircle(ox, oy, 4, RGB{ 255, 255, 0, 160 });
+
+        }
+    }
+}
+
+

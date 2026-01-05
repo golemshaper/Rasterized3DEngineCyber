@@ -34,24 +34,24 @@ void InputWraper::Tick(float DeltaTime)
 
 
     //Walking input
-    if (keyboard[SDL_SCANCODE_A])
+    if (keyboard[SDL_SCANCODE_A] || keyboard[SDL_SCANCODE_LEFT] )
     {
         //lx = -1.0f;
         lx = Lerp(lx, -1.0f, grow * DeltaTime);
     }
     
-    if (keyboard[SDL_SCANCODE_D])
+    if (keyboard[SDL_SCANCODE_D] || keyboard[SDL_SCANCODE_RIGHT])
     {
         //lx = 1.0f;
         lx = Lerp(lx, 1.0f, grow * DeltaTime);
     }
     
-    if (keyboard[SDL_SCANCODE_W])
+    if (keyboard[SDL_SCANCODE_W] || keyboard[SDL_SCANCODE_UP])
     {
        // ly = 1.0f;
         ly = Lerp(ly, 1.0f, grow * DeltaTime);
     }
-    if (keyboard[SDL_SCANCODE_S])
+    if (keyboard[SDL_SCANCODE_S] || keyboard[SDL_SCANCODE_DOWN])
     {
         //ly = -1.0f;
         ly = Lerp(ly, -1.0f, grow * DeltaTime);

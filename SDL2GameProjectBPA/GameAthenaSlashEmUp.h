@@ -30,6 +30,8 @@ public:
 	float progress_for_arc_shots=0.0f;
 
 	//actors
+	vec3d camLocation = { 0,0,0 };
+	vec3d psudoCamLocation= { 0,0,0 };
 	vec3d player_position = { 0,0,0 };
 	vec3d player_move = { 0,0,0 };
 	vec3d last_safe_look = { 0,0,0 };
@@ -41,6 +43,7 @@ public:
 	float working_float = 0.0f;
 	float lightning = 0.0f;
 	int lightning_phase = 0;
+	int fake_exp_until_stats_container_added = 0;
 
 	//Objects
 	TextFileReader Reader;
@@ -62,5 +65,11 @@ public:
 	void MovementUpdate(float DeltaTime);
 
 	void TickArcShots(vec3d start, vec3d end, float DeltaTime);
+
+	void CircleTransition(float reveal);
+
+	void DrawReticle(int x, int y, int radius, float progress);
+
+	void CameraCollision2D();
 };
 

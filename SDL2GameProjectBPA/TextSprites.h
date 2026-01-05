@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "DrawScratchSpace.h"
 #include <unordered_map>
@@ -844,8 +844,7 @@ public:
         };
         return ToSprite(data);
     }
-
-
+    
     static Sprite ToSprite(RGB data[36])
     {
         Sprite result;
