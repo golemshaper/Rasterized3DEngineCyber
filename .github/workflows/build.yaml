@@ -44,8 +44,10 @@ jobs:
           git config --local user.name "GitHub Action"
           git pull
           git checkout gh_pages --
-          docker create golemshaper/build:${{ github.ref_name }} -n cyber-athena
-          docker cp cyber-athena:/app ./root
+          CONTAINER_ID=$(docker create golemshaper/build:${{ github.ref_name }})
+          echo "Extracting files from ${CONTAINER_ID} into ./root"
+          mkdir -p ./root
+          docker cp ${CONTAINER_ID}:/app ./root
           git add .
           git commit -m "feat: Release $(date)"
           git push
