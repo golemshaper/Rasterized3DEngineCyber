@@ -1,4 +1,3 @@
-#pragma once
 #include "GameTwo.h"
 #include "MonkeyMesh.h"
 void GameTwo::Tick(float DeltaTime)

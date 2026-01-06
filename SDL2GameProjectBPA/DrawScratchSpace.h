@@ -8,9 +8,9 @@
 #define TOTAL_PIXELS (SCREEN_X * SCREEN_Y)
 
 
-using namespace std; 
 #include <vector>
 #include "InputWraper.h"
+#include <cmath>
 class TextSprites;
 
 //STRUCTS
@@ -140,7 +140,7 @@ struct vec3d {
     }
 
     float length() const {
-        return sqrt(length_squared());
+        return std::sqrt(length_squared());
     }
 
 };
@@ -149,7 +149,7 @@ struct triangle{
 };
 
 struct Mesh {
-    vector<triangle> Tris;
+    std::vector<triangle> Tris;
 };
 struct mat4x4
 {

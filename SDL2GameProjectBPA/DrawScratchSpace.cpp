@@ -518,11 +518,11 @@ void DrawScratchSpace::DrawSprite(int startX, int startY, RGB* SpriteData, int s
 void DrawScratchSpace::DrawSprite(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight, float angle)
 {
     RGB Black = { 0, 0, 0 };
-    Point pivot = { spriteWidth / 2.0f, spriteHeight / 2.0f };
+    Point pivot = { static_cast<int>(spriteWidth / 2.0f), static_cast<int>(spriteHeight / 2.0f) };
 
     for (int y = 0; y < spriteHeight; ++y) {
         for (int x = 0; x < spriteWidth; ++x) {
-            Point local = { static_cast<float>(x), static_cast<float>(y) };
+            Point local = { x, y };
             Point rotated = RotatePoint(local, pivot, angle);
 
             int screenX = startX + static_cast<int>(rotated.x);
@@ -1114,7 +1114,7 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
     // -----------------------------
     //DRAW
     //-----------------------------
-    vector<triangle> vecTrianglesToRaster;
+    std::vector<triangle> vecTrianglesToRaster;
 
     for (auto tri : m.Tris)
     {
@@ -1194,9 +1194,9 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         int B = MeshColor.b * ZFog * 0.75f;
 
         //COLOR FROM F+GLOBAL MESH COLOR:
-        Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {1*R,G,B} };
-        Vertex p1 = { triProjected.p[1].x, triProjected.p[1].y, {R,1*G,B} };
-        Vertex p2 = { triProjected.p[2].x, triProjected.p[2].y, {R,G,1*B} };
+        Vertex p0 = { static_cast<int>(triProjected.p[0].x), static_cast<int>(triProjected.p[0].y), {1*R,G,B} };
+        Vertex p1 = { static_cast<int>(triProjected.p[1].x), static_cast<int>(triProjected.p[1].y), {R,1*G,B} };
+        Vertex p2 = { static_cast<int>(triProjected.p[2].x), static_cast<int>(triProjected.p[2].y), {R,G,1*B} };
 
 
         ////LIGHT FX (Won't work since you draw on top of tris that are already connected to the next one...
@@ -1214,9 +1214,9 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         if (DrawHighlightEdgeOnly)
         {
             //Highlight the Game needs to turn this on, and then draw two mesh passes (It auto-turns off after the mesh is done rendering.
-            Vertex light_fx_p0 = { triProjected.p[0].x, triProjected.p[0].y, RGB{R,G,B}*2 };
-            Vertex light_fx_p1 = { triProjected.p[1].x, triProjected.p[1].y, RGB{R,G,B}*2 };
-            Vertex light_fx_p2 = { triProjected.p[2].x, triProjected.p[2].y, RGB{R,G,B}*2 };
+            Vertex light_fx_p0 = { static_cast<int>(triProjected.p[0].x), static_cast<int>(triProjected.p[0].y), RGB{R,G,B}*2 };
+            Vertex light_fx_p1 = { static_cast<int>(triProjected.p[1].x), static_cast<int>(triProjected.p[1].y), RGB{R,G,B}*2 };
+            Vertex light_fx_p2 = { static_cast<int>(triProjected.p[2].x), static_cast<int>(triProjected.p[2].y), RGB{R,G,B}*2 };
             DrawTriangle(light_fx_p0 - 2, light_fx_p1 - 1, light_fx_p2 - 1);
         }
         else
