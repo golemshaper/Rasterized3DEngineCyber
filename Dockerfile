@@ -19,6 +19,8 @@ RUN apt-get update \
         python3-venv \
         curl \
         nodejs \
+        gcc-mingw-w64-x86-64-posix \
+        g++-mingw-w64-x86-64-posix \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Cmake
@@ -42,7 +44,7 @@ RUN mkdir -p /app && \
 USER build
 
 # Copy config files into this current image
-COPY ./CMakeLists.txt ./conanfile.txt wasm.profile requirements.txt release.py ./
+COPY ./CMakeLists.txt ./conanfile.txt wasm.profile requirements.txt release.py windows.profile ./
 
 # Copy the script files
 COPY ./scripts ./scripts
@@ -53,8 +55,11 @@ RUN bash ./scripts/setup.sh
 # Copy the source code into this image
 COPY ./SDL2GameProjectBPA ./SDL2GameProjectBPA
 
-# Run the build script
-RUN ./scripts/wasm.sh
+# Run the windows build script
+RUN ./scripts/build.sh windows.profile && cp -r /app/build/bin /app/windows
+
+# Run the wasm build script
+RUN ./scripts/build.sh wasm.profile
 
 # Start a new container image
 FROM scratch
@@ -62,5 +67,8 @@ FROM scratch
 # Create a folder
 WORKDIR /app
 
-# Copy in the output of the build
+# Copy in the output of the WASM build
 COPY --from=builder /app/build/bin ./
+
+# Copy in the output of the windows build
+COPY --from=builder /app/windows ./

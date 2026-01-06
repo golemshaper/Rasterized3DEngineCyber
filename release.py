@@ -10,14 +10,14 @@ venv = Path("./.venv")
 
 CXX_FLAGS=""
 conan_release_profile = "conan-release"
-WASM = len(sys.argv) > 1
+BUILD_PROFILE = sys.argv[1] if len(sys.argv) > 1 else False
+
+if BUILD_PROFILE:
+   print(f"Running with profile {BUILD_PROFILE}")
 
 if platform.system() == "Windows":
     print("Running on Microsoft Windows")
     conan_release_profile = "conan-default"
-else:
-    CXX_FLAGS="-Wno-c++11-narrowing"
-
 
 def run(cmd):
     """Runs a command via the shell"""
@@ -46,11 +46,11 @@ try:
 except Exception as e:
     print(f"Failed to delete CMake file. Reason: {e}")
 
-if WASM:
-    run(["conan", "install", ".", "-pr:b", "default", "-pr:h", "wasm.profile", "-s", "build_type=Release", "--build", "missing", "-of", "build"])
-else:
-    # Download 3rd party libraries
-    run(["conan", "install", ".", "--output-folder=build", "--build=missing"])
+additional_args = ["-pr:b", "default", "-pr:h", BUILD_PROFILE] if BUILD_PROFILE else []
+
+run(
+    ["conan", "install", ".", "-s", "build_type=Release", "--build", "missing", "-of", "build"] + additional_args
+)
 
 # Generate build files (such as Makefile)
 run(["cmake", ".", "--preset", conan_release_profile])
