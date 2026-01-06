@@ -8,7 +8,7 @@ class GameAthenaSlashEmUp : public Game
 public:
 	float GameSpeed = 1.0f;
 	//Current game mode
-	int mode = 0;
+	int mode = 1;
 
 
 
@@ -58,7 +58,6 @@ public:
 	void Tick(float DeltaTime);
 	void TitleScreenTick(float DeltaTime);
 	void GameModeTick(float DeltaTime);
-	void UnhingedModeTick(float DeltaTime);
 	void TextBoxDraw(const char* input);
 	void LightningFX(int phase, float progress);
 
@@ -70,6 +69,5 @@ public:
 
 	void DrawReticle(int x, int y, int radius, float progress);
 
-	void CameraCollision2D();
 };
 
