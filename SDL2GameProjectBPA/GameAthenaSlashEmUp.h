@@ -76,15 +76,29 @@ public:
 	//If an actor is of a certain type, say an enemy, you can add its ID to a list of IDs of that enemy type, and use the ID to index
 	//the Actors list, and perform movement based of functions designed to move enemies of that type.
 	//That's how I think this'll all work.
-	struct Actor {
-		Mesh m;
-		vec3d loc;
-		vec3d rot;
-		vec3d scale;
-		float speed;
-		int id;
-		float timeCounter;
-	};
 
+	//An Actor is not part of the "Engine" as the requirements will differ between games
+
+	//If you need special drawing functions for multiple actors to work as one, it'll be as simple as keeping all parts in their own list, and using the ID to refer to them.
+	//Store an ID for the main character in init.
+	//
+	//Things like speed and time counter should maybe be in a speeds list or a time counter list, that shares the same index as the actor....... like a crude component system...
+	struct Actor {
+		Mesh  m{};
+		vec3d loc{ 0,0,0 };
+		vec3d rot{ 0,0,0 };
+		vec3d scale{ 1,1,1 };
+		RGB meshColor = { 255,255,255,255 };
+		float speed{ 0.0f };
+		float timeCounter{ 0.0f };
+		vec3d offset_loc{ 0,0,0 };
+		vec3d offset_rot{ 0,0,0 };
+	};
+	std::vector<Actor> AllActors;
+	int PlayerID = -1;
+	int MonkeyID = -1;
+	int TeaPotID = -1;
+	int CreateActor(const Actor& a);
+	void DrawActorsFromList(const std::vector<Actor>& actors, bool DrawDifferNow = false);
 };
 
