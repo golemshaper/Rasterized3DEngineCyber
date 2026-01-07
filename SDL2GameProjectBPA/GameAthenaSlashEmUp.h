@@ -69,5 +69,22 @@ public:
 
 	void DrawReticle(int x, int y, int radius, float progress);
 
+
+	//Actor struct added. Make a function called "Create Actor"
+	//Pre create actors on initialize via that Create Actor function, and assign the resulting Actor to a list of actors
+	//Iterrate over all actors, rendering them, and adding to their time counter.
+	//If an actor is of a certain type, say an enemy, you can add its ID to a list of IDs of that enemy type, and use the ID to index
+	//the Actors list, and perform movement based of functions designed to move enemies of that type.
+	//That's how I think this'll all work.
+	struct Actor {
+		Mesh m;
+		vec3d loc;
+		vec3d rot;
+		vec3d scale;
+		float speed;
+		int id;
+		float timeCounter;
+	};
+
 };
 
