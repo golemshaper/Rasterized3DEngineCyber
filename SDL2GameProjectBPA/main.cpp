@@ -136,7 +136,6 @@ bool run(SDL_Renderer* renderer) {
 
 // The entry point for the browser. Called every frame
 bool wasm_main(double time, void* renderer) {
-    std::cout << "Tick: " << time << std::endl;
     return run((SDL_Renderer *) renderer);
 }
 
@@ -168,6 +167,7 @@ int main(int argc, char* argv[]) {
     }
 
 #ifdef __EMSCRIPTEN__
+  std::cout << "Registering request_animation_frame(wasm_main)" << std::endl;
   // Register the `wasm_main` as the entry point for the browser
   emscripten_request_animation_frame_loop(wasm_main, renderer);
 #else
