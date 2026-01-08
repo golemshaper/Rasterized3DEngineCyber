@@ -83,6 +83,8 @@ public:
 	//Store an ID for the main character in init.
 	//
 	//Things like speed and time counter should maybe be in a speeds list or a time counter list, that shares the same index as the actor....... like a crude component system...
+	
+	//gameplay structs
 	struct Actor {
 		Mesh  m{};
 		vec3d loc{ 0,0,0 };
@@ -94,7 +96,18 @@ public:
 		vec3d offset_loc{ 0,0,0 };
 		vec3d offset_rot{ 0,0,0 };
 	};
+	struct Stats {
+		int lvl = 1;
+		int hp = 10;
+		int mp = 5;
+		int atk = 1;
+		int def = 1;
+		int exp = 0;
+	};
+	
+	//--------------------------------------------------------------------------------------------------------------
 	std::vector<Actor> AllActors;
+	Stats PlayerStats;
 	int PlayerID = -1;
 	int MonkeyID = -1;
 	int TeaPotID = -1;
