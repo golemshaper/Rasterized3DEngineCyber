@@ -556,11 +556,13 @@ void GameAthenaSlashEmUp::TextBoxDraw(const char* input)
     //Left Side
     MyScratch->DrawLine(boarder , SCREEN_Y - (64 + boarder), boarder , SCREEN_Y - boarder, RGB{ 222,222,222,255 });
 
-
+    //Coordinates
+    const int textX = boarder + 2;
+    const int textY = SCREEN_Y - (64);
     //Shadow
-    MyScratch->DrawText(boarder + 3, SCREEN_Y - (63), { 1, 1, 1, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
+    MyScratch->DrawText(textX+1, textY+1, { 1, 1, 1, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
     //Text
-    MyScratch->DrawText(boarder + 2, SCREEN_Y - (64), { 255, 255, 255, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
+    MyScratch->DrawText(textX, textY, { 255, 255, 255, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
 
     //Blinking cursor 
     if (sin(totalTime * 8.0f) > 0.0f)
