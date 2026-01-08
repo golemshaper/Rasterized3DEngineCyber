@@ -7,6 +7,9 @@ COPY ./CMakeLists.txt ./conanfile.txt wasm.profile release.py windows.profile ./
 # Copy the script files
 COPY ./scripts/build.sh ./scripts/build.sh
 
+# Copy the Web assets
+COPY ./web ./web
+
 # Copy the source code into this image
 COPY ./SDL2GameProjectBPA ./SDL2GameProjectBPA
 
