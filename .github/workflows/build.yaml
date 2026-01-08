@@ -61,7 +61,7 @@ jobs:
           docker cp ${CONTAINER_ID}:/app/windows/. "${artifact_dir}/windows"
           
           tar -czvf "${output_targz}" "${artifact_dir}/windows"
-          echo "WINDOWS_TAR_GZ={output_targz}" >> $GITHUB_ENV
+          echo "WINDOWS_TAR_GZ=${output_targz}" >> $GITHUB_ENV
 
       - uses: actions/upload-artifact@v4
         with:
