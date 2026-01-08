@@ -74,3 +74,5 @@ CMakeUserPresets.json
 build/
 # Ignore Git Ignore
 .venv/
+# ignore any "tmp" folder used for testing docker output
+tmp/

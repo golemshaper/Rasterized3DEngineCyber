@@ -14,6 +14,10 @@ BUILD_PROFILE = sys.argv[1] if len(sys.argv) > 1 else False
 
 if BUILD_PROFILE:
    print(f"Running with profile {BUILD_PROFILE}")
+   # If we're building windows ON LINUX we need to statically link everything
+   # So we have a single executable
+   if "windows" in BUILD_PROFILE:
+       CXX_FLAGS=f"{CXX_FLAGS} -static"
 
 if platform.system() == "Windows":
     print("Running on Microsoft Windows")
