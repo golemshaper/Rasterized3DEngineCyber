@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en-us">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Cyber Athena</title>
+    <style>
+        html, body, main {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            background-color: black;
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* the canvas *mu
+        st not* have any border or padding, or mouse coords will be wrong */
+        canvas {
+            display: block;
+            border: 0px none;
+            background-color: black;
+            /*
+            Allow the game to occupy the full height of the browser, and let the width be calulated
+            based of this
+            */
+            height: 100%;
+            /* 
+            Set the max width of the canvas to match the screen width. Because the height is set to 100%,
+            the browser will calcuate the width based on the original aspect ratio. This prevents the
+            width from overflowing if there isn't enough space to draw.
+            */
+            max-width: 100vw;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+    </main>
+    <script type='text/javascript'>
+        var canvasElement = document.getElementById('canvas');
+
+        // As a default initial behavior, pop up an alert when webgl context is lost. To make your
+        // application robust, you may want to override this behavior before shipping!
+        // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+        canvasElement.addEventListener("webglcontextlost", (e) => {
+            alert('WebGL context lost. You will need to reload the page.');
+            e.preventDefault();
+        }, false);
+
+        var Module = {
+            print(...args) {
+                console.log(...args);
+            },
+            canvas: canvasElement,
+            setStatus(text) {
+                if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
+                if (text === Module.setStatus.last.text) return;
+                var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+                var now = Date.now();
+                if (m && now - Module.setStatus.last.time < 30) return; // if this is a progress update, skip it if too soon
+                Module.setStatus.last.time = now;
+                Module.setStatus.last.text = text;
+                if (m) {
+                    text = m[1];
+                } 
+            },
+            totalDependencies: 0,
+            monitorRunDependencies(left) {
+                this.totalDependencies = Math.max(this.totalDependencies, left);
+                Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies - left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+            }
+        };
+        Module.setStatus('Downloading...');
+        window.onerror = () => {
+            Module.setStatus('Exception thrown, see JavaScript console');
+            Module.setStatus = (text) => {
+                if (text) console.error('[post-exception status] ' + text);
+            };
+        };
+    </script>
+    {{{ SCRIPT }}}
+</body>
+
+</html>

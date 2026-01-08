@@ -13,6 +13,9 @@ include(${CMAKE_BINARY_DIR}/conan_toolchain.cmake)
 # Copy assets folder to output
 file(COPY SDL2GameProjectBPA/Assets DESTINATION ${CMAKE_BINARY_DIR}/bin)
 
+# Copy web assets to output
+file(COPY web DESTINATION ${CMAKE_BINARY_DIR})
+
 # Find all the source files
 file(GLOB SOURCES
   SDL2GameProjectBPA/*.h
@@ -33,6 +36,6 @@ target_link_libraries(${PROJECT_NAME} SDL3::SDL3)
 if(EMSCRIPTEN)
   set(CMAKE_EXECUTABLE_SUFFIX ".html")
   set_target_properties(${PROJECT_NAME} PROPERTIES
-      LINK_FLAGS "--preload-file ${CMAKE_BINARY_DIR}/bin/Assets@Assets"
+      LINK_FLAGS "--preload-file ${CMAKE_BINARY_DIR}/bin/Assets@Assets --shell-file ${CMAKE_BINARY_DIR}/web/index.html"
   )
 endif()
