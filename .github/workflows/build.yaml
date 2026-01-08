@@ -50,25 +50,23 @@ jobs:
       
       - name: Extract Windows Build
         run: |
-          artifact_dir=$(mktemp -d)
-          archive_dir=$(mktemp -d)
-          output_targz="${archive_dir}/windows.tar.gz"
-          mkdir -p ${artifact_dir}/windows
+          ARTIFACT_DIR=$(mktemp -d)
+          WINDOWS_ARTIFACT_DIR="${ARTIFACT_DIR}/windows"
+          mkdir -p ${WINDOWS_ARTIFACT_DIR}
 
           CONTAINER_ID=$(docker create golemshaper/build:${{ github.ref_name }} --)
           
-          echo "Extracting files from ${CONTAINER_ID} into ${artifact_dir}"
-          docker cp ${CONTAINER_ID}:/app/windows/. "${artifact_dir}/windows"
-          
-          tar -czvf "${output_targz}" "${artifact_dir}/windows"
-          echo "WINDOWS_TAR_GZ=${output_targz}" >> $GITHUB_ENV
+          echo "Extracting files from ${CONTAINER_ID} into ${WINDOWS_ARTIFACT_DIR}"
+          docker cp ${CONTAINER_ID}:/app/windows/. "${WINDOWS_ARTIFACT_DIR}"
+
+          echo "WINDOWS_ARTIFACT_DIR=${WINDOWS_ARTIFACT_DIR}" >> $GITHUB_ENV
 
       - uses: actions/upload-artifact@v4
         with:
           # Name of the artifact to upload.
           name: windows
           # A file, directory or wildcard pattern that describes what to upload
-          path: "${{ env.WINDOWS_TAR_GZ }}"
+          path: "${{ env.WINDOWS_ARTIFACT_DIR }}"
 
       - name: Update gh_pages
         run: |
