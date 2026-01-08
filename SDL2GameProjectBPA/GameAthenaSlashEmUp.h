@@ -95,6 +95,7 @@ public:
 		float timeCounter{ 0.0f };
 		vec3d offset_loc{ 0,0,0 };
 		vec3d offset_rot{ 0,0,0 };
+		bool isAlive = false;
 	};
 	struct Stats {
 		int lvl = 1;
@@ -113,5 +114,10 @@ public:
 	int TeaPotID = -1;
 	int CreateActor(const Actor& a);
 	void DrawActorsFromList(const std::vector<Actor>& actors, bool DrawDifferNow = false);
+
+	bool IsColliding(vec3d a, vec3d b, float radius);
+	bool IsColliding2D(vec3d a, vec3d b, float radius);
+
+	
 };
 

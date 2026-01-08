@@ -1,4 +1,5 @@
-﻿#include "GameAthenaSlashEmUp.h"
+﻿#pragma once
+#include "GameAthenaSlashEmUp.h"
 #include "MonkeyMesh.h"
 #include <cmath> 
 #include <SDL3/SDL_mouse.h>
@@ -632,7 +633,7 @@ void GameAthenaSlashEmUp::MovementUpdate(float DeltaTime)
 
 
     //CAMERA COLLIDER:
-    if (MyScratch->SquaredDistance2D(player_position, psudoCamLocation) < 0.3f)
+    if (MyScratch->SquaredDistance2D(player_position, psudoCamLocation) < 0.11f)
     {
         player_position = last_safe_pos;
     }
@@ -640,6 +641,7 @@ void GameAthenaSlashEmUp::MovementUpdate(float DeltaTime)
     {
         player_position = last_safe_pos;
     }
+
 
 }
 
@@ -758,5 +760,21 @@ void GameAthenaSlashEmUp::DrawActorsFromList(const std::vector<Actor>& actors, b
         MyScratch->DifferDrawMesh(actors[i].m, actors[i].loc, actors[i].rot, actors[i].scale,true);
     }
     if(DrawDifferNow)MyScratch->DrawSortedDifferedMeshes();
+}
+
+bool GameAthenaSlashEmUp::IsColliding(vec3d a, vec3d b, float radius)
+{
+    float radius_squared = radius * radius;
+    float dist = MyScratch->SquaredDistance(a, b);
+    if (dist < radius_squared)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool GameAthenaSlashEmUp::IsColliding2D(vec3d a, vec3d b, float radius)
+{
+    return IsColliding(vec3d{ a.x,0,a.z }, vec3d{ b.x,0.0f,b.z }, radius);
 }
 
