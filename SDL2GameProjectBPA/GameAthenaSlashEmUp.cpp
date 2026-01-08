@@ -27,8 +27,17 @@ void GameAthenaSlashEmUp::Initialize()
         bullet_arcshots[i].y = cos(i) * 0.2f;
         bullet_arcshots[i].z = 0;
     }
-
-
+    MonkeyMesh monkeyMesh;
+    //CREATE PLAYER (Implied Actor Struct!)
+    PlayerID = CreateActor({ 
+        monkeyMesh.GetTeapotMesh(), //Make Athena
+        vec3d{ -2.0f,-0.5f,-2.25f},
+        vec3d{1.0,0.0f,0.0f},
+        vec3d{0.5f,0.5f,0.5f},
+        RGB{255,255,255,255},
+        12.0f,
+        0.0f
+        });
 }
 void GameAthenaSlashEmUp::Tick(float DeltaTime)
 {
@@ -113,11 +122,9 @@ void GameAthenaSlashEmUp::TitleScreenTick(float DeltaTime)
 void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 {
     //MAIN GAME HERE...
-    
     //Count and clear
     totalTime += DeltaTime;
     MyScratch->Clear(RGB{ 0,2,8 });
-
     //CAMERA FOV
     MyScratch->SetCameraFOV(90 + (abs(cos(totalTime * 2.0f)) * 4));
 
@@ -342,6 +349,12 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
             abs(sin(totalTime * 4.0f))),
         true
     );
+//DRAW ANOTHER ATHENA, BUT USING THE ADD ACTOR VERSION!
+    AllActors[PlayerID].loc.x = sin(totalTime * 2.0f) - 4.0f;
+    AllActors[PlayerID].loc.y = cos(totalTime * 2.0f);
+    DrawActorsFromList(AllActors); //IN REALITY WE WOULD NOT DO ALL ACTORS AT ONCE! WE'D DO CATEGORIES OF ACTORS! EACH AND WE'D HAVE FUNCTIONS TO DRAW AND MOVE THEM AT SAME TIME!
+//DRAW ANOTHER ATHENA, BUT USING THE ADD ACTOR VERSION!
+
  
 
     //DRAW Z SORTED MESHES
@@ -730,4 +743,20 @@ void GameAthenaSlashEmUp::DrawReticle(int x, int y, int radius, float progress)
     }
 }
 
+int GameAthenaSlashEmUp::CreateActor(const Actor& a)
+{
+    AllActors.push_back(a);
+    return static_cast<int>(AllActors.size() - 1);
+}
+
+void GameAthenaSlashEmUp::DrawActorsFromList(const std::vector<Actor>& actors, bool DrawDifferNow)
+{
+   
+    for (int i = 0; i < actors.size(); ++i)
+    {
+        MyScratch->MeshColor = actors[i].meshColor;
+        MyScratch->DifferDrawMesh(actors[i].m, actors[i].loc, actors[i].rot, actors[i].scale,true);
+    }
+    if(DrawDifferNow)MyScratch->DrawSortedDifferedMeshes();
+}
 
