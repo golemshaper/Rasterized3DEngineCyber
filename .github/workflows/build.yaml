@@ -15,6 +15,8 @@ jobs:
       # Give the default GITHUB_TOKEN write permission to commit and push the
       # added or changed files to the repository.
       contents: write
+      # Permission to read from GHCR
+      packages: read
 
     steps:
       - name: Checkout source code
@@ -28,15 +30,45 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: golemshaper/build
+        
+      - name: Log in to the GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
+          file: ./Dockerfile
           push: false
           load: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      
+      - name: Extract Windows Build
+        run: |
+          artifact_dir=$(mktemp -d)
+          archive_dir=$(mktemp -d)
+          output_targz="${archive_dir}/windows.tar.gz"
+          mkdir -p ${artifact_dir}/windows
+
+          CONTAINER_ID=$(docker create golemshaper/build:${{ github.ref_name }} --)
+          
+          echo "Extracting files from ${CONTAINER_ID} into ${artifact_dir}"
+          docker cp ${CONTAINER_ID}:/app/windows/. "${artifact_dir}/windows"
+          
+          tar -czvf "${output_targz}" "${artifact_dir}/windows"
+          echo "WINDOWS_TAR_GZ={output_targz}" >> $GITHUB_ENV
+
+      - uses: actions/upload-artifact@v4
+        with:
+          # Name of the artifact to upload.
+          name: windows
+          # A file, directory or wildcard pattern that describes what to upload
+          path: ${WINDOWS_TAR_GZ}
 
       - name: Update gh_pages
         run: |
@@ -46,7 +78,7 @@ jobs:
           git checkout gh_pages --
           CONTAINER_ID=$(docker create golemshaper/build:${{ github.ref_name }} --)
           echo "Extracting files from ${CONTAINER_ID} into ./"
-          docker cp ${CONTAINER_ID}:/app/. ./
+          docker cp ${CONTAINER_ID}:/app/wasm/. ./
           cp Rasterized3DEngineCyber.html index.html
           git add .
           git commit -m "feat: Release $(date)"

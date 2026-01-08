@@ -1,5 +1,4 @@
-﻿#pragma once
-#include "GameAthenaSlashEmUp.h"
+﻿#include "GameAthenaSlashEmUp.h"
 #include "MonkeyMesh.h"
 #include <cmath> 
 #include <SDL3/SDL_mouse.h>
