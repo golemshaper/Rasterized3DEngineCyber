@@ -146,6 +146,7 @@ struct vec3d {
 };
 struct triangle{
     vec3d p[3];
+    float depth = 0.0f;
 };
 
 struct Mesh {
@@ -173,10 +174,13 @@ class DrawScratchSpace {
 public:
     RGB MainSpace[TOTAL_PIXELS]; //Screen X * Screen Y size
     RGB ExtraBuffer[TOTAL_PIXELS]; //Screen X * Screen Y size
+    RGB ZBuffer[TOTAL_PIXELS]; //Screen X * Screen Y size
     void MoveMainspaceToExtraBuffer();
     void MultiplyBuffers();
     void AddBuffers();
     void AverageBuffers();
+    void ClearZBufffer();
+    void DrawZBufffer();
     void ApplyMask();
     void BlendBuffers(float amount);
     void Initialize();
@@ -197,6 +201,7 @@ public:
     void DrawSquareMultiply(int x, int y, int size, RGB color);
     void DrawTriangle(Point p0, Point p1, Point p2, RGB color);
     void DrawTriangle(Vertex v0, Vertex v1, Vertex v2);
+    void DrawTriangleToZBuffer(Vertex v0, Vertex v1, Vertex v2,int z);
     void DrawCircle(int x, int y, int radius, RGB color);
     void DrawFilledCircle(int x, int y, int radius, RGB color);
     void DrawTriangleGlitchy(Vertex v0, Vertex v1, Vertex v2);
@@ -235,6 +240,7 @@ public:
     int EdgeBrightness = 255;
     bool DrawEdges = false;
     bool DrawHighlightEdgeOnly = false;
+    bool ZWriteOn = false;
 //3D Primitives:
     Mesh MeshCube;
     mat4x4 MatrixProj;

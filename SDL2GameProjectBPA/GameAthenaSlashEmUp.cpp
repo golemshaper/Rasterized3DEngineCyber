@@ -126,6 +126,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //Count and clear
     totalTime += DeltaTime;
     MyScratch->Clear(RGB{ 0,2,8 });
+    MyScratch->ClearZBufffer();
     //CAMERA FOV
     MyScratch->SetCameraFOV(90 + (abs(cos(totalTime * 2.0f)) * 4));
 
@@ -264,8 +265,9 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ (player_position.x * -0.5f) + 11, 2.0f, -4 }, vec3d{ totalTime, 0.0, 0.0, }, vec3d{ 9.0, 4.0, 4.0, });
     //MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ (player_position.x * -0.5f) - 11, 2.0f, -4 }, vec3d{ totalTime, 0.0, 0.0, }, vec3d{ 9.0, 4.0, 4.0, });
     //center
+    MyScratch->ZWriteOn = false;
     MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ player_position.x * -0.5f,0.0f, -4 }, vec3d{ totalTime, 0.0, 0.0, }, vec3d{ 15.0, 4.0, 4.0, });
-   
+    MyScratch->ZWriteOn = true;
 
 
 
@@ -497,7 +499,8 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         TextBoxDraw(Reader.GetStringFromSheetTag("Intro"));
     }
 
-    
+    //TO SEE ZBuffer ENABLE THIS!
+    //MyScratch->DrawZBufffer();
 
 }
 

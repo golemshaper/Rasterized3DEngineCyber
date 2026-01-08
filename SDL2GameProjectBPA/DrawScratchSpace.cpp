@@ -33,6 +33,22 @@ void DrawScratchSpace::AverageBuffers()
     }
 }
 
+void DrawScratchSpace::ClearZBufffer()
+{
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+        ZBuffer[i] = RGB{ 255, 255, 255 ,255 };
+    }
+}
+
+void DrawScratchSpace::DrawZBufffer()
+{
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+        MainSpace[i] = RGB{255,255,255,255} - ZBuffer[i];
+    }
+}
+
 void DrawScratchSpace::ApplyMask()
 {
     for (int i = 0; i < TOTAL_PIXELS; ++i)
@@ -339,6 +355,90 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2)
             };
 
             MainSpace[y * SCREEN_X + x] = color;
+        }
+    }
+}
+void DrawScratchSpace::DrawTriangleToZBuffer(Vertex v0, Vertex v1, Vertex v2, int z)
+{
+    if (ZWriteOn == false)
+    {
+        return;
+    }
+    //FIND A WAY TO NOT NEED TO DUPLICATE THIS CODE (MAYBE PASS THE BUFFER IN AS ARGS)
+    // Sort vertices by y-coordinate
+    if (v1.y < v0.y) std::swap(v0, v1);
+    if (v2.y < v0.y) std::swap(v0, v2);
+    if (v2.y < v1.y) std::swap(v1, v2);
+
+    auto interpolate = [](int y, const Vertex& a, const Vertex& b) -> Vertex {
+        if (b.y == a.y) return a;
+        float t = static_cast<float>(y - a.y) / (b.y - a.y);
+        return {
+            static_cast<int>(a.x + t * (b.x - a.x)),
+            y,
+            {
+                static_cast<int>(a.color.r + t * (b.color.r - a.color.r)),
+                static_cast<int>(a.color.g + t * (b.color.g - a.color.g)),
+                static_cast<int>(a.color.b + t * (b.color.b - a.color.b))
+            }
+        };
+    };
+
+    // First, draw the top part of the triangle (from v0 to v1)
+    for (int y = v0.y; y < v1.y; ++y) {
+        if (y < 0 || y >= SCREEN_Y) continue;
+
+        Vertex va = interpolate(y, v0, v1);
+        Vertex vb = interpolate(y, v0, v2);
+        
+
+        if (va.x > vb.x) std::swap(va, vb);
+
+        for (int x = va.x; x <= vb.x; ++x) {
+            if (x < 0 || x >= SCREEN_X) continue;
+            float t = (vb.x == va.x) ? 0.0f : static_cast<float>(x - va.x) / (vb.x - va.x);
+
+            RGB color = {
+                static_cast<int>(va.color.r + t * (vb.color.r - va.color.r)),
+                static_cast<int>(va.color.g + t * (vb.color.g - va.color.g)),
+                static_cast<int>(va.color.b + t * (vb.color.b - va.color.b))
+            };
+            if (ZBuffer[y * SCREEN_X + x].r < z)
+            {
+                //don't draw hidden triangle parts!
+               // ZBuffer[y * SCREEN_X + x] = RGB{ ZBuffer[y * SCREEN_X + x].r,255,255,255 };
+                continue;
+            }
+            ZBuffer[y * SCREEN_X + x] = RGB{ z,z,z,255 };
+        }
+    }
+
+    // Now, draw the bottom part of the triangle (from v1 to v2)
+    for (int y = v1.y; y <= v2.y; ++y) {
+        if (y < 0 || y >= SCREEN_Y) continue;
+
+        Vertex va = interpolate(y, v1, v2);
+        Vertex vb = interpolate(y, v0, v2);
+
+        if (va.x > vb.x) std::swap(va, vb);
+
+        for (int x = va.x; x <= vb.x; ++x) {
+            if (x < 0 || x >= SCREEN_X) continue;
+            float t = (vb.x == va.x) ? 0.0f : static_cast<float>(x - va.x) / (vb.x - va.x);
+
+            RGB color = {
+                static_cast<int>(va.color.r + t * (vb.color.r - va.color.r)),
+                static_cast<int>(va.color.g + t * (vb.color.g - va.color.g)),
+                static_cast<int>(va.color.b + t * (vb.color.b - va.color.b))
+            };
+
+            if (ZBuffer[y * SCREEN_X + x].r < z)
+            {
+                //don't draw hidden triangle parts!
+                //ZBuffer[y * SCREEN_X + x] = RGB{ ZBuffer[y * SCREEN_X + x].r,255,255,255 };
+                continue;
+            }
+            ZBuffer[y * SCREEN_X + x] = RGB{ z,z,z,255 };
         }
     }
 }
@@ -1159,6 +1259,10 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         triProjected.p[2].x = (triProjected.p[2].x + 1.0f) * 0.5f * SCREEN_X;
         triProjected.p[2].y = (triProjected.p[2].y + 1.0f) * 0.5f * SCREEN_Y;
 
+        //Store Z Info 
+        triProjected.depth = (triViewed.p[0].z + triViewed.p[1].z + triViewed.p[2].z) / 3.0f;
+
+
         vecTrianglesToRaster.push_back(triProjected);
     }
 
@@ -1209,6 +1313,11 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         //The outline is triangles that connect to a front facing triangle and a backfacing one I think...
         //use that info for outline only drawing in the future.
         //only do upper left, and left side for more style...
+
+
+        //Draw to ZBuffer (EXPERIMENTAL)
+        
+        DrawTriangleToZBuffer(p0, p1, p2, (int)(((triProjected.depth*0.5f) * 64)));
 
         //NORMAL DRAW or Highlight offset
         if (DrawHighlightEdgeOnly)
