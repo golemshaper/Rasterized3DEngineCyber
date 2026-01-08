@@ -1,9 +1,0 @@
-Tag,Event,Dialogue
-Intro,Start,Welcome to the battle zone!
-Intro2,None,Good Luck!
-Debug1,Start,Hello World! \This text is from Read.txt\Backslash for a new line | !
-Debug2,None,You can keep reading \until the end Event is hit- \or the next Start event.
-Debug3,End,You'll read the last line\and then close the text.
-AnotherBitOfDialogue1,tart,Dialogue we won't hit.
-EndOfFile,End,End...?!
-EndOfFileSafeBuffer,End,End...?!
