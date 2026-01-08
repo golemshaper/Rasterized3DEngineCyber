@@ -33,7 +33,7 @@ void GameAthenaSlashEmUp::Initialize()
     PlayerID = CreateActor({ 
         monkeyMesh.GetTeapotMesh(), //Make Athena
         vec3d{ -2.0f,-0.5f,-2.25f},
-        vec3d{1.0,0.0f,0.0f},
+        vec3d{1.5f,0.0f,0.0f},
         vec3d{0.5f,0.5f,0.5f},
         RGB{255,255,255,255},
         12.0f,
