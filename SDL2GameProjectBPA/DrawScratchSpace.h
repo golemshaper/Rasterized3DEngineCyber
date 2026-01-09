@@ -201,6 +201,7 @@ public:
     void DrawSquareMultiply(int x, int y, int size, RGB color);
     void DrawTriangle(Point p0, Point p1, Point p2, RGB color);
     void DrawTriangle(Vertex v0, Vertex v1, Vertex v2);
+    void DrawTriangle(Vertex v0, Vertex v1, Vertex v2,int z);
     void DrawTriangleToZBuffer(Vertex v0, Vertex v1, Vertex v2,int z);
     void DrawCircle(int x, int y, int radius, RGB color);
     void DrawFilledCircle(int x, int y, int radius, RGB color);

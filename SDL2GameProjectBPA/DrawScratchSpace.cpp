@@ -293,6 +293,10 @@ void DrawScratchSpace::DrawTriangle(Point p0, Point p1, Point p2, RGB color) {
 }
 void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2)
 {
+    DrawTriangle(v0, v1, v2, 255);
+}
+void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
+{
     // Sort vertices by y-coordinate
     if (v1.y < v0.y) std::swap(v0, v1);
     if (v2.y < v0.y) std::swap(v0, v2);
@@ -330,7 +334,15 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2)
                 static_cast<int>(va.color.g + t * (vb.color.g - va.color.g)),
                 static_cast<int>(va.color.b + t * (vb.color.b - va.color.b))
             };
-
+            if (ZWriteOn && ZBuffer[y * SCREEN_X + x].r < z)
+            {
+                //don't draw hidden triangle parts!
+                continue;
+            }
+            if (ZWriteOn)
+            {
+                ZBuffer[y * SCREEN_X + x] = RGB{ z,z,z,255 };
+            }
             MainSpace[y * SCREEN_X + x] = color;
         }
     }
@@ -353,7 +365,15 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2)
                 static_cast<int>(va.color.g + t * (vb.color.g - va.color.g)),
                 static_cast<int>(va.color.b + t * (vb.color.b - va.color.b))
             };
-
+            if (ZWriteOn && ZBuffer[y * SCREEN_X + x].r < z)
+            {
+                //don't draw hidden triangle parts!
+                continue;
+            }
+            if (ZWriteOn) 
+            {
+                ZBuffer[y * SCREEN_X + x] = RGB{ z,z,z,255 };
+            }
             MainSpace[y * SCREEN_X + x] = color;
         }
     }
@@ -1319,8 +1339,8 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         
         //NOTE: IF Zoffset being an int is too imprecise, we can do the same thing using a float, but added to the tris depth!
         //We probably should do it this way for the precision! But for right now, I will not
-        DrawTriangleToZBuffer(p0, p1, p2, (int)((((triProjected.depth)*0.5f) * 64)-ZOffset));
-
+        //DrawTriangleToZBuffer(p0, p1, p2, (int)((((triProjected.depth)*0.5f) * 64)-ZOffset));
+        int DepthValue = (int)((((triProjected.depth) * 0.5f) * 64) - ZOffset);
         //NORMAL DRAW or Highlight offset
         if (DrawHighlightEdgeOnly)
         {
@@ -1328,12 +1348,12 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
             Vertex light_fx_p0 = { static_cast<int>(triProjected.p[0].x), static_cast<int>(triProjected.p[0].y), RGB{R,G,B}*2 };
             Vertex light_fx_p1 = { static_cast<int>(triProjected.p[1].x), static_cast<int>(triProjected.p[1].y), RGB{R,G,B}*2 };
             Vertex light_fx_p2 = { static_cast<int>(triProjected.p[2].x), static_cast<int>(triProjected.p[2].y), RGB{R,G,B}*2 };
-            DrawTriangle(light_fx_p0 - 2, light_fx_p1 - 1, light_fx_p2 - 1);
+            DrawTriangle(light_fx_p0 - 2, light_fx_p1 - 1, light_fx_p2 - 1, DepthValue);
         }
         else
         {
             //Normal
-            DrawTriangle(p0, p1, p2);
+            DrawTriangle(p0, p1, p2, DepthValue);
         }
         
 
@@ -1362,9 +1382,11 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool 
     {
         //multipass
         DrawHighlightEdgeOnly = true;
-        ZOffsetFloat -= 0.5f; // draw one point behind the mesh
+        //const float offset = -10.5f;
+        const int offset = 5;
+        ZOffset -= offset; // draw one point behind the mesh
         DrawMesh(m, loc, rot, scale);
-        ZOffsetFloat += 0.5f; //restore mesh back to normal depth location
+        ZOffset += offset; //restore mesh back to normal depth location
         DrawMesh(m, loc, rot, scale);
     }
     else

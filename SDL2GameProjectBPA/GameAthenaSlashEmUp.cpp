@@ -363,6 +363,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 //DRAW ANOTHER ATHENA, BUT USING THE ADD ACTOR VERSION!
     AllActors[PlayerID].loc.x = sin(totalTime * 2.0f) - 4.0f;
     AllActors[PlayerID].loc.y = cos(totalTime * 2.0f);
+    AllActors[PlayerID].loc.z = -3;
     DrawActorsFromList(AllActors); //IN REALITY WE WOULD NOT DO ALL ACTORS AT ONCE! WE'D DO CATEGORIES OF ACTORS! EACH AND WE'D HAVE FUNCTIONS TO DRAW AND MOVE THEM AT SAME TIME!
 //DRAW ANOTHER ATHENA, BUT USING THE ADD ACTOR VERSION!
 
@@ -508,7 +509,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     }
 
     //TO SEE ZBuffer ENABLE THIS! (Depth Buffer)
-    MyScratch->DrawZBufffer();
+    //MyScratch->DrawZBufffer();
 
 }
 
