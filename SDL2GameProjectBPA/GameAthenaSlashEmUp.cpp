@@ -369,7 +369,8 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
  
 
-    //DRAW Z SORTED MESHES
+    //DRAW PSUDO Z SORTED MESHES (Or Real Sorted if ZWriteOn)
+    //Set ZWriteOn to false to get old 2D sorting feature! :: MyScratch->ZWriteOn = false;
     MyScratch->DrawSortedDifferedMeshes();
 
 

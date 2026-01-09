@@ -380,6 +380,7 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
 }
 void DrawScratchSpace::DrawTriangleToZBuffer(Vertex v0, Vertex v1, Vertex v2, int z)
 {
+    //Double check, but I don't think we need this anymore
     if (ZWriteOn == false)
     {
         return;
