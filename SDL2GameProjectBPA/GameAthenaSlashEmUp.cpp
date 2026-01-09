@@ -49,6 +49,15 @@ void GameAthenaSlashEmUp::Tick(float DeltaTime)
     //Try to level up as much as possible before hitting the boss. Combo chains will grant more EXP
     // 
     // 
+    // Fly in to shop keepers to trigger a shopping sequence to buy upgrades for your character
+    // 
+    // try to get strong enough to overcome the boss
+    // 
+    // 
+    // consider some enemy types that trigger a turn based combat encounter!
+    // 
+    // 
+    // 
     //text timer for text box. resets when new string is sent
     textBoxProgressTick += DeltaTime;
     MyScratch->Input->Tick(DeltaTime);
