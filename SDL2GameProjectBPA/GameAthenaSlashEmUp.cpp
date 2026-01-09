@@ -508,7 +508,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     }
 
     //TO SEE ZBuffer ENABLE THIS! (Depth Buffer)
-    //MyScratch->DrawZBufffer();
+    MyScratch->DrawZBufffer();
 
 }
 

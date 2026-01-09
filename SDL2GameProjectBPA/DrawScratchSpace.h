@@ -242,7 +242,7 @@ public:
     bool DrawHighlightEdgeOnly = false;
     bool ZWriteOn = false;
     int ZOffset = 0; //Used for illogical Drawing. Decals, Edge-lights and the like should use this
-    float  ZOffsetFloat = 0.0f; //Used for illogical Drawing. Decals, Edge-lights and the like should use this
+    float ZOffsetFloat = 0.0f; //Used for illogical Drawing. Decals, Edge-lights and the like should use this
 //3D Primitives:
     Mesh MeshCube;
     mat4x4 MatrixProj;
