@@ -1317,7 +1317,9 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
 
         //Draw to ZBuffer (EXPERIMENTAL)
         
-        DrawTriangleToZBuffer(p0, p1, p2, (int)(((triProjected.depth*0.5f) * 64)));
+        //NOTE: IF Zoffset being an int is too imprecise, we can do the same thing using a float, but added to the tris depth!
+        //We probably should do it this way for the precision! But for right now, I will not
+        DrawTriangleToZBuffer(p0, p1, p2, (int)((((triProjected.depth-ZOffsetFloat)*0.5f) * 64)-ZOffset));
 
         //NORMAL DRAW or Highlight offset
         if (DrawHighlightEdgeOnly)
@@ -1360,7 +1362,9 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool 
     {
         //multipass
         DrawHighlightEdgeOnly = true;
+        ZOffsetFloat -= 0.5f; // draw one point behind the mesh
         DrawMesh(m, loc, rot, scale);
+        ZOffset += 0.5f; //restore mesh back to normal depth location
         DrawMesh(m, loc, rot, scale);
     }
     else

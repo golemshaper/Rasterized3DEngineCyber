@@ -343,7 +343,8 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
     //vec3d{ -2.0f,-0.5f,-2.25f }
 
-   //Note DifferDrawMesh is a drop-in replacement for the regular DrawMesh function. It'll only draw when DrawSortedDifferedMeshes() is called
+//NOTE 1: DifferDrawMesh is a drop-in replacement for the regular DrawMesh function. It'll only draw when DrawSortedDifferedMeshes() is called
+//NOTE 2: use regular DrawMesh() along with  MyScratch->ZOffsetFloat = 10;  Besure to turn the offset off when you are done
     MyScratch->DifferDrawMesh(monkeymesher.GetAthenaMesh(),
         player_position,
         vec3d{ 1.0f + (MyScratch->Input->GetMovementY() * -0.3f),0.0f,3.0f + (MyScratch->Input->GetMovementX() * 0.35f) },
@@ -352,6 +353,13 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
             abs(sin(totalTime * 4.0f))),
         true
     );
+ 
+
+
+
+
+   // 
+   // 
 //DRAW ANOTHER ATHENA, BUT USING THE ADD ACTOR VERSION!
     AllActors[PlayerID].loc.x = sin(totalTime * 2.0f) - 4.0f;
     AllActors[PlayerID].loc.y = cos(totalTime * 2.0f);
@@ -499,7 +507,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         TextBoxDraw(Reader.GetStringFromSheetTag("Intro"));
     }
 
-    //TO SEE ZBuffer ENABLE THIS!
+    //TO SEE ZBuffer ENABLE THIS! (Depth Buffer)
     //MyScratch->DrawZBufffer();
 
 }
