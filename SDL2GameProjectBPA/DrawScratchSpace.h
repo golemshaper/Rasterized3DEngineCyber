@@ -237,7 +237,7 @@ public:
     int lastTextAmountRevealed = 0;
     std::vector<SortedMeshRecipe> recipes;
     unsigned int seed = 123456789;
-    int GetNext();
+    unsigned int GetNext();
     int GetNext(int min, int max);
 
 //DRAW MODE:

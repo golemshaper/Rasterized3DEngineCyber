@@ -910,16 +910,18 @@ vec3d DrawScratchSpace::GetMovementInput()
     };
 }
 
-int DrawScratchSpace::GetNext()
+unsigned int DrawScratchSpace::GetNext()
 {
     //https://en.wikipedia.org/wiki/Linear_congruential_generator
-    seed = 1103515245 * seed + 12345;
+    seed = 1103515245u * seed + 12345u;
     return seed;
 }
 
 int DrawScratchSpace::GetNext(int min, int max)
 {
-    return min + (GetNext() % (max - min + 1));
+    unsigned int raw = GetNext(); // no cast needed
+    int span = max - min + 1;
+    return min + (raw % span);
 }
 
 void DrawScratchSpace::MultiplyMatrixVector(vec3d& i, vec3d& o, mat4x4& m)
