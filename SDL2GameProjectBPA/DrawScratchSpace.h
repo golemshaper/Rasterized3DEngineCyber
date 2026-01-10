@@ -179,6 +179,7 @@ public:
     void MultiplyBuffers();
     void AddBuffers();
     void AverageBuffers();
+    void InvertBuffer();
     void ClearZBufffer();
     void DrawZBufffer();
     void ApplyMask();

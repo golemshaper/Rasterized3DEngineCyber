@@ -33,6 +33,14 @@ void DrawScratchSpace::AverageBuffers()
     }
 }
 
+void DrawScratchSpace::InvertBuffer()
+{
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+        MainSpace[i] = RGB{ 255,255,255,255 } - MainSpace[i];
+    }
+}
+
 void DrawScratchSpace::ClearZBufffer()
 {
     for (int i = 0; i < TOTAL_PIXELS; ++i)

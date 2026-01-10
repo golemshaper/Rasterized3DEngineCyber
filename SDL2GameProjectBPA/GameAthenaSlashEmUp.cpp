@@ -198,6 +198,11 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->DrawTriangle(p1, p2, p3);
     MyScratch->DrawTriangle(px, p2, p1);
 
+
+ //TRY A RANDOM FILL OVER BACKGROUND ON AND OFF. IT LOOKS RAD WHEN THE LIGHTNING STRIKES: MyScratch->RandomScreenFill();
+
+
+
     // MyScratch->DrawTriangle(px, pq, pz);
 
      //Now add the buffers
@@ -286,7 +291,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->ClearZBufffer();
 
 
-
+    //You can invert the current buffer at any time: MyScratch->InvertBuffer();
 
 
     MyScratch->DrawEdges = false;
@@ -515,7 +520,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
     //TO SEE ZBuffer ENABLE THIS! (Depth Buffer)
     if (MyScratch->Input->GetToggleDepthKey())MyScratch->DrawZBufffer();
-
+   
 }
 
 
