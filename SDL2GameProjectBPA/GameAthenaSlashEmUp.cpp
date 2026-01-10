@@ -305,11 +305,15 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
        //teapot
     MyScratch->MeshColor = { 255,255,255,255 };
 
+MyScratch->ClearZBufffer();
 
     MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f }, vec3d{ 0.0f,1.0f, 1.0f });  //By calling multiple SetCamera calls during drawing, you can make things like a skybox, that don't move, but follow the rest of the worlds rotation!
     MyScratch->DrawVerticies = true;
     MyScratch->DrawMesh(monkeymesher.GetTeapotMesh(), vec3d{ (sinf(totalTime * 4.0f) * 0.2f) - 1.12f,0.5f,2 }, vec3d{ 1.0, 1.0, totalTime, }, vec3d{ 1,1,1 });
     MyScratch->DrawVerticies = false;
+
+
+MyScratch->ClearZBufffer();
 
     //----------------------
     // CAMERA MAIN CAM
