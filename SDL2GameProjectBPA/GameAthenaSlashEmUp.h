@@ -131,5 +131,6 @@ public:
 	const int FirstStateId = 0;
 	const int NoStateID = -1;
 	void StateMachineHelloWorldTick();
+	void DrawStatsAtLocation(Stats& stats, vec3d loc, bool useFull);
 };
 

@@ -396,24 +396,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //------------------------------
     // STATS
     //------------------------------
-    MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y - 8, { 255, 255, 255, 255, }, "LV 1", MyTextSprites, 1.0f);
-    MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y, { 0, 255, 0, 255, }, "HP 25", MyTextSprites, 1.0f);
-    MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y + 8, { 0, 0, 255, 255, }, "MP 10", MyTextSprites, 1.0f);
-    //MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y + 16, { 255, 0, 255, 255, }, "EXP 000", MyTextSprites, 1.0f);
-    fake_exp_until_stats_container_added+=5;
-    if (fake_exp_until_stats_container_added >= 999)fake_exp_until_stats_container_added = 0;
-    int expValue = fake_exp_until_stats_container_added;
-    std::string expText = "EXP " + std::to_string(expValue);
-    if(expValue < 100 )expText = "EXP 0" + std::to_string(expValue);
-    MyScratch->DrawText(
-        (int)MyScratch->Get2DPointInFromSpace(player_position).x - 12,
-        (int)MyScratch->Get2DPointInFromSpace(player_position).y + 16,
-        { 255, 0, 255, 255 },
-        expText.c_str(),
-        MyTextSprites,
-        1.0f
-    );
-    
+    DrawStatsAtLocation(PlayerStats,player_position,true);
 
     //------------------------------
     // Bullets
@@ -825,5 +808,46 @@ void GameAthenaSlashEmUp::StateMachineHelloWorldTick()
         sm.SetState(-1); //end all state calls
         return;
     }
+}
+
+void GameAthenaSlashEmUp::DrawStatsAtLocation(Stats& stats, vec3d loc, bool useFull)
+{
+    vec3d player_position = loc;
+    std::string HP = "HP " + std::to_string(stats.hp);
+    if (useFull)
+    {
+        std::string LV = "LV " + std::to_string(stats.lvl);
+        std::string MP = "MP " + std::to_string(stats.mp);
+
+        MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y - 8, { 255, 255, 255, 255, }, LV.c_str(), MyTextSprites, 1.0f);
+        MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y, { 0, 255, 0, 255, }, HP.c_str(), MyTextSprites, 1.0f);
+        MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y + 8, { 0, 0, 255, 255, }, MP.c_str(), MyTextSprites, 1.0f);
+        stats.exp += 5;
+        if (stats.exp >= 999)
+        {
+            stats.exp = 0;
+            stats.lvl += 1;
+            stats.hp += MyScratch->GetNext(1, 4);
+            stats.mp += MyScratch->GetNext(0, 2);
+            stats.atk += MyScratch->GetNext(1, 2);
+            stats.def += MyScratch->GetNext(0,1);
+        }
+        int expValue = stats.exp;
+        std::string expText = "XP " + std::to_string(expValue);
+        if (expValue < 100)expText = "XP 0" + std::to_string(expValue);
+        MyScratch->DrawText(
+            (int)MyScratch->Get2DPointInFromSpace(player_position).x - 12,
+            (int)MyScratch->Get2DPointInFromSpace(player_position).y + 16,
+            { 255, 0, 255, 255 },
+            expText.c_str(),
+            MyTextSprites,
+            1.0f
+        );
+    }
+    else
+    {
+        MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y, { 255, 0, 0, 255, }, HP.c_str(), MyTextSprites, 1.0f);
+    }
+
 }
 

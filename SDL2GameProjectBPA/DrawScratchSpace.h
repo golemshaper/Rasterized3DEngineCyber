@@ -235,6 +235,10 @@ public:
     const float PI = 3.141592653589793238462643383279502884F;
     int lastTextAmountRevealed = 0;
     std::vector<SortedMeshRecipe> recipes;
+    unsigned int seed = 123456789;
+    int GetNext();
+    int GetNext(int min, int max);
+
 //DRAW MODE:
     RGB MeshColor = { 255,255,255,255 };
     bool DrawVerticies = false;
@@ -293,4 +297,6 @@ public:
         RGB bottomRight, 
         float a
     );
+
+
 };

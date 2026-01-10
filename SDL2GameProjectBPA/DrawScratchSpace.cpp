@@ -770,10 +770,11 @@ void DrawScratchSpace::DrawLine(int x0, int y0, int x1, int y1, RGB color) {
 
 int DrawScratchSpace::GetRandom(int a, int b)
 {
-    std::random_device rd;
+    /*std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<int> dist(a, b);
-    return dist(gen);
+    return dist(gen);*/
+    return GetNext(a, b);
 }
 
 float DrawScratchSpace::Clamp(float value, float min, float max)
@@ -897,6 +898,18 @@ vec3d DrawScratchSpace::GetMovementInput()
     return vec3d{
         Input->GetMovementX(), 0, Input->GetMovementY()
     };
+}
+
+int DrawScratchSpace::GetNext()
+{
+    //https://en.wikipedia.org/wiki/Linear_congruential_generator
+    seed = 1103515245 * seed + 12345;
+    return seed;
+}
+
+int DrawScratchSpace::GetNext(int min, int max)
+{
+    return min + (GetNext() % (max - min + 1));
 }
 
 void DrawScratchSpace::MultiplyMatrixVector(vec3d& i, vec3d& o, mat4x4& m)
