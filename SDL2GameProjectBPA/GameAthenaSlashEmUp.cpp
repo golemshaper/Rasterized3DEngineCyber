@@ -799,6 +799,8 @@ bool GameAthenaSlashEmUp::IsColliding2D(vec3d a, vec3d b, float radius)
     return IsColliding(vec3d{ a.x,0,a.z }, vec3d{ b.x,0.0f,b.z }, radius);
 }
 
+
+
 void GameAthenaSlashEmUp::StateMachineHelloWorldTick()
 {
 

@@ -122,8 +122,8 @@ public:
 
 	bool IsColliding(vec3d a, vec3d b, float radius);
 	bool IsColliding2D(vec3d a, vec3d b, float radius);
+	//you could collide automatically with every actor if you stored their previous safe location prior to moving them, and then loop through, and reset any actors touching
 
-	
 
 	//----------------
 	//Game States
@@ -132,5 +132,8 @@ public:
 	const int NoStateID = -1;
 	void StateMachineHelloWorldTick();
 	void DrawStatsAtLocation(Stats& stats, vec3d loc, bool useFull);
+
+
+
 };
 
