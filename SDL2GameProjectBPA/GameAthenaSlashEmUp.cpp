@@ -602,11 +602,11 @@ void GameAthenaSlashEmUp::LightningFX(int phase, float progress)
         MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y/2, RGB{ 255,255,0,64 }, RGB{ 255,255,255,64 }, RGB{ 255,255,255,0 }, RGB{ 255,255,0,0 });
     }
     const int total_verts = 23;
-    const int total_rand = 16;
-    const int pseudo_random[16] =
+    //const int total_rand = 16;
+    /*const int pseudo_random[16] =
     {
         1, -1, 4, -9, 12, -19, 17, -5,1, -5, 9, -3, 3, -1, 4, -15
-    };
+    };*/
 
     int offset = (phase % total_verts) * 3;
     vec3d start = { SCREEN_X * 0.5f + offset, 0, 0 };
@@ -628,7 +628,8 @@ void GameAthenaSlashEmUp::LightningFX(int phase, float progress)
         vec3d halfway = MyScratch->Lerp(start, end, t0);
 
         // Apply horizontal offset
-        halfway.x += pseudo_random[(int)(i+ phase)% total_rand];
+        //halfway.x += pseudo_random[(int)(i + phase) % total_rand];
+        halfway.x += MyScratch->GetNext(-8,8);
 
         // Draw segment
         MyScratch->DrawLine(prev.x, prev.y, halfway.x, halfway.y,MyScratch->Lerp(StartColor, EndColor, t0*2.0f));
