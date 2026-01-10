@@ -37,7 +37,9 @@ void DrawScratchSpace::ClearZBufffer()
 {
     for (int i = 0; i < TOTAL_PIXELS; ++i)
     {
-        ZBuffer[i] = RGB{ 255, 255, 255 ,255 };
+        //255 is "max color, but we can go over that. set to 1024 so we have pleanty of depth to work with. Z is actually the inverse of how it draws.
+        //higher values are deeper
+        ZBuffer[i] = RGB{ 1024, 1024, 1024 ,1024 };
     }
 }
 
@@ -1313,7 +1315,7 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
     for (auto& triProjected : vecTrianglesToRaster)
     {
         //dumb fog
-        ZFog += 4.0/vecTrianglesToRaster.size() * 0.2f;
+        ZFog += 4.0f/vecTrianglesToRaster.size() * 0.2f;
 
         //STANDARD RAINBOW COLOR TRIS
        /* Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {255 * ZFog,0,0,255} };
