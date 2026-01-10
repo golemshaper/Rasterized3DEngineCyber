@@ -12,7 +12,7 @@ public:
 
 	float GameSpeed = 1.0f;
 	//Current game mode
-	int mode = 1;
+	int mode = 0;
 	int drawBuffer = 0;
 
 
