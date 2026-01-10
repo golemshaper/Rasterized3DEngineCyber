@@ -143,6 +143,7 @@
     <ClCompile Include="GameTwo.cpp" />
     <ClCompile Include="InputWraper.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="TextFileReader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +153,7 @@
     <ClInclude Include="GameTwo.h" />
     <ClInclude Include="InputWraper.h" />
     <ClInclude Include="MonkeyMesh.h" />
+    <ClInclude Include="StateMachine.h" />
     <ClInclude Include="TextFileReader.h" />
     <ClInclude Include="TextSprites.h" />
   </ItemGroup>

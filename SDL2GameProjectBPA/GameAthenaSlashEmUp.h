@@ -1,11 +1,15 @@
 #pragma once
 #include "Game.h"
 #include "TextFileReader.h"
+#include "StateMachine.h"
 
 class GameAthenaSlashEmUp : public Game
 {
 
 public:
+
+	StateMachine sm;
+
 	float GameSpeed = 1.0f;
 	//Current game mode
 	int mode = 1;
@@ -83,8 +87,9 @@ public:
 	//Store an ID for the main character in init.
 	//
 	//Things like speed and time counter should maybe be in a speeds list or a time counter list, that shares the same index as the actor....... like a crude component system...
-	
+	//----------------
 	//gameplay structs
+	//----------------
 	struct Actor {
 		Mesh  m{};
 		vec3d loc{ 0,0,0 };
@@ -119,5 +124,12 @@ public:
 	bool IsColliding2D(vec3d a, vec3d b, float radius);
 
 	
+
+	//----------------
+	//Game States
+	//----------------
+	const int FirstStateId = 0;
+	const int NoStateID = -1;
+	void StateMachineHelloWorldTick();
 };
 

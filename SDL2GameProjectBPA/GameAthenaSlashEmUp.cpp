@@ -8,10 +8,14 @@
 
 void GameAthenaSlashEmUp::Initialize()
 {
+    //ENGINE
     MyScratch = new DrawScratchSpace();
     MyScratch->Initialize();
     MyTextSprites = new TextSprites();
-
+    //STATES (on stack)
+    sm.MapState(FirstStateId, [this] {StateMachineHelloWorldTick(); });
+    sm.SetState(FirstStateId);
+    
     //athena body bullets
     for (int i = 0; i < bullet_count; ++i)
     {
@@ -39,6 +43,8 @@ void GameAthenaSlashEmUp::Initialize()
         12.0f,
         0.0f
         });
+
+    //Setup Game States...
 }
 void GameAthenaSlashEmUp::Tick(float DeltaTime)
 {
@@ -61,6 +67,7 @@ void GameAthenaSlashEmUp::Tick(float DeltaTime)
     //text timer for text box. resets when new string is sent
     textBoxProgressTick += DeltaTime;
     MyScratch->Input->Tick(DeltaTime);
+    
     //GameModeTick(DeltaTime);
     switch (mode)
     {
@@ -80,6 +87,8 @@ void GameAthenaSlashEmUp::Tick(float DeltaTime)
 
         break;
     }
+    sm.Tick(DeltaTime);
+
 }
 
 void GameAthenaSlashEmUp::TitleScreenTick(float DeltaTime)
@@ -803,5 +812,18 @@ bool GameAthenaSlashEmUp::IsColliding(vec3d a, vec3d b, float radius)
 bool GameAthenaSlashEmUp::IsColliding2D(vec3d a, vec3d b, float radius)
 {
     return IsColliding(vec3d{ a.x,0,a.z }, vec3d{ b.x,0.0f,b.z }, radius);
+}
+
+void GameAthenaSlashEmUp::StateMachineHelloWorldTick()
+{
+
+    char buffer[64];
+    snprintf(buffer, sizeof(buffer), "Hello State Machine \n T %.2f D %.2f", sm.TimeInState, sm.StateDeltaTime);   // format however you want
+    MyScratch->DrawText(34, 55, { 255,124,13,255 }, buffer, MyTextSprites,1.0f);
+    if (sm.TimeInState > 4.0f)
+    {
+        sm.SetState(-1); //end all state calls
+        return;
+    }
 }
 
