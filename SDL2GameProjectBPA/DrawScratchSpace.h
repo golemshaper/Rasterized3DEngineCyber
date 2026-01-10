@@ -182,6 +182,7 @@ public:
     void InvertBuffer();
     void ClearZBufffer();
     void DrawZBufffer(); //Depth Buffer
+    void DrawZBuffferMaskSky(); //Depth Buffer
     void PushBackDepthBuffer(int amount);
     void ApplyMask();
     void BlendBuffers(float amount);
@@ -190,6 +191,8 @@ public:
     void Initialize(RGB wipe);
     void Clear();
     void Clear(RGB wipe);
+    inline int SinglePixelBrightContrast(int c, float brightness, float contrast);
+    void BrightnessContrastOnBuffer(RGB* buffer, float brightness, float contrast);
     void RandomScreenFill();
     void DrawRectangle(int x, int y, int width, int height, RGB color);
     void DrawRectangle(

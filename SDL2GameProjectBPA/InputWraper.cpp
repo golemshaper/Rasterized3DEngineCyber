@@ -88,6 +88,11 @@ bool InputWraper::GetToggleDepthKey()
     return zDepthDrawOn;
 }
 
+void InputWraper::ResetToggleDepthKey()
+{
+    zDepthDrawOn = false;
+}
+
 float InputWraper::Lerp(float a, float b, float c)
 {
     return a + (b - a) * c;

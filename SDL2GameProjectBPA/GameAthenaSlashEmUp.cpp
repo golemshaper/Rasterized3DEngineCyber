@@ -286,10 +286,11 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->SetCamera(vec3d{ 0.0f, -8.0f, -3.5f }, vec3d{ (sin(mouseX * 0.01f) * 0.1f) + cos(totalTime) * 0.01f + SinMouseX,2 - sin(totalTime) * 0.01f + CosMouseY, 1.0f });
    
     //Terrain
-    MyScratch->ZWriteOn = false;
+//MyScratch->ZWriteOn = false;
+    MyScratch->ZWriteOn = true;
     MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ player_position.x * -0.5f,0.0f, -4 }, vec3d{ totalTime, 0.0, 0.0, }, vec3d{ 15.0, 4.0, 4.0, });
-    MyScratch->ClearZBufffer();
-
+    //MyScratch->ClearZBufffer();
+ 
 
     //You can invert the current buffer at any time: MyScratch->InvertBuffer();
 
@@ -305,19 +306,19 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         255
     };
 
-    MyScratch->ClearZBufffer();
+//MyScratch->ClearZBufffer();
     MyScratch->ZWriteOn = true;
 
     MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ 0.0f,-5.0f, 12 }, vec3d{ -totalTime, 0.0, 0.0, }, vec3d{ 12.0, 4.0, 4.0, });
-
     //teapot
     MyScratch->MeshColor = { 255,255,255,255 };
-    MyScratch->ClearZBufffer(); //stop teapot from clipping head of "boy"
+//MyScratch->ClearZBufffer(); //stop teapot from clipping head of "boy"
     MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f }, vec3d{ 0.0f,1.0f, 1.0f });  //By calling multiple SetCamera calls during drawing, you can make things like a skybox, that don't move, but follow the rest of the worlds rotation!
     MyScratch->DrawVerticies = true;
     MyScratch->DrawMesh(monkeymesher.GetTeapotMesh(), vec3d{ (sinf(totalTime * 4.0f) * 0.2f) - 1.12f,0.5f,2 }, vec3d{ 1.0, 1.0, totalTime, }, vec3d{ 1,1,1 });
     MyScratch->DrawVerticies = false;
-    MyScratch->ClearZBufffer();//stop teapot from clipping head of "boy"
+   // MyScratch->ClearZBufffer();//stop teapot from clipping head of "boy"
+    MyScratch->PushBackDepthBuffer(240);
 
     //----------------------
     // CAMERA MAIN CAM
@@ -444,6 +445,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //MyScratch->BlendBuffers(0.12f);
 
 
+//TODO: Move all text to a HUD draw!
     //TYPE TEXT 
     float cam_x = MyScratch->CameraTargetLoc.x;
     float cam_y = MyScratch->CameraTargetLoc.y;
@@ -518,14 +520,35 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         TextBoxDraw(Reader.GetStringFromSheetTag("Intro"));
     }
 
-    //TO SEE ZBuffer ENABLE THIS! (Depth Buffer)
-    if (MyScratch->Input->GetToggleDepthKey())MyScratch->DrawZBufffer();
 
-    //FOG FX BY DEPTH
-   /* MyScratch->MoveMainspaceToExtraBuffer();
-    MyScratch->CopyBufferToBuffer(MyScratch->ZBuffer, MyScratch->MainSpace);
-    MyScratch->InvertBuffer();
-    MyScratch->BlendBuffers(0.5f);*/
+//TOGGLE VIEWS
+    if (MyScratch->Input->GetToggleDepthKey())
+    {
+        MyScratch->Input->ResetToggleDepthKey();
+        drawBuffer++;
+        if (drawBuffer > 3)drawBuffer = 0;
+    }
+    switch (drawBuffer)
+    {
+    case 0:
+        break; 
+    case 1:
+        MyScratch->DrawZBufffer();
+        break;
+    case 2:
+        MyScratch->PushBackDepthBuffer(-240); //fix pushback terrain so it's visible in render
+        MyScratch->DrawZBufffer();
+        MyScratch->BrightnessContrastOnBuffer(MyScratch->MainSpace, -0.2f, 1.01f);
+        break;
+    case 3:
+        ////FOG FX BY DEPTH
+        MyScratch->PushBackDepthBuffer(-240); //fix pushback terrain so it's visible in fog
+        MyScratch->MoveMainspaceToExtraBuffer();
+        MyScratch->DrawZBuffferMaskSky();
+        MyScratch->MultiplyBuffers();
+        break;
+    }
+   
    
 }
 
@@ -533,6 +556,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
 void GameAthenaSlashEmUp::TextBoxDraw(const char* input)
 {
+   
     if (input != previous_text)
     {
         textBoxProgressTick = 0.0f;
@@ -560,7 +584,7 @@ void GameAthenaSlashEmUp::TextBoxDraw(const char* input)
         return;
     }
 
-
+    
     //TEXT BOX
     int boarder = 2;
     //Fill

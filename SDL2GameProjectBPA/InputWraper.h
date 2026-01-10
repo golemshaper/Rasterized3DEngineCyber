@@ -11,7 +11,7 @@ public:
 	float GetMovementX();
 	float GetMovementY();
 	bool GetToggleDepthKey();
-
+	void ResetToggleDepthKey();
 private:
 	float lx = 0.0f;
 	float ly = 0.0f;

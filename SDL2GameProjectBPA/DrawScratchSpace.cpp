@@ -13,8 +13,9 @@ void DrawScratchSpace::MultiplyBuffers()
 {
     for (int i = 0; i < TOTAL_PIXELS; ++i) 
     {
-        MainSpace[i] = MainSpace[i] * ExtraBuffer[i];
+        MainSpace[i] = (MainSpace[i] * ExtraBuffer[i])/255;
     }
+   
 }
 
 void DrawScratchSpace::AddBuffers()
@@ -47,15 +48,34 @@ void DrawScratchSpace::ClearZBufffer()
     {
         //255 is "max color, but we can go over that. set to 1024 so we have pleanty of depth to work with. Z is actually the inverse of how it draws.
         //higher values are deeper
-        ZBuffer[i] = RGB{ 1024, 1024, 1024 ,1024 };
+        ZBuffer[i] = RGB{ 1024, 1024, 1024 ,255 };
     }
 }
 
 void DrawScratchSpace::DrawZBufffer()
 {
+   // 
+
+    //for (int i = 0; i < TOTAL_PIXELS; ++i)
+    //{
+    //    //normalize
+    //    ZBuffer[i].r = (ZBuffer[i].r * 255 + 512) / 1024;
+    //    ZBuffer[i].g = (ZBuffer[i].g * 255 + 512) / 1024;
+    //    ZBuffer[i].b = (ZBuffer[i].b * 255 + 512) / 1024;
+    //}
     for (int i = 0; i < TOTAL_PIXELS; ++i)
     {
-        MainSpace[i] = RGB{255,255,255,255} - ZBuffer[i];
+        MainSpace[i] = RGB{ 255,255,255,255 } - ZBuffer[i];
+    }
+    //BrightnessContrastOnBuffer(MainSpace, 0.0f, 2.5f);
+}
+
+void DrawScratchSpace::DrawZBuffferMaskSky()
+{
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+        if (ZBuffer[i].r >= 1024)continue;
+        MainSpace[i] = RGB{ 255,255,255,255 } - ZBuffer[i];
     }
 }
 
@@ -177,6 +197,36 @@ void DrawScratchSpace::Clear(RGB wipe)
     for (int i = 0; i < TOTAL_PIXELS; ++i)
     {
         MainSpace[i] = wipe;
+    }
+}
+
+inline int DrawScratchSpace::SinglePixelBrightContrast(int c, float brightness, float contrast)
+{
+    float x = c / 255.0f;
+
+    x = (x - 0.5f) * contrast + 0.5f;
+
+    x += brightness;
+
+    // Clamp and convert back
+    x = std::min(std::max(x, 0.0f), 1.0f);
+    return (x * 255.0f + 0.5f);
+}
+
+void DrawScratchSpace::BrightnessContrastOnBuffer(RGB* buffer, float brightness, float contrast)
+{
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+        if (buffer[i].r < 0)buffer[i].r = 0;
+        if (buffer[i].g< 0)buffer[i].g = 0;
+        if (buffer[i].b < 0)buffer[i].b = 0;
+        
+
+
+
+        buffer[i].r = SinglePixelBrightContrast(buffer[i].r, brightness, contrast);
+        buffer[i].g = SinglePixelBrightContrast(buffer[i].g, brightness, contrast);
+        buffer[i].b = SinglePixelBrightContrast(buffer[i].b, brightness, contrast);
     }
 }
 
