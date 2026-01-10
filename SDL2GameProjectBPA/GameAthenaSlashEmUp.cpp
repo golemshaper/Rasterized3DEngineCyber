@@ -68,7 +68,7 @@ void GameAthenaSlashEmUp::Tick(float DeltaTime)
     textBoxProgressTick += DeltaTime;
     MyScratch->Input->Tick(DeltaTime);
     
-    //GameModeTick(DeltaTime);
+    //TODO REPLACE THIS WITH THE GAME-STATE MACHINE (sm)
     switch (mode)
     {
     case 0:
