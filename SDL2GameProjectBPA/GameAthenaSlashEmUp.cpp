@@ -520,6 +520,12 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
     //TO SEE ZBuffer ENABLE THIS! (Depth Buffer)
     if (MyScratch->Input->GetToggleDepthKey())MyScratch->DrawZBufffer();
+
+    //FOG FX BY DEPTH
+   /* MyScratch->MoveMainspaceToExtraBuffer();
+    MyScratch->CopyBufferToBuffer(MyScratch->ZBuffer, MyScratch->MainSpace);
+    MyScratch->InvertBuffer();
+    MyScratch->BlendBuffers(0.5f);*/
    
 }
 

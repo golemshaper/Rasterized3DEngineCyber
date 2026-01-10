@@ -59,6 +59,14 @@ void DrawScratchSpace::DrawZBufffer()
     }
 }
 
+void DrawScratchSpace::PushBackDepthBuffer(int amount)
+{
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+        ZBuffer[i] = ZBuffer[i] + RGB{ amount,amount,amount,amount };
+    }
+}
+
 void DrawScratchSpace::ApplyMask()
 {
     for (int i = 0; i < TOTAL_PIXELS; ++i)
@@ -79,6 +87,15 @@ void DrawScratchSpace::BlendBuffers(float amount)
     {
 
         MainSpace[i] = Lerp(MainSpace[i] , ExtraBuffer[i] ,amount);
+    }
+}
+
+void DrawScratchSpace::CopyBufferToBuffer(RGB* from, RGB* to)
+{
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+
+        to[i] = from[i];
     }
 }
 

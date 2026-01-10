@@ -181,9 +181,11 @@ public:
     void AverageBuffers();
     void InvertBuffer();
     void ClearZBufffer();
-    void DrawZBufffer();
+    void DrawZBufffer(); //Depth Buffer
+    void PushBackDepthBuffer(int amount);
     void ApplyMask();
     void BlendBuffers(float amount);
+    void CopyBufferToBuffer(RGB* from, RGB* to);
     void Initialize();
     void Initialize(RGB wipe);
     void Clear();
@@ -299,5 +301,6 @@ public:
         float a
     );
 
+  
 
 };
