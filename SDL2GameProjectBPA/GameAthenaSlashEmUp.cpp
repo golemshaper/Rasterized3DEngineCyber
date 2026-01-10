@@ -281,7 +281,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->SetCamera(vec3d{ 0.0f, -8.0f, -3.5f }, vec3d{ (sin(mouseX * 0.01f) * 0.1f) + cos(totalTime) * 0.01f + SinMouseX,2 - sin(totalTime) * 0.01f + CosMouseY, 1.0f });
    
     //Terrain
-    MyScratch->ZWriteOn = false;
+    MyScratch->ZWriteOn = true;
     MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ player_position.x * -0.5f,0.0f, -4 }, vec3d{ totalTime, 0.0, 0.0, }, vec3d{ 15.0, 4.0, 4.0, });
     MyScratch->ClearZBufffer();
 
@@ -377,7 +377,6 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
 
 
-
    // 
    // 
 //DRAW ANOTHER ATHENA, BUT USING THE ADD ACTOR VERSION!
@@ -463,6 +462,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
 
 
+   
 
     MyScratch->MoveMainspaceToExtraBuffer();
     MyScratch->Clear();
@@ -513,7 +513,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     }
 
     //TO SEE ZBuffer ENABLE THIS! (Depth Buffer)
-    //MyScratch->DrawZBufffer();
+    if (MyScratch->Input->GetToggleDepthKey())MyScratch->DrawZBufffer();
 
 }
 

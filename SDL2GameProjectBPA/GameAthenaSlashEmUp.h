@@ -12,8 +12,8 @@ public:
 
 	float GameSpeed = 1.0f;
 	//Current game mode
-	int mode = 0;
-
+	int mode = 1;
+	bool drawBuffer = false;
 
 
 	float demoWait = 4.0f;

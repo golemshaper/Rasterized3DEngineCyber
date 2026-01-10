@@ -56,6 +56,20 @@ void InputWraper::Tick(float DeltaTime)
         //ly = -1.0f;
         ly = Lerp(ly, -1.0f, grow * DeltaTime);
     }
+
+
+
+    //TOGGLE KEYS:
+    if (toggleCooldown > 0.0f)
+    {
+        toggleCooldown -= DeltaTime;
+        return;
+    }
+    if (keyboard[SDL_SCANCODE_Z])
+    {
+        toggleCooldown = 0.2f;
+        zDepthDrawOn = !zDepthDrawOn;
+    }
     
 }
 
@@ -67,6 +81,11 @@ float InputWraper::GetMovementX()
 float InputWraper::GetMovementY()
 {
     return ly;
+}
+
+bool InputWraper::GetToggleDepthKey()
+{
+    return zDepthDrawOn;
 }
 
 float InputWraper::Lerp(float a, float b, float c)

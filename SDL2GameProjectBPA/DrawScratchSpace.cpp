@@ -1397,7 +1397,7 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool 
         //multipass
         DrawHighlightEdgeOnly = true;
         //const float offset = -10.5f;
-        const int offset = 5;
+        const int offset = 15;
         ZOffset -= offset; // draw one point behind the mesh
         DrawMesh(m, loc, rot, scale);
         ZOffset += offset; //restore mesh back to normal depth location
