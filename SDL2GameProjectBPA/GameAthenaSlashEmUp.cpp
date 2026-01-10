@@ -279,13 +279,12 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         255
     };
     MyScratch->SetCamera(vec3d{ 0.0f, -8.0f, -3.5f }, vec3d{ (sin(mouseX * 0.01f) * 0.1f) + cos(totalTime) * 0.01f + SinMouseX,2 - sin(totalTime) * 0.01f + CosMouseY, 1.0f });
-    ////left/right extras
-    //MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ (player_position.x * -0.5f) + 11, 2.0f, -4 }, vec3d{ totalTime, 0.0, 0.0, }, vec3d{ 9.0, 4.0, 4.0, });
-    //MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ (player_position.x * -0.5f) - 11, 2.0f, -4 }, vec3d{ totalTime, 0.0, 0.0, }, vec3d{ 9.0, 4.0, 4.0, });
-    //center
+   
+    //Terrain
     MyScratch->ZWriteOn = false;
     MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ player_position.x * -0.5f,0.0f, -4 }, vec3d{ totalTime, 0.0, 0.0, }, vec3d{ 15.0, 4.0, 4.0, });
-    MyScratch->ZWriteOn = true;
+    MyScratch->ClearZBufffer();
+
 
 
 
@@ -293,27 +292,26 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->DrawEdges = false;
     MyScratch->DrawVerticies = false;
 
-    //sky
+    //Sky
     MyScratch->MeshColor = {
         (int)((abs(sin(totalTime)) + 0.5f) * 2),
         (int)((abs(cos(totalTime * 2)) + 0.5f) * 2),
         (int)((abs(sin(totalTime * 4)) + 0.5f) * 155),
         255
     };
+
+    MyScratch->ClearZBufffer();
+
     MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ 0.0f,-5.0f, 12 }, vec3d{ -totalTime, 0.0, 0.0, }, vec3d{ 12.0, 4.0, 4.0, });
-    //NOTE: I'll want to maybe make a list of meshes to render, and sort those by z position if you draw them one by one
-       //teapot
+
+    //teapot
     MyScratch->MeshColor = { 255,255,255,255 };
-
-MyScratch->ClearZBufffer();
-
+    MyScratch->ClearZBufffer(); //stop teapot from clipping head of "boy"
     MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f }, vec3d{ 0.0f,1.0f, 1.0f });  //By calling multiple SetCamera calls during drawing, you can make things like a skybox, that don't move, but follow the rest of the worlds rotation!
     MyScratch->DrawVerticies = true;
     MyScratch->DrawMesh(monkeymesher.GetTeapotMesh(), vec3d{ (sinf(totalTime * 4.0f) * 0.2f) - 1.12f,0.5f,2 }, vec3d{ 1.0, 1.0, totalTime, }, vec3d{ 1,1,1 });
     MyScratch->DrawVerticies = false;
-
-
-MyScratch->ClearZBufffer();
+    MyScratch->ClearZBufffer();//stop teapot from clipping head of "boy"
 
     //----------------------
     // CAMERA MAIN CAM

@@ -41,5 +41,4 @@ void StateMachine::Tick(float DeltaTime)
 	if (TickMap.find(CurrentState) != TickMap.end()) {
 		TickMap[CurrentState]();
 	}
-	
 }
