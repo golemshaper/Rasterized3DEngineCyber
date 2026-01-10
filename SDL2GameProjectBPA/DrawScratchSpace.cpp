@@ -61,9 +61,10 @@ void DrawScratchSpace::DrawZBufffer()
 
 void DrawScratchSpace::PushBackDepthBuffer(int amount)
 {
+    //take the current depth and push it all back by some amount. negative to pull it forward.
     for (int i = 0; i < TOTAL_PIXELS; ++i)
     {
-        ZBuffer[i] = ZBuffer[i] + RGB{ amount,amount,amount,amount };
+        ZBuffer[i] = ZBuffer[i] + RGB{ amount,amount,amount,0 };
     }
 }
 
