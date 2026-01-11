@@ -1221,7 +1221,7 @@ mat4x4 DrawScratchSpace::CalculateViewMatrix()
  // Point the CAMERA
  // -----------------------------
     mat4x4 matView = IdentityMatrix();
-    vec3d newForward;
+    vec3d newForward = { 0,0,0 };
     vec3d up = { 0.0f, 1.0f, 0.0f };
     vec3d a = newForward * DotProduct(up, newForward);
     vec3d newUp = up - a;
@@ -1238,7 +1238,7 @@ mat4x4 DrawScratchSpace::CalculateViewMatrix()
 }
 vec3d DrawScratchSpace::CrossProduct(const vec3d& a, const vec3d& b)
 {
-    vec3d r;
+    vec3d r = { 0,0,0 };
     r.x = a.y * b.z - a.z * b.y;
     r.y = a.z * b.x - a.x * b.z;
     r.z = a.x * b.y - a.y * b.x;
@@ -1254,7 +1254,7 @@ vec3d DrawScratchSpace::LookAtRotation(const vec3d& from, const vec3d& to)
     if (len > 0.0001f)
         dir = { dir.x / len, dir.y / len, dir.z / len };
 
-    vec3d rot;
+    vec3d rot = { 0,0,0 };
 
     // YAW (rotation around Y axis)
     rot.y = atan2f(dir.x, dir.z);

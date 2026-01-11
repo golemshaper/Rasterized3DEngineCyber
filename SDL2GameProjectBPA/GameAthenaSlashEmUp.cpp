@@ -225,11 +225,8 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //MyScratch->DrawSprite(angle * 164.0f, 100 + (sin(angle * 5.0f) * 32.0f), Smile_RGB, 8, 8);
 
     //Real Sprite
-    Sprite Smile_Sprite;
-    Smile_Sprite.pixels = Smile_RGB;
-    Smile_Sprite.width = 8;
-    Smile_Sprite.height = 8;
-
+    Sprite Smile_Sprite = { Smile_RGB, 8,8};
+    
     //----------------------
     //MOUSE USING SDL
     //----------------------
