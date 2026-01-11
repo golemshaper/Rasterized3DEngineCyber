@@ -798,6 +798,7 @@ void GameAthenaSlashEmUp::DrawStatsAtLocation(Stats& stats, vec3d loc, bool useF
         stats.exp += 5;
         if (stats.exp >= 999)
         {
+            //TODO: On Level up, display a text box message !
             stats.exp = 0;
             stats.lvl += 1;
             stats.hp += MyScratch->GetNext(1, 4);
@@ -872,7 +873,7 @@ void GameAthenaSlashEmUp::DrawHUD(float DeltaTime)
     {
 
         //TEXTBOX
-        TextBoxDraw(Reader.GetStringFromSheetTag("Intro"));
+       //Disable text for now: TextBoxDraw(Reader.GetStringFromSheetTag("Intro"));
     }
 }
 
