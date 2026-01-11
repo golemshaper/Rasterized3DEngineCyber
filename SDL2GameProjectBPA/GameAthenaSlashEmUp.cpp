@@ -51,6 +51,13 @@ void GameAthenaSlashEmUp::Tick(float DeltaTime)
     //Modify the speed of the game by changing GameSpeed
     DeltaTime = DeltaTime * GameSpeed;
     //GAME DESCRIPTION
+    // 
+    // 
+    // Ideas:
+    // https://nexusrexdev.github.io/gamedevcorner/analysis/2023/07/19/enemy-design-shmups.html
+    // https://www.gamedeveloper.com/design/build-a-bad-guy-workshop---designing-enemies-for-retro-games
+    // 
+    // 
     //This is an Auto scrolling slash-em-up action RPG (HP should be drawn on all enemies, maybe have a menu for attacking?)
     //Try to level up as much as possible before hitting the boss. Combo chains will grant more EXP
     // 
