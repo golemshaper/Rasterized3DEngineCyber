@@ -1516,6 +1516,8 @@ void DrawScratchSpace::DifferDrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale,
 
 void DrawScratchSpace::DrawSortedDifferedMeshes()
 {
+    //Set ZWriteOn to false to get old 2D sorting feature! :: MyScratch->ZWriteOn = false;
+
     std::sort(recipes.begin(), recipes.end(),
         [&](const SortedMeshRecipe& a, const SortedMeshRecipe& b)
     {

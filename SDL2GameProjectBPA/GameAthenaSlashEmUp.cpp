@@ -148,18 +148,11 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //CAMERA FOV
     MyScratch->SetCameraFOV(90 + (abs(cos(totalTime * 2.0f)) * 4));
 
-
     //Draw using my function
     RGB MyColor = { 0 ,0,0 };
     RGB Red = { 255,0,0 };
     RGB Green = { 0,255,0 };
     RGB Blue = { 0,0,255 };
-
-    //MyScratch->DrawSquare(MyScratch->GetRandom(0, 240), 24, 32, MyColor);
-    //MyScratch->DrawSquareMultiply(32, MyScratch->GetRandom(0, 200),32, MyColor);
-    //MyScratch->DrawLine(0, 0, 200, MyScratch->GetRandom(0,200), MyColor);
-
-
 
     //Triangle
     Vertex p1 = { 100,16,Blue };
@@ -169,10 +162,6 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     Vertex px = { 0,0, Red };
     Vertex pz = { 240,160, Green };
     Vertex pq = { 88,35, Green };
-
-
-
-
 
 
     //Move main drawing space to the backup buffer
@@ -202,13 +191,10 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
  //TRY A RANDOM FILL OVER BACKGROUND ON AND OFF. IT LOOKS RAD WHEN THE LIGHTNING STRIKES: MyScratch->RandomScreenFill();
 
 
-
-    // MyScratch->DrawTriangle(px, pq, pz);
-
-     //Now add the buffers
+    //Now add the buffers
     MyScratch->AddBuffers();
 
-    //SPRITE
+    //SPRITE (PLEASE MOVE THIS TO SOME KIND OF SPRITE HEADER)
     RGB Smile_RGB[64] = {
         // Row 0
         {0,0,0}, {0,0,0}, {255,255,0}, {255,255,0}, {255,255,0}, {255,255,0}, {0,0,0}, {0,0,0},
@@ -236,19 +222,16 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     Smile_Sprite.width = 8;
     Smile_Sprite.height = 8;
 
-
-
-
-    // Draw Cube Triangles in 3D
-    //MyScratch->DrawMesh(MyScratch->MeshCube, DeltaTime);
-
-
-//MOUSE USING SDL
+    //----------------------
+    //MOUSE USING SDL
+    //----------------------
     float mouseX, mouseY;
     Uint32 buttons = SDL_GetMouseState(&mouseX, &mouseY);
+    //----------------------
     //CAMERA
+    //----------------------
     MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f }, vec3d{ 0.0f,1.0f, 1.0f });  //By calling multiple SetCamera calls during drawing, you can make things like a skybox, that don't move, but follow the rest of the worlds rotation!
-
+    
     //SKY FX___
     MyScratch->SetFade({ 0,0,0,0 }, { 0,0,0,0 }, { 0,64,64,255 }, { 35,0,164,255 }, sin(totalTime));
    
@@ -263,20 +246,26 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //SKY FX___
 
 
-
+    //----------------------
     //MESH
+    //----------------------
     MyScratch->MeshColor = { 255,255,255,255 };
     MonkeyMesh monkeymesher; //Mesh loading tool
 
-    //--
+    //----------------------
     //ENVIRONMENT
+    //----------------------
     MyScratch->DrawVerticies = sin(totalTime * 8.0f) < 0.0f; //Results in true or false
+    //----------------------
     //Edges
+    //----------------------
     MyScratch->DrawEdges = cos(totalTime * 8.0f) < 0.0f; //Results in true or false
     MyScratch->EdgeBrightness = (int)((abs(sin(totalTime)) + 0.5f) * 222);
     float SinMouseX = sin(mouseX * 0.01f) * 0.01f;
     float CosMouseY = cos(mouseY * 0.01f) * 0.01f;
-    //ground
+    //----------------------
+    //Ground
+    //----------------------
     MyScratch->MeshColor = {
         (int)((abs(sin(totalTime)) + 0.5f) * 155),
         (int)((abs(cos(totalTime * 2)) + 0.5f) * 44),
@@ -285,20 +274,16 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     };
     MyScratch->SetCamera(vec3d{ 0.0f, -8.0f, -3.5f }, vec3d{ (sin(mouseX * 0.01f) * 0.1f) + cos(totalTime) * 0.01f + SinMouseX,2 - sin(totalTime) * 0.01f + CosMouseY, 1.0f });
    
+    //----------------------
     //Terrain
-//MyScratch->ZWriteOn = false;
+    //----------------------
     MyScratch->ZWriteOn = true;
     MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ player_position.x * -0.5f,0.0f, -4 }, vec3d{ totalTime, 0.0, 0.0, }, vec3d{ 15.0, 4.0, 4.0, });
-    //MyScratch->ClearZBufffer();
- 
-
-    //You can invert the current buffer at any time: MyScratch->InvertBuffer();
-
-
     MyScratch->DrawEdges = false;
     MyScratch->DrawVerticies = false;
-
+    //----------------------
     //Sky
+    //----------------------
     MyScratch->MeshColor = {
         (int)((abs(sin(totalTime)) + 0.5f) * 2),
         (int)((abs(cos(totalTime * 2)) + 0.5f) * 2),
@@ -306,19 +291,16 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         255
     };
 
-//MyScratch->ClearZBufffer();
     MyScratch->ZWriteOn = true;
 
     MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ 0.0f,-5.0f, 12 }, vec3d{ -totalTime, 0.0, 0.0, }, vec3d{ 12.0, 4.0, 4.0, });
     //teapot
     MyScratch->MeshColor = { 255,255,255,255 };
-//MyScratch->ClearZBufffer(); //stop teapot from clipping head of "boy"
     MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f }, vec3d{ 0.0f,1.0f, 1.0f });  //By calling multiple SetCamera calls during drawing, you can make things like a skybox, that don't move, but follow the rest of the worlds rotation!
     MyScratch->DrawVerticies = true;
     MyScratch->DrawMesh(monkeymesher.GetTeapotMesh(), vec3d{ (sinf(totalTime * 4.0f) * 0.2f) - 1.12f,0.5f,2 }, vec3d{ 1.0, 1.0, totalTime, }, vec3d{ 1,1,1 });
     MyScratch->DrawVerticies = false;
-   // MyScratch->ClearZBufffer();//stop teapot from clipping head of "boy"
-    MyScratch->PushBackDepthBuffer(240);
+    MyScratch->PushBackDepthBuffer(240); //Push back so we don't clip the actors
 
     //----------------------
     // CAMERA MAIN CAM
@@ -341,10 +323,10 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     }
     MyScratch->SetCamera(camLocation, camLookTarget);
 
-
-    
+    //----------------------
     //MESH
-        //Monkey
+    //---------------------- 
+    //Monkey
     MyScratch->MeshColor = { 0,0,255,255 };
     MyScratch->DifferDrawMesh(monkeymesher.GetMonkeyMesh(), vec3d{ 4.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime * 6.0f), }, MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))),true);
     //Boy
@@ -360,15 +342,10 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     
     MyScratch->DifferDrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,-1.0f,0.0f }, vec3d{ 1.0f, 0.0f, 0.0f, } + MyScratch->LookAtRotation2D(vec3d{ 0.0f,-1.0f,0.0f }, (player_position * -1) + vec3d{0,0,10}), vec3d{ 2.0f, 2.0f, 2.0f, }, true);
 
-
     //Athena
     MyScratch->MeshColor = { (int)abs(sin(totalTime * 4.0f) * 255),(int)abs(sin(totalTime * 2.0f) * 255),(int)abs(cos(totalTime * 4.0f) * 255),255 };
-   
-    //player_position = player_position + MyScratch->GetMovementInput()*player_speed*DeltaTime;
-
     MovementUpdate(DeltaTime);
 
-    //vec3d{ -2.0f,-0.5f,-2.25f }
 
 //NOTE 1: DifferDrawMesh is a drop-in replacement for the regular DrawMesh function. It'll only draw when DrawSortedDifferedMeshes() is called
 //NOTE 2: use regular DrawMesh() along with  MyScratch->ZOffsetFloat = 10;  Besure to turn the offset off when you are done
@@ -380,9 +357,6 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
             abs(sin(totalTime * 4.0f))),
         true
     );
- 
-
-
 
    // 
    // 
@@ -399,12 +373,6 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //Set ZWriteOn to false to get old 2D sorting feature! :: MyScratch->ZWriteOn = false;
     MyScratch->DrawSortedDifferedMeshes();
 
-
-
-    //------------------------------
-    // STATS
-    //------------------------------
-    DrawStatsAtLocation(PlayerStats,player_position,true);
 
     //------------------------------
     // Bullets
@@ -434,44 +402,8 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     );
 
 
-    //Now add the buffers for cool additive effect
-    //MyScratch->AddBuffers(); //<-Remove this to only see the last thing drawn
-
-
-
-    //Noise pass
-    //MyScratch->MoveMainspaceToExtraBuffer();
-    //MyScratch->RandomScreenFill();//Clear the scren now that contents are in the second buffer
-    //MyScratch->BlendBuffers(0.12f);
-
-
-//TODO: Move all text to a HUD draw!
-    //TYPE TEXT 
-    float cam_x = MyScratch->CameraTargetLoc.x;
-    float cam_y = MyScratch->CameraTargetLoc.y;
-    float cam_z = MyScratch->CameraTargetLoc.z;
-    char buffer[64];
-    snprintf(buffer, sizeof(buffer), "Look X %.2f,\nLook Y %.2f,\nLook Z %.2f", cam_x, cam_y, cam_z);   // format however you want
-    MyScratch->DrawText(4, 4, { 255,255,255,255 }, buffer, MyTextSprites);
-
-
-
-    typingEffect += 2 * DeltaTime;
-    MyScratch->DrawText(32, 32, { 255, 255, 0, 255, }, "GOODBYE \nWORLD!", MyTextSprites, typingEffect);
-    if (typingEffect >= 1.5f)
-    {
-        //reset typing effect
-        typingEffect = -1.0f;
-    }
-
-    //TEXT AT 3D LOCATION
-    vec3d textCoordinates2D = MyScratch->Get2DPointInFromSpace(vec3d{ 2.0f,0.0f,-0.25f });
-    MyScratch->DrawText((int)textCoordinates2D.x - (10 * 6), (int)textCoordinates2D.y - 12.0, { 0, 255, 0, 255, }, "Target!", MyTextSprites, typingEffect * 2.0f);
-
-
-
    
-
+    //BULLET ARC FX
     MyScratch->MoveMainspaceToExtraBuffer();
     MyScratch->Clear();
     //Bullets
@@ -501,24 +433,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     }
     MyScratch->AddBuffers();
 
-   //Reticle
-    vec3d TargetPos2D = MyScratch->Get2DPointInFromSpace(vec3d{ 0.0f,-1.0f,0.0f });
-    DrawReticle(int(TargetPos2D.x),(int)TargetPos2D.y, 12.0f, totalTime * 2.0f);
 
-    //FADE IN HERE!
-    if (working_float > 0.0f) {
-        //fade in
-        working_float -= 0.5f * DeltaTime;
-        MyScratch->SetFade({ 0,0,0,0 }, working_float);
-        CircleTransition((1.0f- working_float)*1.5f);
-       
-    }
-    else
-    {
-
-        //TEXTBOX
-        TextBoxDraw(Reader.GetStringFromSheetTag("Intro"));
-    }
 
 
 //TOGGLE VIEWS
@@ -526,13 +441,14 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     {
         MyScratch->Input->ResetToggleDepthKey();
         drawBuffer++;
-        if (drawBuffer > 3)drawBuffer = 0;
+        if (drawBuffer > 4)drawBuffer = 0;
     }
     switch (drawBuffer)
     {
     case 0:
         break; 
     case 1:
+        //Z
         MyScratch->DrawZBufffer();
         break;
     case 2:
@@ -547,9 +463,15 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         MyScratch->DrawZBuffferMaskSky();
         MyScratch->MultiplyBuffers();
         break;
+    case 4:
+        //Noise pass
+        MyScratch->MoveMainspaceToExtraBuffer();
+        MyScratch->RandomScreenFill();//Clear the scren now that contents are in the second buffer
+        MyScratch->BlendBuffers(0.12f);
+        break;
     }
    
-   
+    DrawHUD(DeltaTime);
 }
 
 
@@ -645,9 +567,9 @@ void GameAthenaSlashEmUp::LightningFX(int phase, float progress)
 
     float additional_progress_time = 0.0f;
    
-
-    RGB StartColor = { 255,0,255,(int)(255*(1-progress))};
-    RGB EndColor = {255,255,0,0};
+    int mult = 2; //make color brighter
+    RGB StartColor = { 255* mult,0,255* mult,(int)(255*(1-progress))};
+    RGB EndColor = {255* mult,255* mult,0,0};
 
     
     for (int i = 0; i < total_verts; i++)
@@ -890,5 +812,57 @@ void GameAthenaSlashEmUp::DrawStatsAtLocation(Stats& stats, vec3d loc, bool useF
         MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y, { 255, 0, 0, 255, }, HP.c_str(), MyTextSprites, 1.0f);
     }
 
+}
+
+void GameAthenaSlashEmUp::DrawHUD(float DeltaTime)
+{
+    //------------------------------
+    // STATS
+    //------------------------------
+    DrawStatsAtLocation(PlayerStats, player_position, true);
+    //------------------------------
+    //TYPE TEXT 
+    //------------------------------
+    float cam_x = MyScratch->CameraTargetLoc.x;
+    float cam_y = MyScratch->CameraTargetLoc.y;
+    float cam_z = MyScratch->CameraTargetLoc.z;
+    char buffer[64];
+    snprintf(buffer, sizeof(buffer), "Look X %.2f,\nLook Y %.2f,\nLook Z %.2f", cam_x, cam_y, cam_z);   // format however you want
+    MyScratch->DrawText(4, 4, { 255,255,255,255 }, buffer, MyTextSprites);
+
+    typingEffect += 2 * DeltaTime;
+    MyScratch->DrawText(32, 32, { 255, 255, 0, 255, }, "GOODBYE \nWORLD!", MyTextSprites, typingEffect);
+    if (typingEffect >= 1.5f)
+    {
+        //reset typing effect
+        typingEffect = -1.0f;
+    }
+    //------------------------------
+    //TEXT AT 3D LOCATION
+    //------------------------------
+    vec3d textCoordinates2D = MyScratch->Get2DPointInFromSpace(vec3d{ 2.0f,0.0f,-0.25f });
+    MyScratch->DrawText((int)textCoordinates2D.x - (10 * 6), (int)textCoordinates2D.y - 12.0, { 0, 255, 0, 255, }, "Target!", MyTextSprites, typingEffect * 2.0f);
+
+    //------------------------------
+    //Reticle
+    //------------------------------
+    vec3d TargetPos2D = MyScratch->Get2DPointInFromSpace(vec3d{ 0.0f,-1.0f,0.0f });
+    DrawReticle(int(TargetPos2D.x), (int)TargetPos2D.y, 12.0f, totalTime * 2.0f);
+    //------------------------------
+    //FADE IN HERE!
+    //------------------------------
+    if (working_float > 0.0f) {
+        //fade in
+        working_float -= 0.5f * DeltaTime;
+        MyScratch->SetFade({ 0,0,0,0 }, working_float);
+        CircleTransition((1.0f - working_float) * 1.5f);
+
+    }
+    else
+    {
+
+        //TEXTBOX
+        TextBoxDraw(Reader.GetStringFromSheetTag("Intro"));
+    }
 }
 
