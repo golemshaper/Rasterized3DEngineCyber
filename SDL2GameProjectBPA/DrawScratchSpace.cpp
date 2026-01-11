@@ -120,6 +120,20 @@ void DrawScratchSpace::CopyBufferToBuffer(RGB* from, RGB* to)
     }
 }
 
+RGB DrawScratchSpace::SampleTexture(const RGB* tex, int texW, int texH, float u, float v)
+{
+    //clamp
+    if (u < 0.0f) u = 0.0f;
+    if (u > 1.0f) u = 1.0f;
+    if (v < 0.0f) v = 0.0f;
+    if (v > 1.0f) v = 1.0f;
+
+    int x = int(u * (texW - 1));
+    int y = int(v * (texH - 1));
+
+    return tex[y * texW + x];
+}
+
 /// <summary>
 /// Only call me once. Use Clear() after if you want to clear the screen buffer
 /// </summary>
@@ -232,6 +246,7 @@ void DrawScratchSpace::BrightnessContrastOnBuffer(RGB* buffer, float brightness,
 
 void DrawScratchSpace::RandomScreenFill()
 {
+    //replace with random function?
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<int> dist(0, 255);
@@ -241,6 +256,21 @@ void DrawScratchSpace::RandomScreenFill()
         MainSpace[i].r = dist(gen);
         MainSpace[i].g = dist(gen);
         MainSpace[i].b = dist(gen);
+    }
+}
+
+void DrawScratchSpace::RandomScreenFill(RGB* buffer)
+{
+    //replace with random function?
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> dist(0, 255);
+
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+        buffer[i].r = dist(gen);
+        buffer[i].g = dist(gen);
+        buffer[i].b = dist(gen);
     }
 }
 
@@ -375,12 +405,37 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2)
 }
 void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
 {
+
+
+//TEXTURE PLACEHOLDER
+    const RGB TestTexture[64] = {
+        // Row 0
+        {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
+        // Row 1
+        {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
+        // Row 2
+        {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220},
+        // Row 3
+        {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220},
+        // Row 4
+        {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
+        // Row 5
+        {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
+        // Row 6
+        {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220},
+        // Row 7
+        {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}
+    };
+//TEXTURE PLACEHOLDER
+
+
+
     // Sort vertices by y-coordinate
     if (v1.y < v0.y) std::swap(v0, v1);
     if (v2.y < v0.y) std::swap(v0, v2);
     if (v2.y < v1.y) std::swap(v1, v2);
 
-    auto interpolate = [](int y, const Vertex& a, const Vertex& b) -> Vertex {
+    /*auto interpolate = [](int y, const Vertex& a, const Vertex& b) -> Vertex {
         if (b.y == a.y) return a;
         float t = static_cast<float>(y - a.y) / (b.y - a.y);
         return {
@@ -392,6 +447,23 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
                 static_cast<int>(a.color.b + t * (b.color.b - a.color.b))
             }
         };
+    };*/
+    auto interpolate = [](int y, const Vertex& a, const Vertex& b) -> Vertex {
+        if (b.y == a.y) return a;
+        float t = float(y - a.y) / float(b.y - a.y);
+
+        Vertex out;
+        out.x = a.x + t * (b.x - a.x);
+        out.y = y;
+
+        out.color.r = a.color.r + t * (b.color.r - a.color.r);
+        out.color.g = a.color.g + t * (b.color.g - a.color.g);
+        out.color.b = a.color.b + t * (b.color.b - a.color.b);
+
+        out.u = a.u + t * (b.u - a.u);
+        out.v = a.v + t * (b.v - a.v);
+
+        return out;
     };
 
     // First, draw the top part of the triangle (from v0 to v1)
@@ -400,6 +472,10 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
 
         Vertex va = interpolate(y, v0, v1);
         Vertex vb = interpolate(y, v0, v2);
+
+
+       
+
 
         if (va.x > vb.x) std::swap(va, vb);
 
@@ -412,6 +488,11 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
                 static_cast<int>(va.color.g + t * (vb.color.g - va.color.g)),
                 static_cast<int>(va.color.b + t * (vb.color.b - va.color.b))
             };
+
+
+          
+
+
             if (ZWriteOn && ZBuffer[y * SCREEN_X + x].r < z)
             {
                 //don't draw hidden triangle parts!
@@ -421,7 +502,22 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
             {
                 ZBuffer[y * SCREEN_X + x] = RGB{ z,z,z,255 };
             }
-            MainSpace[y * SCREEN_X + x] = color;
+
+            // UV CALC 
+            float tX = (vb.x == va.x) ? 0.0f : float(x - va.x) / float(vb.x - va.x);
+            float u = Lerp((float)va.u, (float)vb.u, tX);
+            float v = Lerp((float)va.v, (float)vb.v, tX);
+           
+
+            RGB textured = SampleTexture(TestTexture, 8, 8, u, v);
+            if (TextureDrawOn) {
+
+                MainSpace[y * SCREEN_X + x] = (color + textured) / 2;
+            }
+            else
+            {
+                MainSpace[y * SCREEN_X + x] = color;
+            }
         }
     }
 
@@ -452,7 +548,23 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
             {
                 ZBuffer[y * SCREEN_X + x] = RGB{ z,z,z,255 };
             }
-            MainSpace[y * SCREEN_X + x] = color;
+
+
+            // UV CALC 
+            float tX = (vb.x == va.x) ? 0.0f : float(x - va.x) / float(vb.x - va.x);
+            float u = Lerp((float)va.u, (float)vb.u, tX);
+            float v = Lerp((float)va.v, (float)vb.v, tX);
+
+
+            RGB textured2 = SampleTexture(TestTexture, 8, 8, u, v);
+            if (TextureDrawOn) {
+
+                MainSpace[y * SCREEN_X + x] = (color + textured2) / 2;
+            }
+            else
+            {
+                MainSpace[y * SCREEN_X + x] = color;
+            }
         }
     }
 }
@@ -905,7 +1017,14 @@ vec3d DrawScratchSpace::Lerp(vec3d a, vec3d b, float c)
 {
     return a + (b - a) * c;
 }
-
+float DrawScratchSpace::Lerp(float a, float b, float c)
+{
+    return a + (b - a) * c;
+}
+int DrawScratchSpace::Lerp(int a, int b, int c)
+{
+    return a + (b - a) * c;
+}
 vec3d DrawScratchSpace::Arc(vec3d a, vec3d b, float h, float c)
 {
     h = -h;
@@ -1410,11 +1529,40 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         int R = MeshColor.r * ZFog * 0.75f;
         int G = MeshColor.g * ZFog * 0.75f;
         int B = MeshColor.b * ZFog * 0.75f;
+      
 
+        //----------------------------------------------------------------------------------------------------------------------
         //COLOR FROM F+GLOBAL MESH COLOR:
+        //----------------------------------------------------------------------------------------------------------------------
         Vertex p0 = { static_cast<int>(triProjected.p[0].x), static_cast<int>(triProjected.p[0].y), {1*R,G,B} };
         Vertex p1 = { static_cast<int>(triProjected.p[1].x), static_cast<int>(triProjected.p[1].y), {R,1*G,B} };
         Vertex p2 = { static_cast<int>(triProjected.p[2].x), static_cast<int>(triProjected.p[2].y), {R,G,1*B} };
+
+
+
+
+        //----------------------------------------------------------------------------------------------------------------------
+        //TEXTURING
+        //---------------------------------------------------------------------------------------------------------------------- 
+        /* */
+        
+        //TEXTURE SAMPLING WILL WORK LIKE THIS, BUT I NEED TO PASS IN UVS!
+        p0.u = 0.0f;
+        p0.v = 0.0f;
+        p1.u = 1.0f;
+        p1.v = 0.0f;
+        p2.u = 0.0f;
+        p2.v = 1.0f;
+
+       /* RGB textured = SampleTexture(Smile_RGB, 8, 8, p0.u, p0.v);
+        R = textured.r;
+        G = textured.g;
+        B = textured.b;
+        p0.color = textured;
+        p1.color = textured;
+        p2.color = textured;*/
+       
+        //----------------------------------------------------------------------------------------------------------------------
 
 
         ////LIGHT FX (Won't work since you draw on top of tris that are already connected to the next one...

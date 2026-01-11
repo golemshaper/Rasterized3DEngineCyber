@@ -100,6 +100,7 @@ void GameAthenaSlashEmUp::Tick(float DeltaTime)
 
 void GameAthenaSlashEmUp::TitleScreenTick(float DeltaTime)
 {
+
     //SETUP
     totalTime += DeltaTime;
     MyScratch->Clear(RGB{ 0,2,8 });
@@ -448,11 +449,12 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     {
         MyScratch->Input->ResetToggleDepthKey();
         drawBuffer++;
-        if (drawBuffer > 4)drawBuffer = 0;
+        if (drawBuffer > 5)drawBuffer = 0;
     }
     switch (drawBuffer)
     {
     case 0:
+        MyScratch->TextureDrawOn = false;
         break; 
     case 1:
         //Z
@@ -475,6 +477,10 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         MyScratch->MoveMainspaceToExtraBuffer();
         MyScratch->RandomScreenFill();//Clear the scren now that contents are in the second buffer
         MyScratch->BlendBuffers(0.12f);
+        break;
+    case 5:
+        //Textures enabled
+        MyScratch->TextureDrawOn = true;
         break;
     }
    

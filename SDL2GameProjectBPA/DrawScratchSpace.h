@@ -85,18 +85,24 @@ struct Point {
 struct Vertex {
     int x, y;
     RGB color;
+    float u = 0;
+    float v = 1;
     Vertex operator*(const int& other)const {
         return{
             x * other,
             y * other,
-            color
+            color,
+            u,
+            v
         };
     }
     Vertex operator-(const int& other)const {
         return{
             x - other,
             y - other,
-            color
+            color,
+            u,
+            v,
         };
     }
 };
@@ -144,9 +150,17 @@ struct vec3d {
     }
 
 };
+struct vec2d
+{
+    float u, v;
+};
+
 struct triangle{
     vec3d p[3];
+    //do we want this? UVS belong to a vertex, but we use a vec3D as a vertex... 
+    vec2d uv[3];
     float depth = 0.0f;
+
 };
 
 struct Mesh {
@@ -187,6 +201,10 @@ public:
     void ApplyMask();
     void BlendBuffers(float amount);
     void CopyBufferToBuffer(RGB* from, RGB* to);
+
+    RGB SampleTexture(const RGB* tex, int texW, int texH, float u, float v);
+
+
     void Initialize();
     void Initialize(RGB wipe);
     void Clear();
@@ -194,6 +212,7 @@ public:
     inline int SinglePixelBrightContrast(int c, float brightness, float contrast);
     void BrightnessContrastOnBuffer(RGB* buffer, float brightness, float contrast);
     void RandomScreenFill();
+    void RandomScreenFill(RGB* buffer);
     void DrawRectangle(int x, int y, int width, int height, RGB color);
     void DrawRectangle(
         int x, int y,
@@ -227,6 +246,8 @@ public:
     int GetRandom(int a,int b);
     float Clamp(float value, float min, float max);
     RGB AlphaBlend(const RGB& dst, const RGB& src);
+    int Lerp(int a, int b, int c);
+    float Lerp(float a, float b, float c);
     RGB Lerp(RGB a, RGB b, float c);
     vec3d Lerp(vec3d a, vec3d b, float c);
     vec3d Arc(vec3d a, vec3d b, float h, float c);
@@ -249,6 +270,7 @@ public:
     RGB MeshColor = { 255,255,255,255 };
     bool DrawVerticies = false;
     int EdgeBrightness = 255;
+    bool TextureDrawOn = false;
     bool DrawEdges = false;
     bool DrawHighlightEdgeOnly = false;
     bool ZWriteOn = false;
