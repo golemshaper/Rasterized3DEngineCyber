@@ -12,6 +12,8 @@ void GameAthenaSlashEmUp::Initialize()
     MyScratch = new DrawScratchSpace();
     MyScratch->Initialize();
     MyTextSprites = new TextSprites();
+    Reader = new TextFileReader();
+    Reader->ReadText();
     //STATES (on stack)
     sm.MapState(FirstStateId, [this] {StateMachineHelloWorldTick(); });
     sm.SetState(FirstStateId);
@@ -512,10 +514,10 @@ void GameAthenaSlashEmUp::TextBoxDraw(const char* input)
     if (textBoxProgressTick > 5.0f)
     {
         //Auto-Advanced text until "End" tag found
-        if (Reader.HasEventAtIndex(Reader.CurrentLine,"End")==false && Reader.HasEventAtIndex(Reader.CurrentLine + 1, "Start") == false)
+        if (Reader->HasEventAtIndex(Reader->CurrentLine,"End")==false && Reader->HasEventAtIndex(Reader->CurrentLine + 1, "Start") == false)
         {
             textBoxProgressTick = 0.0f;
-            TextBoxDraw(Reader.GetStringFromSheetIndex(Reader.CurrentLine+1));
+            TextBoxDraw(Reader->GetStringFromSheetIndex(Reader->CurrentLine+1));
         }
         
         return;
@@ -881,7 +883,7 @@ void GameAthenaSlashEmUp::DrawHUD(float DeltaTime)
         //TEXTBOX
        //Disable text for now: 
         //NOTE THIS MUST TICK EVERY FRRAME FOR THE LEVEL UP MESSAGE TO DRAW!
-       TextBoxDraw(Reader.GetStringFromSheetTag(RequestedText));
+       TextBoxDraw(Reader->GetStringFromSheetTag(RequestedText));
        
     }
 }

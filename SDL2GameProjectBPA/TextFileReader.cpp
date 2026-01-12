@@ -4,26 +4,18 @@
 #include <unordered_map>
 #include <sstream>
 
-const char* TextFileReader::ReadText()
+void TextFileReader::ReadText()
 {
-   /* if (true)
-    {
-        return "Intro,End,TextDisabled";
-    }*/
     if (!limit_once)
     {
-       // std::string path = "../Assets/" + std::string("Read.txt");
         std::string path = "Assets/Read.txt";
         std::ifstream file(path);
-        file_contents.clear();
         std::string str;
    
         if (!file.is_open()) {
             file_contents = "F:" + path;
             limit_once = true;
-            return file_contents.c_str();
         }
-
 
         while (std::getline(file, str))
         {
@@ -37,12 +29,8 @@ const char* TextFileReader::ReadText()
         FileToSpreadsheet();
         hasReadFile = true;
     }
-   
-    return file_contents.c_str();
     
 }
-
-
 
 void TextFileReader::FileToSpreadsheet()
 {

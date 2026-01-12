@@ -19,7 +19,7 @@ public:
 
 	int CurrentLine = 0;
 	int LastRequest = 1;
-	const char* ReadText();
+	void ReadText();
 	bool limit_once = false;
 	const char* GetStringFromSheetTag(const char* input);
 	const char* GetStringFromSheetIndex(int index);

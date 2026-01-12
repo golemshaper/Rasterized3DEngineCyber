@@ -50,7 +50,7 @@ public:
 	int fake_exp_until_stats_container_added = 0;
 
 	//Objects
-	TextFileReader Reader;
+	TextFileReader* Reader;
 
 
 
