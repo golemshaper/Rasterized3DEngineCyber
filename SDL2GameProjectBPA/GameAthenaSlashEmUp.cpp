@@ -888,3 +888,12 @@ void GameAthenaSlashEmUp::DrawHUD(float DeltaTime)
     }
 }
 
+GameAthenaSlashEmUp::~GameAthenaSlashEmUp()
+{
+    delete MyScratch;
+    MyScratch = nullptr;
+    delete MyTextSprites;
+    MyTextSprites = nullptr;
+    delete Reader;
+    Reader = nullptr;
+}

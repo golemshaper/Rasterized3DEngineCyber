@@ -5,7 +5,7 @@
 
 class GameAthenaSlashEmUp : public Game
 {
-
+	~GameAthenaSlashEmUp();
 public:
 
 	StateMachine sm;

@@ -189,6 +189,7 @@ struct SortedMeshRecipe {
 
 
 class DrawScratchSpace {
+
 public:
     RGB MainSpace[TOTAL_PIXELS]; //Screen X * Screen Y size
     RGB ExtraBuffer[TOTAL_PIXELS]; //Screen X * Screen Y size
@@ -331,5 +332,6 @@ public:
     );
 
   
+    ~DrawScratchSpace();
 
 };

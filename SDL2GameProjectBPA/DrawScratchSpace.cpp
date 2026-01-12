@@ -3,7 +3,8 @@
 #include <algorithm>
 #include "TextSprites.h"
 
-void DrawScratchSpace::MoveMainspaceToExtraBuffer() 
+
+void DrawScratchSpace::MoveMainspaceToExtraBuffer()
 {
     //Take whatever is on the screen, and back it up in the extra buffer so you can clear it and draw new stuff to add or multiply later
     std::copy(std::begin(MainSpace), std::end(MainSpace), ExtraBuffer);
@@ -1831,4 +1832,10 @@ void DrawScratchSpace::SetFade(RGB topLeft, RGB topRight, RGB bottomLeft, RGB bo
     bottomLeft.a = alpha;
     bottomRight.a = alpha;
     DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, topLeft, topRight, bottomLeft, bottomRight);
+}
+
+DrawScratchSpace::~DrawScratchSpace()
+{
+    delete Input;
+    Input = nullptr;
 }
