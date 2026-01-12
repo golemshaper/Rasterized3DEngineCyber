@@ -24,7 +24,7 @@ public:
 	int GetSheetIndexFromString(const char* input);
 	bool HasTagAtIndex(int curIndex, const char* tag);
 	bool HasEventAtIndex(int curIndex, const char* tag);
-	
+	bool hasReadFile = false;
 	static void ReplaceBackslashWithNewline(std::string& s);
 private:
 	void FileToSpreadsheet();

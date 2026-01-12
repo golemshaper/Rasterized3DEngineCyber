@@ -12,7 +12,7 @@ public:
 
 	float GameSpeed = 1.0f;
 	//Current game mode
-	int mode = 0;
+	int mode = 1;
 	int drawBuffer = 0;
 
 
@@ -62,6 +62,8 @@ public:
 	void Tick(float DeltaTime);
 	void TitleScreenTick(float DeltaTime);
 	void GameModeTick(float DeltaTime);
+	void ReadNewText(const char* input); //call new text
+	const char* RequestedText = "Intro";
 	void TextBoxDraw(const char* input);
 	void LightningFX(int phase, float progress);
 

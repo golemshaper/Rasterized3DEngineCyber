@@ -485,7 +485,12 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 }
 
 
-
+void GameAthenaSlashEmUp::ReadNewText(const char* input)
+{
+    previous_text = "";
+    RequestedText = input;
+    
+}
 void GameAthenaSlashEmUp::TextBoxDraw(const char* input)
 {
    
@@ -795,10 +800,11 @@ void GameAthenaSlashEmUp::DrawStatsAtLocation(Stats& stats, vec3d loc, bool useF
         MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y - 8, { 255, 255, 255, 255, }, LV.c_str(), MyTextSprites, 1.0f);
         MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y, { 0, 255, 0, 255, }, HP.c_str(), MyTextSprites, 1.0f);
         MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y + 8, { 0, 0, 255, 255, }, MP.c_str(), MyTextSprites, 1.0f);
-        stats.exp += 5;
+        stats.exp += 2;
         if (stats.exp >= 999)
         {
             //TODO: On Level up, display a text box message !
+            ReadNewText("LevelUp");
             stats.exp = 0;
             stats.lvl += 1;
             stats.hp += MyScratch->GetNext(1, 4);
@@ -873,7 +879,10 @@ void GameAthenaSlashEmUp::DrawHUD(float DeltaTime)
     {
 
         //TEXTBOX
-       //Disable text for now: TextBoxDraw(Reader.GetStringFromSheetTag("Intro"));
+       //Disable text for now: 
+        //NOTE THIS MUST TICK EVERY FRRAME FOR THE LEVEL UP MESSAGE TO DRAW!
+       TextBoxDraw(Reader.GetStringFromSheetTag(RequestedText));
+       
     }
 }
 

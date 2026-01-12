@@ -1,11 +1,10 @@
 #pragma once
-//Square
-//#define SCREEN_X 240
-//#define SCREEN_Y 240//160
 
-//Smartphone
-#define SCREEN_X 135
+#define SCREEN_X 240
 #define SCREEN_Y 240//160
+
+//#define SCREEN_X 135
+//#define SCREEN_Y 240//160
 #define TOTAL_PIXELS (SCREEN_X * SCREEN_Y)
 
 

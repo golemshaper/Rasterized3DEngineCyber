@@ -31,6 +31,7 @@ const char* TextFileReader::ReadText()
        
         //Make spreadsheet version
         FileToSpreadsheet();
+        hasReadFile = true;
     }
    
     return file_contents.c_str();
@@ -78,6 +79,10 @@ const char* TextFileReader::GetStringFromSheetTag(const char* input)
 {
     ReadText();
     std::string key = input;
+
+    if (!hasReadFile) {
+        return "Tag not found! (File not found)";
+    }
     //LastRequest must never be changed when using the index version of this function. it's text only
     
     // 
@@ -107,6 +112,9 @@ const char* TextFileReader::GetStringFromSheetTag(const char* input)
 
 const char* TextFileReader::GetStringFromSheetIndex(int index)
 {
+    if (!hasReadFile) {
+        return "Tag not found! (File not found)";
+    }
     ReadText();
     CurrentLine = index;
     ReplaceBackslashWithNewline(StoredRowData[index].Dialogue);
@@ -117,7 +125,9 @@ int TextFileReader::GetSheetIndexFromString(const char* input)
 {
     ReadText();
     std::string key = input;
-
+    if (!hasReadFile) {
+        return 0;
+    }
     //should I use size_t instead of int for loops?
     for (int i = 0; i < (int)StoredRowData.size(); ++i)
     {
@@ -133,6 +143,10 @@ int TextFileReader::GetSheetIndexFromString(const char* input)
 
 bool TextFileReader::HasTagAtIndex(int curIndex, const char* tag)
 {
+    if (!hasReadFile)
+    {
+        return false;
+    }
     //PLEAE DON'T DO STRING COMPARISONS!
     //FIND A BETTER WAY!
     return StoredRowData[curIndex].Tag == tag;
@@ -141,11 +155,16 @@ bool TextFileReader::HasTagAtIndex(int curIndex, const char* tag)
 
 bool TextFileReader::HasEventAtIndex(int curIndex, const char* tag)
 {
+    if (!hasReadFile)
+    {
+        return false;
+    }
     return StoredRowData[curIndex].Event == tag;
 }
 
 void TextFileReader::ReplaceBackslashWithNewline(std::string& s)
 {
+   
     for (char& c : s)
     {
         if (c == '\\')
