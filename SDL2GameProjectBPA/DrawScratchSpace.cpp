@@ -1748,7 +1748,7 @@ void DrawScratchSpace::DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale)
     int spriteY = (pProj.y + 1.0f) * 0.5f * SCREEN_Y;
 
     // Draw the sprite
-    DrawSprite(spriteX, spriteY, s);
+    DrawSprite(spriteX, spriteY, s.pixels, s.width,s.height,false);
 }
 
 vec3d DrawScratchSpace::Get2DPointInFromSpace(vec3d loc)

@@ -74,7 +74,7 @@ void GameAthenaSlashEmUp::Tick(float DeltaTime)
     // 
     // 
     //text timer for text box. resets when new string is sent
-    textBoxProgressTick += DeltaTime;
+    
     MyScratch->Input->Tick(DeltaTime);
     
     //TODO REPLACE THIS WITH THE GAME-STATE MACHINE (sm)
@@ -835,6 +835,7 @@ void GameAthenaSlashEmUp::DrawStatsAtLocation(Stats& stats, vec3d loc, bool useF
 
 void GameAthenaSlashEmUp::DrawHUD(float DeltaTime)
 {
+    
     //------------------------------
     // STATS
     //------------------------------
@@ -879,7 +880,10 @@ void GameAthenaSlashEmUp::DrawHUD(float DeltaTime)
     }
     else
     {
-
+        
+       // textBoxProgressTick += (strlen(previous_text) + 1) / 4.0f * DeltaTime; //factor size of text in to how fast it takes to print. add 1 so never mult by 0.
+        textBoxProgressTick += 2.5f * DeltaTime; //factor size of text in to how fast it takes to print. add 1 so never mult by 0.
+       
         //TEXTBOX
        //Disable text for now: 
         //NOTE THIS MUST TICK EVERY FRRAME FOR THE LEVEL UP MESSAGE TO DRAW!

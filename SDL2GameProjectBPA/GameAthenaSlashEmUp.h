@@ -12,7 +12,7 @@ public:
 
 	float GameSpeed = 1.0f;
 	//Current game mode
-	int mode = 1;
+	int mode = 0;
 	int drawBuffer = 0;
 
 
@@ -20,7 +20,7 @@ public:
 	//primitive
 	float typingEffect = -1.0f;
 	float textBoxProgressTick = 0.0f;
-	const char* previous_text;
+	const char* previous_text = "";
 
 	float angle = 0.0f;
 
