@@ -6,6 +6,10 @@
 
 const char* TextFileReader::ReadText()
 {
+    if (true)
+    {
+        return "Intro,End,TextDisabled";
+    }
     if (!limit_once)
     {
        // std::string path = "../Assets/" + std::string("Read.txt");
