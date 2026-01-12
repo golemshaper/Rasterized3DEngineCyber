@@ -4,20 +4,33 @@ import shutil
 import sys
 import subprocess
 import platform
+import argparse
 
 build_dir = Path("./build")
 venv = Path("./.venv")
 
 CXX_FLAGS=""
 conan_release_profile = "conan-release"
-BUILD_PROFILE = sys.argv[1] if len(sys.argv) > 1 else False
 
-if BUILD_PROFILE:
-   print(f"Running with profile {BUILD_PROFILE}")
+parser = argparse.ArgumentParser(
+    prog='release',
+    description='Releases a build of the program based on the inputs',
+)
+
+parser.add_argument('-p', '--profile', type=str, default="", help="The CMake profile for build")
+parser.add_argument('-d', '--debug', action="store_true",  help="Turns on debug symbols")
+
+args = parser.parse_args()
+
+if args.profile:
+   print(f"Running with profile {args.profile}")
    # If we're building windows ON LINUX we need to statically link everything
    # So we have a single executable
-   if "windows" in BUILD_PROFILE:
+   if "windows" in args.profile:
        CXX_FLAGS=f"{CXX_FLAGS} -static"
+
+if args.debug:
+    CXX_FLAGS=f"{CXX_FLAGS} -g -fdebug-compilation-dir='../../'"
 
 if platform.system() == "Windows":
     print("Running on Microsoft Windows")
@@ -50,7 +63,7 @@ try:
 except Exception as e:
     print(f"Failed to delete CMake file. Reason: {e}")
 
-additional_args = ["-pr:b", "default", "-pr:h", BUILD_PROFILE] if BUILD_PROFILE else []
+additional_args = ["-pr:b", "default", "-pr:h", args.profile] if args.profile else []
 
 run(
     ["conan", "install", ".", "-s", "build_type=Release", "--build", "missing", "-of", "build"] + additional_args

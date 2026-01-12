@@ -14,10 +14,10 @@ COPY ./web ./web
 COPY ./SDL2GameProjectBPA ./SDL2GameProjectBPA
 
 # Run the windows build script
-RUN ./scripts/build.sh windows.profile && cp -r /app/build/bin /app/windows
+RUN ./scripts/build.sh -p windows.profile && cp -r /app/build/bin /app/windows
 
 # Run the wasm build script
-RUN ./scripts/build.sh wasm.profile && cp -r /app/build/bin /app/wasm
+RUN ./scripts/build.sh -p wasm.profile && cp -r /app/build/bin /app/wasm
 
 # Start a new container image
 FROM scratch
