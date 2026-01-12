@@ -1,6 +1,6 @@
 #!/bin/bash
 source ./.venv/bin/activate
-python ./release.py wasm.profile
+python ./release.py -p wasm.profile ${@}
 
 ## Old method
 # rm -rf ./build
