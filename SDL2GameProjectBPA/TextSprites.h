@@ -6,6 +6,7 @@
 
 
 
+
 class TextSprites {
 public:
    
@@ -847,10 +848,10 @@ public:
     
     static Sprite ToSprite(RGB data[36])
     {
-        Sprite result;
-        result.pixels = data;
+        Sprite result = {data,6,6};
+       /* result.pixels = data;
         result.width = 6;
-        result.height = 6;
+        result.height = 6;*/
         return result;
     }
 

@@ -224,7 +224,7 @@ inline int DrawScratchSpace::SinglePixelBrightContrast(int c, float brightness, 
 
     // Clamp and convert back
     x = std::min(std::max(x, 0.0f), 1.0f);
-    return (x * 255.0f + 0.5f);
+    return (int)(x * 255.0f + 0.5f);
 }
 
 void DrawScratchSpace::BrightnessContrastOnBuffer(RGB* buffer, float brightness, float contrast)
@@ -453,12 +453,12 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
         float t = float(y - a.y) / float(b.y - a.y);
 
         Vertex out;
-        out.x = a.x + t * (b.x - a.x);
+        out.x = (int)(a.x + t * (b.x - a.x));
         out.y = y;
 
-        out.color.r = a.color.r + t * (b.color.r - a.color.r);
-        out.color.g = a.color.g + t * (b.color.g - a.color.g);
-        out.color.b = a.color.b + t * (b.color.b - a.color.b);
+        out.color.r = (int)(a.color.r + t * (b.color.r - a.color.r));
+        out.color.g = (int)(a.color.g + t * (b.color.g - a.color.g));
+        out.color.b = (int)(a.color.b + t * (b.color.b - a.color.b));
 
         out.u = a.u + t * (b.u - a.u);
         out.v = a.v + t * (b.v - a.v);

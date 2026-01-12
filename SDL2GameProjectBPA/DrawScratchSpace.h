@@ -15,7 +15,10 @@ class TextSprites;
 
 //STRUCTS
 struct RGB {
-    int r, g, b, a = 255;
+    int r = 0;
+    int g = 0;
+    int b = 0;
+    int a = 255;
     RGB operator+(const RGB& other) const {
         return {
             r + other.r,
@@ -83,8 +86,9 @@ struct Point {
     int x, y;
 };
 struct Vertex {
-    int x, y;
-    RGB color;
+    int x = 0;
+    int y = 0;
+    RGB color = { 255,255,255,255};
     float u = 0;
     float v = 1;
     Vertex operator*(const int& other)const {

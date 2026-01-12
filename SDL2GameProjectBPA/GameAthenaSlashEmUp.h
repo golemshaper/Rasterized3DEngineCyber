@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Game.h"
 #include "TextFileReader.h"
 #include "StateMachine.h"

@@ -800,7 +800,7 @@ void GameAthenaSlashEmUp::DrawStatsAtLocation(Stats& stats, vec3d loc, bool useF
         MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y - 8, { 255, 255, 255, 255, }, LV.c_str(), MyTextSprites, 1.0f);
         MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y, { 0, 255, 0, 255, }, HP.c_str(), MyTextSprites, 1.0f);
         MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y + 8, { 0, 0, 255, 255, }, MP.c_str(), MyTextSprites, 1.0f);
-        stats.exp += 2;
+        stats.exp += 5;
         if (stats.exp >= 999)
         {
             //TODO: On Level up, display a text box message !
@@ -858,7 +858,7 @@ void GameAthenaSlashEmUp::DrawHUD(float DeltaTime)
     //TEXT AT 3D LOCATION
     //------------------------------
     vec3d textCoordinates2D = MyScratch->Get2DPointInFromSpace(vec3d{ 2.0f,0.0f,-0.25f });
-    MyScratch->DrawText((int)textCoordinates2D.x - (10 * 6), (int)textCoordinates2D.y - 12.0, { 0, 255, 0, 255, }, "Target!", MyTextSprites, typingEffect * 2.0f);
+    MyScratch->DrawText((int)textCoordinates2D.x - (10 * 6), (int)textCoordinates2D.y - 12.0f, { 0, 255, 0, 255, }, "Target!", MyTextSprites, typingEffect * 2.0f);
 
     //------------------------------
     //Reticle

@@ -1,6 +1,8 @@
-#pragma once
+﻿#pragma once
 #include <string>
 #include <vector> 
+
+
 
 class TextFileReader
 {
