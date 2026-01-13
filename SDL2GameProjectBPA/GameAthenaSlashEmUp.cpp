@@ -153,12 +153,15 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //MAIN GAME HERE...
     //Count and clear
     totalTime += DeltaTime;
+    //Canvas
     MyScratch->Clear(RGB{ 0,2,8 });
     MyScratch->ClearZBufffer();
+    MyScratch->ZWriteOn = true;
+
     //CAMERA FOV
     MyScratch->SetCameraFOV(90 + (abs(cos(totalTime * 2.0f)) * 4));
 
-    //Draw using my function
+    //Draw using my function1
     RGB MyColor = { 0 ,0,0 };
     RGB Red = { 255,0,0 };
     RGB Green = { 0,255,0 };
@@ -284,7 +287,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //----------------------
     //Terrain
     //----------------------
-    MyScratch->ZWriteOn = true;
+  
     MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ player_position.x * -0.5f,0.0f, -4 }, vec3d{ totalTime, 0.0, 0.0, }, vec3d{ 15.0, 4.0, 4.0, });
     MyScratch->DrawEdges = false;
     MyScratch->DrawVerticies = false;
@@ -298,7 +301,6 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         255
     };
 
-    MyScratch->ZWriteOn = true;
 
     MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ 0.0f,-5.0f, 12 }, vec3d{ -totalTime, 0.0, 0.0, }, vec3d{ 12.0, 4.0, 4.0, });
     //teapot

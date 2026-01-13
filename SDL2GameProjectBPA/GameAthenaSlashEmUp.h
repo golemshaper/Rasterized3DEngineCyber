@@ -14,7 +14,7 @@ public:
 	//Current game mode
 	int mode = 1;
 	int drawBuffer = 0;
-	bool DEBUG_DrawColliders = false;
+	bool DEBUG_DrawColliders = true;
 
 	float demoWait = 4.0f;
 	//primitive
