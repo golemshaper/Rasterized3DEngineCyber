@@ -790,7 +790,15 @@ void GameAthenaSlashEmUp::DrawReticle(int x, int y, int radius, float progress)
 void GameAthenaSlashEmUp::DrawReticle(vec3d pos, int radius, float progress)
 {
     vec3d n_loc = MyScratch->Get2DPointInFromSpace(pos);
-    DrawReticle(n_loc.x, n_loc.y, radius, progress);
+    DrawReticle((int)n_loc.x, (int)n_loc.y, radius, progress);
+
+    //------------------------------
+   //TEXT AT 3D LOCATION
+   //------------------------------
+    vec3d textCoordinates2D = MyScratch->Get2DPointInFromSpace(vec3d{ 2.0f,0.0f,-0.25f });
+    MyScratch->DrawText((int)n_loc.x+5, (int)n_loc.y+5, { 0, 255, 0, 255, }, "Target!", MyTextSprites, typingEffect * 2.0f);
+
+
 }
 
 int GameAthenaSlashEmUp::CreateActor(const Actor& a)
@@ -926,11 +934,7 @@ void GameAthenaSlashEmUp::DrawHUD(float DeltaTime)
         //reset typing effect
         typingEffect = -1.0f;
     }
-    //------------------------------
-    //TEXT AT 3D LOCATION
-    //------------------------------
-    vec3d textCoordinates2D = MyScratch->Get2DPointInFromSpace(vec3d{ 2.0f,0.0f,-0.25f });
-    MyScratch->DrawText((int)textCoordinates2D.x - (10 * 6), (int)textCoordinates2D.y - 12.0f, { 0, 255, 0, 255, }, "Target!", MyTextSprites, typingEffect * 2.0f);
+   
 
     //------------------------------
     //Reticle
