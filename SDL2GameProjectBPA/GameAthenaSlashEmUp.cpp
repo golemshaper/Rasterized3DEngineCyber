@@ -39,10 +39,10 @@ void GameAthenaSlashEmUp::Initialize()
     PlayerID = CreateActor({ 
         monkeyMesh.GetTeapotMesh(), //Make Athena
         vec3d{ -2.0f,-0.5f,-2.25f},
-        vec3d{1.5f,0.0f,0.0f},
+        vec3d{1.0f,0.0f,0.0f},
         vec3d{0.5f,0.5f,0.5f},
         RGB{255,255,255,255},
-        12.0f,
+        4.0f,
         0.0f
         });
 
@@ -365,9 +365,13 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         true
     );
 
+    //When we replace the player with the PlayerID, we will color it like this:
+    AllActors[PlayerID].meshColor = { (int)abs(sin(totalTime * 4.0f) * 255),(int)abs(sin(totalTime * 2.0f) * 255),(int)abs(cos(totalTime * 4.0f) * 255),255 };
+
    // 
    // 
 //DRAW ANOTHER ATHENA, BUT USING THE ADD ACTOR VERSION!
+    //REMOVE THIS TO MAKE IT MOVE WITH THE PLAYER!
     AllActors[PlayerID].loc.x = sin(totalTime * 2.0f) - 4.0f;
     AllActors[PlayerID].loc.y = cos(totalTime * 2.0f);
     AllActors[PlayerID].loc.z = -3;
@@ -627,7 +631,10 @@ void GameAthenaSlashEmUp::MovementUpdate(float DeltaTime)
     //Apply Movement
     vec3d move = (right * MyScratch->Input->GetMovementX()) + (forward * MyScratch->Input->GetMovementY());
     player_position = player_position + move *player_speed* DeltaTime;
+    AllActors[PlayerID].loc = AllActors[PlayerID].loc + move * AllActors[PlayerID].speed * DeltaTime;
 
+    //Apply rotation
+    AllActors[PlayerID].rot = vec3d{ 1.0f + (MyScratch->Input->GetMovementY() * -0.3f),0.0f,3.0f + (MyScratch->Input->GetMovementX() * 0.35f) };
 
     //CAMERA COLLIDER:
     if (MyScratch->SquaredDistance2D(player_position, psudoCamLocation) < 0.11f)
@@ -639,11 +646,12 @@ void GameAthenaSlashEmUp::MovementUpdate(float DeltaTime)
         player_position = last_safe_pos;
     }
 
-
 }
 
 void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
 {
+   
+
     MyScratch->MoveMainspaceToExtraBuffer();
     MyScratch->Clear();
 
@@ -683,6 +691,8 @@ void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
         }
         //calculate both arc vectors, and lerp between them for angle arcs
        
+        //collision not needed since we know it collides at progress ==1 at target location... bool collision_result = IsColliding(bullet_arcshots[i], end, 0.5f);
+
 
         MyScratch->DrawMesh(
             monkeymesher.GetBoxMesh(),
@@ -761,17 +771,35 @@ void GameAthenaSlashEmUp::DrawActorsFromList(const std::vector<Actor>& actors, b
 
 bool GameAthenaSlashEmUp::IsColliding(vec3d a, vec3d b, float radius)
 {
+    int x1 = MyScratch->Get2DPointInFromSpace(a).x;
+    int y1 = MyScratch->Get2DPointInFromSpace(a).y;
+    int x2 = MyScratch->Get2DPointInFromSpace(b).x;
+    int y2 = MyScratch->Get2DPointInFromSpace(b).y;
+
+   
+
+
     float radius_squared = radius * radius;
     float dist = MyScratch->SquaredDistance(a, b);
     if (dist < radius_squared)
     {
+        if (DEBUG_DrawColliders) {
+            MyScratch->DrawCircle(x1, y1, (int)(radius*10), RGB{ 0, 255, 0, 255 });
+            MyScratch->DrawCircle(x2, y2, (int)(radius * 10), RGB{0, 255, 0, 255});
+        }
         return true;
+    }
+    if (DEBUG_DrawColliders) {
+      MyScratch->DrawCircle(x1, y1, (int)(radius * 10), RGB{255, 0, 0, 255});
+        MyScratch->DrawCircle(x2, y2, (int)(radius * 10), RGB{ 255, 0, 0, 255 });
     }
     return false;
 }
 
 bool GameAthenaSlashEmUp::IsColliding2D(vec3d a, vec3d b, float radius)
 {
+
+
     return IsColliding(vec3d{ a.x,0,a.z }, vec3d{ b.x,0.0f,b.z }, radius);
 }
 

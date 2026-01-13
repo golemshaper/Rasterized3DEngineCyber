@@ -12,9 +12,9 @@ public:
 
 	float GameSpeed = 1.0f;
 	//Current game mode
-	int mode = 0;
+	int mode = 1;
 	int drawBuffer = 0;
-
+	bool DEBUG_DrawColliders = false;
 
 	float demoWait = 4.0f;
 	//primitive
