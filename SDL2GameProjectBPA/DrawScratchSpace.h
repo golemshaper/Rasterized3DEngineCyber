@@ -244,6 +244,7 @@ public:
     void DrawSpriteAdd(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight);
     void DrawText(int X, int Y, RGB color, const char* text, TextSprites* tSprites);
     void DrawText(int X, int Y, RGB color, const char* text, TextSprites* tSprites, float amount_revealed);
+    void DrawTextDropShadow(int X, int Y, RGB color, const char* text, TextSprites* tSprites, float amount_revealed);
 
 
 

@@ -868,9 +868,9 @@ void GameAthenaSlashEmUp::DrawStatsAtLocation(Stats& stats, vec3d loc, bool useF
         std::string LV = "LV " + std::to_string(stats.lvl);
         std::string MP = "MP " + std::to_string(stats.mp);
 
-        MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y - 8, { 255, 255, 255, 255, }, LV.c_str(), MyTextSprites, 1.0f);
-        MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y, { 0, 255, 0, 255, }, HP.c_str(), MyTextSprites, 1.0f);
-        MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y + 8, { 0, 0, 255, 255, }, MP.c_str(), MyTextSprites, 1.0f);
+        MyScratch->DrawTextDropShadow((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y - 8, { 255, 255, 255, 255, }, LV.c_str(), MyTextSprites, 1.0f);
+        MyScratch->DrawTextDropShadow((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y, { 0, 255, 0, 255, }, HP.c_str(), MyTextSprites, 1.0f);
+        MyScratch->DrawTextDropShadow((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y + 8, { 0, 0, 255, 255, }, MP.c_str(), MyTextSprites, 1.0f);
         stats.exp += 5;
         if (stats.exp >= 999)
         {
@@ -886,7 +886,7 @@ void GameAthenaSlashEmUp::DrawStatsAtLocation(Stats& stats, vec3d loc, bool useF
         int expValue = stats.exp;
         std::string expText = "XP " + std::to_string(expValue);
         if (expValue < 100)expText = "XP 0" + std::to_string(expValue);
-        MyScratch->DrawText(
+        MyScratch->DrawTextDropShadow(
             (int)MyScratch->Get2DPointInFromSpace(player_position).x - 12,
             (int)MyScratch->Get2DPointInFromSpace(player_position).y + 16,
             { 255, 0, 255, 255 },
@@ -897,7 +897,7 @@ void GameAthenaSlashEmUp::DrawStatsAtLocation(Stats& stats, vec3d loc, bool useF
     }
     else
     {
-        MyScratch->DrawText((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y, { 255, 0, 0, 255, }, HP.c_str(), MyTextSprites, 1.0f);
+        MyScratch->DrawTextDropShadow((int)MyScratch->Get2DPointInFromSpace(player_position).x - 12, (int)MyScratch->Get2DPointInFromSpace(player_position).y, { 255, 0, 0, 255, }, HP.c_str(), MyTextSprites, 1.0f);
     }
 
 }

@@ -745,7 +745,7 @@ RGB* DrawScratchSpace::ColorizeSpriteData(RGB* data, int spriteWidth, int sprite
             out[i].r = (p.r * color.r) / 255;
             out[i].g = (p.g * color.g) / 255;
             out[i].b = (p.b * color.b) / 255;
-            out[i].a = 255;
+            out[i].a = color.a;
         }
         else
         {
@@ -823,7 +823,20 @@ void DrawScratchSpace::DrawSprite(int startX, int startY, RGB* SpriteData, int s
             if (pixel == Black || pixel == Black2)
                 continue;
 
-            MainSpace[screenIndex] = pixel;
+           // MainSpace[screenIndex] = pixel;
+
+
+
+            float alpha = pixel.a / 255.0f;
+            float invAlpha = 1.0f - alpha;
+
+            MainSpace[screenIndex].r = (int)(pixel.r * alpha + MainSpace[screenIndex].r * invAlpha + 0.5f);
+            MainSpace[screenIndex].g = (int)(pixel.g * alpha + MainSpace[screenIndex].g * invAlpha + 0.5f);
+            MainSpace[screenIndex].b = (int)(pixel.b * alpha + MainSpace[screenIndex].b * invAlpha + 0.5f);
+            // Usually keep destination alpha or set to 255 (opaque framebuffer)
+            MainSpace[screenIndex].a = 255;
+
+
         }
     }
 }
@@ -845,6 +858,13 @@ void DrawScratchSpace::DrawSprite(int startX, int startY, RGB* SpriteData, int s
                 if (SpriteData[spriteIndex] == Black) continue;
 
                 int screenIndex = screenY * SCREEN_X + screenX;
+
+
+                float alpha = SpriteData[spriteIndex].a / 255.0;
+                // Calculate inverse alpha for efficiency
+
+
+               
                 MainSpace[screenIndex] = SpriteData[spriteIndex];
             }
         }
@@ -915,6 +935,7 @@ void DrawScratchSpace::DrawText(int X, int Y, RGB color, const char* text, TextS
             continue;
         }
         Sprite s = tSprites->GetSpriteForChar(c);
+        
         s.pixels = ColorizeSpriteData(s.pixels,s.width,s.height,color);
 
         int offsetY = 0;
@@ -928,6 +949,12 @@ void DrawScratchSpace::DrawText(int X, int Y, RGB color, const char* text, TextS
 
         cursorX += 7; // 6px glyph + 1px spacing
     }
+}
+
+void DrawScratchSpace::DrawTextDropShadow(int X, int Y, RGB color, const char* text, TextSprites* tSprites, float amount_revealed)
+{
+    DrawText(X + 1, Y + 1, RGB{1,1,1,175}, text, tSprites, amount_revealed);
+    DrawText(X, Y, color, text, tSprites, amount_revealed);
 }
 
 //Bresenham’s line algorithm
