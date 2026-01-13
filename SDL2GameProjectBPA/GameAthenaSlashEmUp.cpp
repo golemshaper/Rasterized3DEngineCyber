@@ -670,7 +670,7 @@ void GameAthenaSlashEmUp::MovementUpdate(float DeltaTime)
 
 void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
 {
-   
+    MyScratch->ZOffset = 25; //draw on top to make it better
 
     MyScratch->MoveMainspaceToExtraBuffer();
     MyScratch->Clear();
@@ -746,6 +746,8 @@ void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
 
     }
     MyScratch->AddBuffers();
+    MyScratch->ZOffset = 0;
+   
 }
 
 void GameAthenaSlashEmUp::CircleTransition(float reveal)
