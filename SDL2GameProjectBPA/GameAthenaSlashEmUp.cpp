@@ -153,7 +153,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //MAIN GAME HERE...
     //Count and clear
     totalTime += DeltaTime;
-    //Canvas
+    //canvas
     MyScratch->Clear(RGB{ 0,2,8 });
     MyScratch->ClearZBufffer();
     MyScratch->ZWriteOn = true;
@@ -161,51 +161,12 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //CAMERA FOV
     MyScratch->SetCameraFOV(90 + (abs(cos(totalTime * 2.0f)) * 4));
 
-    //Draw using my function1
-    RGB MyColor = { 0 ,0,0 };
-    RGB Red = { 255,0,0 };
-    RGB Green = { 0,255,0 };
-    RGB Blue = { 0,0,255 };
 
-    //Triangle
-    Vertex p1 = { 100,16,Blue };
-    Vertex p2 = { 0,32, Red * Blue };
-    Vertex p3 = { 200,92,Green + Blue };
+    //Target List reset
+    ClearTargetableLocAry(TargetableLocations,30);
 
-    Vertex px = { 0,0, Red };
-    Vertex pz = { 240,160, Green };
-    Vertex pq = { 88,35, Green };
-
-
-    //Move main drawing space to the backup buffer
-    MyScratch->MoveMainspaceToExtraBuffer();
-    MyScratch->Clear();//Clear the scren now that it's backed up 
-
-    //Rotating Triangle
-    angle += DeltaTime;
-    Point pivot = { SCREEN_X / 2, SCREEN_Y / 2 };
-
-    p1.x = MyScratch->RotatePoint({ p1.x, p1.y }, pivot, angle).x;
-    p1.y = MyScratch->RotatePoint({ p1.x, p1.y }, pivot, angle).y;
-
-    p2.x = MyScratch->RotatePoint({ p2.x, p2.y }, pivot, angle).x;
-    p2.y = MyScratch->RotatePoint({ p2.x, p2.y }, pivot, angle).y;
-
-    p3.x = MyScratch->RotatePoint({ p3.x, p3.y }, pivot, angle).x;
-    p3.y = MyScratch->RotatePoint({ p3.x, p3.y }, pivot, angle).y;
-
-    pq.x = MyScratch->RotatePoint({ pq.x, pq.y }, pivot, angle).x;
-    pq.y = MyScratch->RotatePoint({ pq.x, pq.y }, pivot, angle).y;
-
-    MyScratch->DrawTriangle(p1, p2, p3);
-    MyScratch->DrawTriangle(px, p2, p1);
-
-
- //TRY A RANDOM FILL OVER BACKGROUND ON AND OFF. IT LOOKS RAD WHEN THE LIGHTNING STRIKES: MyScratch->RandomScreenFill();
-
-
-    //Now add the buffers
-    MyScratch->AddBuffers();
+    //BKG FX
+    NewWaveFXDraw(DeltaTime);
 
     //SPRITE (PLEASE MOVE THIS TO SOME KIND OF SPRITE HEADER)
     RGB Smile_RGB[64] = {
@@ -338,6 +299,8 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //Monkey
     MyScratch->MeshColor = { 0,0,255,255 };
     MyScratch->DifferDrawMesh(monkeymesher.GetMonkeyMesh(), vec3d{ 4.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime * 6.0f), }, MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))),true);
+    AddTargetableLOC(vec3d{ 4.0f,0.0f,-0.25f });
+
     //Boy
     float flash_color_select = sin(totalTime*60.0f);
     if (flash_color_select > 0.0f)
@@ -350,6 +313,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     }
     
     MyScratch->DifferDrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,-1.0f,0.0f }, vec3d{ 1.0f, 0.0f, 0.0f, } + MyScratch->LookAtRotation2D(vec3d{ 0.0f,-1.0f,0.0f }, (player_position * -1) + vec3d{0,0,10}), vec3d{ 2.0f, 2.0f, 2.0f, }, true);
+    AddTargetableLOC(vec3d{ 0.0f,-1.0f,0.0f });
 
     //Athena
     MyScratch->MeshColor = { (int)abs(sin(totalTime * 4.0f) * 255),(int)abs(sin(totalTime * 2.0f) * 255),(int)abs(cos(totalTime * 4.0f) * 255),255 };
@@ -390,7 +354,8 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //------------------------------
     // Bullets
     //------------------------------
-    TickArcShots(player_position, vec3d{ 0.0f,-1.0f,0.0f }, DeltaTime);
+   // TickArcShots(player_position, vec3d{ 0.0f,-1.0f,0.0f }, DeltaTime);
+    TickArcShots(player_position, GetClosestVectorFromList(player_position, TargetableLocations, 30), DeltaTime);
 
 
     //Reset Draw color to white.
@@ -613,6 +578,56 @@ void GameAthenaSlashEmUp::LightningFX(int phase, float progress)
     }
 }
 
+void GameAthenaSlashEmUp::NewWaveFXDraw(float DeltaTime)
+{
+
+    //Draw using my function1
+    RGB MyColor = { 0 ,0,0 };
+    RGB Red = { 255,0,0 };
+    RGB Green = { 0,255,0 };
+    RGB Blue = { 0,0,255 };
+
+    //Triangle
+    Vertex p1 = { 100,16,Blue };
+    Vertex p2 = { 0,32, Red * Blue };
+    Vertex p3 = { 200,92,Green + Blue };
+
+    Vertex px = { 0,0, Red };
+    Vertex pz = { 240,160, Green };
+    Vertex pq = { 88,35, Green };
+
+
+    //Move main drawing space to the backup buffer
+    MyScratch->MoveMainspaceToExtraBuffer();
+    MyScratch->Clear();//Clear the scren now that it's backed up 
+
+    //Rotating Triangle
+    angle += DeltaTime;
+    Point pivot = { SCREEN_X / 2, SCREEN_Y / 2 };
+
+    p1.x = MyScratch->RotatePoint({ p1.x, p1.y }, pivot, angle).x;
+    p1.y = MyScratch->RotatePoint({ p1.x, p1.y }, pivot, angle).y;
+
+    p2.x = MyScratch->RotatePoint({ p2.x, p2.y }, pivot, angle).x;
+    p2.y = MyScratch->RotatePoint({ p2.x, p2.y }, pivot, angle).y;
+
+    p3.x = MyScratch->RotatePoint({ p3.x, p3.y }, pivot, angle).x;
+    p3.y = MyScratch->RotatePoint({ p3.x, p3.y }, pivot, angle).y;
+
+    pq.x = MyScratch->RotatePoint({ pq.x, pq.y }, pivot, angle).x;
+    pq.y = MyScratch->RotatePoint({ pq.x, pq.y }, pivot, angle).y;
+
+    MyScratch->DrawTriangle(p1, p2, p3);
+    MyScratch->DrawTriangle(px, p2, p1);
+
+
+    //TRY A RANDOM FILL OVER BACKGROUND ON AND OFF. IT LOOKS RAD WHEN THE LIGHTNING STRIKES: MyScratch->RandomScreenFill();
+
+
+       //Now add the buffers
+    MyScratch->AddBuffers();
+}
+
 void GameAthenaSlashEmUp::MovementUpdate(float DeltaTime)
 {
 
@@ -634,6 +649,9 @@ void GameAthenaSlashEmUp::MovementUpdate(float DeltaTime)
     vec3d move = (right * MyScratch->Input->GetMovementX()) + (forward * MyScratch->Input->GetMovementY());
     player_position = player_position + move *player_speed* DeltaTime;
     AllActors[PlayerID].loc = AllActors[PlayerID].loc + move * AllActors[PlayerID].speed * DeltaTime;
+    AddTargetableLOC(AllActors[PlayerID].loc); //WARNING, WHEN WE SITCH TO PLAYER ID, THIS WILL ALWAYS BE ON PLAYER!!!
+
+
 
     //Apply rotation
     AllActors[PlayerID].rot = vec3d{ 1.0f + (MyScratch->Input->GetMovementY() * -0.3f),0.0f,3.0f + (MyScratch->Input->GetMovementX() * 0.35f) };
@@ -668,7 +686,20 @@ void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
         MyScratch->MeshColor = { (int)abs(sin(totalTime + bullet_arcshots[i].z * 4.0f) * 355),(int)abs(sin(totalTime + bullet_arcshots[i].z * 2.0f) * 355),(int)abs(cos(totalTime + bullet_arcshots[i].z * 4.0f) * 355),255 };
        // MyScratch->MeshColor = { 255,0,255 };
         float offset_time_progress = (progress_for_arc_shots + (i*0.1f));
+
+       
+
+
+
         float wrapped = fmod(offset_time_progress, 1.0f);
+
+        //end calc
+        if (wrapped <=0.1f)
+        {
+            bullet_arcshots_end_target[i] = end;
+        }
+        vec3d current_end = bullet_arcshots_end_target[i];
+
 
         vec3d offset = { i * 0.05f,i * 0.05f,i * 0.05f };
 
@@ -678,16 +709,16 @@ void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
         switch (shotType)
         {
             case 0:
-                bullet_arcshots[i] = MyScratch->ArcHorizontal(start+ offset, end, 2.0f, wrapped, direction);
+                bullet_arcshots[i] = MyScratch->ArcHorizontal(start+ offset, current_end, 2.0f, wrapped, direction);
                 break;
             case 1:
-                bullet_arcshots[i] = MyScratch->ArcHorizontal(start+ offset, end, 2.0f, wrapped, direction);
+                bullet_arcshots[i] = MyScratch->ArcHorizontal(start+ offset, current_end, 2.0f, wrapped, direction);
                 break;
             case 2: 
-                bullet_arcshots[i] = MyScratch->Arc(start+ offset, end, 2.0f, wrapped, direction);
+                bullet_arcshots[i] = MyScratch->Arc(start+ offset, current_end, 2.0f, wrapped, direction);
                 break;
             case 3:
-                bullet_arcshots[i] = MyScratch->Arc(start+ offset, end, 2.0f, wrapped, direction);
+                bullet_arcshots[i] = MyScratch->Arc(start+ offset, current_end, 2.0f, wrapped, direction);
                 break;
 
         }
@@ -752,6 +783,12 @@ void GameAthenaSlashEmUp::DrawReticle(int x, int y, int radius, float progress)
 
         }
     }
+}
+
+void GameAthenaSlashEmUp::DrawReticle(vec3d pos, int radius, float progress)
+{
+    vec3d n_loc = MyScratch->Get2DPointInFromSpace(pos);
+    DrawReticle(n_loc.x, n_loc.y, radius, progress);
 }
 
 int GameAthenaSlashEmUp::CreateActor(const Actor& a)
@@ -896,8 +933,10 @@ void GameAthenaSlashEmUp::DrawHUD(float DeltaTime)
     //------------------------------
     //Reticle
     //------------------------------
-    vec3d TargetPos2D = MyScratch->Get2DPointInFromSpace(vec3d{ 0.0f,-1.0f,0.0f });
-    DrawReticle(int(TargetPos2D.x), (int)TargetPos2D.y, 12.0f, totalTime * 2.0f);
+    //vec3d TargetPos2D = MyScratch->Get2DPointInFromSpace(vec3d{ 0.0f,-1.0f,0.0f });
+    //DrawReticle(int(TargetPos2D.x), (int)TargetPos2D.y, 12.0f, totalTime * 2.0f);
+    DrawReticle(GetClosestVectorFromList(player_position, TargetableLocations,30), 12.0f, totalTime * 2.0f);
+
     //------------------------------
     //FADE IN HERE!
     //------------------------------
@@ -921,6 +960,46 @@ void GameAthenaSlashEmUp::DrawHUD(float DeltaTime)
        
     }
 }
+
+void GameAthenaSlashEmUp::ClearTargetableLocAry(vec3d* TargetableList, int size_of_array)
+{
+    currentTargetable = 0;
+    for (int i = 0; i < size_of_array; ++i)
+    {
+        TargetableList[i] = vec3d{0,0,0};
+    }
+}
+
+void GameAthenaSlashEmUp::AddTargetableLOC(vec3d* TargetableList, int size_of_array, vec3d target)
+{
+    if (currentTargetable > size_of_array)return;
+    TargetableList[currentTargetable] = target;
+    currentTargetable++;
+}
+
+void GameAthenaSlashEmUp::AddTargetableLOC(vec3d target)
+{
+    AddTargetableLOC(TargetableLocations, 30, target);
+
+}
+
+vec3d GameAthenaSlashEmUp::GetClosestVectorFromList(vec3d TestAgainst, vec3d* TargetableList, int size_of_array)
+{
+    vec3d result = { 0,0,0 };
+    float last_dist = 1000000.0f;
+    for (int i = 0; i < size_of_array; ++i)
+    {
+        float squared_dist = MyScratch->SquaredDistance2D(TargetableList[i], TestAgainst);
+        if (squared_dist < last_dist)
+        {
+            last_dist = squared_dist;
+            result = TargetableList[i];
+        }
+    }
+    return result;
+}
+
+
 
 GameAthenaSlashEmUp::~GameAthenaSlashEmUp()
 {

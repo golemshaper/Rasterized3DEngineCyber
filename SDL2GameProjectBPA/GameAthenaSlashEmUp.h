@@ -31,6 +31,7 @@ public:
 		//arc shots
 	int bullet_arcshots_count = 44;
 	vec3d bullet_arcshots[44];
+	vec3d bullet_arcshots_end_target[44];
 	float progress_for_arc_shots=0.0f;
 
 	//actors
@@ -66,7 +67,7 @@ public:
 	const char* RequestedText = "Intro";
 	void TextBoxDraw(const char* input);
 	void LightningFX(int phase, float progress);
-
+	void NewWaveFXDraw(float DeltaTime);
 	void MovementUpdate(float DeltaTime);
 
 	void TickArcShots(vec3d start, vec3d end, float DeltaTime);
@@ -74,6 +75,7 @@ public:
 	void CircleTransition(float reveal);
 
 	void DrawReticle(int x, int y, int radius, float progress);
+	void DrawReticle(vec3d pos, int radius, float progress);
 
 
 	//Actor struct added. Make a function called "Create Actor"
@@ -141,6 +143,15 @@ public:
 	void DrawStatsAtLocation(Stats& stats, vec3d loc, bool useFull);
 	void DrawHUD(float DeltaTime);
 
+
+	//This is an array that is cleared and modified every tick.
+	//the max number of enemies on screen should be the size of this array
+	vec3d TargetableLocations[30];
+	int currentTargetable = 0;
+	void ClearTargetableLocAry(vec3d* TargetableList, int size_of_array);
+	void AddTargetableLOC(vec3d* TargetableList, int size_of_array, vec3d target);
+	void AddTargetableLOC(vec3d target);
+	vec3d GetClosestVectorFromList(vec3d TestAgainst, vec3d* TargetableList, int size_of_array);
 
 };
 

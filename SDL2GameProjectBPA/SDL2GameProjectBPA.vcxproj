@@ -153,6 +153,7 @@
     <ClInclude Include="GameTwo.h" />
     <ClInclude Include="InputWraper.h" />
     <ClInclude Include="MonkeyMesh.h" />
+    <ClInclude Include="MonkeySprite.h" />
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="TextFileReader.h" />
     <ClInclude Include="TextSprites.h" />
