@@ -7,19 +7,25 @@ def export_mesh_as_c_triangles(obj):
     mesh = obj.data
     mesh.calc_loop_triangles()
 
-    print("MeshCube.Tris = {")
-    
+    clipboard_data = "Data.Tris = {\n"
+    print("Data.Tris = {")
+
     for tri in mesh.loop_triangles:
         verts = [mesh.vertices[i].co for i in tri.vertices]
-        
-        # Ensure consistent winding (Blender uses counter-clockwise by default)
-        # Reverse if needed to match your clockwise format
-        v0, v1, v2 = verts  # or v0, v2, v1 if you want to flip winding
+
+        v0, v1, v2 = verts
 
         line = f"    triangle{{ {format_vertex(v0)}, {format_vertex(v1)}, {format_vertex(v2)} }},"
         print(line)
 
+        clipboard_data += line + "\n"
+
     print("};")
+    clipboard_data += "};\n"
+
+    # Copy to clipboard
+    bpy.context.window_manager.clipboard = clipboard_data
+
 
 # Run on the active object
 obj = bpy.context.active_object

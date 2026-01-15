@@ -121,6 +121,8 @@ public:
 	int PlayerID = -1;
 	int MonkeyID = -1;
 	int TeaPotID = -1;
+	float temp_player_flip = 1.0f; //temp until animation system added
+	bool flip_limit_once = false; //temp until animation system added
 	int CreateActor(const Actor& a);
 	void DrawActorsFromList(const std::vector<Actor>& actors, bool DrawDifferNow = false);
 

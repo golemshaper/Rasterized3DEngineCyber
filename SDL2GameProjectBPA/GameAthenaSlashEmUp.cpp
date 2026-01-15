@@ -324,11 +324,28 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
 //NOTE 1: DifferDrawMesh is a drop-in replacement for the regular DrawMesh function. It'll only draw when DrawSortedDifferedMeshes() is called
 //NOTE 2: use regular DrawMesh() along with  MyScratch->ZOffsetFloat = 10;  Besure to turn the offset off when you are done
-    MyScratch->DifferDrawMesh(monkeymesher.GetAthenaMesh(),
+    Mesh AthenaFrame = monkeymesher.GetAthenaSwordReady();
+    //if (sin(totalTime*22.0f) > 0)
+    //{
+    //    //crude animation logic
+    //    AthenaFrame = monkeymesher.GetAthenaSwordSlash();
+    //    if (flip_limit_once == false)
+    //    {
+    //        temp_player_flip *= -1.0f;
+    //        flip_limit_once = true;
+    //    }
+    //}
+    //else
+    //{
+    //    flip_limit_once = false;
+    //}
+  
+    MyScratch->DifferDrawMesh(AthenaFrame,
         player_position,
-        vec3d{ 1.0f + (MyScratch->Input->GetMovementY() * -0.3f),0.0f,3.0f + (MyScratch->Input->GetMovementX() * 0.35f) },
-        MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f },
-            vec3d{ 1.2f, 0.9f, 1.2f },
+        //old rotation was x=1.0
+        vec3d{ 0.5f + (MyScratch->Input->GetMovementY() * -0.3f),0.0f,3.0f + (MyScratch->Input->GetMovementX() * 0.35f) },
+        MyScratch->Lerp(vec3d{ 0.9f * temp_player_flip,1.2f,0.9f },
+            vec3d{ 1.2f * temp_player_flip , 0.9f, 1.2f },
             abs(sin(totalTime * 4.0f))),
         true
     );
@@ -1014,7 +1031,9 @@ vec3d GameAthenaSlashEmUp::GetClosestVectorFromList(vec3d TestAgainst, vec3d* Ta
 
 void GameAthenaSlashEmUp::AccumulatedBlur(float strength)
 {
-    MyScratch->BlendBuffers(BlurBuffer, 1.0f- strength); //smaller number == more blur!
+    MyScratch->BlendBuffers(BlurBuffer, 1.0f - strength); //smaller number == more blur!
+    //For crazy SaGa Frontier style mix
+    //MyScratch->AddBuffers(BlurBuffer); //smaller number == more blur!
     MyScratch->CopyBufferToBuffer(MyScratch->MainSpace, BlurBuffer);
     
 }
