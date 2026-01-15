@@ -346,7 +346,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->DifferDrawMesh(CurrentAthenaFrame,
         player_position,
         //old rotation was x=1.0
-        vec3d{ 0.5f + (MyScratch->Input->GetMovementY() * -0.3f),0.0f,3.0f + (MyScratch->Input->GetMovementX() * 0.35f) },
+        vec3d{ 1.0f + (MyScratch->Input->GetMovementY() * -0.3f),0.0f,3.0f + (MyScratch->Input->GetMovementX() * 0.35f) },
         MyScratch->Lerp(vec3d{ 0.9f * temp_player_flip,1.2f,0.9f },
             vec3d{ 1.2f * temp_player_flip , 0.9f, 1.2f },
             abs(sin(totalTime * 4.0f))),
