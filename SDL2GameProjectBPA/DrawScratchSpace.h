@@ -197,6 +197,7 @@ public:
     void MoveMainspaceToExtraBuffer();
     void MultiplyBuffers();
     void AddBuffers();
+    void AddBuffers(RGB* from);
     void AverageBuffers();
     void InvertBuffer();
     void ClearZBufffer();
@@ -205,6 +206,7 @@ public:
     void PushBackDepthBuffer(int amount);
     void ApplyMask();
     void BlendBuffers(float amount);
+    void BlendBuffers(RGB* from,float amount);
     void CopyBufferToBuffer(RGB* from, RGB* to);
 
     RGB SampleTexture(const RGB* tex, int texW, int texH, float u, float v);

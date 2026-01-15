@@ -27,6 +27,14 @@ void DrawScratchSpace::AddBuffers()
     }
 }
 
+void DrawScratchSpace::AddBuffers(RGB* from)
+{
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+        MainSpace[i] = MainSpace[i] + from[i];
+    }
+}
+
 void DrawScratchSpace::AverageBuffers()
 {
     for (int i = 0; i < TOTAL_PIXELS; ++i)
@@ -109,6 +117,16 @@ void DrawScratchSpace::BlendBuffers(float amount)
     {
 
         MainSpace[i] = Lerp(MainSpace[i] , ExtraBuffer[i] ,amount);
+    }
+}
+
+void DrawScratchSpace::BlendBuffers(RGB* from, float amount)
+{
+    amount = 1.0f - amount;
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+
+        MainSpace[i] = Lerp(MainSpace[i], from[i], amount);
     }
 }
 

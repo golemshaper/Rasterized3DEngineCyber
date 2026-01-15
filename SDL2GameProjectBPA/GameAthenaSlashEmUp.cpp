@@ -11,6 +11,8 @@ void GameAthenaSlashEmUp::Initialize()
     //ENGINE
     MyScratch = new DrawScratchSpace();
     MyScratch->Initialize();
+    MyScratch->CopyBufferToBuffer(MyScratch->MainSpace, BlurBuffer);
+
     MyTextSprites = new TextSprites();
     Reader = new TextFileReader();
     Reader->ReadText();
@@ -143,7 +145,7 @@ void GameAthenaSlashEmUp::TitleScreenTick(float DeltaTime)
         
         //reset working float
     }
-
+    AccumulatedBlur(0.70f);
     /*TextBoxDraw("Hello world! ");*/
 
 }
@@ -735,6 +737,10 @@ void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
 
         );
 
+
+        AccumulatedBlur(0.25f); //add motion blur only to shots!
+
+
         shotType++;
         if (shotType >= 4)shotType = 0;
         //Label on bullets
@@ -745,6 +751,7 @@ void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
         MyScratch->DrawText((int)textCoordinates2D.x, (int)textCoordinates2D.y, { 155 + i, 155 + i, 155 + i, 255, }, letter, MyTextSprites, 1.0f);
 
     }
+   
     MyScratch->AddBuffers();
     MyScratch->ZOffset = 0;
    
@@ -1003,6 +1010,13 @@ vec3d GameAthenaSlashEmUp::GetClosestVectorFromList(vec3d TestAgainst, vec3d* Ta
         }
     }
     return result;
+}
+
+void GameAthenaSlashEmUp::AccumulatedBlur(float strength)
+{
+    MyScratch->BlendBuffers(BlurBuffer, 1.0f- strength); //smaller number == more blur!
+    MyScratch->CopyBufferToBuffer(MyScratch->MainSpace, BlurBuffer);
+    
 }
 
 
