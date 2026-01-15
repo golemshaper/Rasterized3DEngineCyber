@@ -19,6 +19,8 @@ void GameAthenaSlashEmUp::Initialize()
     //STATES (on stack)
     sm.MapState(FirstStateId, [this] {StateMachineHelloWorldTick(); });
     sm.SetState(FirstStateId);
+    //player attack
+    sm.MapState(State_AthenaAttack, [this] {PlayerAttackState(); });
     
     //athena body bullets
     for (int i = 0; i < bullet_count; ++i)
@@ -47,7 +49,8 @@ void GameAthenaSlashEmUp::Initialize()
         4.0f,
         0.0f
         });
-
+    //Athena animated
+    CurrentAthenaFrame = monkeyMesh.GetAthenaMesh();
     //Setup Game States...
 }
 void GameAthenaSlashEmUp::Tick(float DeltaTime)
@@ -324,7 +327,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
 //NOTE 1: DifferDrawMesh is a drop-in replacement for the regular DrawMesh function. It'll only draw when DrawSortedDifferedMeshes() is called
 //NOTE 2: use regular DrawMesh() along with  MyScratch->ZOffsetFloat = 10;  Besure to turn the offset off when you are done
-    Mesh AthenaFrame = monkeymesher.GetAthenaSwordReady();
+  
     //if (sin(totalTime*22.0f) > 0)
     //{
     //    //crude animation logic
@@ -340,7 +343,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //    flip_limit_once = false;
     //}
   
-    MyScratch->DifferDrawMesh(AthenaFrame,
+    MyScratch->DifferDrawMesh(CurrentAthenaFrame,
         player_position,
         //old rotation was x=1.0
         vec3d{ 0.5f + (MyScratch->Input->GetMovementY() * -0.3f),0.0f,3.0f + (MyScratch->Input->GetMovementX() * 0.35f) },
@@ -436,9 +439,10 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 //TOGGLE VIEWS
     if (MyScratch->Input->GetToggleDepthKey())
     {
+        sm.SetState(State_AthenaAttack);
         MyScratch->Input->ResetToggleDepthKey();
         drawBuffer++;
-        if (drawBuffer > 5)drawBuffer = 0;
+        if (drawBuffer > 6)drawBuffer = 0;
     }
     switch (drawBuffer)
     {
@@ -468,6 +472,11 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         MyScratch->BlendBuffers(0.12f);
         break;
     case 5:
+        AccumulatedBlur(0.5f);
+        
+        break;
+
+    case 6:
         //Textures enabled
         MyScratch->TextureDrawOn = true;
         break;
@@ -888,6 +897,46 @@ void GameAthenaSlashEmUp::StateMachineHelloWorldTick()
     {
         sm.SetState(-1); //end all state calls
         return;
+    }
+}
+
+void GameAthenaSlashEmUp::PlayerIdleState()
+{
+}
+
+void GameAthenaSlashEmUp::PlayerAttackState()
+{
+    //Change player animation frame
+    if (sm.TimeInState >= 0.05f)
+    {
+        sm.TimeInState = 0.0f; //lie about current time to reset animation clock
+        MonkeyMesh monkeyMesh;
+        switch (sm.SubstateValue0)
+        {
+        default:
+            break;
+        case 0:
+            CurrentAthenaFrame = monkeyMesh.GetAthenaSwordReady();
+
+            break;
+
+        case 2:
+            CurrentAthenaFrame = monkeyMesh.GetAthenaSwordSlash();
+
+            break;
+        case 3:
+            CurrentAthenaFrame = monkeyMesh.AthenaSwordSlashEnd();
+            break;
+        case 4:
+            CurrentAthenaFrame = monkeyMesh.AthenaSwordSlashEnd();
+            break;
+        case 5:
+            CurrentAthenaFrame = monkeyMesh.GetAthenaMesh();
+            sm.SetState(State_AthenaIdle);
+            break;
+        }
+        sm.SubstateValue0++;
+
     }
 }
 

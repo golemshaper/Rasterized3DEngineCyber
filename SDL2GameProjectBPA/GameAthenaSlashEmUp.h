@@ -135,9 +135,14 @@ public:
 	//Game States
 	//----------------
 	const int FirstStateId = 0;
-	const int NoStateID = -1;
-	void StateMachineHelloWorldTick();
+	const int State_AthenaIdle = 1;
+	const int State_AthenaAttack = 2;
 
+	const int NoStateID = -1;
+	Mesh CurrentAthenaFrame;
+	void StateMachineHelloWorldTick();
+	void PlayerIdleState();
+	void PlayerAttackState();
 
 	//----------------
 	//HUD

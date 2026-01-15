@@ -28,6 +28,8 @@ public:
     int CurrentState = -1;
     float TimeInState = 0.0f;
     float StateDeltaTime = 0.0f;
+    int SubstateValue0 = 0; //reusableVariable
+
     void MapState(int StateID, std::function<void()> OnUpdate);
     void MapState(int StateID, std::function<void()> OnUpdate, std::function<void()> OnEnter);
     void MapState(int StateID, std::function<void()> OnUpdate, std::function<void()> OnEnter, std::function<void()> OnExit);

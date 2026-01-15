@@ -25,11 +25,12 @@ void StateMachine::SetState(int NState)
 		return;
 	}
 	if (ExitMap.find(CurrentState) != ExitMap.end()) {
-		ExitMap[CurrentState](); //OnExitCalled
+		ExitMap[CurrentState](); //OnExit Called
 	}
 	CurrentState = NState;
+	SubstateValue0 = 0; //Reset substate
 	if (EnterMap.find(CurrentState) != EnterMap.end()) {
-		EnterMap[CurrentState](); //OnExitCalled
+		EnterMap[CurrentState](); //OnEnter Called
 	}
 }
 
