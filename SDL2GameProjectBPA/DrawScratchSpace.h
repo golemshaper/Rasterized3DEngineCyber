@@ -315,14 +315,17 @@ public:
     void DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale);
 
     Mesh MorphMesh(const Mesh& from, const Mesh& to, float t);
+    Mesh WaveMesh(const Mesh& from, float time, float strength);
 
 
     vec3d Get2DPointInFromSpace(vec3d loc);
     vec3d Get2DPointFromLastLocation();
+
     vec3d Normalize(vec3d input);
     vec3d CrossProduct(const vec3d& a, const vec3d& b);
     vec3d LookAtRotation(const vec3d& from, const vec3d& to);
     vec3d LookAtRotation2D(const vec3d& from, const vec3d& to);
+
     float Distance(const vec3d& a, const vec3d& b);
     float Distance2D(const vec3d& a, const vec3d& b);
     float SquaredDistance(const vec3d& a, const vec3d& b);

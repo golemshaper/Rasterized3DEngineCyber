@@ -1817,6 +1817,26 @@ Mesh DrawScratchSpace::MorphMesh(const Mesh& from, const Mesh& to, float t)
     return out;
 }
 
+Mesh DrawScratchSpace::WaveMesh(const Mesh& from, float time, float strength)
+{
+    Mesh out;
+    out.Tris.resize(from.Tris.size());
+
+    for (size_t i = 0; i < from.Tris.size(); i++)
+    {
+        const triangle& A = from.Tris[i];
+        triangle& R = out.Tris[i];
+
+        for (size_t j = 0; j < 3; j++)
+        {
+            R.p[j].x = A.p[j].x + (sin(time + j) * strength);
+            R.p[j].y = A.p[j].y + (sin(time + j) * strength);
+            R.p[j].z = A.p[j].z + (sin(time + j) * strength);
+        }
+    }
+    return out;
+}
+
 vec3d DrawScratchSpace::Get2DPointInFromSpace(vec3d loc)
 {
     mat4x4 matTrans = IdentityMatrix();
@@ -1861,6 +1881,7 @@ vec3d DrawScratchSpace::Get2DPointFromLastLocation()
 {
    return Get2DPointInFromSpace(LastLocation);
 }
+
 
 vec3d DrawScratchSpace::Normalize(vec3d input)
 {

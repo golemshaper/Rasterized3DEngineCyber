@@ -281,8 +281,8 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->DrawVerticies = false;
     //morphing cube
      //MORPH TEST:
-    Mesh morph = MyScratch->MorphMesh(monkeymesher.GetPyrimidBoxMorph0(), monkeymesher.GetPyrimidBoxMorph(), abs(sin(totalTime)));
-    MyScratch->DrawMesh(morph, working_vector, vec3d{ 1.5f,0,0 }, vec3d{ 0.125f,0.125f,0.125f });
+    Mesh morph = MyScratch->MorphMesh(monkeymesher.GetPyrimidBoxMorph0(), monkeymesher.GetPyrimidBoxMorph(),abs(sin(totalTime)));
+    MyScratch->DrawMesh(morph, vec3d{ 2.0f, 0.0f,0.0f }, vec3d{ 1.5f,0,0 }, vec3d{ 0.25f,0.25f,0.25f });
 
     MyScratch->PushBackDepthBuffer(240); //Push back so we don't clip the actors
 
@@ -312,7 +312,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //---------------------- 
     //Monkey
     MyScratch->MeshColor = { 0,0,255,255 };
-    MyScratch->DifferDrawMesh(monkeymesher.GetMonkeyMesh(), vec3d{ 4.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime * 6.0f), }, MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))),true);
+    MyScratch->DifferDrawMesh(MyScratch->WaveMesh(monkeymesher.GetMonkeyMesh(), 12 * totalTime, 0.2f), vec3d{ 4.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime * 6.0f), }, MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))),true);
     AddTargetableLOC(vec3d{ 4.0f,0.0f,-0.25f });
 
     //Boy
@@ -773,7 +773,7 @@ void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
         );
 
 
-        AccumulatedBlur(0.25f); //add motion blur only to shots!
+      //DONT LIKE IT:  AccumulatedBlur(0.25f); //add motion blur only to shots!
 
 
         shotType++;
