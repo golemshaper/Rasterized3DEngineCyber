@@ -1796,6 +1796,27 @@ void DrawScratchSpace::DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale)
     DrawSprite(spriteX, spriteY, s.pixels, s.width,s.height,false);
 }
 
+Mesh DrawScratchSpace::MorphMesh(const Mesh& from, const Mesh& to, float t)
+{
+    Mesh out;
+    out.Tris.resize(from.Tris.size());
+
+    for (size_t i = 0; i < from.Tris.size(); i++)
+    {
+        const triangle& A = from.Tris[i];
+        const triangle& B = to.Tris[i];
+        triangle& R = out.Tris[i];
+
+        for (size_t j = 0; j < 3; j++)
+        {
+            R.p[j].x = Lerp(A.p[j].x, B.p[j].x, t);
+            R.p[j].y = Lerp(A.p[j].y, B.p[j].y, t);
+            R.p[j].z = Lerp(A.p[j].z, B.p[j].z, t);
+        }
+    }
+    return out;
+}
+
 vec3d DrawScratchSpace::Get2DPointInFromSpace(vec3d loc)
 {
     mat4x4 matTrans = IdentityMatrix();

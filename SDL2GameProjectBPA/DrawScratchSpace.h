@@ -314,6 +314,9 @@ public:
 
     void DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale);
 
+    Mesh MorphMesh(const Mesh& from, const Mesh& to, float t);
+
+
     vec3d Get2DPointInFromSpace(vec3d loc);
     vec3d Get2DPointFromLastLocation();
     vec3d Normalize(vec3d input);

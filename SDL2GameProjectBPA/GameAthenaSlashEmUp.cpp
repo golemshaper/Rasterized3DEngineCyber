@@ -151,6 +151,10 @@ void GameAthenaSlashEmUp::TitleScreenTick(float DeltaTime)
     AccumulatedBlur(0.70f);
     /*TextBoxDraw("Hello world! ");*/
 
+
+   
+
+
 }
 
 void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
@@ -275,6 +279,11 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->DrawVerticies = true;
     MyScratch->DrawMesh(monkeymesher.GetTeapotMesh(), vec3d{ (sinf(totalTime * 4.0f) * 0.2f) - 1.12f,0.5f,2 }, vec3d{ 1.0, 1.0, totalTime, }, vec3d{ 1,1,1 });
     MyScratch->DrawVerticies = false;
+    //morphing cube
+     //MORPH TEST:
+    Mesh morph = MyScratch->MorphMesh(monkeymesher.GetPyrimidBoxMorph0(), monkeymesher.GetPyrimidBoxMorph(), abs(sin(totalTime)));
+    MyScratch->DrawMesh(morph, working_vector, vec3d{ 1.5f,0,0 }, vec3d{ 0.125f,0.125f,0.125f });
+
     MyScratch->PushBackDepthBuffer(240); //Push back so we don't clip the actors
 
     //----------------------
