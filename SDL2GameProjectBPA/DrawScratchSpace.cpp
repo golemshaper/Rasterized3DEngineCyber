@@ -1170,6 +1170,17 @@ void DrawScratchSpace::MultiplyMatrixVector(vec3d& i, vec3d& o, mat4x4& m)
     }
 }
 
+void DrawScratchSpace::MultiplyMatrixVectorArray(mat4x4& m, vec3d* in, vec3d* out, size_t count)
+{
+    //I think maybe possibly I can use this for parenting?
+    //My idea is to pre-make all position and rotation vectors, and then rotate them all at once using the matrix rotation function (like the camera)
+    //And I can do the same for sub objecs
+    for (size_t i = 0; i < count; i++)
+    {
+        MultiplyMatrixVector(in[i], out[i], m);
+    }
+}
+
 mat4x4 IdentityMatrix()
 {
     mat4x4 m = {};

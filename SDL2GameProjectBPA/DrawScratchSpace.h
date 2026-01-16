@@ -294,6 +294,11 @@ public:
     vec3d CameraTargetLoc;
 //3D Functions:
     void MultiplyMatrixVector(vec3d& i, vec3d& o, mat4x4& m);
+
+    
+    void MultiplyMatrixVectorArray(mat4x4& m, vec3d* in,vec3d* out,size_t count);
+    
+
     mat4x4 IdentityMatrix();
     mat4x4 Matrix_PointAt(vec3d pos, vec3d target, vec3d up);
     mat4x4 Matrix_QuickInverse(mat4x4& m);
