@@ -32,9 +32,10 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 
 	//elements to build vectors from
 	std::vector<vec3d> postion_vectors;
+	std::vector<vec3d> id_holder_not_real_vectors;
 	std::map<int, vec3d > id_vector_map;
 
-	std::vector<int> tris_by_vec_id;
+	
 
 
 	for (std::size_t i = 0; i < str.size(); ++i)
@@ -80,26 +81,24 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 			switch (Mode)
 			{
 			case M_Vectors:
-				//All vectors in the file are in the vector list.
 				
-				//-0.5 - 0.5  0.5
-				for (size_t j = 0; j < results.size(); j+=3)
-				{
-					//pray trim is enough to get rid of the newline character we probably have.... lol
-					vec3d vec = vec3d{ std::stof(trim(results[j])), std::stof(trim(results[j + 1])), std::stof(trim(results[j + 2])) };
-					postion_vectors.push_back(vec);
-					id_vector_map[i] = vec;
-				}
+				//we are checking every new line, so this is not all of the vectors, just the 3 elements we have
+				//pray trim is enough to get rid of the newline character we probably have.... lol
+				vec3d vec = vec3d{ std::stof(trim(results[0])), std::stof(trim(results[1])), std::stof(trim(results[2])) };
+				postion_vectors.push_back(vec);
+				id_vector_map[i] = vec; //map the ID to a vector for later
 
 				break;
 			case M_Tris:
-				//Tri data stored in sb.
-				//will need a map of index to vector. Will also need to store the data in tris-as-is. wee can only create the mesh once the file is finished.
+				//Tri data stored in sb. We'll shove the ids in a vec3d
+				vec3d vec3d_stored_ids = vec3d{ std::stof(trim(results[0])), std::stof(trim(results[1])), std::stof(trim(results[2])) };
+				id_holder_not_real_vectors[i] = vec3d_stored_ids; //store the IDs so we can get them from the map. We'll cast them to an int later.
 
 				break;
 			case M_UVs:
 				//UV data stored in sb.
 				//do we want a list of Vector2s the same way we have vectors to cut back on UV data?
+				//we don't have UVs yet. skip them for now.
 
 				break;
 			case M_VertColor:
@@ -121,6 +120,23 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 
 	}
 	Mesh result;
+
+	for (std::size_t i = 0; i < id_holder_not_real_vectors.size(); ++i)
+	{
+		//construct tri
+		int xID = (int)id_holder_not_real_vectors[i].x;
+		int yID = (int)id_holder_not_real_vectors[i].y;
+		int zID = (int)id_holder_not_real_vectors[i].z;
+
+		vec3d v1 = postion_vectors[xID];
+		vec3d v2 = postion_vectors[yID];
+		vec3d v3 = postion_vectors[zID];
+
+		triangle tri = triangle{ v1.x, v1.y,  v1.z,   v2.x, v2.y, -v2.z,   v3.x,  v3.y, -v3.z };
+
+		result.Tris.push_back(tri);
+	}
+
 	//Todo construct a mesh
 	return result;
 }
