@@ -7,6 +7,7 @@
 class ModelFileParser
 {
 public: 
+	//HOW TO BAKE VERTEX COLORS: https://victorkarp.com/how-to-bake-textures-to-vertex-colors-in-blender/
 	Mesh ParseFromFile(const std::string path);
 	Mesh ParseFromStr(const std::string str);
 	//vector<std::string> SplitByChar(const std::string& str, char c);

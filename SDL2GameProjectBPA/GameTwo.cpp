@@ -97,7 +97,7 @@ tris:
 
 	//LoadedMesh = parser.ParseFromStr(text);
 	//MY PC: C:\Users\brian\source\repos\Rasterized3DEngine\SDL2GameProjectBPA\Assets
-	LoadedMesh = parser.ParseFromFile("Assets/hello_vertex_color_model.txt");
+	LoadedMesh = parser.ParseFromFile("Assets/olexa.txt");
 
 
 	
@@ -117,7 +117,7 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->SetCameraFOV(90);
 	MyScratch->SetCamera(vec3d{ 0.0f, -0.0f, -6.0f }, vec3d{ 0.0f, 0.0f, 2.0f });
 
-	MyScratch->DrawMesh(LoadedMesh, vec3d{0.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime*2.0f,0}, vec3d{1,1,1});
+	MyScratch->DrawMesh(LoadedMesh, vec3d{0.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime*2.0f,0}, vec3d{1.2,1.2,1.2},true);
 	
 	
 }

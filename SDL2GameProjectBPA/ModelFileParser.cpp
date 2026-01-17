@@ -196,11 +196,11 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 
 
 		//std::cout << "Vector tri: "<< (int)result.Tris.back().c[0].r << " "<< (int)result.Tris.back().c[0].g << " "<< (int)result.Tris.back().c[0].b << " "<< (int)result.Tris.back().c[0].a << "\n";
-		std::cout << "vectors: " << id_holder_not_real_vectors.size() << "\n";
+		/*std::cout << "vectors: " << id_holder_not_real_vectors.size() << "\n";
 		std::cout << "colors:  " << id_holder_not_real_colors.size() << "\n";
 		std::cout << "palette: " << color_palette.size() << "\n";
-		std::cout << "positions: " << postion_vectors.size() << "\n";
-		if (xID < 0 || xID >= postion_vectors.size() ||
+		std::cout << "positions: " << postion_vectors.size() << "\n";*/
+		/*if (xID < 0 || xID >= postion_vectors.size() ||
 			yID < 0 || yID >= postion_vectors.size() ||
 			zID < 0 || zID >= postion_vectors.size()) {
 
@@ -208,7 +208,7 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 				<< " xID=" << xID
 				<< " yID=" << yID
 				<< " zID=" << zID << "\n";
-		}
+		}*/
 		result.Tris.push_back(tri);
 	}
 
