@@ -1,3 +1,54 @@
+#NEW TEXT VERSION:
+
+import bpy
+
+def export_mesh_as_custom(obj):
+    mesh = obj.data
+    mesh.calc_loop_triangles()
+
+    # Collect unique vertices
+    verts = [v.co for v in mesh.vertices]
+
+    # Start building output
+    out = "vectors:\n\n"
+
+    # Write vertex positions
+    for v in verts:
+        out += f" {v.x:.6f} {v.y:.6f} {v.z:.6f}\n\n"
+
+    out += "tris:\n\n"
+
+    # Write triangle indices
+    for tri in mesh.loop_triangles:
+        i0, i1, i2 = tri.vertices
+        out += f" {i0} {i1} {i2}\n\n"
+
+    # Copy to clipboard
+    bpy.context.window_manager.clipboard = out
+    print(out)
+
+
+# Run on active object
+obj = bpy.context.active_object
+if obj and obj.type == 'MESH':
+    export_mesh_as_custom(obj)
+else:
+    print("Please select a mesh object in Object Mode.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#OLD HEADER VERSION:--------------------------------------------------------------------------------------
 import bpy
 
 def format_vertex(v):
