@@ -12,10 +12,6 @@ using namespace std;
 
 Mesh ModelFileParser::ParseFromStr(const std::string str)
 {
-	//vectors (store all unique as index based IDs)
-	//tris
-	//uvs
-	//vert colors
 
 	std::string sb; 
 	sb.reserve(1024); //  boosts performance, allegedly
@@ -36,8 +32,6 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 	std::map<int, vec3d > id_vector_map;
 
 	
-
-
 	for (std::size_t i = 0; i < str.size(); ++i)
 	{
 		char c = str[i];
@@ -51,32 +45,36 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 
 		if (c == ':' && Comment_Mode == false)
 		{
+
 			//a new section was marked in the file.
 			//such as "positions:" so find out what the name was by reading sb
-			if (sb.c_str() == "vectors")
+			if ((sb) == "vectors")
 			{
 				Mode = M_Vectors;
 			}
-			if (sb.c_str() == "tris")
+			if ((sb) == "tris")
 			{
 				Mode = M_Tris;
 			}
-			if (sb.c_str() == "uv")
+			if ((sb) == "uv")
 			{
 				Mode = M_UVs;
 			}
-			if (sb.c_str() == "color")
+			if ((sb) == "color")
 			{
 				Mode = M_VertColor;
 			}
 			sb.clear();//clearing data
-			continue; //do not append the token to the data, we are switching modes, and 
+			continue;
 		}
 		if (c == '\n')
 		{
 			sb = trim(sb); //Trim this string on both sides.
 			std::vector<std::string>  results = SplitByChar(sb, ' ');
-
+			int lineIndex = postion_vectors.size();
+			int triIndex = id_holder_not_real_vectors.size();
+			std::string data = sb;
+			if (results.size() <= 0)continue;
 			Comment_Mode = false;
 			switch (Mode)
 			{
@@ -84,15 +82,16 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 				
 				//we are checking every new line, so this is not all of the vectors, just the 3 elements we have
 				//pray trim is enough to get rid of the newline character we probably have.... lol
-				vec3d vec = vec3d{ std::stof(trim(results[0])), std::stof(trim(results[1])), std::stof(trim(results[2])) };
+				
+				vec3d vec = vec3d{ std::stof((results[0])), std::stof((results[1])), std::stof((results[2])) };
 				postion_vectors.push_back(vec);
-				id_vector_map[i] = vec; //map the ID to a vector for later
+				id_vector_map[lineIndex] = vec; //map the ID to a vector for later
 
 				break;
 			case M_Tris:
 				//Tri data stored in sb. We'll shove the ids in a vec3d
-				vec3d vec3d_stored_ids = vec3d{ std::stof(trim(results[0])), std::stof(trim(results[1])), std::stof(trim(results[2])) };
-				id_holder_not_real_vectors[i] = vec3d_stored_ids; //store the IDs so we can get them from the map. We'll cast them to an int later.
+				vec3d vec3d_stored_ids = vec3d{ (float)std::stoi((results[0])), (float)std::stoi((results[1])), (float)std::stoi((results[2])) };
+				id_holder_not_real_vectors.push_back(vec3d_stored_ids); //store the IDs so we can get them from the map. We'll cast them to an int later.
 
 				break;
 			case M_UVs:
@@ -109,8 +108,9 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 			default:
 				break;
 			}
+			sb.clear();//clearing data
 		}
-	SKIP:
+
 		if (!Comment_Mode)
 		{
 			sb += c; //continue scanning 
@@ -128,11 +128,12 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 		int yID = (int)id_holder_not_real_vectors[i].y;
 		int zID = (int)id_holder_not_real_vectors[i].z;
 
+
 		vec3d v1 = postion_vectors[xID];
 		vec3d v2 = postion_vectors[yID];
 		vec3d v3 = postion_vectors[zID];
 
-		triangle tri = triangle{ v1.x, v1.y,  v1.z,   v2.x, v2.y, -v2.z,   v3.x,  v3.y, -v3.z };
+		triangle tri = triangle{ v1.x, v1.y,  v1.z,   v2.x, v2.y, v2.z,   v3.x,  v3.y, v3.z };
 
 		result.Tris.push_back(tri);
 	}
