@@ -5,10 +5,30 @@
 #include <vector>
 #include "DrawScratchSpace.h"
 #include <map>
+#include <fstream>
 
 using namespace std;
 
 
+
+Mesh ModelFileParser::ParseFromFile(const std::string path)
+{
+
+	std::ifstream file(path);
+	std::string str;
+	std::string file_contents;
+
+	if (!file.is_open()) {
+		file_contents = "F:" + path;
+	}
+
+	while (std::getline(file, str))
+	{
+		file_contents += str;
+		file_contents.push_back('\n');
+	}
+	return ParseFromStr(file_contents);
+}
 
 Mesh ModelFileParser::ParseFromStr(const std::string str)
 {
