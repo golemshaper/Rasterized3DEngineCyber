@@ -39,6 +39,9 @@
     <ClCompile Include="StateMachine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ModelFileParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DrawScratchSpace.h">
@@ -70,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="MonkeySprite.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelFileParser.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

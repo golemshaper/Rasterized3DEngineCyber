@@ -30,7 +30,14 @@ void GameTwo::Tick(float DeltaTime)
 
 	 //wave FX
 	 MyScratch->MeshColor = { 0,0,255,255 };
-	 MyScratch->DrawMesh(MyScratch->WaveMesh(monkeymesher.GetMonkeyMesh(), 12 * totalTime, 0.15f), vec3d{ 0.0f,0.0f,-2.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime * 6.0f), }, MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))), true);
+	 MyScratch->DrawMesh(
+		MyScratch->WaveMesh(
+		monkeymesher.GetMonkeyMesh(), 12 * totalTime, 0.15f), 
+		vec3d{ 0.0f,0.0f,-2.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime * 6.0f), }, 
+		MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, 
+		vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))), 
+		true
+	 );
 
 	 //morph FX
 	 MyScratch->MeshColor = { 0,222,255,255 };
