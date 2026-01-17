@@ -41,15 +41,25 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 	const int M_Vectors = 1;
 	const int M_Tris = 2;
 	const int M_UVs = 3;
-	const int M_VertColor = 4;
+	const int M_ColorPalette = 4;
+	const int M_VertColor = 5;
 	int Mode = M_Unknown;
 
 	bool Comment_Mode = false;
 
 	//elements to build vectors from
+	//Vectors and tris
 	std::vector<vec3d> postion_vectors;
 	std::vector<vec3d> id_holder_not_real_vectors;
 	std::map<int, vec3d > id_vector_map;
+
+
+	//Color and vertex colors
+	std::vector<RGB> color_palette;
+	std::map<int, RGB > id_color_map;
+	std::vector<vec3d> id_holder_not_real_colors; //color per triangle? 
+
+
 
 	
 	for (std::size_t i = 0; i < str.size(); ++i)
@@ -80,6 +90,10 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 			{
 				Mode = M_UVs;
 			}
+			if ((sb) == "palette")
+			{
+				Mode = M_ColorPalette;
+			}
 			if ((sb) == "color")
 			{
 				Mode = M_VertColor;
@@ -91,8 +105,10 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 		{
 			sb = trim(sb); //Trim this string on both sides.
 			std::vector<std::string>  results = SplitByChar(sb, ' ');
+			int colorLineIndex = color_palette.size();
 			int lineIndex = postion_vectors.size();
 			int triIndex = id_holder_not_real_vectors.size();
+			RGB color = RGB{ 0,0,0 };
 			std::string data = sb;
 			if (results.size() <= 0)continue;
 			Comment_Mode = false;
@@ -120,9 +136,18 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 				//we don't have UVs yet. skip them for now.
 
 				break;
+			case M_ColorPalette:
+				//build up colors here
+				color = RGB{ std::stoi((results[0])), std::stoi((results[1])), std::stoi((results[2])),std::stoi((results[3])) };
+				color_palette.push_back(color);
+				id_color_map[colorLineIndex] = (color);
+
+				break;
 			case M_VertColor:
 				//Color data stored in sb.
 				//Also make a list of colors and IDs to cut back on color data?
+				vec3d color_stored_ids = vec3d{ (float)std::stoi((results[0])), (float)std::stoi((results[1])), (float)std::stoi((results[2])) };
+				id_holder_not_real_colors.push_back(color_stored_ids);
 
 				break;
 			default:
@@ -154,7 +179,36 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 		vec3d v3 = postion_vectors[zID];
 
 		triangle tri = triangle{ v1.x, v1.y,  v1.z,   v2.x, v2.y, v2.z,   v3.x,  v3.y, v3.z };
+		
 
+		//colors
+		int cxID = (int)id_holder_not_real_colors[i].x;
+		int cyID = (int)id_holder_not_real_colors[i].y;
+		int czID = (int)id_holder_not_real_colors[i].z;
+
+		RGB c1 = color_palette[cxID];
+		RGB c2 = color_palette[cyID];
+		RGB c3 = color_palette[czID];
+
+		tri.c[0] = c1;
+		tri.c[1] = c2;
+		tri.c[2] = c3;
+
+
+		//std::cout << "Vector tri: "<< (int)result.Tris.back().c[0].r << " "<< (int)result.Tris.back().c[0].g << " "<< (int)result.Tris.back().c[0].b << " "<< (int)result.Tris.back().c[0].a << "\n";
+		std::cout << "vectors: " << id_holder_not_real_vectors.size() << "\n";
+		std::cout << "colors:  " << id_holder_not_real_colors.size() << "\n";
+		std::cout << "palette: " << color_palette.size() << "\n";
+		std::cout << "positions: " << postion_vectors.size() << "\n";
+		if (xID < 0 || xID >= postion_vectors.size() ||
+			yID < 0 || yID >= postion_vectors.size() ||
+			zID < 0 || zID >= postion_vectors.size()) {
+
+			std::cout << "BAD TRI " << i
+				<< " xID=" << xID
+				<< " yID=" << yID
+				<< " zID=" << zID << "\n";
+		}
 		result.Tris.push_back(tri);
 	}
 

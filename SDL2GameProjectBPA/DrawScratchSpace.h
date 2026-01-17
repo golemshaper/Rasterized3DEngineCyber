@@ -160,10 +160,19 @@ struct vec2d
 };
 
 struct triangle{
-    vec3d p[3];
+    vec3d p[3]; //points
     //do we want this? UVS belong to a vertex, but we use a vec3D as a vertex... 
-    vec2d uv[3];
+    vec2d uv[3]; //uv coordinates
+
     float depth = 0.0f;
+
+  //  RGB c[3];//color
+
+    RGB c[3] = { {255,255,255,255},
+                 {255,255,255,255},
+                 {255,255,255,255} };
+
+
 
 };
 

@@ -1552,9 +1552,20 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         //Store Z Info 
         triProjected.depth = (triViewed.p[0].z + triViewed.p[1].z + triViewed.p[2].z) / 3.0f;
 
+        //copy color
+        triProjected.c[0] = tri.c[0];
+        triProjected.c[1] = tri.c[1];
+        triProjected.c[2] = tri.c[2];
 
         vecTrianglesToRaster.push_back(triProjected);
+
+
+
     }
+
+
+   
+
 
     // Painter’s sort
     sort(vecTrianglesToRaster.begin(), vecTrianglesToRaster.end(),
@@ -1586,7 +1597,8 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         int R = MeshColor.r * ZFog * 0.75f;
         int G = MeshColor.g * ZFog * 0.75f;
         int B = MeshColor.b * ZFog * 0.75f;
-      
+
+       
 
         //----------------------------------------------------------------------------------------------------------------------
         //COLOR FROM F+GLOBAL MESH COLOR:
@@ -1596,6 +1608,33 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         Vertex p2 = { static_cast<int>(triProjected.p[2].x), static_cast<int>(triProjected.p[2].y), {R,G,1*B} };
 
 
+     //VERTEX COLOR:::::::::::::::::
+        ////FORVE VERTEX COLORS ONLY
+        //p0.color = triProjected.c[0];
+        //p1.color = triProjected.c[1];
+        //p2.color = triProjected.c[2];
+
+
+        //TINT WITH VERTEX COLORS
+        p0.color.r = (p0.color.r * triProjected.c[0].r) / 255;
+        p0.color.g = (p0.color.g * triProjected.c[0].g) / 255;
+        p0.color.b = (p0.color.b * triProjected.c[0].b) / 255;
+
+
+        p1.color.r = (p1.color.r * triProjected.c[1].r) / 255;
+        p1.color.g = (p1.color.g * triProjected.c[1].g) / 255;
+        p1.color.b = (p1.color.b * triProjected.c[1].b) / 255;
+
+
+        p2.color.r = (p2.color.r * triProjected.c[2].r) / 255;
+        p2.color.g = (p2.color.g * triProjected.c[2].g) / 255;
+        p2.color.b = (p2.color.b * triProjected.c[2].b) / 255;
+
+
+       /* p0.color = { 255,255,255 };
+        p1.color = { 255,255,255 };
+        p2.color = { 255,255,255 };*/
+    //FORCE VERTEX COLOR:::::::::::::::::
 
 
         //----------------------------------------------------------------------------------------------------------------------
