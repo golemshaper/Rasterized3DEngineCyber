@@ -80,19 +80,23 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 				{
 					//todo parse all 3 parts of the data and build up a vector, and put it in a list of vectors
 					//later we will build a model from this data
+					//will need string to vector function
 				}
 
 				break;
 			case M_Tris:
 				//Tri data stored in sb.
+				//will need a map of index to vector. Will also need to store the data in tris-as-is. wee can only create the mesh once the file is finished.
 
 				break;
 			case M_UVs:
 				//UV data stored in sb.
+				//do we want a list of Vector2s the same way we have vectors to cut back on UV data?
 
 				break;
 			case M_VertColor:
 				//Color data stored in sb.
+				//Also make a list of colors and IDs to cut back on color data?
 
 				break;
 			default:
