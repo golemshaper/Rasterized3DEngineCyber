@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include "DrawScratchSpace.h"
+#include <map>
 
 using namespace std;
 
@@ -31,9 +32,9 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 
 	//elements to build vectors from
 	std::vector<vec3d> postion_vectors;
+	std::map<int, vec3d > id_vector_map;
+
 	std::vector<int> tris_by_vec_id;
-
-
 
 
 	for (std::size_t i = 0; i < str.size(); ++i)
@@ -85,7 +86,9 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 				for (size_t j = 0; j < results.size(); j+=3)
 				{
 					//pray trim is enough to get rid of the newline character we probably have.... lol
-					postion_vectors.push_back(vec3d{ std::stof(trim(results[j])), std::stof(trim(results[j+1])), std::stof(trim(results[j+2])) });
+					vec3d vec = vec3d{ std::stof(trim(results[j])), std::stof(trim(results[j + 1])), std::stof(trim(results[j + 2])) };
+					postion_vectors.push_back(vec);
+					id_vector_map[i] = vec;
 				}
 
 				break;
