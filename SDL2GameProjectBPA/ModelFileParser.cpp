@@ -29,6 +29,13 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 
 	bool Comment_Mode = false;
 
+	//elements to build vectors from
+	std::vector<vec3d> postion_vectors;
+	std::vector<int> tris_by_vec_id;
+
+
+
+
 	for (std::size_t i = 0; i < str.size(); ++i)
 	{
 		char c = str[i];
@@ -65,22 +72,20 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 		}
 		if (c == '\n')
 		{
-			sb = trim(sb);
+			sb = trim(sb); //Trim this string on both sides.
 			std::vector<std::string>  results = SplitByChar(sb, ' ');
 
 			Comment_Mode = false;
-			//new line, so the data we have is going to be of the type of the mode we are in.
 			switch (Mode)
 			{
 			case M_Vectors:
-				//Vector data stored in sb.
-				//Trim this string on both sides.
+				//All vectors in the file are in the vector list.
+				
 				//-0.5 - 0.5  0.5
-				for (size_t j = 0; j < results.size(); ++j)
+				for (size_t j = 0; j < results.size(); j+=3)
 				{
-					//todo parse all 3 parts of the data and build up a vector, and put it in a list of vectors
-					//later we will build a model from this data
-					//will need string to vector function
+					//pray trim is enough to get rid of the newline character we probably have.... lol
+					postion_vectors.push_back(vec3d{ std::stof(trim(results[j])), std::stof(trim(results[j+1])), std::stof(trim(results[j+2])) });
 				}
 
 				break;
