@@ -1693,7 +1693,7 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
             Vertex light_fx_p0 = { static_cast<int>(triProjected.p[0].x), static_cast<int>(triProjected.p[0].y), RGB{R,G,B}*2 };
             Vertex light_fx_p1 = { static_cast<int>(triProjected.p[1].x), static_cast<int>(triProjected.p[1].y), RGB{R,G,B}*2 };
             Vertex light_fx_p2 = { static_cast<int>(triProjected.p[2].x), static_cast<int>(triProjected.p[2].y), RGB{R,G,B}*2 };
-            DrawTriangle(light_fx_p0 - 2, light_fx_p1 - 1, light_fx_p2 - 1, DepthValue);
+            DrawTriangle(light_fx_p0 - 1, light_fx_p1 - 1, light_fx_p2 - 1, DepthValue);
         }
         else
         {
@@ -1725,13 +1725,16 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool 
 {
     if (edge_light)
     {
+        bool remember_light_setting = DrawUnlit;
         //multipass
-        DrawHighlightEdgeOnly = true;
+        DrawHighlightEdgeOnly = true; //this causes the offset
         //const float offset = -10.5f;
         const int offset = 15;
         ZOffset -= offset; // draw one point behind the mesh
+        DrawUnlit = true;
         DrawMesh(m, loc, rot, scale);
         ZOffset += offset; //restore mesh back to normal depth location
+        DrawUnlit = remember_light_setting;
         DrawMesh(m, loc, rot, scale);
     }
     else

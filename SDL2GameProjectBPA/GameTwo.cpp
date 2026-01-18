@@ -48,7 +48,7 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->DrawUnlit = true;
 	MyScratch->SetCamera(vec3d{ 0.0f, -0.9f, -7.5f }, vec3d{ 0.0f, 0.1f, 2.0f });
 	MyScratch->SetCameraFOV(50);
-	MyScratch->DrawMesh(LoadedMesh, vec3d{0.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime*2.0f,0}, vec3d{1.2,1.2,1.2},false);
+	MyScratch->DrawMesh(LoadedMesh, vec3d{0.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime*2.0f,0}, vec3d{1.2,1.2,1.2},true);
 	MyScratch->DrawUnlit = false;
 
 
