@@ -109,7 +109,7 @@ void GameTwo::Tick(float DeltaTime)
 	totalTime += DeltaTime;
 	
 
-
+	MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, RGB{ 0,255,255,255 }, RGB{ 54,32,255,255 }, RGB{ 0,0,0,255 }, RGB{ 0,0,0,255 });
 	//DrawBasics(DeltaTime);
 
 	MyScratch->MeshColor = { 255,255,255,255 };
@@ -117,7 +117,7 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->SetCameraFOV(90);
 	MyScratch->SetCamera(vec3d{ 0.0f, -0.0f, -6.0f }, vec3d{ 0.0f, 0.0f, 2.0f });
 
-	MyScratch->DrawMesh(LoadedMesh, vec3d{0.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime*2.0f,0}, vec3d{1.2,1.2,1.2},true);
+	MyScratch->DrawMesh(LoadedMesh, vec3d{0.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime*2.0f,0}, vec3d{1.2,1.2,1.2},false);
 	
 	
 }

@@ -112,6 +112,15 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 			std::string data = sb;
 			if (results.size() <= 0)continue;
 			Comment_Mode = false;
+
+
+			/*vec3d vec;
+			vec3d vec3d_stored_ids;
+			vec3d color_stored_ids;*/
+			vec3d vec{};
+			vec3d vec3d_stored_ids{};
+			vec3d color_stored_ids{};
+
 			switch (Mode)
 			{
 			case M_Vectors:
@@ -119,14 +128,14 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 				//we are checking every new line, so this is not all of the vectors, just the 3 elements we have
 				//pray trim is enough to get rid of the newline character we probably have.... lol
 				
-				vec3d vec = vec3d{ std::stof((results[0])), std::stof((results[1])), std::stof((results[2])) };
+				vec = vec3d{ std::stof((results[0])), std::stof((results[1])), std::stof((results[2])) };
 				postion_vectors.push_back(vec);
 				id_vector_map[lineIndex] = vec; //map the ID to a vector for later
 
 				break;
 			case M_Tris:
 				//Tri data stored in sb. We'll shove the ids in a vec3d
-				vec3d vec3d_stored_ids = vec3d{ (float)std::stoi((results[0])), (float)std::stoi((results[1])), (float)std::stoi((results[2])) };
+				vec3d_stored_ids = vec3d{ (float)std::stoi((results[0])), (float)std::stoi((results[1])), (float)std::stoi((results[2])) };
 				id_holder_not_real_vectors.push_back(vec3d_stored_ids); //store the IDs so we can get them from the map. We'll cast them to an int later.
 
 				break;
@@ -146,7 +155,7 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 			case M_VertColor:
 				//Color data stored in sb.
 				//Also make a list of colors and IDs to cut back on color data?
-				vec3d color_stored_ids = vec3d{ (float)std::stoi((results[0])), (float)std::stoi((results[1])), (float)std::stoi((results[2])) };
+				color_stored_ids = vec3d{ (float)std::stoi((results[0])), (float)std::stoi((results[1])), (float)std::stoi((results[2])) };
 				id_holder_not_real_colors.push_back(color_stored_ids);
 
 				break;
@@ -194,21 +203,6 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 		tri.c[1] = c2;
 		tri.c[2] = c3;
 
-
-		//std::cout << "Vector tri: "<< (int)result.Tris.back().c[0].r << " "<< (int)result.Tris.back().c[0].g << " "<< (int)result.Tris.back().c[0].b << " "<< (int)result.Tris.back().c[0].a << "\n";
-		/*std::cout << "vectors: " << id_holder_not_real_vectors.size() << "\n";
-		std::cout << "colors:  " << id_holder_not_real_colors.size() << "\n";
-		std::cout << "palette: " << color_palette.size() << "\n";
-		std::cout << "positions: " << postion_vectors.size() << "\n";*/
-		/*if (xID < 0 || xID >= postion_vectors.size() ||
-			yID < 0 || yID >= postion_vectors.size() ||
-			zID < 0 || zID >= postion_vectors.size()) {
-
-			std::cout << "BAD TRI " << i
-				<< " xID=" << xID
-				<< " yID=" << yID
-				<< " zID=" << zID << "\n";
-		}*/
 		result.Tris.push_back(tri);
 	}
 
