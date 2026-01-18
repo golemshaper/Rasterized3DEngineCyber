@@ -10,94 +10,23 @@ void GameTwo::Initialize()
 	MyScratch->Initialize();
 
 
-	std::string text = R"(
-vectors:
-
- -0.440443 -0.440443 -0.440443
-
- -0.440443 -0.440443 0.440443
-
- -0.440443 0.440443 -0.440443
-
- -0.440443 0.440443 0.440443
-
- 0.440443 -0.440443 -0.440443
-
- 0.440443 -0.440443 0.440443
-
- 0.440443 0.440443 -0.440443
-
- 0.440443 0.440443 0.440443
-
- -1.408134 0.000000 0.000000
-
- 0.000000 1.408134 0.000000
-
- 1.408134 0.000000 0.000000
-
- 0.000000 -1.408134 0.000000
-
- 0.000000 0.000000 -1.408134
-
- 0.000000 0.000000 1.408134
-
-tris:
-
- 1 8 0
-
- 3 8 1
-
- 2 8 3
-
- 0 8 2
-
- 3 9 2
-
- 7 9 3
-
- 6 9 7
-
- 2 9 6
-
- 7 10 6
-
- 5 10 7
-
- 4 10 5
-
- 6 10 4
-
- 5 11 4
-
- 1 11 5
-
- 0 11 1
-
- 4 11 0
-
- 6 12 2
-
- 4 12 6
-
- 0 12 4
-
- 2 12 0
-
- 3 13 7
-
- 1 13 3
-
- 5 13 1
-
- 7 13 5
-
-)";
-
 	ModelFileParser parser;
 
 	//LoadedMesh = parser.ParseFromStr(text);
 	//MY PC: C:\Users\brian\source\repos\Rasterized3DEngine\SDL2GameProjectBPA\Assets
 	LoadedMesh = parser.ParseFromFile("Assets/olexa.txt");
+
+
+	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
+	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F1.txt"));
+	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F1.txt"));
+	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F2.txt"));
+	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F3.txt"));
+	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F4.txt"));
+	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F5.txt"));
+	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F6.txt"));
+	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
+	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
 
 
 	
@@ -107,18 +36,35 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->ZWriteOn = false;
 	MyScratch->Clear();
 	totalTime += DeltaTime;
-	
+	animTimer += DeltaTime;
 
-	MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, RGB{ 0,255,255,255 }, RGB{ 54,32,255,255 }, RGB{ 0,0,0,255 }, RGB{ 0,0,0,255 });
+	int FULL_VAL = (int)(abs(sin(totalTime)) * 255);
+	int FULL_VAL2 = (int)(abs(cos(totalTime))*255);
+	MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, RGB{ FULL_VAL2/2,FULL_VAL,FULL_VAL,255 }, RGB{ 54,32,FULL_VAL2,255 }, RGB{ 0,0,0,255 }, RGB{ 0,0,0,255 });
 	//DrawBasics(DeltaTime);
 
 	MyScratch->MeshColor = { 255,255,255,255 };
 
-	MyScratch->SetCameraFOV(90);
-	MyScratch->SetCamera(vec3d{ 0.0f, -0.0f, -6.0f }, vec3d{ 0.0f, 0.0f, 2.0f });
-
-	MyScratch->DrawMesh(LoadedMesh, vec3d{0.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime*2.0f,0}, vec3d{1.2,1.2,1.2},false);
 	
+	MyScratch->SetCamera(vec3d{ 0.0f, -0.9f, -7.5f }, vec3d{ 0.0f, 0.1f, 2.0f });
+	MyScratch->SetCameraFOV(50);
+	MyScratch->DrawMesh(LoadedMesh, vec3d{0.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime*2.0f,0}, vec3d{1.2,1.2,1.2},false);
+
+
+	if (animTimer >= 0.05f)
+	{
+		animTimer = 0.0f;
+		cur_frame++;
+		if (cur_frame == 10)cur_frame = 0;
+	}
+	MyScratch->MeshColor = { FULL_VAL,FULL_VAL2,0,255 };
+
+	MyScratch->DrawMesh(MeshSequence[cur_frame], vec3d{ 1.0f, -0.1f,-2.0f }, vec3d{ 1.5f,0.0f,0 }, vec3d{ 1.2,1.2,1.2 }, false);
+	MyScratch->DrawMesh(MeshSequence[cur_frame], vec3d{-1.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime * 2.0f,0}, vec3d{1.2,1.2,1.2}, false);
+
+
+
+	//AccumulatedBlur(0.5f);
 	
 }
 
@@ -169,4 +115,13 @@ void GameTwo::DrawBasics(float DeltaTime)
 
 
 	//LOAD FROM FILE STRING
+}
+
+void GameTwo::AccumulatedBlur(float strength)
+{
+	MyScratch->BlendBuffers(BlurBuffer, 1.0f - strength); //smaller number == more blur!
+	//For crazy SaGa Frontier style mix
+	//MyScratch->AddBuffers(BlurBuffer); //smaller number == more blur!
+	MyScratch->CopyBufferToBuffer(MyScratch->MainSpace, BlurBuffer);
+
 }
