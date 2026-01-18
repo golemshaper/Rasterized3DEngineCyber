@@ -290,6 +290,7 @@ public:
     bool TextureDrawOn = false;
     bool DrawEdges = false;
     bool DrawHighlightEdgeOnly = false;
+    bool DrawUnlit = false;
     bool ZWriteOn = false;
     int ZOffset = 0; //Used for illogical Drawing. Decals, Edge-lights and the like should use this
     float ZOffsetFloat = 0.0f; //Used for illogical Drawing. Decals, Edge-lights and the like should use this

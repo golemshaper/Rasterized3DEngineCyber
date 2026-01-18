@@ -45,10 +45,11 @@ void GameTwo::Tick(float DeltaTime)
 
 	MyScratch->MeshColor = { 255,255,255,255 };
 
-	
+	MyScratch->DrawUnlit = true;
 	MyScratch->SetCamera(vec3d{ 0.0f, -0.9f, -7.5f }, vec3d{ 0.0f, 0.1f, 2.0f });
 	MyScratch->SetCameraFOV(50);
 	MyScratch->DrawMesh(LoadedMesh, vec3d{0.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime*2.0f,0}, vec3d{1.2,1.2,1.2},false);
+	MyScratch->DrawUnlit = false;
 
 
 	if (animTimer >= 0.05f)
@@ -59,8 +60,8 @@ void GameTwo::Tick(float DeltaTime)
 	}
 	MyScratch->MeshColor = { FULL_VAL,FULL_VAL2,0,255 };
 
-	MyScratch->DrawMesh(MeshSequence[cur_frame], vec3d{ 1.0f, -0.1f,-2.0f }, vec3d{ 1.5f,0.0f,0 }, vec3d{ 1.2,1.2,1.2 }, false);
-	MyScratch->DrawMesh(MeshSequence[cur_frame], vec3d{-1.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime * 2.0f,0}, vec3d{1.2,1.2,1.2}, false);
+	MyScratch->DrawMesh(MeshSequence[cur_frame], vec3d{ 1.0f, -0.1f,-2.0f }, vec3d{ 1.5f,0.0f,0 }, vec3d{ 1.2,1.2,1.2 }, true);
+	MyScratch->DrawMesh(MeshSequence[cur_frame], vec3d{-1.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime * 2.0f,0}, vec3d{1.2,1.2,1.2}, true);
 
 
 

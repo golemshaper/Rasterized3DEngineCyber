@@ -1580,7 +1580,14 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
     for (auto& triProjected : vecTrianglesToRaster)
     {
         //dumb fog
-        ZFog += 4.0f/vecTrianglesToRaster.size() * 0.2f;
+        if (!DrawUnlit)
+        {
+            ZFog += 4.0f / vecTrianglesToRaster.size() * 0.2f;
+        }
+        else
+        {
+            ZFog = 1.0f;
+        }
 
         //STANDARD RAINBOW COLOR TRIS
        /* Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {255 * ZFog,0,0,255} };
@@ -1593,7 +1600,7 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         Vertex p2 = { triProjected.p[2].x, triProjected.p[2].y, {255, 255, ZFog,255} };*/
 
 
-        //Rainbow tinted + fog (divided by 2 to bring down brightness)
+        //Rainbow tinted + fog (divided by 75% to bring down brightness)
         int R = MeshColor.r * ZFog * 0.75f;
         int G = MeshColor.g * ZFog * 0.75f;
         int B = MeshColor.b * ZFog * 0.75f;
