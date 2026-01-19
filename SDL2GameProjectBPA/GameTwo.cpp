@@ -75,7 +75,7 @@ void GameTwo::Tick(float DeltaTime)
 		screenshot_fire_once = true;
 		RGB ScanLineColor = { 0,0,16,255 };
 		RGB ScanLineColor2 = { 18,0,0,255 };
-
+		//TODO: Make a turntable runder function and render out an image sequence for this animation!
 		WriteBMP_ScaledWithScanlines("C:/tmp/output.bmp", MyScratch->MainSpace, SCREEN_X, SCREEN_Y,4, ScanLineColor, ScanLineColor2);
 	}
 }
