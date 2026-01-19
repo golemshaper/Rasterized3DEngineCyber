@@ -76,7 +76,7 @@ void GameTwo::Tick(float DeltaTime)
 		RGB ScanLineColor = { 0,0,16,255 };
 		RGB ScanLineColor2 = { 18,0,0,255 };
 
-		WriteBMP_ScaledWithScanlines("C:/tmp/output.bmp", MyScratch->MainSpace, SCREEN_X, SCREEN_Y,6, ScanLineColor, ScanLineColor2);
+		WriteBMP_ScaledWithScanlines("C:/tmp/output.bmp", MyScratch->MainSpace, SCREEN_X, SCREEN_Y,4, ScanLineColor, ScanLineColor2);
 	}
 }
 

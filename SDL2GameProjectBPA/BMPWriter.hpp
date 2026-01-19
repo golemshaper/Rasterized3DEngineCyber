@@ -240,29 +240,39 @@ inline bool WriteBMP_ScaledWithScanlines(
 
     uint8_t* row = new uint8_t[rowSize];
 
+    // IMPORTANT:
+    // Scanline/dither logic must run in *scaled* space
     bool ScanLineOn = false;
     int ColorChangeTwo = 0;
-
-    // We iterate over the *output* rows (scaled)
+    int CountXAmount = 0;
     for (int yOut = outH - 1; yOut >= 0; --yOut)
     {
         uint8_t* out = row;
 
-        // Map scaled Y back to original Y
+        // Scaled Y → source Y
         int srcY = yOut / scale;
 
-        // Apply your scanline toggling logic
-        ScanLineOn = !ScanLineOn;
+        // Toggle per scaled row
+       
+        CountXAmount++;
+        if (CountXAmount >= scale * 2)
+        {
+            CountXAmount = 0;
+            ScanLineOn = !ScanLineOn;
+
+        }
         ColorChangeTwo++;
 
         for (int xOut = 0; xOut < outW; ++xOut)
         {
+           
+
             int srcX = xOut / scale;
             int index = srcY * width + srcX;
 
             RGB color = pixels[index];
 
-            // Per-pixel scanline toggle
+            // Toggle per scaled pixel
             ScanLineOn = !ScanLineOn;
 
             if (ScanLineOn)
@@ -275,7 +285,6 @@ inline bool WriteBMP_ScaledWithScanlines(
                     ColorChangeTwo = 0;
                 }
 
-                // Apply your dither
                 color.r += LocalColor.r;
                 color.g += LocalColor.g;
                 color.b += LocalColor.b;
