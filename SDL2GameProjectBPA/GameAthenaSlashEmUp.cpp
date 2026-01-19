@@ -122,7 +122,7 @@ void GameAthenaSlashEmUp::Tick(float DeltaTime)
 
 void GameAthenaSlashEmUp::TitleScreenTick(float DeltaTime)
 {
-
+    //TITLE SCREEN
     //SETUP
     totalTime += DeltaTime;
     MyScratch->Clear(RGB{ 0,2,8 });
@@ -174,7 +174,14 @@ void GameAthenaSlashEmUp::TitleScreenTick(float DeltaTime)
 
 void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 {
-
+    //GAME MODE~
+    //----------------------
+    //MOUSE USING SDL
+    //----------------------
+    float mouseX, mouseY;
+    Uint32 buttons = SDL_GetMouseState(&mouseX, &mouseY);
+    //Mesh loading tool
+    MonkeyMesh monkeymesher;
     //SPRITE (PLEASE MOVE THIS TO SOME KIND OF SPRITE HEADER)
     RGB Smile_RGB[64] = {
         // Row 0
@@ -195,41 +202,31 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         {0,0,0}, {0,0,0}, {255,255,0}, {255,255,0}, {255,255,0}, {255,255,0}, {0,0,0}, {0,0,0}
     };
 
-    //MAIN GAME HERE...
-    //Count and clear
+    //Real Sprite
+    Sprite Smile_Sprite = { Smile_RGB, 8,8 };
+    //----------------------
+    //MAIN GAME HERE........
+    //----------------------
+
+    //Count total time
     totalTime += DeltaTime;
-    //canvas
+    //Canvas
     MyScratch->Clear(RGB{ 0,2,8 });
     MyScratch->ClearZBufffer();
     MyScratch->ZWriteOn = true;
-
-    //CAMERA FOV
-    MyScratch->SetCameraFOV(90 + (abs(cos(totalTime * 2.0f)) * 4));
-    MonkeyMesh monkeymesher; //Mesh loading tool
-
-
+    if (drawBuffer == 7)
+    {
+        MyScratch->ZWriteOn = false; //show without depth buffer. Show off 2D z sort
+    }
     //Target List reset
-    ClearTargetableLocAry(TargetableLocations,30);
-
-  
-
+    ClearTargetableLocAry(TargetableLocations,30); //used for targeting enemies
     
-    //MyScratch->DrawSpriteAdd(64, 64, Sprite_Smile, 8, 8);
-    //MyScratch->DrawSprite(angle * 164.0f, 100 + (sin(angle * 5.0f) * 32.0f), Smile_RGB, 8, 8);
+    /* MyScratch->DrawSpriteAdd(64, 64, Smile_RGB, 8, 8);
+    MyScratch->DrawSprite(angle * 164.0f, 100 + (sin(angle * 5.0f) * 32.0f), Smile_RGB, 8, 8);*/
 
-    //Real Sprite
-    Sprite Smile_Sprite = { Smile_RGB, 8,8};
-    
-    //----------------------
-    //MOUSE USING SDL
-    //----------------------
-    float mouseX, mouseY;
-    Uint32 buttons = SDL_GetMouseState(&mouseX, &mouseY);
-
-    //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //BKG Draw
     DrawWorldOneBKG(DeltaTime,mouseX,mouseY);
 
-    //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     //----------------------
     // CAMERA MAIN CAM
@@ -255,6 +252,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //----------------------
     //MESH
     //---------------------- 
+    
     //Monkey
     MyScratch->MeshColor = { 0,0,255,255 };
     MyScratch->DifferDrawMesh(MyScratch->WaveMesh(monkeymesher.GetMonkeyMesh(), 12 * totalTime, 0.2f), vec3d{ 4.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime * 6.0f), }, MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))),true);
@@ -270,7 +268,6 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     {
         MyScratch->MeshColor = { 255,0,0,255 };
     }
-    
     MyScratch->DifferDrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,-1.0f,0.0f }, vec3d{ 1.0f, 0.0f, 0.0f, } + MyScratch->LookAtRotation2D(vec3d{ 0.0f,-1.0f,0.0f }, (player_position * -1) + vec3d{0,0,10}), vec3d{ 2.0f, 2.0f, 2.0f, }, true);
     AddTargetableLOC(vec3d{ 0.0f,-1.0f,0.0f });
 
@@ -281,21 +278,6 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
 //NOTE 1: DifferDrawMesh is a drop-in replacement for the regular DrawMesh function. It'll only draw when DrawSortedDifferedMeshes() is called
 //NOTE 2: use regular DrawMesh() along with  MyScratch->ZOffsetFloat = 10;  Besure to turn the offset off when you are done
-  
-    //if (sin(totalTime*22.0f) > 0)
-    //{
-    //    //crude animation logic
-    //    AthenaFrame = monkeymesher.GetAthenaSwordSlash();
-    //    if (flip_limit_once == false)
-    //    {
-    //        temp_player_flip *= -1.0f;
-    //        flip_limit_once = true;
-    //    }
-    //}
-    //else
-    //{
-    //    flip_limit_once = false;
-    //}
   
     MyScratch->DifferDrawMesh(CurrentAthenaFrame,
         player_position,
@@ -357,10 +339,9 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
 
    
-    //BULLET ARC FX
     MyScratch->MoveMainspaceToExtraBuffer();
     MyScratch->Clear();
-    //Bullets
+    //Bullets (Athena ground add FX
     for (int i = 0; i < bullet_count; ++i)
     {
         bullets[i].z -= (0.02f + i) * DeltaTime;
@@ -376,9 +357,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
         );
 
-
         MyScratch->MeshColor = { (int)abs(sin(totalTime + bullets[i].z * 4.0f) * 255),(int)abs(sin(totalTime + bullets[i].z * 2.0f) * 255),(int)abs(cos(totalTime + bullets[i].z * 4.0f) * 255),255 };
-
 
         //Label on bullets
         vec3d textCoordinates2D = MyScratch->Get2DPointInFromSpace(bullets[i]);
@@ -396,7 +375,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         sm.SetState(State_AthenaAttack);
         MyScratch->Input->ResetToggleDepthKey();
         drawBuffer++;
-        if (drawBuffer > 6)drawBuffer = 0;
+        if (drawBuffer > 7)drawBuffer = 0;
     }
     switch (drawBuffer)
     {
@@ -434,6 +413,11 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         //Textures enabled
         MyScratch->TextureDrawOn = true;
         break;
+    case 7:
+        MyScratch->TextureDrawOn = false;
+        //Textures enabled
+        MyScratch->ZWriteOn = false;//WE WILL CHECK THE DRAW STATE, AND TURN OFF AT TOP OF THIS FUNCTION!
+        break;
     }
    
     DrawHUD(DeltaTime);
@@ -441,10 +425,12 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
 void GameAthenaSlashEmUp::DrawWorldOneBKG(float DeltaTime, float mouseX, float mouseY)
 {
+    //MyScratch->SetCameraFOV(90 + (abs(cos(totalTime * 2.0f)) * 4));
     MonkeyMesh monkeymesher; //Mesh loading tool
     //BKG FX
     NewWaveFXDraw(DeltaTime);
-
+    //CAMERA FOV
+    
     //----------------------
     //CAMERA
     //----------------------
