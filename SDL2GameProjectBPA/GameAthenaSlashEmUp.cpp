@@ -5,6 +5,7 @@
 #include <SDL3/SDL_mouse.h>
 #include "TextSprites.h"
 #include "TextFileReader.h"
+#include "ModelFileParser.h"
 
 void GameAthenaSlashEmUp::Initialize()
 {
@@ -12,16 +13,20 @@ void GameAthenaSlashEmUp::Initialize()
     MyScratch = new DrawScratchSpace();
     MyScratch->Initialize();
     MyScratch->CopyBufferToBuffer(MyScratch->MainSpace, BlurBuffer);
-
     MyTextSprites = new TextSprites();
     Reader = new TextFileReader();
     Reader->ReadText();
+    ModelFileParser parser;
     //STATES (on stack)
     sm.MapState(FirstStateId, [this] {StateMachineHelloWorldTick(); });
-    sm.SetState(FirstStateId);
-    //player attack
+   
+    //PLAYER STATES
+    sm.MapState(State_AthenaIdle, [this] {PlayerIdleState(); });
     sm.MapState(State_AthenaAttack, [this] {PlayerAttackState(); });
-    
+    sm.SetState(State_AthenaIdle);
+
+
+
     //athena body bullets
     for (int i = 0; i < bullet_count; ++i)
     {
@@ -50,7 +55,17 @@ void GameAthenaSlashEmUp::Initialize()
         0.0f
         });
     //Athena animated
-    CurrentAthenaFrame = monkeyMesh.GetAthenaMesh();
+    CurrentAthenaFrame = parser.ParseFromFile("Assets/Athena_F0.txt");
+    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
+    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F1.txt"));
+    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F1.txt"));
+    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F2.txt"));
+    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F3.txt"));
+    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F4.txt"));
+    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F5.txt"));
+    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F6.txt"));
+    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
+    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
     //Setup Game States...
 }
 void GameAthenaSlashEmUp::Tick(float DeltaTime)
@@ -159,23 +174,6 @@ void GameAthenaSlashEmUp::TitleScreenTick(float DeltaTime)
 
 void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 {
-    //MAIN GAME HERE...
-    //Count and clear
-    totalTime += DeltaTime;
-    //canvas
-    MyScratch->Clear(RGB{ 0,2,8 });
-    MyScratch->ClearZBufffer();
-    MyScratch->ZWriteOn = true;
-
-    //CAMERA FOV
-    MyScratch->SetCameraFOV(90 + (abs(cos(totalTime * 2.0f)) * 4));
-
-
-    //Target List reset
-    ClearTargetableLocAry(TargetableLocations,30);
-
-    //BKG FX
-    NewWaveFXDraw(DeltaTime);
 
     //SPRITE (PLEASE MOVE THIS TO SOME KIND OF SPRITE HEADER)
     RGB Smile_RGB[64] = {
@@ -196,6 +194,26 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
         // Row 7
         {0,0,0}, {0,0,0}, {255,255,0}, {255,255,0}, {255,255,0}, {255,255,0}, {0,0,0}, {0,0,0}
     };
+
+    //MAIN GAME HERE...
+    //Count and clear
+    totalTime += DeltaTime;
+    //canvas
+    MyScratch->Clear(RGB{ 0,2,8 });
+    MyScratch->ClearZBufffer();
+    MyScratch->ZWriteOn = true;
+
+    //CAMERA FOV
+    MyScratch->SetCameraFOV(90 + (abs(cos(totalTime * 2.0f)) * 4));
+    MonkeyMesh monkeymesher; //Mesh loading tool
+
+
+    //Target List reset
+    ClearTargetableLocAry(TargetableLocations,30);
+
+  
+
+    
     //MyScratch->DrawSpriteAdd(64, 64, Sprite_Smile, 8, 8);
     //MyScratch->DrawSprite(angle * 164.0f, 100 + (sin(angle * 5.0f) * 32.0f), Smile_RGB, 8, 8);
 
@@ -207,84 +225,11 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //----------------------
     float mouseX, mouseY;
     Uint32 buttons = SDL_GetMouseState(&mouseX, &mouseY);
-    //----------------------
-    //CAMERA
-    //----------------------
-    MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f }, vec3d{ 0.0f,1.0f, 1.0f });  //By calling multiple SetCamera calls during drawing, you can make things like a skybox, that don't move, but follow the rest of the worlds rotation!
-    
-    //SKY FX___
-    MyScratch->SetFade({ 0,0,0,0 }, { 0,0,0,0 }, { 0,64,64,255 }, { 35,0,164,255 }, sin(totalTime));
-   
-    LightningFX(lightning_phase, lightning);
-    LightningFX(lightning_phase+3, lightning*1.5f);
-    lightning += DeltaTime;
-    if (lightning >= 2.5f)
-    {
-        lightning = 0.0f;
-        lightning_phase++;
-    }
-    //SKY FX___
 
+    //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    DrawWorldOneBKG(DeltaTime,mouseX,mouseY);
 
-    //----------------------
-    //MESH
-    //----------------------
-    MyScratch->MeshColor = { 255,255,255,255 };
-    MonkeyMesh monkeymesher; //Mesh loading tool
-
-    //----------------------
-    //ENVIRONMENT
-    //----------------------
-    MyScratch->DrawVerticies = sin(totalTime * 8.0f) < 0.0f; //Results in true or false
-    //----------------------
-    //Edges
-    //----------------------
-    MyScratch->DrawEdges = cos(totalTime * 8.0f) < 0.0f; //Results in true or false
-    MyScratch->EdgeBrightness = (int)((abs(sin(totalTime)) + 0.5f) * 222);
-    float SinMouseX = sin(mouseX * 0.01f) * 0.01f;
-    float CosMouseY = cos(mouseY * 0.01f) * 0.01f;
-    //----------------------
-    //Ground
-    //----------------------
-    MyScratch->MeshColor = {
-        (int)((abs(sin(totalTime)) + 0.5f) * 155),
-        (int)((abs(cos(totalTime * 2)) + 0.5f) * 44),
-        (int)((abs(sin(totalTime * 4)) + 0.5f) * 55),
-        255
-    };
-    MyScratch->SetCamera(vec3d{ 0.0f, -8.0f, -3.5f }, vec3d{ (sin(mouseX * 0.01f) * 0.1f) + cos(totalTime) * 0.01f + SinMouseX,2 - sin(totalTime) * 0.01f + CosMouseY, 1.0f });
-   
-    //----------------------
-    //Terrain
-    //----------------------
-  
-    MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ player_position.x * -0.5f,0.0f, -4 }, vec3d{ totalTime, 0.0, 0.0, }, vec3d{ 15.0, 4.0, 4.0, });
-    MyScratch->DrawEdges = false;
-    MyScratch->DrawVerticies = false;
-    //----------------------
-    //Sky
-    //----------------------
-    MyScratch->MeshColor = {
-        (int)((abs(sin(totalTime)) + 0.5f) * 2),
-        (int)((abs(cos(totalTime * 2)) + 0.5f) * 2),
-        (int)((abs(sin(totalTime * 4)) + 0.5f) * 155),
-        255
-    };
-
-
-    MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ 0.0f,-5.0f, 12 }, vec3d{ -totalTime, 0.0, 0.0, }, vec3d{ 12.0, 4.0, 4.0, });
-    //teapot
-    MyScratch->MeshColor = { 255,255,255,255 };
-    MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f }, vec3d{ 0.0f,1.0f, 1.0f });  //By calling multiple SetCamera calls during drawing, you can make things like a skybox, that don't move, but follow the rest of the worlds rotation!
-    MyScratch->DrawVerticies = true;
-    MyScratch->DrawMesh(monkeymesher.GetTeapotMesh(), vec3d{ (sinf(totalTime * 4.0f) * 0.2f) - 1.12f,0.5f,2 }, vec3d{ 1.0, 1.0, totalTime, }, vec3d{ 1,1,1 });
-    MyScratch->DrawVerticies = false;
-    //morphing cube
-     //MORPH TEST:
-    Mesh morph = MyScratch->MorphMesh(monkeymesher.GetPyrimidBoxMorph0(), monkeymesher.GetPyrimidBoxMorph(),abs(sin(totalTime)));
-    MyScratch->DrawMesh(morph, vec3d{ 2.0f, 0.0f,0.0f }, vec3d{ 1.5f,0,0 }, vec3d{ 0.25f,0.25f,0.25f });
-
-    MyScratch->PushBackDepthBuffer(240); //Push back so we don't clip the actors
+    //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     //----------------------
     // CAMERA MAIN CAM
@@ -494,6 +439,89 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     DrawHUD(DeltaTime);
 }
 
+void GameAthenaSlashEmUp::DrawWorldOneBKG(float DeltaTime, float mouseX, float mouseY)
+{
+    MonkeyMesh monkeymesher; //Mesh loading tool
+    //BKG FX
+    NewWaveFXDraw(DeltaTime);
+
+    //----------------------
+    //CAMERA
+    //----------------------
+    MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f }, vec3d{ 0.0f,1.0f, 1.0f });  //By calling multiple SetCamera calls during drawing, you can make things like a skybox, that don't move, but follow the rest of the worlds rotation!
+
+    //SKY FX___
+    MyScratch->SetFade({ 0,0,0,0 }, { 0,0,0,0 }, { 0,64,64,255 }, { 35,0,164,255 }, sin(totalTime));
+
+    LightningFX(lightning_phase, lightning);
+    LightningFX(lightning_phase + 3, lightning * 1.5f);
+    lightning += DeltaTime;
+    if (lightning >= 2.5f)
+    {
+        lightning = 0.0f;
+        lightning_phase++;
+    }
+    //SKY FX___
+
+
+    //----------------------
+    //MESH
+    //----------------------
+    MyScratch->MeshColor = { 255,255,255,255 };
+
+    //----------------------
+    //ENVIRONMENT
+    //----------------------
+    MyScratch->DrawVerticies = sin(totalTime * 8.0f) < 0.0f; //Results in true or false
+    //----------------------
+    //Edges
+    //----------------------
+    MyScratch->DrawEdges = cos(totalTime * 8.0f) < 0.0f; //Results in true or false
+    MyScratch->EdgeBrightness = (int)((abs(sin(totalTime)) + 0.5f) * 222);
+    float SinMouseX = sin(mouseX * 0.01f) * 0.01f;
+    float CosMouseY = cos(mouseY * 0.01f) * 0.01f;
+    //----------------------
+    //Ground
+    //----------------------
+    MyScratch->MeshColor = {
+        (int)((abs(sin(totalTime)) + 0.5f) * 155),
+        (int)((abs(cos(totalTime * 2)) + 0.5f) * 44),
+        (int)((abs(sin(totalTime * 4)) + 0.5f) * 55),
+        255
+    };
+    MyScratch->SetCamera(vec3d{ 0.0f, -8.0f, -3.5f }, vec3d{ (sin(mouseX * 0.01f) * 0.1f) + cos(totalTime) * 0.01f + SinMouseX,2 - sin(totalTime) * 0.01f + CosMouseY, 1.0f });
+
+    //----------------------
+    //Terrain
+    //----------------------
+
+    MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ player_position.x * -0.5f,0.0f, -4 }, vec3d{ totalTime, 0.0, 0.0, }, vec3d{ 15.0, 4.0, 4.0, });
+    MyScratch->DrawEdges = false;
+    MyScratch->DrawVerticies = false;
+    //----------------------
+    //Sky
+    //----------------------
+    MyScratch->MeshColor = {
+        (int)((abs(sin(totalTime)) + 0.5f) * 2),
+        (int)((abs(cos(totalTime * 2)) + 0.5f) * 2),
+        (int)((abs(sin(totalTime * 4)) + 0.5f) * 155),
+        255
+    };
+
+    MyScratch->DrawMesh(monkeymesher.GetTerrainBall(), vec3d{ 0.0f,-5.0f, 12 }, vec3d{ -totalTime, 0.0, 0.0, }, vec3d{ 12.0, 4.0, 4.0, });
+    //teapot
+    MyScratch->MeshColor = { 255,255,255,255 };
+    MyScratch->SetCamera(vec3d{ 0.0f, -1.0f, -4.0f }, vec3d{ 0.0f,1.0f, 1.0f });  //By calling multiple SetCamera calls during drawing, you can make things like a skybox, that don't move, but follow the rest of the worlds rotation!
+    MyScratch->DrawVerticies = true;
+    MyScratch->DrawMesh(monkeymesher.GetTeapotMesh(), vec3d{ (sinf(totalTime * 4.0f) * 0.2f) - 1.12f,0.5f,2 }, vec3d{ 1.0, 1.0, totalTime, }, vec3d{ 1,1,1 });
+    MyScratch->DrawVerticies = false;
+    //morphing cube
+     //MORPH TEST:
+    Mesh morph = MyScratch->MorphMesh(monkeymesher.GetPyrimidBoxMorph0(), monkeymesher.GetPyrimidBoxMorph(), abs(sin(totalTime)));
+    MyScratch->DrawMesh(morph, vec3d{ 2.0f, 0.0f,0.0f }, vec3d{ 1.5f,0,0 }, vec3d{ 0.25f,0.25f,0.25f });
+
+    MyScratch->PushBackDepthBuffer(240); //Push back so we don't clip the actors
+}
 
 void GameAthenaSlashEmUp::ReadNewText(const char* input)
 {
@@ -576,7 +604,7 @@ void GameAthenaSlashEmUp::LightningFX(int phase, float progress)
 {
     if (progress <= 0.02f)
     {
-        MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y/2, RGB{ 255,255,0,64 }, RGB{ 255,255,255,64 }, RGB{ 255,255,255,0 }, RGB{ 255,255,0,0 });
+        MyScratch->DrawRectangle(0, 0, SCREEN_X, (int)SCREEN_Y*0.75f, RGB{ 255,255,0,64 }, RGB{ 255,255,255,64 }, RGB{ 255,255,255,0 }, RGB{ 255,255,0,0 });
     }
     const int total_verts = 23;
     //const int total_rand = 16;
@@ -911,41 +939,26 @@ void GameAthenaSlashEmUp::StateMachineHelloWorldTick()
 
 void GameAthenaSlashEmUp::PlayerIdleState()
 {
+    //TODO: Set rotation of player in the way it currently works inside of this state machine
+    if (MyScratch->Input->GetFireOneHold())
+    {
+        sm.SetState(State_AthenaAttack);
+    }
 }
 
 void GameAthenaSlashEmUp::PlayerAttackState()
 {
-    //Change player animation frame
-    if (sm.TimeInState >= 0.05f)
+    if (sm.TimeInState >= 0.035f)
     {
-        sm.TimeInState = 0.0f; //lie about current time to reset animation clock
-        MonkeyMesh monkeyMesh;
-        switch (sm.SubstateValue0)
-        {
-        default:
-            break;
-        case 0:
-            CurrentAthenaFrame = monkeyMesh.GetAthenaSwordReady();
-
-            break;
-
-        case 2:
-            CurrentAthenaFrame = monkeyMesh.GetAthenaSwordSlash();
-
-            break;
-        case 3:
-            CurrentAthenaFrame = monkeyMesh.AthenaSwordSlashEnd();
-            break;
-        case 4:
-            CurrentAthenaFrame = monkeyMesh.AthenaSwordSlashEnd();
-            break;
-        case 5:
-            CurrentAthenaFrame = monkeyMesh.GetAthenaMesh();
-            sm.SetState(State_AthenaIdle);
-            break;
-        }
+        sm.TimeInState = 0.0f;
         sm.SubstateValue0++;
-
+        
+        if (sm.SubstateValue0 == 10)
+        {
+            sm.SubstateValue0 = 0;
+            sm.SetState(State_AthenaIdle);
+        }
+        CurrentAthenaFrame = PlayerMeshSequence[sm.SubstateValue0];
     }
 }
 

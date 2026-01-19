@@ -70,6 +70,8 @@ void InputWraper::Tick(float DeltaTime)
         toggleCooldown = 0.2f;
         zDepthDrawOn = !zDepthDrawOn;
     }
+    //Fire one held
+    inputFireOneHeld = keyboard[SDL_SCANCODE_X] || keyboard[SDL_SCANCODE_K];
     
 }
 
@@ -91,6 +93,11 @@ bool InputWraper::GetToggleDepthKey()
 void InputWraper::ResetToggleDepthKey()
 {
     zDepthDrawOn = false;
+}
+
+bool InputWraper::GetFireOneHold()
+{
+    return inputFireOneHeld;
 }
 
 float InputWraper::Lerp(float a, float b, float c)

@@ -12,7 +12,7 @@ public:
 
 	float GameSpeed = 1.0f;
 	//Current game mode
-	int mode = 0;
+	int mode = 1;
 	int drawBuffer = 0;
 	bool DEBUG_DrawColliders = true;
 
@@ -63,6 +63,8 @@ public:
 	void Tick(float DeltaTime);
 	void TitleScreenTick(float DeltaTime);
 	void GameModeTick(float DeltaTime);
+	void DrawWorldOneBKG(float DeltaTime,float mouseX, float mouseY);
+
 	void ReadNewText(const char* input); //call new text
 	const char* RequestedText = "Intro";
 	void TextBoxDraw(const char* input);
@@ -119,6 +121,7 @@ public:
 	std::vector<Actor> AllActors;
 	Stats PlayerStats;
 	int PlayerID = -1;
+	std::vector<Mesh> PlayerMeshSequence;
 	int MonkeyID = -1;
 	int TeaPotID = -1;
 	float temp_player_flip = 1.0f; //temp until animation system added
