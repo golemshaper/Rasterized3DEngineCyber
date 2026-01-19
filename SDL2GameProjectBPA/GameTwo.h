@@ -12,5 +12,7 @@ public:
 	int cur_frame = 0;
 	float animTimer = 0.0f;
 	void AccumulatedBlur(float strength);
+
+	bool screenshot_fire_once = false;
 };
 

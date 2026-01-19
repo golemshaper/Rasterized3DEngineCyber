@@ -19,6 +19,7 @@ private:
 	float toggleCooldown = 0.0f;
 	bool zDepthDrawOn = false;
 	bool inputFireOneHeld = false;
+
 	float Lerp(float a, float b, float c);
 };
 

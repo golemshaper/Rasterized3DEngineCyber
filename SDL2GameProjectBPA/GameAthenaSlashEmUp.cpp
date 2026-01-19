@@ -164,12 +164,6 @@ void GameAthenaSlashEmUp::TitleScreenTick(float DeltaTime)
         //reset working float
     }
     AccumulatedBlur(0.70f);
-    /*TextBoxDraw("Hello world! ");*/
-
-
-   
-
-
 }
 
 void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)

@@ -3,6 +3,7 @@
 #include <string>
 
 #include "ModelFileParser.h"
+#include "BMPWriter.hpp"
 
 void GameTwo::Initialize()
 {
@@ -27,6 +28,9 @@ void GameTwo::Initialize()
 	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F6.txt"));
 	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
 	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
+
+
+
 
 
 	
@@ -66,7 +70,11 @@ void GameTwo::Tick(float DeltaTime)
 
 
 	//AccumulatedBlur(0.5f);
-	
+	if (!screenshot_fire_once)
+	{
+		screenshot_fire_once = true;
+		WriteBMP("C:/tmp/output.bmp", MyScratch->MainSpace, SCREEN_X, SCREEN_Y);
+	}
 }
 
 void GameTwo::DrawBasics(float DeltaTime)
