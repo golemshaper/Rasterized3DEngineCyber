@@ -3,6 +3,15 @@
 #include <cstdio>
 #include "DrawScratchSpace.h"
 
+
+//  USE 
+// 
+// 
+// 
+// WriteBMP("C:/tmp/output.bmp", MyScratch->MainSpace, SCREEN_X, SCREEN_Y);
+// 
+// 
+// 
 // --- BMP STRUCTS -------------------------------------------------------------
 
 #pragma pack(push, 1)
@@ -85,6 +94,208 @@ inline bool WriteBMP(const char* filename, const RGB* pixels, int width, int hei
         }
 
         // Padding bytes
+        for (int i = 0; i < padding; i++)
+            *out++ = 0;
+
+        fwrite(row, rowSize, 1, f);
+    }
+
+    delete[] row;
+    fclose(f);
+    return true;
+}
+
+//--
+
+inline bool WriteBMP_WithScanlines(
+    const char* filename,
+    const RGB* pixels,
+    int width,
+    int height,
+    RGB ScanLineColor,
+    RGB ScanLineColor2)
+{
+    if (!pixels || width <= 0 || height <= 0)
+        return false;
+
+    const int bytesPerPixel = 3;
+    const int unpaddedRow = width * bytesPerPixel;
+    const int padding = (4 - (unpaddedRow % 4)) % 4;
+    const int rowSize = unpaddedRow + padding;
+    const int dataSize = rowSize * height;
+
+    BMPHeader bmp;
+    DIBHeader dib;
+
+    dib.biWidth = width;
+    dib.biHeight = height;
+    dib.biSizeImage = dataSize;
+
+    bmp.bfSize = bmp.bfOffBits + dataSize;
+
+    FILE* f = nullptr;
+    if (fopen_s(&f, filename, "wb") != 0 || !f)
+        return false;
+
+    fwrite(&bmp, sizeof(bmp), 1, f);
+    fwrite(&dib, sizeof(dib), 1, f);
+
+    uint8_t* row = new uint8_t[rowSize];
+
+    bool ScanLineOn = false;
+    int ColorChangeTwo = 0;
+
+    for (int y = height - 1; y >= 0; --y)
+    {
+        ScanLineOn = !ScanLineOn;
+        ColorChangeTwo++;
+
+        uint8_t* out = row;
+
+        for (int x = 0; x < width; ++x)
+        {
+            ScanLineOn = !ScanLineOn;
+
+            int index = y * width + x;
+            RGB color = pixels[index];
+
+            if (ScanLineOn)
+            {
+                RGB LocalColor = ScanLineColor;
+
+                if (ColorChangeTwo >= 2)
+                {
+                    LocalColor = ScanLineColor2;
+                    ColorChangeTwo = 0;
+                }
+
+                // Apply your dither
+                color.r += LocalColor.r;
+                color.g += LocalColor.g;
+                color.b += LocalColor.b;
+            }
+
+            // Clamp
+            if (color.r > 255) color.r = 255;
+            if (color.g > 255) color.g = 255;
+            if (color.b > 255) color.b = 255;
+            if (color.r < 0)   color.r = 0;
+            if (color.g < 0)   color.g = 0;
+            if (color.b < 0)   color.b = 0;
+
+            // Write BGR
+            *out++ = (uint8_t)color.b;
+            *out++ = (uint8_t)color.g;
+            *out++ = (uint8_t)color.r;
+        }
+
+        // Padding
+        for (int i = 0; i < padding; i++)
+            *out++ = 0;
+
+        fwrite(row, rowSize, 1, f);
+    }
+
+    delete[] row;
+    fclose(f);
+    return true;
+}
+
+inline bool WriteBMP_ScaledWithScanlines(
+    const char* filename,
+    const RGB* pixels,
+    int width,
+    int height,
+    int scale,
+    RGB ScanLineColor,
+    RGB ScanLineColor2)
+{
+    if (!pixels || width <= 0 || height <= 0 || scale <= 0)
+        return false;
+
+    const int outW = width * scale;
+    const int outH = height * scale;
+
+    const int bytesPerPixel = 3;
+    const int unpaddedRow = outW * bytesPerPixel;
+    const int padding = (4 - (unpaddedRow % 4)) % 4;
+    const int rowSize = unpaddedRow + padding;
+    const int dataSize = rowSize * outH;
+
+    BMPHeader bmp;
+    DIBHeader dib;
+
+    dib.biWidth = outW;
+    dib.biHeight = outH;
+    dib.biSizeImage = dataSize;
+
+    bmp.bfSize = bmp.bfOffBits + dataSize;
+
+    FILE* f = nullptr;
+    if (fopen_s(&f, filename, "wb") != 0 || !f)
+        return false;
+
+    fwrite(&bmp, sizeof(bmp), 1, f);
+    fwrite(&dib, sizeof(dib), 1, f);
+
+    uint8_t* row = new uint8_t[rowSize];
+
+    bool ScanLineOn = false;
+    int ColorChangeTwo = 0;
+
+    // We iterate over the *output* rows (scaled)
+    for (int yOut = outH - 1; yOut >= 0; --yOut)
+    {
+        uint8_t* out = row;
+
+        // Map scaled Y back to original Y
+        int srcY = yOut / scale;
+
+        // Apply your scanline toggling logic
+        ScanLineOn = !ScanLineOn;
+        ColorChangeTwo++;
+
+        for (int xOut = 0; xOut < outW; ++xOut)
+        {
+            int srcX = xOut / scale;
+            int index = srcY * width + srcX;
+
+            RGB color = pixels[index];
+
+            // Per-pixel scanline toggle
+            ScanLineOn = !ScanLineOn;
+
+            if (ScanLineOn)
+            {
+                RGB LocalColor = ScanLineColor;
+
+                if (ColorChangeTwo >= 2)
+                {
+                    LocalColor = ScanLineColor2;
+                    ColorChangeTwo = 0;
+                }
+
+                // Apply your dither
+                color.r += LocalColor.r;
+                color.g += LocalColor.g;
+                color.b += LocalColor.b;
+            }
+
+            // Clamp
+            if (color.r > 255) color.r = 255;
+            if (color.g > 255) color.g = 255;
+            if (color.b > 255) color.b = 255;
+            if (color.r < 0)   color.r = 0;
+            if (color.g < 0)   color.g = 0;
+            if (color.b < 0)   color.b = 0;
+
+            // Write BGR
+            *out++ = (uint8_t)color.b;
+            *out++ = (uint8_t)color.g;
+            *out++ = (uint8_t)color.r;
+        }
+
+        // Padding
         for (int i = 0; i < padding; i++)
             *out++ = 0;
 

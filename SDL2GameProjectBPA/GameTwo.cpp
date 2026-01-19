@@ -73,7 +73,10 @@ void GameTwo::Tick(float DeltaTime)
 	if (!screenshot_fire_once)
 	{
 		screenshot_fire_once = true;
-		WriteBMP("C:/tmp/output.bmp", MyScratch->MainSpace, SCREEN_X, SCREEN_Y);
+		RGB ScanLineColor = { 0,0,16,255 };
+		RGB ScanLineColor2 = { 18,0,0,255 };
+
+		WriteBMP_ScaledWithScanlines("C:/tmp/output.bmp", MyScratch->MainSpace, SCREEN_X, SCREEN_Y,6, ScanLineColor, ScanLineColor2);
 	}
 }
 
