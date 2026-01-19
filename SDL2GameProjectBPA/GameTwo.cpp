@@ -52,7 +52,8 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->DrawUnlit = true;
 	MyScratch->SetCamera(vec3d{ 0.0f, -0.9f, -7.5f }, vec3d{ 0.0f, 0.1f, 2.0f });
 	MyScratch->SetCameraFOV(50);
-	MyScratch->DrawMesh(LoadedMesh, vec3d{0.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime*2.0f,0}, vec3d{1.2,1.2,1.2},true);
+	//MyScratch->DrawMesh(LoadedMesh, vec3d{ 0.0f, -0.1f,-2.0f }, vec3d{ 1.5f,totalTime * 2.0f,0 }, vec3d{ 1.2,1.2,1.2 }, true);
+	MyScratch->DrawMesh(LoadedMesh, vec3d{0.0f, -0.1f,-2.0f}, vec3d{1.5f,0.0f,0}, vec3d{1.2,1.2,1.2},true);
 	MyScratch->DrawUnlit = false;
 
 
@@ -64,8 +65,8 @@ void GameTwo::Tick(float DeltaTime)
 	}
 	MyScratch->MeshColor = { FULL_VAL,FULL_VAL2,0,255 };
 
-	MyScratch->DrawMesh(MeshSequence[cur_frame], vec3d{ 1.0f, -0.1f,-2.0f }, vec3d{ 1.5f,0.0f,0 }, vec3d{ 1.2,1.2,1.2 }, true);
-	MyScratch->DrawMesh(MeshSequence[cur_frame], vec3d{-1.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime * 2.0f,0}, vec3d{1.2,1.2,1.2}, true);
+	//MyScratch->DrawMesh(MeshSequence[cur_frame], vec3d{ 1.0f, -0.1f,-2.0f }, vec3d{ 1.5f,0.0f,0 }, vec3d{ 1.2,1.2,1.2 }, true);
+	//MyScratch->DrawMesh(MeshSequence[cur_frame], vec3d{-1.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime * 2.0f,0}, vec3d{1.2,1.2,1.2}, true);
 
 
 
@@ -76,7 +77,7 @@ void GameTwo::Tick(float DeltaTime)
 		RGB ScanLineColor = { 0,0,16,255 };
 		RGB ScanLineColor2 = { 18,0,0,255 };
 		//TODO: Make a turntable runder function and render out an image sequence for this animation!
-		WriteBMP_ScaledWithScanlines("C:/tmp/output.bmp", MyScratch->MainSpace, SCREEN_X, SCREEN_Y,4, ScanLineColor, ScanLineColor2);
+		WriteBMP_ScaledWithScanlines("C:/tmp/output.bmp", MyScratch->MainSpace, SCREEN_X, SCREEN_Y,6, ScanLineColor, ScanLineColor2);
 	}
 }
 

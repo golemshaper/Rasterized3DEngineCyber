@@ -243,12 +243,17 @@ inline bool WriteBMP_ScaledWithScanlines(
     // IMPORTANT:
     // Scanline/dither logic must run in *scaled* space
     bool ScanLineOn = false;
+    bool TrueScanline = false;
     int ColorChangeTwo = 0;
     int CountXAmount = 0;
+    int divide = 1;
     for (int yOut = outH - 1; yOut >= 0; --yOut)
     {
         uint8_t* out = row;
-
+        if (yOut % 3 == 0)
+        {
+            TrueScanline = !TrueScanline;
+        }
         // Scaled Y → source Y
         int srcY = yOut / scale;
 
@@ -262,7 +267,6 @@ inline bool WriteBMP_ScaledWithScanlines(
 
         }
         ColorChangeTwo++;
-
         for (int xOut = 0; xOut < outW; ++xOut)
         {
            
@@ -299,9 +303,18 @@ inline bool WriteBMP_ScaledWithScanlines(
             if (color.b < 0)   color.b = 0;
 
             // Write BGR
-            *out++ = (uint8_t)color.b;
-            *out++ = (uint8_t)color.g;
-            *out++ = (uint8_t)color.r;
+            
+            if (!TrueScanline)
+            {
+                *out++ = (uint8_t)color.b;
+                *out++ = (uint8_t)color.g;
+                *out++ = (uint8_t)color.r;
+            }
+            else {
+                *out++ = (uint8_t)color.b * 0.75f;
+                *out++ = (uint8_t)color.g * 0.75f;
+                *out++ = (uint8_t)color.r * 0.75f;
+            }
         }
 
         // Padding
