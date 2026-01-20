@@ -1690,9 +1690,14 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         if (DrawHighlightEdgeOnly)
         {
             //Highlight the Game needs to turn this on, and then draw two mesh passes (It auto-turns off after the mesh is done rendering.
-            Vertex light_fx_p0 = { static_cast<int>(triProjected.p[0].x), static_cast<int>(triProjected.p[0].y), RGB{R,G,B}*2 };
-            Vertex light_fx_p1 = { static_cast<int>(triProjected.p[1].x), static_cast<int>(triProjected.p[1].y), RGB{R,G,B}*2 };
-            Vertex light_fx_p2 = { static_cast<int>(triProjected.p[2].x), static_cast<int>(triProjected.p[2].y), RGB{R,G,B}*2 };
+           /* Vertex light_fx_p0 = { static_cast<int>(triProjected.p[0].x), static_cast<int>(triProjected.p[0].y), RGB{R,G,B}*HighlightBrightness };
+            Vertex light_fx_p1 = { static_cast<int>(triProjected.p[1].x), static_cast<int>(triProjected.p[1].y), RGB{R,G,B}*HighlightBrightness };
+            Vertex light_fx_p2 = { static_cast<int>(triProjected.p[2].x), static_cast<int>(triProjected.p[2].y), RGB{R,G,B}*HighlightBrightness };*/
+
+            Vertex light_fx_p0 = { static_cast<int>(triProjected.p[0].x), static_cast<int>(triProjected.p[0].y), p0.color * HighlightBrightness };
+            Vertex light_fx_p1 = { static_cast<int>(triProjected.p[1].x), static_cast<int>(triProjected.p[1].y), p1.color *HighlightBrightness };
+            Vertex light_fx_p2 = { static_cast<int>(triProjected.p[2].x), static_cast<int>(triProjected.p[2].y), p2.color  *HighlightBrightness };
+
             DrawTriangle(light_fx_p0 - 1, light_fx_p1 - 1, light_fx_p2 - 1, DepthValue);
         }
         else

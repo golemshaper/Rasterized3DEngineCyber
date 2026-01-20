@@ -5,6 +5,8 @@ class GameTwo : public Game
 public:
 	void Initialize();
 	void Tick(float DeltaTime);
+	void RenderMovie();
+
 	void DrawBasics(float DeltaTime);
 	Mesh LoadedMesh;
 	RGB BlurBuffer[TOTAL_PIXELS]; //Screen X * Screen Y size

@@ -328,3 +328,123 @@ inline bool WriteBMP_ScaledWithScanlines(
     fclose(f);
     return true;
 }
+
+inline bool WriteBMP_Scaled(
+    const char* filename,
+    const RGB* pixels,
+    int width,
+    int height,
+    int scale,
+    RGB ScanLineColor,
+    RGB ScanLineColor2)
+{
+    if (!pixels || width <= 0 || height <= 0 || scale <= 0)
+        return false;
+
+    const int outW = width * scale;
+    const int outH = height * scale;
+
+    const int bytesPerPixel = 3;
+    const int unpaddedRow = outW * bytesPerPixel;
+    const int padding = (4 - (unpaddedRow % 4)) % 4;
+    const int rowSize = unpaddedRow + padding;
+    const int dataSize = rowSize * outH;
+
+    BMPHeader bmp;
+    DIBHeader dib;
+
+    dib.biWidth = outW;
+    dib.biHeight = outH;
+    dib.biSizeImage = dataSize;
+
+    bmp.bfSize = bmp.bfOffBits + dataSize;
+
+    FILE* f = nullptr;
+    if (fopen_s(&f, filename, "wb") != 0 || !f)
+        return false;
+
+    fwrite(&bmp, sizeof(bmp), 1, f);
+    fwrite(&dib, sizeof(dib), 1, f);
+
+    uint8_t* row = new uint8_t[rowSize];
+
+    // IMPORTANT:
+    // Scanline/dither logic must run in *scaled* space
+    bool ScanLineOn = false;
+    bool TrueScanline = false;
+    int ColorChangeTwo = 0;
+    int CountXAmount = 0;
+    int divide = 1;
+    for (int yOut = outH - 1; yOut >= 0; --yOut)
+    {
+        uint8_t* out = row;
+        if (yOut % 3 == 0)
+        {
+            TrueScanline = !TrueScanline;
+        }
+        // Scaled Y → source Y
+        int srcY = yOut / scale;
+
+        // Toggle per scaled row
+
+        CountXAmount++;
+        if (CountXAmount >= scale * 2)
+        {
+            CountXAmount = 0;
+            ScanLineOn = !ScanLineOn;
+
+        }
+        ColorChangeTwo++;
+        for (int xOut = 0; xOut < outW; ++xOut)
+        {
+
+
+            int srcX = xOut / scale;
+            int index = srcY * width + srcX;
+
+            RGB color = pixels[index];
+
+            // Toggle per scaled pixel
+            ScanLineOn = !ScanLineOn;
+
+            if (ScanLineOn)
+            {
+                RGB LocalColor = ScanLineColor;
+
+                if (ColorChangeTwo >= 2)
+                {
+                    LocalColor = ScanLineColor2;
+                    ColorChangeTwo = 0;
+                }
+
+                color.r += LocalColor.r;
+                color.g += LocalColor.g;
+                color.b += LocalColor.b;
+            }
+
+            // Clamp
+            if (color.r > 255) color.r = 255;
+            if (color.g > 255) color.g = 255;
+            if (color.b > 255) color.b = 255;
+            if (color.r < 0)   color.r = 0;
+            if (color.g < 0)   color.g = 0;
+            if (color.b < 0)   color.b = 0;
+
+            // Write BGR
+
+            *out++ = (uint8_t)color.b;
+            *out++ = (uint8_t)color.g;
+            *out++ = (uint8_t)color.r;
+        }
+
+        // Padding
+        for (int i = 0; i < padding; i++)
+            *out++ = 0;
+
+        fwrite(row, rowSize, 1, f);
+    }
+
+    delete[] row;
+    fclose(f);
+    return true;
+}

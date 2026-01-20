@@ -31,7 +31,7 @@ void GameTwo::Initialize()
 
 
 
-
+	
 
 	
 }
@@ -53,7 +53,8 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->SetCamera(vec3d{ 0.0f, -0.9f, -7.5f }, vec3d{ 0.0f, 0.1f, 2.0f });
 	MyScratch->SetCameraFOV(50);
 	//MyScratch->DrawMesh(LoadedMesh, vec3d{ 0.0f, -0.1f,-2.0f }, vec3d{ 1.5f,totalTime * 2.0f,0 }, vec3d{ 1.2,1.2,1.2 }, true);
-	MyScratch->DrawMesh(LoadedMesh, vec3d{0.0f, -0.1f,-2.0f}, vec3d{1.5f,0.0f,0}, vec3d{1.2,1.2,1.2},true);
+	MyScratch->HighlightBrightness = 2.0f;
+	MyScratch->DrawMesh(LoadedMesh, vec3d{0.0f, -0.1f,-2.0f}, vec3d{1.5f, totalTime*2.0f ,0}, vec3d{1.2,1.2,1.2},true);
 	MyScratch->DrawUnlit = false;
 
 
@@ -73,12 +74,68 @@ void GameTwo::Tick(float DeltaTime)
 	//AccumulatedBlur(0.5f);
 	if (!screenshot_fire_once)
 	{
+
+		//RENDER MOVIE::   
+		//RenderMovie();
+
+
 		screenshot_fire_once = true;
+		//RGB ScanLineColor = { 0,0,16,255 };
+		//RGB ScanLineColor2 = { 18,0,0,255 };
+		////TODO: Make a turntable runder function and render out an image sequence for this animation!
+		////WriteBMP_ScaledWithScanlines("C:/tmp/output.bmp", MyScratch->MainSpace, SCREEN_X, SCREEN_Y,6, ScanLineColor, ScanLineColor2);
+
+		//int screenshotIndex = 12; // whatever you want
+
+		//std::string filename = "C:/tmp/output_" + std::to_string(screenshotIndex) + ".bmp";
+
+		//WriteBMP_ScaledWithScanlines(
+		//	filename.c_str(),
+		//	MyScratch->MainSpace,
+		//	SCREEN_X,
+		//	SCREEN_Y,
+		//	6,
+		//	ScanLineColor,
+		//	ScanLineColor2
+		//);
+
+	}
+}
+
+void GameTwo::RenderMovie()
+{
+	float totalTime = -1.5f;
+	float min = -1.5f;
+	float max = 1.5f*4.0f;
+	int frames = 120;
+	ModelFileParser parser;
+	LoadedMesh = parser.ParseFromFile("Assets/olexa.txt");
+	for (int i = 0; i < frames; ++i)
+	{
+		totalTime = MyScratch->Lerp(min,max,(float)i/(float)frames);
+		MyScratch->MeshColor = { 255,255,255,255 };
+		MyScratch->Clear();
+		int FULL_VAL = (int)(abs(sin(totalTime)) * 255);
+		int FULL_VAL2 = (int)(abs(cos(totalTime)) * 255);
+		//MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, RGB{ FULL_VAL2 / 2,FULL_VAL,FULL_VAL,255 }, RGB{ 54,32,FULL_VAL2,255 }, RGB{ 0,0,0,255 }, RGB{ 0,0,0,255 });
+		MyScratch->DrawMesh(LoadedMesh, vec3d{ 0.0f, -0.1f,-2.0f }, vec3d{ 1.5f, -totalTime ,0 }, vec3d{ 1.2,1.2,1.2 }, false);
+
+		int screenshotIndex = i;
+
+		std::string filename = "C:/tmp/output_" + std::to_string(screenshotIndex) + ".bmp";
 		RGB ScanLineColor = { 0,0,16,255 };
 		RGB ScanLineColor2 = { 18,0,0,255 };
-		//TODO: Make a turntable runder function and render out an image sequence for this animation!
-		WriteBMP_ScaledWithScanlines("C:/tmp/output.bmp", MyScratch->MainSpace, SCREEN_X, SCREEN_Y,6, ScanLineColor, ScanLineColor2);
+		WriteBMP_Scaled(
+			filename.c_str(),
+			MyScratch->MainSpace,
+			SCREEN_X,
+			SCREEN_Y,
+			6,
+			ScanLineColor,
+			ScanLineColor2
+		);
 	}
+
 }
 
 void GameTwo::DrawBasics(float DeltaTime)

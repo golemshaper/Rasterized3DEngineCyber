@@ -287,6 +287,7 @@ public:
     RGB MeshColor = { 255,255,255,255 };
     bool DrawVerticies = false;
     int EdgeBrightness = 255;
+    float HighlightBrightness = 2.0f;
     bool TextureDrawOn = false;
     bool DrawEdges = false;
     bool DrawHighlightEdgeOnly = false;
