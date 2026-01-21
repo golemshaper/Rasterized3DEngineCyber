@@ -499,8 +499,8 @@ void GameAthenaSlashEmUp::DrawWorldOneBKG(float DeltaTime, float mouseX, float m
     MyScratch->DrawVerticies = false;
     //morphing cube
      //MORPH TEST:
-    Mesh morph = MyScratch->MorphMesh(monkeymesher.GetPyrimidBoxMorph0(), monkeymesher.GetPyrimidBoxMorph(), abs(sin(totalTime)));
-    MyScratch->DrawMesh(morph, vec3d{ 2.0f, 0.0f,0.0f }, vec3d{ 1.5f,0,0 }, vec3d{ 0.25f,0.25f,0.25f });
+    /*Mesh morph = MyScratch->MorphMesh(monkeymesher.GetPyrimidBoxMorph0(), monkeymesher.GetPyrimidBoxMorph(), abs(sin(totalTime)));
+    MyScratch->DrawMesh(morph, vec3d{ 2.0f, 0.0f,0.0f }, vec3d{ 1.5f,0,0 }, vec3d{ 0.25f,0.25f,0.25f });*/
 
     MyScratch->PushBackDepthBuffer(240); //Push back so we don't clip the actors
 }

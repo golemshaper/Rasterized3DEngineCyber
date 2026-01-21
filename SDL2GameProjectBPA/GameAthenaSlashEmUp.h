@@ -12,7 +12,7 @@ public:
 
 	float GameSpeed = 1.0f;
 	//Current game mode
-	int mode = 1;
+	int mode = 0;
 	int drawBuffer = 0;
 	bool DEBUG_DrawColliders = true;
 
@@ -108,6 +108,7 @@ public:
 		vec3d offset_rot{ 0,0,0 };
 		bool isAlive = false;
 	};
+	
 	struct Stats {
 		int lvl = 1;
 		int hp = 10;
@@ -116,7 +117,21 @@ public:
 		int def = 1;
 		int exp = 0;
 	};
-	
+	//UNDER CONSIDERATION: DO NOT USE UNTIL THEN
+	struct LocRotScal
+	{
+		vec3d loc{ 0,0,0 };
+		vec3d rot{ 0,0,0 };
+		vec3d scale{ 1,1,1 };
+	};
+	struct Enemy {
+		Stats stats;
+		LocRotScal transform; //for lack of a better name 
+	};
+	//I can either make actors the generic "thing" and make "component" like systems for enemies, or I can make one uber actor with stats and transforms...
+	//DO WHAT IS FUN TO WORK ON!
+	// DECIDE WHAT THAT IS! 
+	// THIS IS NOT A 30+ HOUR GAME!!
 	//--------------------------------------------------------------------------------------------------------------
 	std::vector<Actor> AllActors;
 	Stats PlayerStats;
