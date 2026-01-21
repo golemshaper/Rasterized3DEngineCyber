@@ -12,7 +12,7 @@ public:
 
 	float GameSpeed = 1.0f;
 	//Current game mode
-	int mode = 0;
+	int mode = 1;
 	int drawBuffer = 0;
 	bool DEBUG_DrawColliders = true;
 
@@ -32,6 +32,8 @@ public:
 	int bullet_arcshots_count = 44;
 	vec3d bullet_arcshots[44];
 	vec3d bullet_arcshots_end_target[44];
+	//bool bullet_was_fired[44];
+	int Arc_shot_Max_bullet_loc_Fired = 0;
 	float progress_for_arc_shots=0.0f;
 
 	//actors
@@ -142,6 +144,7 @@ public:
 	float temp_player_flip = 1.0f; //temp until animation system added
 	bool flip_limit_once = false; //temp until animation system added
 	int CreateActor(const Actor& a);
+	void DrawActor(const Actor& a);
 	void DrawActorsFromList(const std::vector<Actor>& actors, bool DrawDifferNow = false);
 
 	bool IsColliding(vec3d a, vec3d b, float radius);

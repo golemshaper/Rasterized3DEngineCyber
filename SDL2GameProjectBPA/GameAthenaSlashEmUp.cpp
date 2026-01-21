@@ -254,7 +254,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->DifferDrawMesh(MyScratch->WaveMesh(monkeymesher.GetMonkeyMesh(), 12 * totalTime, 0.2f), vec3d{ 4.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime * 6.0f), }, MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))),true);
     AddTargetableLOC(vec3d{ 4.0f,0.0f,-0.25f });
 
-    //Alien
+    //Alien (Boy)
     float flash_color_select = sin(totalTime*60.0f);
     if (flash_color_select > 0.0f)
     {
@@ -267,6 +267,24 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->DifferDrawMesh(AlienMesh, vec3d{ 0.0f,-1.0f,0.0f }, vec3d{ 1.75f, 0.0f, 0.0f, } + MyScratch->LookAtRotation2D(vec3d{ 0.0f,-1.0f,0.0f }, (player_position * -1) + vec3d{0,0,10}), vec3d{ 2.0f, 2.0f, 2.0f, }, true);
     AddTargetableLOC(vec3d{ 0.0f,-1.0f,0.0f });
 
+    //DRAW ENEMIES HERE:
+    // 
+    // 
+    // 
+    // USE DrawActor() to draw an actor and make it targetable automatically.
+    // Create a function that makes enemies of X type and adds them as actors, and sets their locations where they should spawn in from
+    // Make a function that moves that cluster of actors (inside of their own list mind!) on to their starting locations from off screen (Arc position)
+    // 
+    // Tick the enemy and have them attempt to leave the screen. Consider giving each actor a state machine! Either have a state machine pool assigned to their ID like a component system,
+    // or just stick it in a class/struct
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
     //Athena
     MyScratch->MeshColor = { (int)abs(sin(totalTime * 4.0f) * 255),(int)abs(sin(totalTime * 2.0f) * 255),(int)abs(cos(totalTime * 4.0f) * 255),255 };
     MovementUpdate(DeltaTime);
@@ -727,24 +745,51 @@ void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
     MonkeyMesh monkeymesher;
     int shotType = 0;
     //bullet_arcshots_count
-    for (int i = 0; i< bullet_arcshots_count; ++i)
+    if (MyScratch->Input->GetFireOneHold())
     {
+        Arc_shot_Max_bullet_loc_Fired++;
+        if (Arc_shot_Max_bullet_loc_Fired > bullet_arcshots_count)
+        {
+            Arc_shot_Max_bullet_loc_Fired = bullet_arcshots_count;
+        }
+    }
+    else
+    {
+        if (Arc_shot_Max_bullet_loc_Fired >= 1)
+        {
+            Arc_shot_Max_bullet_loc_Fired--;
+        }
+        if (Arc_shot_Max_bullet_loc_Fired < 0)
+        {
+            progress_for_arc_shots = 0;
+            Arc_shot_Max_bullet_loc_Fired = 0;
+        }
+    }
+    
+    for (int i = 0; i< Arc_shot_Max_bullet_loc_Fired; ++i)
+    {
+     
+       
         
+
         MyScratch->MeshColor = { (int)abs(sin(totalTime + bullet_arcshots[i].z * 4.0f) * 355),(int)abs(sin(totalTime + bullet_arcshots[i].z * 2.0f) * 355),(int)abs(cos(totalTime + bullet_arcshots[i].z * 4.0f) * 355),255 };
        // MyScratch->MeshColor = { 255,0,255 };
         float offset_time_progress = (progress_for_arc_shots + (i*0.1f));
+        float wrapped = fmod(offset_time_progress, 1.0f);
+        //end calc
+        if (wrapped <= 0.1f)
+        {
+            bullet_arcshots_end_target[i] = end;
+        }
+
+
 
        
 
 
 
-        float wrapped = fmod(offset_time_progress, 1.0f);
 
-        //end calc
-        if (wrapped <=0.1f)
-        {
-            bullet_arcshots_end_target[i] = end;
-        }
+        
         vec3d current_end = bullet_arcshots_end_target[i];
 
 
@@ -753,6 +798,9 @@ void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
         float direction = 1.0f;
         direction = sin(offset_time_progress * 2.0f);
         
+
+        
+
         switch (shotType)
         {
             case 0:
@@ -773,7 +821,10 @@ void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
        
         //collision not needed since we know it collides at progress ==1 at target location... bool collision_result = IsColliding(bullet_arcshots[i], end, 0.5f);
 
-
+        
+        
+        
+    //DRAW BULLET::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         MyScratch->DrawMesh(
             monkeymesher.GetBoxMesh(),
             bullet_arcshots[i],
@@ -785,7 +836,7 @@ void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
 
       //DONT LIKE IT:  AccumulatedBlur(0.25f); //add motion blur only to shots!
 
-
+        //Alphabet
         shotType++;
         if (shotType >= 4)shotType = 0;
         //Label on bullets
@@ -857,6 +908,12 @@ int GameAthenaSlashEmUp::CreateActor(const Actor& a)
 {
     AllActors.push_back(a);
     return static_cast<int>(AllActors.size() - 1);
+}
+
+void GameAthenaSlashEmUp::DrawActor(const Actor& a)
+{
+    MyScratch->DifferDrawMesh(a.m, a.loc, a.rot, a.scale, true);
+    AddTargetableLOC(vec3d{ 0.0f,-1.0f,0.0f });
 }
 
 void GameAthenaSlashEmUp::DrawActorsFromList(const std::vector<Actor>& actors, bool DrawDifferNow)
