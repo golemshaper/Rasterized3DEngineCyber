@@ -393,6 +393,10 @@ void DrawScratchSpace::DrawSquareMultiply(int x, int y, int size, RGB color)
     }
 }
 void DrawScratchSpace::DrawTriangle(Point p0, Point p1, Point p2, RGB color) {
+
+    
+
+
     // Sort points by y-coordinate (ascending)
     if (p1.y < p0.y) std::swap(p0, p1);
     if (p2.y < p0.y) std::swap(p0, p2);

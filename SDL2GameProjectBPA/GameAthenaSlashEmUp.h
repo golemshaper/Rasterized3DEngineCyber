@@ -12,7 +12,7 @@ public:
 
 	float GameSpeed = 1.0f;
 	//Current game mode
-	int mode = 0;
+	int mode = 1;
 	int drawBuffer = 0;
 	bool DEBUG_DrawColliders = true;
 
@@ -134,6 +134,12 @@ public:
 	//you could collide automatically with every actor if you stored their previous safe location prior to moving them, and then loop through, and reset any actors touching
 
 
+
+	//MESHES:
+	Mesh CurrentAthenaFrame;
+	Mesh AlienMesh;
+
+
 	//----------------
 	//Game States
 	//----------------
@@ -142,10 +148,11 @@ public:
 	const int State_AthenaAttack = 2;
 
 	const int NoStateID = -1;
-	Mesh CurrentAthenaFrame;
 	void StateMachineHelloWorldTick();
 	void PlayerIdleState();
 	void PlayerAttackState();
+
+
 
 	//----------------
 	//HUD

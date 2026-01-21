@@ -55,7 +55,6 @@ void GameAthenaSlashEmUp::Initialize()
         0.0f
         });
     //Athena animated
-    CurrentAthenaFrame = parser.ParseFromFile("Assets/Athena_F0.txt");
     PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
     PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F1.txt"));
     PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F1.txt"));
@@ -65,7 +64,10 @@ void GameAthenaSlashEmUp::Initialize()
     PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F5.txt"));
     PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F6.txt"));
     PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
-    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
+    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_Neutral.txt"));
+    CurrentAthenaFrame = parser.ParseFromFile("Assets/Athena_Neutral.txt");
+    AlienMesh = parser.ParseFromFile("Assets/AlienModel.txt");
+
     //Setup Game States...
 }
 void GameAthenaSlashEmUp::Tick(float DeltaTime)
@@ -252,7 +254,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MyScratch->DifferDrawMesh(MyScratch->WaveMesh(monkeymesher.GetMonkeyMesh(), 12 * totalTime, 0.2f), vec3d{ 4.0f,0.0f,-0.25f }, vec3d{ 1.0f, 0.0f, sin(totalTime * 6.0f), }, MyScratch->Lerp(vec3d{ 0.9f,1.2f,0.9f }, vec3d{ 1.2f, 0.9f, 1.2f }, abs(sin(totalTime * 4.0f))),true);
     AddTargetableLOC(vec3d{ 4.0f,0.0f,-0.25f });
 
-    //Boy
+    //Alien
     float flash_color_select = sin(totalTime*60.0f);
     if (flash_color_select > 0.0f)
     {
@@ -262,7 +264,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     {
         MyScratch->MeshColor = { 255,0,0,255 };
     }
-    MyScratch->DifferDrawMesh(monkeymesher.GetBoyMesh(), vec3d{ 0.0f,-1.0f,0.0f }, vec3d{ 1.0f, 0.0f, 0.0f, } + MyScratch->LookAtRotation2D(vec3d{ 0.0f,-1.0f,0.0f }, (player_position * -1) + vec3d{0,0,10}), vec3d{ 2.0f, 2.0f, 2.0f, }, true);
+    MyScratch->DifferDrawMesh(AlienMesh, vec3d{ 0.0f,-1.0f,0.0f }, vec3d{ 1.75f, 0.0f, 0.0f, } + MyScratch->LookAtRotation2D(vec3d{ 0.0f,-1.0f,0.0f }, (player_position * -1) + vec3d{0,0,10}), vec3d{ 2.0f, 2.0f, 2.0f, }, true);
     AddTargetableLOC(vec3d{ 0.0f,-1.0f,0.0f });
 
     //Athena
@@ -936,7 +938,10 @@ void GameAthenaSlashEmUp::PlayerAttackState()
         if (sm.SubstateValue0 == 10)
         {
             sm.SubstateValue0 = 0;
+            CurrentAthenaFrame = PlayerMeshSequence[9];
+
             sm.SetState(State_AthenaIdle);
+            return;
         }
         CurrentAthenaFrame = PlayerMeshSequence[sm.SubstateValue0];
     }

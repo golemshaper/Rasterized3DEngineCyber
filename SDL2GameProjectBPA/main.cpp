@@ -12,8 +12,8 @@
 #include "GameAthenaSlashEmUp.h"
 //
 //Game* TheGame = new Game();
-GameTwo* TheGame = new GameTwo();
-//GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
+//GameTwo* TheGame = new GameTwo();
+GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
 
 
 //For another game example, inherit the base class, and override the Tick function. GameTwo* TheGame = new GameTwo();
@@ -150,8 +150,8 @@ int main(int argc, char* argv[]) {
         std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
         return 1;
     }
-
-    SDL_Window* window = SDL_CreateWindow("CyberAthena", SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+    
+    SDL_Window* window = SDL_CreateWindow("CyberAthena", SCREEN_WIDTH, SCREEN_HEIGHT, 0);  //Instead of 0, use SDL_WINDOW_RESIZABLE  
     if (!window) {
         std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
         SDL_Quit();
