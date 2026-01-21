@@ -125,8 +125,8 @@ public:
 		vec3d scale{ 1,1,1 };
 	};
 	struct Enemy {
-		Stats stats;
-		LocRotScal transform; //for lack of a better name 
+		Stats stats = {};
+		LocRotScal transform = {}; //for lack of a better name 
 	};
 	//I can either make actors the generic "thing" and make "component" like systems for enemies, or I can make one uber actor with stats and transforms...
 	//DO WHAT IS FUN TO WORK ON!
