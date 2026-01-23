@@ -203,6 +203,9 @@ public:
     RGB MainSpace[TOTAL_PIXELS]; //Screen X * Screen Y size
     RGB ExtraBuffer[TOTAL_PIXELS]; //Screen X * Screen Y size
     RGB ZBuffer[TOTAL_PIXELS]; //Screen X * Screen Y size
+
+    RGB* TextureBuffer;
+
     void MoveMainspaceToExtraBuffer();
     void MultiplyBuffers();
     void AddBuffers();

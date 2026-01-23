@@ -2,6 +2,7 @@
 #include <random>
 #include <algorithm>
 #include "TextSprites.h"
+//#include "BMPReader.hpp"
 
 
 void DrawScratchSpace::MoveMainspaceToExtraBuffer()
@@ -161,6 +162,12 @@ void DrawScratchSpace::Initialize()
 {
     Initialize(RGB{ 0,0,0 });
     Input = new InputWraper();
+
+   /*
+   THIS IS HOW WE WILL LOAD TEXTURES LATER!
+   int w = 32, h = 32;
+    RGB* TestTexture = ReadBMP("Assets/HelloBitmap.bmp", w, h);
+    TextureBuffer = TestTexture;*/
 }
 /// <summary>
 /// Only call me once. Use Clear() after if you want to clear the screen buffer
@@ -449,6 +456,12 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
         // Row 7
         {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}
     };
+
+    //const RGB* TestTexture = TextureBuffer;  //USE THE TEXTURE FROM THE TEXTURE BUFFER.
+    //I DISABLED IT, BUT IT CAN BE LOADED FROM THE TEXTURE BUFFER.
+    //I NEED UVs BEFORE I PROCEDE WITH THIS!
+
+
 //TEXTURE PLACEHOLDER
 
 
@@ -532,6 +545,7 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
             float v = Lerp((float)va.v, (float)vb.v, tX);
            
 
+            //RGB textured = SampleTexture(TestTexture, 32, 32, u, v);
             RGB textured = SampleTexture(TestTexture, 8, 8, u, v);
             if (TextureDrawOn) {
 
