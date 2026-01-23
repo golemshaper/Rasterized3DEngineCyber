@@ -714,7 +714,7 @@ void GameAthenaSlashEmUp::MovementUpdate(float DeltaTime)
     vec3d move = (right * MyScratch->Input->GetMovementX()) + (forward * MyScratch->Input->GetMovementY());
     player_position = player_position + move *player_speed* DeltaTime;
     AllActors[PlayerID].loc = AllActors[PlayerID].loc + move * AllActors[PlayerID].speed * DeltaTime;
-    AddTargetableLOC(AllActors[PlayerID].loc); //WARNING, WHEN WE SITCH TO PLAYER ID, THIS WILL ALWAYS BE ON PLAYER!!!
+   // AddTargetableLOC(AllActors[PlayerID].loc); //WARNING, WHEN WE SITCH TO PLAYER ID, THIS WILL ALWAYS BE ON PLAYER!!! (Right now it's the teapot)
 
 
 

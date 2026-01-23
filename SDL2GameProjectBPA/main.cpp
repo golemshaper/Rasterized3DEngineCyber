@@ -8,12 +8,14 @@
 
 #include "DrawScratchSpace.h"
 #include "Game.h"
+#include "GameOne.h"
 #include "GameTwo.h"
 #include "GameAthenaSlashEmUp.h"
 //
 //Game* TheGame = new Game();
 //GameTwo* TheGame = new GameTwo();
-GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
+GameOne* TheGame = new GameOne();
+//GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
 
 
 //For another game example, inherit the base class, and override the Tick function. GameTwo* TheGame = new GameTwo();

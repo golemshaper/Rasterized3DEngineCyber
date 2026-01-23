@@ -39,6 +39,7 @@ void GameTwo::Tick(float DeltaTime)
 {
 	MyScratch->ZWriteOn = false;
 	MyScratch->Clear();
+	MyScratch->ClearZBufffer();
 	totalTime += DeltaTime;
 	animTimer += DeltaTime;
 
@@ -49,7 +50,7 @@ void GameTwo::Tick(float DeltaTime)
 
 	MyScratch->MeshColor = { 255,255,255,255 };
 
-	//MyScratch->DrawUnlit = true;
+	MyScratch->DrawUnlit = true;
 	MyScratch->SetCamera(vec3d{ 0.0f, -0.9f, -7.5f }, vec3d{ 0.0f, 0.1f, 2.0f });
 	MyScratch->SetCameraFOV(50);
 	//MyScratch->DrawMesh(LoadedMesh, vec3d{ 0.0f, -0.1f,-2.0f }, vec3d{ 1.5f,totalTime * 2.0f,0 }, vec3d{ 1.2,1.2,1.2 }, true);
@@ -115,6 +116,7 @@ void GameTwo::RenderMovie()
 		totalTime = MyScratch->Lerp(min,max,(float)i/(float)frames);
 		MyScratch->MeshColor = { 255,255,255,255 };
 		MyScratch->Clear();
+		MyScratch->ClearZBufffer();
 		int FULL_VAL = (int)(abs(sin(totalTime)) * 255);
 		int FULL_VAL2 = (int)(abs(cos(totalTime)) * 255);
 		//MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, RGB{ FULL_VAL2 / 2,FULL_VAL,FULL_VAL,255 }, RGB{ 54,32,FULL_VAL2,255 }, RGB{ 0,0,0,255 }, RGB{ 0,0,0,255 });
@@ -143,6 +145,7 @@ void GameTwo::DrawBasics(float DeltaTime)
 	//Basic example of drawing model to the screen
 	MyScratch->ZWriteOn = false;
 	MyScratch->Clear();
+	MyScratch->ClearZBufffer();
 	totalTime += DeltaTime;
 	MonkeyMesh monkeymesher; //Mesh loading tool
 	MyScratch->MeshColor = { 255,255,255,255 };
