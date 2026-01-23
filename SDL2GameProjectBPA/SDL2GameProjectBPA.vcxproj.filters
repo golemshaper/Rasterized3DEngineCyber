@@ -86,6 +86,9 @@
     <ClInclude Include="GameOne.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BMPReader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Assets\Read.txt" />

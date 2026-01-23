@@ -13,8 +13,8 @@
 #include "GameAthenaSlashEmUp.h"
 //
 //Game* TheGame = new Game();
-//GameTwo* TheGame = new GameTwo();
-GameOne* TheGame = new GameOne();
+GameTwo* TheGame = new GameTwo();
+//GameOne* TheGame = new GameOne();
 //GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
 
 

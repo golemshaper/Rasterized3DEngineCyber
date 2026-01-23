@@ -4,6 +4,7 @@
 
 #include "ModelFileParser.h"
 #include "BMPWriter.hpp"
+#include "BMPReader.hpp"
 
 void GameTwo::Initialize()
 {
@@ -69,7 +70,10 @@ void GameTwo::Tick(float DeltaTime)
 
 	//MyScratch->DrawMesh(MeshSequence[cur_frame], vec3d{ 1.0f, -0.1f,-2.0f }, vec3d{ 1.5f,0.0f,0 }, vec3d{ 1.2,1.2,1.2 }, true);
 	//MyScratch->DrawMesh(MeshSequence[cur_frame], vec3d{-1.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime * 2.0f,0}, vec3d{1.2,1.2,1.2}, true);
-
+	int w = 32, h = 32;
+	RGB* pixels = ReadBMP("Assets/HelloBitmap.bmp", w, h);
+	Sprite MySprite = Sprite{ pixels, w,h };
+	MyScratch->DrawSprite(64, 64, MySprite);
 
 
 	//AccumulatedBlur(0.5f);
