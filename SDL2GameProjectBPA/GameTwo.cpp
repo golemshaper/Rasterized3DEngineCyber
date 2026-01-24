@@ -69,6 +69,7 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->SetCameraFOV(50);
 	//MyScratch->DrawMesh(LoadedMesh, vec3d{ 0.0f, -0.1f,-2.0f }, vec3d{ 1.5f,totalTime * 2.0f,0 }, vec3d{ 1.2,1.2,1.2 }, true);
 	MyScratch->HighlightBrightness = 2.0f;
+
 	MyScratch->DrawMesh(LoadedMesh, vec3d{0.0f, -0.1f,-2.0f}, vec3d{1.5f, totalTime*2.0f ,0}, vec3d{1.2,1.2,1.2},true);
 	MyScratch->DrawUnlit = false;
 
@@ -104,6 +105,12 @@ void GameTwo::Tick(float DeltaTime)
 	MonkeyMesh monkeymesher;
 	MyScratch->TextureBuffer = Image03;
 	MyScratch->TextureDrawOn = true;
+
+	//MyScratch->DrawEdges = true;
+	//MyScratch->DrawVerticies = true;
+	MyScratch->EdgeBrightness = 0.35f;
+
+
 	MyScratch->DrawMesh(LoadedMesh2,vec3d{0,0,0},vec3d{0,totalTime,0},vec3d{1.5f,1.5f,1.5f});
 
 
