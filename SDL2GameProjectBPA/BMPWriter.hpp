@@ -147,9 +147,10 @@ inline bool WriteBMP_WithScanlines(
 
     bmp.bfSize = bmp.bfOffBits + dataSize;
 
-    FILE* f = nullptr;
-    if (fopen_s(&f, filename, "wb") != 0 || !f)
+    FILE* f = portable_fopen2(filename, "rb");
+    if (!f) {
         return false;
+    }
 
     fwrite(&bmp, sizeof(bmp), 1, f);
     fwrite(&dib, sizeof(dib), 1, f);
@@ -245,9 +246,10 @@ inline bool WriteBMP_ScaledWithScanlines(
 
     bmp.bfSize = bmp.bfOffBits + dataSize;
 
-    FILE* f = nullptr;
-    if (fopen_s(&f, filename, "wb") != 0 || !f)
+    FILE* f = portable_fopen2(filename, "rb");
+    if (!f) {
         return false;
+    }
 
     fwrite(&bmp, sizeof(bmp), 1, f);
     fwrite(&dib, sizeof(dib), 1, f);
@@ -373,9 +375,10 @@ inline bool WriteBMP_Scaled(
 
     bmp.bfSize = bmp.bfOffBits + dataSize;
 
-    FILE* f = nullptr;
-    if (fopen_s(&f, filename, "wb") != 0 || !f)
+    FILE* f = portable_fopen2(filename, "rb");
+    if (!f) {
         return false;
+    }
 
     fwrite(&bmp, sizeof(bmp), 1, f);
     fwrite(&dib, sizeof(dib), 1, f);
