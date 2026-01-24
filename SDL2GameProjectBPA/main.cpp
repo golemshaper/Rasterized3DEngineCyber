@@ -11,10 +11,12 @@
 #include "GameOne.h"
 #include "GameTwo.h"
 #include "GameAthenaSlashEmUp.h"
+#include "GameModelViewer.h"
 //
 //Game* TheGame = new Game();
-GameTwo* TheGame = new GameTwo();
+//GameTwo* TheGame = new GameTwo();
 //GameOne* TheGame = new GameOne();
+GameModelViewer* TheGame = new GameModelViewer();
 //GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
 
 

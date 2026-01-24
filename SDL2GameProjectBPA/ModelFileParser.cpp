@@ -230,6 +230,19 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 		triangle tri = triangle{ v1.x, v1.y,  v1.z,   v2.x, v2.y, v2.z,   v3.x,  v3.y, v3.z };
 		
 		//UVs
+		/*if (hasUVs)
+		{
+			int uxID = (int)id_holder_not_real_uvs[i].x;
+			int uyID = (int)id_holder_not_real_uvs[i].y;
+			int uzID = (int)id_holder_not_real_uvs[i].z;
+
+			vec2d uv1 = uv_vector2s[uxID];
+			vec2d uv2 = uv_vector2s[uyID];
+			vec2d uv3 = uv_vector2s[uzID];
+			tri.uv[0] = uv1;
+			tri.uv[1] = uv2;
+			tri.uv[2] = uv3;
+		}*/
 		if (hasUVs)
 		{
 			int uxID = (int)id_holder_not_real_uvs[i].x;
@@ -239,6 +252,12 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 			vec2d uv1 = uv_vector2s[uxID];
 			vec2d uv2 = uv_vector2s[uyID];
 			vec2d uv3 = uv_vector2s[uzID];
+
+			// Flip V (Y) to match coordinate system
+			uv1.v = 1.0f - uv1.v;
+			uv2.v = 1.0f - uv2.v;
+			uv3.v = 1.0f - uv3.v;
+
 			tri.uv[0] = uv1;
 			tri.uv[1] = uv2;
 			tri.uv[2] = uv3;
