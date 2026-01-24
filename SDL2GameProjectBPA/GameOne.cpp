@@ -17,10 +17,11 @@ void GameOne::Tick(float DeltaTime)
 	MyScratch->Clear();
 	MyScratch->ClearZBufffer();
 	totalTime += DeltaTime;
+
 	MyScratch->MeshColor = { 222,155,222,255 };
-	MyScratch->DrawEdges = cos(totalTime*8) < 0;
+	MyScratch->DrawEdges = cos(totalTime*8) < 0; // the result of the < 0 is used to produce a true or false, so it changes every few frames
 	MyScratch->EdgeBrightness = 0.2f;
-	MyScratch->DrawVerticies = sin(totalTime*8) < 0;
+	MyScratch->DrawVerticies = sin(totalTime*8) < 0; // the result of the < 0 is used to produce a true or false, so it changes every few frames
 	
 	MyScratch->SetCameraFOV(50);
 	MyScratch->SetCamera(vec3d{ 0.0f, -0.25f, -4.0f }, vec3d{ 0.0f,-0.1f, 1.0f });

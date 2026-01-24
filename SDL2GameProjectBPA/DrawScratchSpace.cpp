@@ -5,6 +5,13 @@
 //#include "BMPReader.hpp"
 
 
+void DrawScratchSpace::SetTexture(RGB* tex, int w, int h)
+{
+    TextureBufferW = w;
+    TextureBufferH = h;
+    TextureBuffer = tex;
+}
+
 void DrawScratchSpace::MoveMainspaceToExtraBuffer()
 {
     //Take whatever is on the screen, and back it up in the extra buffer so you can clear it and draw new stuff to add or multiply later
@@ -143,10 +150,14 @@ void DrawScratchSpace::CopyBufferToBuffer(RGB* from, RGB* to)
 RGB DrawScratchSpace::SampleTexture(const RGB* tex, int texW, int texH, float u, float v)
 {
     //clamp
-    if (u < 0.0f) u = 0.0f;
+   /* if (u < 0.0f) u = 0.0f;
     if (u > 1.0f) u = 1.0f;
     if (v < 0.0f) v = 0.0f;
-    if (v > 1.0f) v = 1.0f;
+    if (v > 1.0f) v = 1.0f;*/
+    // wrap UVs into [0,1)
+    u = u - floorf(u);
+    v = v - floorf(v);
+
 
     int x = int(u * (texW - 1));
     int y = int(v * (texH - 1));
@@ -225,6 +236,27 @@ void DrawScratchSpace::Initialize(RGB wipe)
     //Font Stuff
     //Look at how OliveC does the font...https://github.com/tsoding/olive.c/blob/master/olive.c
 
+
+    RGB MissingTexture[64] = {
+        // Row 0
+        {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
+        // Row 1
+        {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
+        // Row 2
+        {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220},
+        // Row 3
+        {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220},
+        // Row 4
+        {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
+        // Row 5
+        {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
+        // Row 6
+        {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220},
+        // Row 7
+        {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}
+    };
+
+    SetTexture(MissingTexture, 8, 8);
 }
 
 void DrawScratchSpace::Clear()
@@ -438,26 +470,27 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
 
 
 //TEXTURE PLACEHOLDER
-    const RGB TestTexture[64] = {
-        // Row 0
-        {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
-        // Row 1
-        {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
-        // Row 2
-        {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220},
-        // Row 3
-        {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220},
-        // Row 4
-        {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
-        // Row 5
-        {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
-        // Row 6
-        {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220},
-        // Row 7
-        {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}
-    };
+    //const RGB TestTexture2[64] = {
+    //    // Row 0
+    //    {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
+    //    // Row 1
+    //    {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
+    //    // Row 2
+    //    {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220},
+    //    // Row 3
+    //    {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220},
+    //    // Row 4
+    //    {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
+    //    // Row 5
+    //    {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
+    //    // Row 6
+    //    {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220},
+    //    // Row 7
+    //    {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}
+    //};
 
     //const RGB* TestTexture = TextureBuffer;  //USE THE TEXTURE FROM THE TEXTURE BUFFER.
+    const RGB* CurrentTexture = TextureBuffer;  //USE THE TEXTURE FROM THE TEXTURE BUFFER.
     //I DISABLED IT, BUT IT CAN BE LOADED FROM THE TEXTURE BUFFER.
     //I NEED UVs BEFORE I PROCEDE WITH THIS!
 
@@ -546,7 +579,9 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
            
 
             //RGB textured = SampleTexture(TestTexture, 32, 32, u, v);
-            RGB textured = SampleTexture(TestTexture, 8, 8, u, v);
+             RGB textured = SampleTexture(CurrentTexture, TextureBufferW, TextureBufferH, u, v);
+            //RGB textured = SampleTexture(TestTexture, 8, 8, u, v);
+            
             if (TextureDrawOn) {
 
                 MainSpace[y * SCREEN_X + x] = (color + textured) / 2;
@@ -592,11 +627,11 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
             float u = Lerp((float)va.u, (float)vb.u, tX);
             float v = Lerp((float)va.v, (float)vb.v, tX);
 
-
-            RGB textured2 = SampleTexture(TestTexture, 8, 8, u, v);
+             RGB textured = SampleTexture(CurrentTexture, TextureBufferW, TextureBufferH, u, v);
+            //RGB textured2 = SampleTexture(TestTexture, 8, 8, u, v);
             if (TextureDrawOn) {
 
-                MainSpace[y * SCREEN_X + x] = (color + textured2) / 2;
+                MainSpace[y * SCREEN_X + x] = (color + textured) / 2;
             }
             else
             {
@@ -1575,6 +1610,13 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         triProjected.c[1] = tri.c[1];
         triProjected.c[2] = tri.c[2];
 
+        //copy uvs
+        triProjected.uv[0] = tri.uv[0];
+        triProjected.uv[1] = tri.uv[1];
+        triProjected.uv[2] = tri.uv[2];
+       
+
+
         vecTrianglesToRaster.push_back(triProjected);
 
 
@@ -1668,12 +1710,18 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         /* */
         
         //TEXTURE SAMPLING WILL WORK LIKE THIS, BUT I NEED TO PASS IN UVS!
-        p0.u = 0.0f;
+       /* p0.u = 0.0f;
         p0.v = 0.0f;
         p1.u = 1.0f;
         p1.v = 0.0f;
         p2.u = 0.0f;
-        p2.v = 1.0f;
+        p2.v = 1.0f;*/
+        p0.u = triProjected.uv[0].u;
+        p0.v = triProjected.uv[0].v;
+        p1.u = triProjected.uv[1].u;
+        p1.v = triProjected.uv[1].v;
+        p2.u = triProjected.uv[2].u;
+        p2.v = triProjected.uv[2].v;
 
        /* RGB textured = SampleTexture(Smile_RGB, 8, 8, p0.u, p0.v);
         R = textured.r;

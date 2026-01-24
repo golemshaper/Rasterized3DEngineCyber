@@ -9,6 +9,7 @@ public:
 
 	void DrawBasics(float DeltaTime);
 	Mesh LoadedMesh;
+	Mesh LoadedMesh2;
 	RGB BlurBuffer[TOTAL_PIXELS]; //Screen X * Screen Y size
 	std::vector<Mesh> MeshSequence;
 	int cur_frame = 0;
@@ -16,5 +17,10 @@ public:
 	void AccumulatedBlur(float strength);
 
 	bool screenshot_fire_once = false;
+
+	RGB* Image01;
+	RGB* Image02;
+	RGB* Image03;
+
 };
 

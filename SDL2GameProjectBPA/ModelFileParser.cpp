@@ -37,22 +37,29 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 	sb.reserve(1024); //  boosts performance, allegedly
 
 	//Mode states:
-	const int M_Unknown = 0;
+	const int M_Unknown = 0; //real verts
 	const int M_Vectors = 1;
 	const int M_Tris = 2;
-	const int M_UVs = 3;
-	const int M_ColorPalette = 4;
-	const int M_VertColor = 5;
+	const int M_Vector2d = 3; //real uvs
+	const int M_UVs = 4;
+	//todo: Add another mode for UVs called "vector2s:" 
+	const int M_ColorPalette = 5;
+	const int M_VertColor = 6;
 	int Mode = M_Unknown;
 
 	bool Comment_Mode = false;
-
+	bool hasUVs = false;
+	bool hasColors = false;
 	//elements to build vectors from
 	//Vectors and tris
 	std::vector<vec3d> postion_vectors;
 	std::vector<vec3d> id_holder_not_real_vectors;
 	std::map<int, vec3d > id_vector_map;
 
+	//Vector2s and Uvs
+	std::vector<vec2d> uv_vector2s;
+	std::vector<vec3d> id_holder_not_real_uvs;
+	std::map<int, vec2d > id_vector2UV_map;
 
 	//Color and vertex colors
 	std::vector<RGB> color_palette;
@@ -85,6 +92,10 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 			if ((sb) == "tris")
 			{
 				Mode = M_Tris;
+			}
+			if ((sb) == "vector2s")
+			{
+				Mode = M_Vector2d;
 			}
 			if ((sb) == "uv")
 			{
@@ -119,6 +130,11 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 			vec3d color_stored_ids;*/
 			vec3d vec{};
 			vec3d vec3d_stored_ids{};
+
+			vec2d vecUV{};
+			vec3d vecUV_stored_ids{};
+
+
 			vec3d color_stored_ids{};
 
 			switch (Mode)
@@ -139,10 +155,34 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 				id_holder_not_real_vectors.push_back(vec3d_stored_ids); //store the IDs so we can get them from the map. We'll cast them to an int later.
 
 				break;
+			case M_Vector2d:
+				//UV data stored in sb.
+				//do we want a list of Vector2s the same way we have vectors to cut back on UV data?
+				//we don't have UVs yet. skip them for now.
+				/*
+				* //Vector2s and Uvs
+					std::vector<vec2d> uv_vector2s;
+					std::vector<vec2d> id_holder_not_real_uvs;
+					std::map<int, vec2d > id_vector2UV_map;
+
+					vec2d vecUV{};
+					vec2d vecUV_stored_ids{};
+				*/
+				//UV data stored in sb.
+				//This is every unique vector 2 used by the UVs.
+				vecUV = vec2d{ std::stof((results[0])), std::stof((results[1])) };
+				uv_vector2s.push_back(vecUV);
+				id_vector2UV_map[lineIndex] = vecUV; //map the ID to a vector for later
+				hasUVs = true;
+
+				break;
 			case M_UVs:
 				//UV data stored in sb.
 				//do we want a list of Vector2s the same way we have vectors to cut back on UV data?
 				//we don't have UVs yet. skip them for now.
+				vecUV_stored_ids = vec3d{ (float)std::stoi((results[0])), (float)std::stoi((results[1])), (float)std::stoi((results[2])) };
+				id_holder_not_real_uvs.push_back(vecUV_stored_ids); //store the IDs so we can get them from the map. We'll cast them to an int later.
+
 
 				break;
 			case M_ColorPalette:
@@ -150,7 +190,7 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 				color = RGB{ std::stoi((results[0])), std::stoi((results[1])), std::stoi((results[2])),std::stoi((results[3])) };
 				color_palette.push_back(color);
 				id_color_map[colorLineIndex] = (color);
-
+				hasColors = true;
 				break;
 			case M_VertColor:
 				//Color data stored in sb.
@@ -189,20 +229,36 @@ Mesh ModelFileParser::ParseFromStr(const std::string str)
 
 		triangle tri = triangle{ v1.x, v1.y,  v1.z,   v2.x, v2.y, v2.z,   v3.x,  v3.y, v3.z };
 		
+		//UVs
+		if (hasUVs)
+		{
+			int uxID = (int)id_holder_not_real_uvs[i].x;
+			int uyID = (int)id_holder_not_real_uvs[i].y;
+			int uzID = (int)id_holder_not_real_uvs[i].z;
+
+			vec2d uv1 = uv_vector2s[uxID];
+			vec2d uv2 = uv_vector2s[uyID];
+			vec2d uv3 = uv_vector2s[uzID];
+			tri.uv[0] = uv1;
+			tri.uv[1] = uv2;
+			tri.uv[2] = uv3;
+		}
 
 		//colors
-		int cxID = (int)id_holder_not_real_colors[i].x;
-		int cyID = (int)id_holder_not_real_colors[i].y;
-		int czID = (int)id_holder_not_real_colors[i].z;
+		if (hasColors)
+		{
+			int cxID = (int)id_holder_not_real_colors[i].x;
+			int cyID = (int)id_holder_not_real_colors[i].y;
+			int czID = (int)id_holder_not_real_colors[i].z;
 
-		RGB c1 = color_palette[cxID];
-		RGB c2 = color_palette[cyID];
-		RGB c3 = color_palette[czID];
+			RGB c1 = color_palette[cxID];
+			RGB c2 = color_palette[cyID];
+			RGB c3 = color_palette[czID];
 
-		tri.c[0] = c1;
-		tri.c[1] = c2;
-		tri.c[2] = c3;
-
+			tri.c[0] = c1;
+			tri.c[1] = c2;
+			tri.c[2] = c3;
+		}
 		result.Tris.push_back(tri);
 	}
 

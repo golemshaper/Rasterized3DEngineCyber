@@ -17,8 +17,10 @@ void GameTwo::Initialize()
 	//LoadedMesh = parser.ParseFromStr(text);
 	//MY PC: C:\Users\brian\source\repos\Rasterized3DEngine\SDL2GameProjectBPA\Assets
 	LoadedMesh = parser.ParseFromFile("Assets/olexa.txt");
+	LoadedMesh2 = parser.ParseFromFile("Assets/UvHelloWorldCube.txt");
+	//LoadedMesh2 = parser.ParseFromFile("Assets/cube_model.txt");
 
-
+	
 	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
 	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F1.txt"));
 	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F1.txt"));
@@ -31,8 +33,14 @@ void GameTwo::Initialize()
 	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
 
 
+	int w = 32, h = 32;
+	Image01 = ReadBMP("Assets/HelloBitmap.bmp", w, h);
 
-	
+
+	int w2 = 128; int h2 = 112;
+	Image02 = ReadBMP("Assets/011.bmp", w2, h2);
+	Image03 = ReadBMP("Assets/001.bmp", w2, h2);
+	MyScratch->SetTexture(Image03,w2,h2);
 
 	
 }
@@ -41,6 +49,8 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->ZWriteOn = false;
 	MyScratch->Clear();
 	MyScratch->ClearZBufffer();
+	MyScratch->TextureDrawOn = false;
+
 	totalTime += DeltaTime;
 	animTimer += DeltaTime;
 
@@ -70,10 +80,33 @@ void GameTwo::Tick(float DeltaTime)
 
 	//MyScratch->DrawMesh(MeshSequence[cur_frame], vec3d{ 1.0f, -0.1f,-2.0f }, vec3d{ 1.5f,0.0f,0 }, vec3d{ 1.2,1.2,1.2 }, true);
 	//MyScratch->DrawMesh(MeshSequence[cur_frame], vec3d{-1.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime * 2.0f,0}, vec3d{1.2,1.2,1.2}, true);
+	
+	//darken image a bit
+	MyScratch->DrawSquare(0,0, 512, RGB{ 0,0,0,200 });
+	//img 1
 	int w = 32, h = 32;
- 	RGB* pixels = ReadBMP("Assets/HelloBitmap.bmp", w, h);
-	Sprite MySprite = Sprite{ pixels, w,h };
+	Sprite MySprite = Sprite{ Image01, w,h };
 	MyScratch->DrawSprite(64, 64, MySprite);
+
+	//img 2
+	int w2 = 128, h2 = 112;
+	Sprite MySprite2 = Sprite{ Image02, w2,h2 };
+	MyScratch->DrawSprite(0, 96, MySprite2);
+
+	//img 3
+	Sprite MySprite3 = Sprite{ Image03, w2,h2 };
+	MyScratch->DrawSprite(128, 96, MySprite3);
+	//darken image a bit
+	MyScratch->DrawSquare(0, 0, 512, RGB{ 0,0,0,164 });
+	//draw box
+	MyScratch->MeshColor = RGB{ 255,255,255,255 };
+	MonkeyMesh monkeymesher;
+	MyScratch->TextureBuffer = Image03;
+	MyScratch->TextureDrawOn = true;
+	MyScratch->DrawMesh(LoadedMesh2,vec3d{0,0,0},vec3d{0,totalTime,0},vec3d{1.5f,1.5f,1.5f});
+
+
+
 
 
 	//AccumulatedBlur(0.5f);
