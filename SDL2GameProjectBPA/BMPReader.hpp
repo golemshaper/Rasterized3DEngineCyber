@@ -3,6 +3,8 @@
 #include <cstdio>
 #include "DrawScratchSpace.h"
 #pragma pack(push, 1)
+
+
 struct BMPHeader2 {
     uint16_t bfType;
     uint32_t bfSize;
@@ -27,10 +29,24 @@ struct DIBHeader2 {
 #pragma pack(pop)
 
 
+inline FILE* portable_fopen(const char* filename, const char* mode)
+{
+#ifdef _MSC_VER
+    FILE* f = nullptr;
+    return (fopen_s(&f, filename, mode) == 0) ? f : nullptr;
+#else
+    return fopen(filename, mode);
+#endif
+}
+
+
 inline RGB* ReadBMP(const char* filename, int& outW, int& outH)
 {
-    FILE* f = nullptr;
+   /* FILE* f = nullptr;
     if (fopen_s(&f, filename, "rb") != 0 || !f)
+        return nullptr;*/
+    FILE* f = portable_fopen(filename, "rb");
+    if (!f)
         return nullptr;
 
     BMPHeader2 bmp;
