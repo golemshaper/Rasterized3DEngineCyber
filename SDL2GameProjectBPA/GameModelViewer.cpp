@@ -23,6 +23,7 @@ void GameModelViewer::Tick(float DeltaTime)
     MyScratch->Clear(RGB{ 0,0,0,0 });
     MyScratch->SetCameraFOV(50);
     MyScratch->SetCamera(vec3d{ 0.0f, -0.0f, -1.1f }, vec3d{ 0.0f,-0.1f, 1.0f });
-    MyScratch->DrawMesh(LoadedMesh, vec3d{ 0,0.3f,0 }, vec3d{ 1.5f,totalTime,0 }, vec3d{ 1,1,1 });
+    MyScratch->EdgeBrightness = 0.5f;
+    MyScratch->DrawMesh(LoadedMesh, vec3d{ 0,0.3f,0 }, vec3d{ 1.5f,totalTime,0 }, vec3d{ 1,1,1 },true);
     
 }
