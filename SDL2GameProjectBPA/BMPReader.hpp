@@ -42,13 +42,11 @@ inline FILE* portable_fopen(const char* filename, const char* mode)
 
 inline RGB* ReadBMP(const char* filename, int& outW, int& outH)
 {
-   /* FILE* f = nullptr;
-    if (fopen_s(&f, filename, "rb") != 0 || !f)
-        return nullptr;*/
-    FILE* f = portable_fopen(filename, "rb");
-    if (!f)
-        return nullptr;
 
+    FILE* f = portable_fopen(filename, "rb");
+    if (!f){
+        return nullptr;
+    }
     BMPHeader2 bmp;
     DIBHeader2 dib;
 

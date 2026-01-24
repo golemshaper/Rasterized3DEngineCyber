@@ -40,6 +40,16 @@ struct DIBHeader {
 
 
 // --- BMP WRITER --------------------------------------------------------------
+inline FILE* portable_fopen2(const char* filename, const char* mode)
+{
+#ifdef _MSC_VER
+    FILE* f = nullptr;
+    return (fopen_s(&f, filename, mode) == 0) ? f : nullptr;
+#else
+    return fopen(filename, mode);
+#endif
+}
+
 
 inline bool WriteBMP(const char* filename, const RGB* pixels, int width, int height)
 {
@@ -63,9 +73,13 @@ inline bool WriteBMP(const char* filename, const RGB* pixels, int width, int hei
     bmp.bfSize = bmp.bfOffBits + dataSize;
 
     // Open file
-    FILE* f = nullptr;
+    /*FILE* f = nullptr;
     if (fopen_s(&f, filename, "wb") != 0 || !f)
+        return false;*/
+    FILE* f = portable_fopen2(filename, "rb");
+    if (!f){
         return false;
+    }
 
     // Write headers
     fwrite(&bmp, sizeof(bmp), 1, f);
