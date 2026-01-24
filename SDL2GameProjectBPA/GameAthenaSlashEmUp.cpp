@@ -6,6 +6,7 @@
 #include "TextSprites.h"
 #include "TextFileReader.h"
 #include "ModelFileParser.h"
+#include "BMPReader.hpp"
 
 void GameAthenaSlashEmUp::Initialize()
 {
@@ -67,6 +68,13 @@ void GameAthenaSlashEmUp::Initialize()
     PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_Neutral.txt"));
     CurrentAthenaFrame = parser.ParseFromFile("Assets/Athena_Neutral.txt");
     AlienMesh = parser.ParseFromFile("Assets/AlienModel.txt");
+
+
+    ////Load textures like this:
+    //int w2 = 128; int h2 = 112;
+    //RGB* Image02 = ReadBMP("Assets/011.bmp", w2, h2);
+    //MyScratch->SetTexture(Image02, w2, h2);
+
 
     //Setup Game States...
 }

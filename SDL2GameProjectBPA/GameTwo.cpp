@@ -17,7 +17,7 @@ void GameTwo::Initialize()
 	//LoadedMesh = parser.ParseFromStr(text);
 	//MY PC: C:\Users\brian\source\repos\Rasterized3DEngine\SDL2GameProjectBPA\Assets
 	LoadedMesh = parser.ParseFromFile("Assets/olexa.txt");
-	LoadedMesh2 = parser.ParseFromFile("Assets/UvHelloWorldCube.txt");
+	LoadedMesh2 = parser.ParseFromFile("Assets/CubeTiledUvs.txt");
 	//LoadedMesh2 = parser.ParseFromFile("Assets/cube_model.txt");
 
 	
@@ -39,8 +39,11 @@ void GameTwo::Initialize()
 
 	int w2 = 128; int h2 = 112;
 	Image02 = ReadBMP("Assets/011.bmp", w2, h2);
-	Image03 = ReadBMP("Assets/001.bmp", w2, h2);
-	MyScratch->SetTexture(Image03,w2,h2);
+
+
+	int w3 = 32; int h3 = 32;
+	Image03 = ReadBMP("Assets/red_brick.bmp", w3, h3);
+	MyScratch->SetTexture(Image03,w3,h3);
 
 	
 }
@@ -93,9 +96,7 @@ void GameTwo::Tick(float DeltaTime)
 	Sprite MySprite2 = Sprite{ Image02, w2,h2 };
 	MyScratch->DrawSprite(0, 96, MySprite2);
 
-	//img 3
-	Sprite MySprite3 = Sprite{ Image03, w2,h2 };
-	MyScratch->DrawSprite(128, 96, MySprite3);
+	
 	//darken image a bit
 	MyScratch->DrawSquare(0, 0, 512, RGB{ 0,0,0,164 });
 	//draw box

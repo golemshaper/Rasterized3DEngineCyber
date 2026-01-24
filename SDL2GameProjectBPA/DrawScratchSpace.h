@@ -162,8 +162,12 @@ struct vec2d
 struct triangle{
     vec3d p[3]; //points
     //do we want this? UVS belong to a vertex, but we use a vec3D as a vertex... 
-    vec2d uv[3]; //uv coordinates
-
+    //vec2d uv[3]; //uv coordinates
+    vec2d uv[3] = {
+    {0.0f, 0.0f},
+    {1.0f, 0.0f},
+    {0.0f, 1.0f}
+    };
     float depth = 0.0f;
 
   //  RGB c[3];//color
@@ -205,6 +209,10 @@ public:
     RGB ZBuffer[TOTAL_PIXELS]; //Screen X * Screen Y size
 
     RGB* TextureBuffer;
+    int TextureBufferW;
+    int TextureBufferH;
+    void SetTexture(RGB* tex, int w, int h);
+
 
     void MoveMainspaceToExtraBuffer();
     void MultiplyBuffers();
