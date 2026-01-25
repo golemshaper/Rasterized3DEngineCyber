@@ -340,7 +340,19 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //should be locked on, and no longer auto-target
     TickArcShots(player_position, GetClosestVectorFromList(player_position, TargetableLocations, 30), DeltaTime);
     MyScratch->Draw3DLine(player_position, GetClosestVectorFromList(player_position, TargetableLocations, 30), RGB_Yellow);
-
+    /*
+    * TODO/IDEA:
+    * a scene exporter for blender
+    * could create 2 vectors per object
+    * 
+    * For a mesh, it would need to export a name for the Mesh, based off of the object name, and LOC and ROT values
+    * A camera would be the same, but have no mesh
+    * 
+    * You could call a function on init to create actors and cameras at those locations, and loop through and draw them!
+    * 
+    * 
+    * 
+    */
 
     //Reset Draw color to white.
     MyScratch->MeshColor = { 255,255,255,255 };
