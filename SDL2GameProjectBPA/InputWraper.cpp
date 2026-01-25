@@ -16,6 +16,14 @@ void InputWraper::Tick(float DeltaTime)
 
     int numkeys = 0;
     const bool* keyboard = SDL_GetKeyboardState(&numkeys);
+    float x, y;
+    SDL_MouseButtonFlags mouse = SDL_GetMouseState(&x, &y);
+    bool LeftClick = false;
+    if (mouse & SDL_BUTTON_MASK(SDL_BUTTON_LEFT)) {
+        // left mouse button is held
+        LeftClick = true;
+    }
+
 
     if (keyboard[SDL_SCANCODE_W]) {
         // W is held
@@ -65,13 +73,15 @@ void InputWraper::Tick(float DeltaTime)
         toggleCooldown -= DeltaTime;
         return;
     }
+    
+
     if (keyboard[SDL_SCANCODE_Z])
     {
         toggleCooldown = 0.2f;
         zDepthDrawOn = !zDepthDrawOn;
     }
     //Fire one held
-    inputFireOneHeld = keyboard[SDL_SCANCODE_X] || keyboard[SDL_SCANCODE_K];
+    inputFireOneHeld = keyboard[SDL_SCANCODE_X] || keyboard[SDL_SCANCODE_K] || LeftClick;
     
 }
 
