@@ -1666,6 +1666,10 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         {
             ZFog = 1.0f;
         }
+        //todo: Add a shading mode enum.
+        //Add Gouraud Shading, but keep dumb fog as an option, since it's interesting...
+        //also add flat shading and a light source option...
+        
 
         //STANDARD RAINBOW COLOR TRIS
        /* Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {255 * ZFog,0,0,255} };
