@@ -1063,6 +1063,14 @@ void DrawScratchSpace::DrawLine(int x0, int y0, int x1, int y1, RGB color) {
     }
 }
 
+void DrawScratchSpace::Draw3DLine(vec3d a, vec3d b, RGB c)
+{
+    vec3d a2d = Get2DPointInFromSpace(a);
+    vec3d b2d = Get2DPointInFromSpace(b);
+
+    DrawLine(a2d.x, a2d.y, b2d.x, b2d.y,c);
+}
+
 int DrawScratchSpace::GetRandom(int a, int b)
 {
     /*std::random_device rd;
@@ -1262,6 +1270,9 @@ void DrawScratchSpace::SetCamera(vec3d loc, vec3d target)
 {
     CameraLoc = loc;
     CameraTargetLoc = target;
+
+    //Draw camera: Draw3DLine(loc, target,RGB{255,255,255,255});
+
 }
 void DrawScratchSpace::SetCameraFOV(float nFov)
 {
@@ -1279,6 +1290,7 @@ void DrawScratchSpace::SetCameraFOV(float nFov)
     MatrixProj.m[2][3] = 1.0f;
     MatrixProj.m[3][3] = 0.0f;
 }
+
 mat4x4 Matrix_MakeTranslation(float x, float y, float z)
 {
     mat4x4 m = IdentityMatrix();

@@ -298,6 +298,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     MovementUpdate(DeltaTime);
 
 
+
 //NOTE 1: DifferDrawMesh is a drop-in replacement for the regular DrawMesh function. It'll only draw when DrawSortedDifferedMeshes() is called
 //NOTE 2: use regular DrawMesh() along with  MyScratch->ZOffsetFloat = 10;  Besure to turn the offset off when you are done
   
@@ -334,8 +335,11 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
     //------------------------------
     // Bullets
     //------------------------------
-   // TickArcShots(player_position, vec3d{ 0.0f,-1.0f,0.0f }, DeltaTime);
+
+    //TODO: Store closest locations, but only update the list if not shooting! Once you shoot, you 
+    //should be locked on, and no longer auto-target
     TickArcShots(player_position, GetClosestVectorFromList(player_position, TargetableLocations, 30), DeltaTime);
+    MyScratch->Draw3DLine(player_position, GetClosestVectorFromList(player_position, TargetableLocations, 30), RGB_Yellow);
 
 
     //Reset Draw color to white.

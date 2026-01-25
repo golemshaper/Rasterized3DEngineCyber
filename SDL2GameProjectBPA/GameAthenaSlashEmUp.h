@@ -10,6 +10,8 @@ public:
 
 	StateMachine sm;
 
+
+
 	float GameSpeed = 1.0f;
 	//Current game mode
 	int mode = 1;

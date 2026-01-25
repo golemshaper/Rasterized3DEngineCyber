@@ -79,7 +79,19 @@ struct RGB {
     bool operator==(const RGB& other) const {
         return r == other.r && g == other.g && b == other.b && b == other.a;
     }
+
+
 };
+
+const RGB RGB_Red{ 255, 0,   0,   255 };
+const RGB RGB_Green{ 0,   255, 0,   255 };
+const RGB RGB_Blue{ 0,   0,   255, 255 };
+const RGB RGB_Yellow{ 255,   255,   0, 255 };
+const RGB RGB_White{ 255, 255, 255, 255 };
+const RGB RGB_Black{ 0,   0,   0,   255 };
+
+
+
 
 //2D
 struct Point {
@@ -271,6 +283,7 @@ public:
 
 
     void DrawLine(int x0, int y0, int x1, int y1, RGB color);
+    void Draw3DLine(vec3d a, vec3d b, RGB c);
     int GetRandom(int a,int b);
     float Clamp(float value, float min, float max);
     RGB AlphaBlend(const RGB& dst, const RGB& src);
@@ -327,6 +340,7 @@ public:
     mat4x4 CalculateViewMatrix();
     void SetCamera(vec3d loc, vec3d target);
     void SetCameraFOV(float nFov);
+   
     void DrawMesh(Mesh m);
     void DrawMesh(Mesh m,vec3d loc);
     void DrawMesh(Mesh m, vec3d loc, vec3d rot);
