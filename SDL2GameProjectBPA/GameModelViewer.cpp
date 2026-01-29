@@ -28,10 +28,10 @@ void GameModelViewer::Tick(float DeltaTime)
 {
     MyScratch->Clear(RGB{ 0,0,0,0 });
 
-    //Laura
-    DrawModelUsingBasicPalette(DeltaTime);
-    DrawLaura(DeltaTime);
     //Other model:
+   // DrawModelUsingBasicPalette(DeltaTime);
+    //Laura
+    DrawLaura(DeltaTime);
 
     
 }
@@ -57,4 +57,6 @@ void GameModelViewer::DrawModelUsingBasicPalette(float DeltaTime)
     MyScratch->DrawUnlit = true;
     MyScratch->SetTexture(BasicPalette, 64, 64);
     MyScratch->DrawMesh(LoadedMesh2, vec3d{ 0,0.0f,0 }, vec3d{ 1.5f,totalTime,totalTime }, vec3d{ 0.15f,0.15f,0.15f }, true);
+    //darken image a bit
+    MyScratch->DrawSquare(0, 0, 512, RGB{ 0,0,0,164 });
 }

@@ -1372,6 +1372,10 @@ vec3d DrawScratchSpace::CrossProduct(const vec3d& a, const vec3d& b)
     r.z = a.x * b.y - a.y * b.x;
     return r;
 }
+float DrawScratchSpace::DotProduct(const vec3d& a, const vec3d& b)
+{
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
 vec3d DrawScratchSpace::LookAtRotation(const vec3d& from, const vec3d& to)
 {
     vec3d dir = to - from;
@@ -1415,6 +1419,40 @@ float DrawScratchSpace::SquaredDistance(const vec3d & a, const vec3d & b)
 float DrawScratchSpace::SquaredDistance2D(const vec3d& a, const vec3d& b)
 {
     return SquaredDistance(vec3d{ a.x,0.0f,a.z }, vec3d{ b.x,0.0f,b.z });
+}
+
+bool DrawScratchSpace::PointInTriangle(const vec3d& p, const vec3d& a, const vec3d& b, const vec3d& c)
+{
+    vec3d v0 = b - a;
+    vec3d v1 = c - a;
+    vec3d v2 = p - a;
+
+    float d00 = DotProduct(v0, v0);
+    float d01 = DotProduct(v0, v1);
+    float d11 = DotProduct(v1, v1);
+    float d20 = DotProduct(v2, v0);
+    float d21 = DotProduct(v2, v1);
+
+    float denom = d00 * d11 - d01 * d01;
+    if (denom == 0.0f) return false; // degenerate triangle?
+
+    float v = (d11 * d20 - d01 * d21) / denom;
+    float w = (d00 * d21 - d01 * d20) / denom;
+    float u = 1.0f - v - w;
+
+    return (u >= 0.0f && v >= 0.0f && w >= 0.0f);
+
+}
+
+float DrawScratchSpace::SolveTriangleY(const vec3d& a, const vec3d& b, const vec3d& c, float px, float pz)
+{
+    vec3d n = CrossProduct(b - a, c - a);   // plane normal
+    //https://tutorial.math.lamar.edu/classes/calcIII/EqnsOfPlanes.aspx
+    // plane equation: n.x*x + n.y*y + n.z*z + d = 0  (right?)
+    float d = -(n.x * a.x + n.y * a.y + n.z * a.z);
+
+    // solve for y at (px, pz)
+    return -(n.x * px + n.z * pz + d) / n.y;
 }
 
 float DrawScratchSpace::Distance2D(const vec3d& a, const vec3d& b)
@@ -1669,7 +1707,8 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         //todo: Add a shading mode enum.
         //Add Gouraud Shading, but keep dumb fog as an option, since it's interesting...
         //also add flat shading and a light source option...
-        
+        //https://www.gabrielgambetta.com/computer-graphics-from-scratch/13-shading.html
+        //https://www.gabrielgambetta.com/computer-graphics-from-scratch/03-light.html
 
         //STANDARD RAINBOW COLOR TRIS
        /* Vertex p0 = { triProjected.p[0].x, triProjected.p[0].y, {255 * ZFog,0,0,255} };

@@ -16,8 +16,8 @@
 //Game* TheGame = new Game();
 //GameTwo* TheGame = new GameTwo();
 //GameOne* TheGame = new GameOne();
-//GameModelViewer* TheGame = new GameModelViewer();
-GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
+GameModelViewer* TheGame = new GameModelViewer();
+//GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
 
 
 //For another game example, inherit the base class, and override the Tick function. GameTwo* TheGame = new GameTwo();

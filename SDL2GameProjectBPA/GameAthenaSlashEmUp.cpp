@@ -1005,7 +1005,7 @@ void GameAthenaSlashEmUp::PlayerIdleState()
     //TODO: Set rotation of player in the way it currently works inside of this state machine
     if (MyScratch->Input->GetFireOneHold())
     {
-        sm.SetState(State_AthenaAttack);
+        //sm.SetState(State_AthenaAttack);
     }
 }
 

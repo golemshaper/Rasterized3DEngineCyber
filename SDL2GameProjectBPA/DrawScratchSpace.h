@@ -364,6 +364,7 @@ public:
 
     vec3d Normalize(vec3d input);
     vec3d CrossProduct(const vec3d& a, const vec3d& b);
+    float DotProduct(const vec3d& a, const vec3d& b);
     vec3d LookAtRotation(const vec3d& from, const vec3d& to);
     vec3d LookAtRotation2D(const vec3d& from, const vec3d& to);
 
@@ -371,6 +372,12 @@ public:
     float Distance2D(const vec3d& a, const vec3d& b);
     float SquaredDistance(const vec3d& a, const vec3d& b);
     float SquaredDistance2D(const vec3d& a, const vec3d& b);
+//Collision
+    bool PointInTriangle(const vec3d& p, const vec3d& a, const vec3d& b, const vec3d& c);
+    float SolveTriangleY(const vec3d& a, const vec3d& b, const vec3d& c, float px, float pz);
+
+
+     
  //FX
     void SetFade(RGB color, float a);
     void SetFade(
