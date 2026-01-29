@@ -590,7 +590,15 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
             
             if (TextureDrawOn) {
 
-                MainSpace[y * SCREEN_X + x] = (color + textured) / 2;
+                if (!MultiplyInTextureMode)
+                {
+                    MainSpace[y * SCREEN_X + x] = (color + textured) / 2;
+
+                }
+                else
+                {
+                    MainSpace[y * SCREEN_X + x] = (color * textured) / 255;
+                }
             }
             else
             {
@@ -637,7 +645,16 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
             //RGB textured2 = SampleTexture(TestTexture, 8, 8, u, v);
             if (TextureDrawOn) {
 
-                MainSpace[y * SCREEN_X + x] = (color + textured) / 2;
+                //MainSpace[y * SCREEN_X + x] = (color + textured) / 2;
+                if (!MultiplyInTextureMode)
+                {
+                    MainSpace[y * SCREEN_X + x] = (color + textured) / 2;
+
+                }
+                else
+                {
+                    MainSpace[y * SCREEN_X + x] = (color * textured) / 255;
+                }
             }
             else
             {
@@ -1453,6 +1470,73 @@ float DrawScratchSpace::SolveTriangleY(const vec3d& a, const vec3d& b, const vec
 
     // solve for y at (px, pz)
     return -(n.x * px + n.z * pz + d) / n.y;
+}
+
+float DrawScratchSpace::GroundHeightOnTriangle(const vec3d& a, const vec3d& b, const vec3d& c, float px, float pz)
+{
+    float py = SolveTriangleY(a,b, c, px, pz);
+    vec3d p = { px, py, pz };
+
+    if (PointInTriangle(p, a, b, c))
+    {
+        return py;
+    }
+
+    return NAN; // caller tries next triangle
+
+}
+
+vec3d DrawScratchSpace::SnapToMesh(const vec3d& worldPos, const Mesh& mesh, const vec3d& meshPos)
+{
+    //worldPos = player location in world space if snapping a player to the ground, for example
+    // Convert world → mesh-local
+    vec3d localPos = worldPos - meshPos;
+
+    float bestY = NAN;
+    int i = 0;
+    for (const auto& tri : mesh.Tris)
+    {
+       
+        vec3d a = tri.p[0] - meshPos;
+        vec3d b = tri.p[1] - meshPos;
+        vec3d c = tri.p[2] - meshPos;
+
+        float y = GroundHeightOnTriangle(a, b, c, localPos.x, localPos.z);
+
+        if (!std::isnan(y))
+        {
+            if (std::isnan(bestY) || y > bestY)
+                bestY = y;
+        }
+      
+        i++;
+    }
+
+    if (!std::isnan(bestY))
+        return { worldPos.x, bestY + meshPos.y, worldPos.z };
+
+    return worldPos;
+
+
+
+}
+
+triangle DrawScratchSpace::GetNearestTriangleInMeshRaw(const Mesh& m, vec3d p)
+{
+    //This is proably not a scalable solution. build out some kind of grid and use that to narrow down the triangles instead of this. 
+    //This will get us up and running though.
+    float closestDist = (float)1e+300;
+    int triId = 0;
+    for (int i = 0; i < m.Tris.size(); ++i)
+    {
+        vec3d averagePos = (m.Tris[i].p[0] + m.Tris[i].p[1] + m.Tris[i].p[2]) / 3;
+        float curDist = SquaredDistance(averagePos, p);
+        if (curDist < closestDist)
+        {
+            triId = i;
+        }
+    }
+    return m.Tris[triId];
 }
 
 float DrawScratchSpace::Distance2D(const vec3d& a, const vec3d& b)

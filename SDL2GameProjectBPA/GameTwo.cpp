@@ -18,6 +18,7 @@ void GameTwo::Initialize()
 	//MY PC: C:\Users\brian\source\repos\Rasterized3DEngine\SDL2GameProjectBPA\Assets
 	LoadedMesh = parser.ParseFromFile("Assets/olexa.txt");
 	LoadedMesh2 = parser.ParseFromFile("Assets/CubeTiledUvs.txt");
+	TerrrainMesh = parser.ParseFromFile("Assets/TerrainModel.txt"); 
 	//LoadedMesh2 = parser.ParseFromFile("Assets/cube_model.txt");
 
 	
@@ -65,8 +66,8 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->MeshColor = { 255,255,255,255 };
 
 	MyScratch->DrawUnlit = true;
-	MyScratch->SetCamera(vec3d{ 0.0f, -0.9f, -7.5f }, vec3d{ 0.0f, 0.1f, 2.0f });
-	MyScratch->SetCameraFOV(50);
+	MyScratch->SetCamera(vec3d{ 0.0f, -0.9f, -17.5f }, vec3d{ 0.0f, 2.3f, 2.0f });
+	MyScratch->SetCameraFOV(90);
 	//MyScratch->DrawMesh(LoadedMesh, vec3d{ 0.0f, -0.1f,-2.0f }, vec3d{ 1.5f,totalTime * 2.0f,0 }, vec3d{ 1.2,1.2,1.2 }, true);
 	MyScratch->HighlightBrightness = 2.0f;
 
@@ -110,9 +111,31 @@ void GameTwo::Tick(float DeltaTime)
 	//MyScratch->DrawVerticies = true;
 	MyScratch->EdgeBrightness = 0.35f;
 
+	//box as player to snap to terrain
+	vec3d PlayerLocation = vec3d{ sin(totalTime)*8.0f,-12.5f,cos(totalTime) * 8.0f };
+	MyScratch->ClearZBufffer();
+	MyScratch->PushBackDepthBuffer(40);
 
-	MyScratch->DrawMesh(LoadedMesh2,vec3d{0,0,0},vec3d{0,totalTime,0},vec3d{1.5f,1.5f,1.5f});
 
+	MyScratch->ZWriteOn = true;
+	//collision + offset
+	PlayerLocation = MyScratch->SnapToMesh(PlayerLocation, TerrrainMesh, vec3d{ 0,0,0 }) + vec3d{ 0,-1.5f,0 };
+
+	//terrain:
+	MyScratch->TextureDrawOn = true;
+	MyScratch->DrawMesh(TerrrainMesh, vec3d{ 0,0,0 }, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
+	//shadow
+	MyScratch->MeshColor = RGB_Black;
+	MyScratch->TextureDrawOn = false;
+	MyScratch->PushBackDepthBuffer(90);
+	MyScratch->DrawMesh(LoadedMesh2, PlayerLocation - vec3d{ 0,-1.3f,0 }, vec3d{ 0,totalTime,0 }, vec3d{ 1.25f,0.1f,1.25f });
+	//player
+	MyScratch->MeshColor = RGB_White;
+	MyScratch->TextureDrawOn = true;
+	MyScratch->PushBackDepthBuffer(90);
+	MyScratch->DrawMesh(LoadedMesh2, PlayerLocation, vec3d{ 0,totalTime,0 }, vec3d{ 1.0f,1.0f,1.0f });
+
+	//TODO: In the exporter swap Y and Z! Blender is Z up, but we are Y up like Unity!
 
 
 

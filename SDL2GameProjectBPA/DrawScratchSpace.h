@@ -313,6 +313,7 @@ public:
     int EdgeBrightness = 255;
     float HighlightBrightness = 2.0f;
     bool TextureDrawOn = false;
+    bool MultiplyInTextureMode = true;
     bool DrawEdges = false;
     bool DrawHighlightEdgeOnly = false;
     bool DrawUnlit = false;
@@ -375,7 +376,10 @@ public:
 //Collision
     bool PointInTriangle(const vec3d& p, const vec3d& a, const vec3d& b, const vec3d& c);
     float SolveTriangleY(const vec3d& a, const vec3d& b, const vec3d& c, float px, float pz);
+    float GroundHeightOnTriangle(const vec3d& a, const vec3d& b, const vec3d& c, float px, float pz);
+    vec3d SnapToMesh(const vec3d& worldPos, const Mesh& mesh, const vec3d& meshPos);
 
+    triangle GetNearestTriangleInMeshRaw(const Mesh& m, vec3d p);
 
      
  //FX

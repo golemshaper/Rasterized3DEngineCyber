@@ -10,6 +10,7 @@ public:
 	void DrawBasics(float DeltaTime);
 	Mesh LoadedMesh;
 	Mesh LoadedMesh2;
+	Mesh TerrrainMesh;
 	RGB BlurBuffer[TOTAL_PIXELS]; //Screen X * Screen Y size
 	std::vector<Mesh> MeshSequence;
 	int cur_frame = 0;
