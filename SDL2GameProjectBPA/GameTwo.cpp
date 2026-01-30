@@ -71,20 +71,20 @@ void GameTwo::Tick(float DeltaTime)
 
 	//CAMERA:
 	//vec3d CameraLocation = vec3d{ 0.0f, -0.9f, -17.5f };
-	vec3d CameraLocation = PlayerLocation + vec3d{ 0.0f, -2.9f, -17.5f };
-	float CamOffsetY = 8.0f;
+	vec3d CameraLocation = PlayerLocation + vec3d{ 0.0f, -3.9f, -17.5f };
+	float CamOffsetY = 5.0f;
 	vec3d CamRotation = vec3d{ MyScratch->Input->GetMovementX(), CamOffsetY, 17.5f};
 	CameraSmoothRotation = MyScratch->Lerp(CameraSmoothRotation, CamRotation, (PlayerMovement->Speed / 2.0f) * DeltaTime);
 	CameraSmoothLocation = MyScratch->Lerp(CameraSmoothLocation, CameraLocation, (PlayerMovement->Speed/2.0f) * DeltaTime);
 	MyScratch->SetCamera(CameraSmoothLocation, CameraSmoothRotation);
 	MyScratch->SetCameraFOV(90);
-	
-	
-	MyScratch->ClearZBufffer();
-	MyScratch->PushBackDepthBuffer(140);
 
+	//Push zbuffer back to make more "room" for the depth of the scene
+	MyScratch->ClearZBufffer();
+//MyScratch->PushBackDepthBuffer(140);
 
 	MyScratch->ZWriteOn = true;
+
 	//collision + offset
 	PlayerLocation = MyScratch->SnapToMesh(PlayerLocation, TerrrainMesh, vec3d{ 0,0,0 }) + vec3d{ 0,-1.5f,0 };
 
@@ -92,19 +92,21 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->SetTexture(Image02, w, h);
 	MyScratch->TextureDrawOn = true;
 	MyScratch->DrawMesh(TerrrainMesh, vec3d{ 0,0,0 }, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
-	//shadow
+	//shadow:
 	MyScratch->MeshColor = RGB_Black;
 	MyScratch->TextureDrawOn = false;
-	MyScratch->PushBackDepthBuffer(90);
+MyScratch->PushBackDepthBuffer(90);
 	MyScratch->DrawMesh(LoadedMesh2, PlayerLocation - vec3d{ 0,-1.3f,0 }, vec3d{ 0,totalTime,0 }, vec3d{ 1.25f,0.1f,1.25f });
-	//box
+	//player:
 	MyScratch->SetTexture(Image03, w, h);
 	MyScratch->MeshColor = RGB_White;
 	MyScratch->TextureDrawOn = true;
-	MyScratch->PushBackDepthBuffer(90);
+//MyScratch->PushBackDepthBuffer(90);
 	MyScratch->DrawMesh(LoadedMesh2, PlayerLocation, vec3d{ 0,totalTime,0 }, vec3d{ 1.0f,1.0f,1.0f });
 	
-
+	//FX
+	MyScratch->MoveMainspaceToExtraBuffer();
+	MyScratch->BrightnessContrastOnBuffer(MyScratch->MainSpace, 0.7f, 2.5f);
 
 	//TODO: In the exporter swap Y and Z! Blender is Z up, but we are Y up like Unity!
 
