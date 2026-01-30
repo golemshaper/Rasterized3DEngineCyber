@@ -38,11 +38,11 @@ void GameTwo::Initialize()
 	Image01 = ReadBMP("Assets/HelloBitmap.bmp", w, h);
 
 
-	int w2 = 128; int h2 = 112;
-	Image02 = ReadBMP("Assets/011.bmp", w2, h2);
+	int w2 = 16; int h2 = 16;
+	Image02 = ReadBMP("Assets/grass.bmp", w2, h2);
 
 
-	int w3 = 32; int h3 = 32;
+	int w3 = 16; int h3 = 16;
 	Image03 = ReadBMP("Assets/red_brick.bmp", w3, h3);
 	MyScratch->SetTexture(Image03,w3,h3);
 
@@ -54,67 +54,23 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->Clear();
 	MyScratch->ClearZBufffer();
 	MyScratch->TextureDrawOn = false;
-
+	int w = 16; int h = 16;
 	totalTime += DeltaTime;
 	animTimer += DeltaTime;
 
-	int FULL_VAL = (int)(abs(sin(totalTime)) * 255);
-	int FULL_VAL2 = (int)(abs(cos(totalTime))*255);
-	MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, RGB{ FULL_VAL2/2,FULL_VAL,FULL_VAL,255 }, RGB{ 54,32,FULL_VAL2,255 }, RGB{ 0,0,0,255 }, RGB{ 0,0,0,255 });
 	//DrawBasics(DeltaTime);
 
-	MyScratch->MeshColor = { 255,255,255,255 };
+	MyScratch->MeshColor = RGB_White;
 
-	MyScratch->DrawUnlit = true;
-	MyScratch->SetCamera(vec3d{ 0.0f, -0.9f, -17.5f }, vec3d{ 0.0f, 2.3f, 2.0f });
+	//MyScratch->SetCamera(vec3d{ 0.0f, -0.9f, -17.5f }, vec3d{ 0.0f, 2.3f, 2.0f });
+	vec3d PlayerLocation = vec3d{ sin(totalTime) * 10.0f,-12.5f,cos(totalTime) * 8.0f };
+
+	MyScratch->SetCamera(vec3d{ 0.0f, -0.9f, -17.5f }, PlayerLocation - vec3d{ 0.0f, -16.0f, -17.5f });
 	MyScratch->SetCameraFOV(90);
-	//MyScratch->DrawMesh(LoadedMesh, vec3d{ 0.0f, -0.1f,-2.0f }, vec3d{ 1.5f,totalTime * 2.0f,0 }, vec3d{ 1.2,1.2,1.2 }, true);
-	MyScratch->HighlightBrightness = 2.0f;
-
-	MyScratch->DrawMesh(LoadedMesh, vec3d{0.0f, -0.1f,-2.0f}, vec3d{1.5f, totalTime*2.0f ,0}, vec3d{1.2,1.2,1.2},true);
-	MyScratch->DrawUnlit = false;
-
-
-	if (animTimer >= 0.05f)
-	{
-		animTimer = 0.0f;
-		cur_frame++;
-		if (cur_frame == 10)cur_frame = 0;
-	}
-	MyScratch->MeshColor = { FULL_VAL,FULL_VAL2,0,255 };
-
-	//MyScratch->DrawMesh(MeshSequence[cur_frame], vec3d{ 1.0f, -0.1f,-2.0f }, vec3d{ 1.5f,0.0f,0 }, vec3d{ 1.2,1.2,1.2 }, true);
-	//MyScratch->DrawMesh(MeshSequence[cur_frame], vec3d{-1.0f, -0.1f,-2.0f}, vec3d{1.5f,totalTime * 2.0f,0}, vec3d{1.2,1.2,1.2}, true);
 	
-	//darken image a bit
-	MyScratch->DrawSquare(0,0, 512, RGB{ 0,0,0,200 });
-	//img 1
-	int w = 32, h = 32;
-	Sprite MySprite = Sprite{ Image01, w,h };
-	MyScratch->DrawSprite(64, 64, MySprite);
-
-	//img 2
-	int w2 = 128, h2 = 112;
-	Sprite MySprite2 = Sprite{ Image02, w2,h2 };
-	MyScratch->DrawSprite(0, 96, MySprite2);
-
 	
-	//darken image a bit
-	MyScratch->DrawSquare(0, 0, 512, RGB{ 0,0,0,164 });
-	//draw box
-	MyScratch->MeshColor = RGB{ 255,255,255,255 };
-	MonkeyMesh monkeymesher;
-	MyScratch->TextureBuffer = Image03;
-	MyScratch->TextureDrawOn = true;
-
-	//MyScratch->DrawEdges = true;
-	//MyScratch->DrawVerticies = true;
-	MyScratch->EdgeBrightness = 0.35f;
-
-	//box as player to snap to terrain
-	vec3d PlayerLocation = vec3d{ sin(totalTime)*8.0f,-12.5f,cos(totalTime) * 8.0f };
 	MyScratch->ClearZBufffer();
-	MyScratch->PushBackDepthBuffer(40);
+	MyScratch->PushBackDepthBuffer(140);
 
 
 	MyScratch->ZWriteOn = true;
@@ -122,6 +78,7 @@ void GameTwo::Tick(float DeltaTime)
 	PlayerLocation = MyScratch->SnapToMesh(PlayerLocation, TerrrainMesh, vec3d{ 0,0,0 }) + vec3d{ 0,-1.5f,0 };
 
 	//terrain:
+	MyScratch->SetTexture(Image02, w, h);
 	MyScratch->TextureDrawOn = true;
 	MyScratch->DrawMesh(TerrrainMesh, vec3d{ 0,0,0 }, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
 	//shadow
@@ -130,6 +87,7 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->PushBackDepthBuffer(90);
 	MyScratch->DrawMesh(LoadedMesh2, PlayerLocation - vec3d{ 0,-1.3f,0 }, vec3d{ 0,totalTime,0 }, vec3d{ 1.25f,0.1f,1.25f });
 	//player
+	MyScratch->SetTexture(Image03, w, h);
 	MyScratch->MeshColor = RGB_White;
 	MyScratch->TextureDrawOn = true;
 	MyScratch->PushBackDepthBuffer(90);
@@ -139,36 +97,6 @@ void GameTwo::Tick(float DeltaTime)
 
 
 
-
-	//AccumulatedBlur(0.5f);
-	if (!screenshot_fire_once)
-	{
-
-		//RENDER MOVIE::   
-		//RenderMovie();
-
-
-		screenshot_fire_once = true;
-		//RGB ScanLineColor = { 0,0,16,255 };
-		//RGB ScanLineColor2 = { 18,0,0,255 };
-		////TODO: Make a turntable runder function and render out an image sequence for this animation!
-		////WriteBMP_ScaledWithScanlines("C:/tmp/output.bmp", MyScratch->MainSpace, SCREEN_X, SCREEN_Y,6, ScanLineColor, ScanLineColor2);
-
-		//int screenshotIndex = 12; // whatever you want
-
-		//std::string filename = "C:/tmp/output_" + std::to_string(screenshotIndex) + ".bmp";
-
-		//WriteBMP_ScaledWithScanlines(
-		//	filename.c_str(),
-		//	MyScratch->MainSpace,
-		//	SCREEN_X,
-		//	SCREEN_Y,
-		//	6,
-		//	ScanLineColor,
-		//	ScanLineColor2
-		//);
-
-	}
 }
 
 void GameTwo::RenderMovie()

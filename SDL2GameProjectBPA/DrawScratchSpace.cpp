@@ -1490,7 +1490,7 @@ vec3d DrawScratchSpace::SnapToMesh(const vec3d& worldPos, const Mesh& mesh, cons
 {
     //worldPos = player location in world space if snapping a player to the ground, for example
     // Convert world → mesh-local
-    vec3d localPos = worldPos - meshPos;
+    vec3d localPos = worldPos - meshPos; //Not working?
 
     float bestY = NAN;
     int i = 0;
