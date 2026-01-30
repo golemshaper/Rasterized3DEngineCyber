@@ -1,5 +1,6 @@
 #pragma once
 #include "Game.h"
+class ThirdPersonMovement;
 class GameTwo : public Game
 {
 public:
@@ -11,6 +12,9 @@ public:
 	Mesh LoadedMesh;
 	Mesh LoadedMesh2;
 	Mesh TerrrainMesh;
+	ThirdPersonMovement* PlayerMovement;
+	vec3d CameraSmoothLocation = vec3d{ 0.0f, 12.9f, -17.5f };
+	vec3d CameraSmoothRotation = vec3d{ 0.0f, 8.0f, 17.5f };
 	RGB BlurBuffer[TOTAL_PIXELS]; //Screen X * Screen Y size
 	std::vector<Mesh> MeshSequence;
 	int cur_frame = 0;
@@ -22,6 +26,6 @@ public:
 	RGB* Image01;
 	RGB* Image02;
 	RGB* Image03;
-
+	~GameTwo();
 };
 

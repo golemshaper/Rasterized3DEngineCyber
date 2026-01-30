@@ -5,13 +5,14 @@
 #include "ModelFileParser.h"
 #include "BMPWriter.hpp"
 #include "BMPReader.hpp"
+#include "ThirdPersonMovement.h"
 
 void GameTwo::Initialize()
 {
 	MyScratch = new DrawScratchSpace();
 	MyScratch->Initialize();
-
-
+	PlayerMovement = new ThirdPersonMovement();
+	PlayerMovement->Pos = vec3d{ 0,-1.3f,0 };
 	ModelFileParser parser;
 
 	//LoadedMesh = parser.ParseFromStr(text);
@@ -62,10 +63,20 @@ void GameTwo::Tick(float DeltaTime)
 
 	MyScratch->MeshColor = RGB_White;
 
-	//MyScratch->SetCamera(vec3d{ 0.0f, -0.9f, -17.5f }, vec3d{ 0.0f, 2.3f, 2.0f });
-	vec3d PlayerLocation = vec3d{ sin(totalTime) * 10.0f,-12.5f,cos(totalTime) * 8.0f };
 
-	MyScratch->SetCamera(vec3d{ 0.0f, -0.9f, -17.5f }, PlayerLocation - vec3d{ 0.0f, -16.0f, -17.5f });
+	//PLAYER MOVEMENT:
+	PlayerMovement->ApplyMovement(DeltaTime, MyScratch);
+	PlayerMovement->ApplyGroundSnap(TerrrainMesh, MyScratch, vec3d{ 0,-1.3f,0 });
+	vec3d PlayerLocation = PlayerMovement->Pos; //CIRCLE: vec3d{ sin(totalTime) * 10.0f,-12.5f,cos(totalTime) * 8.0f };
+
+	//CAMERA:
+	//vec3d CameraLocation = vec3d{ 0.0f, -0.9f, -17.5f };
+	vec3d CameraLocation = PlayerLocation + vec3d{ 0.0f, -2.9f, -17.5f };
+	float CamOffsetY = 8.0f;
+	vec3d CamRotation = vec3d{ MyScratch->Input->GetMovementX(), CamOffsetY, 17.5f};
+	CameraSmoothRotation = MyScratch->Lerp(CameraSmoothRotation, CamRotation, (PlayerMovement->Speed / 2.0f) * DeltaTime);
+	CameraSmoothLocation = MyScratch->Lerp(CameraSmoothLocation, CameraLocation, (PlayerMovement->Speed/2.0f) * DeltaTime);
+	MyScratch->SetCamera(CameraSmoothLocation, CameraSmoothRotation);
 	MyScratch->SetCameraFOV(90);
 	
 	
@@ -86,12 +97,14 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->TextureDrawOn = false;
 	MyScratch->PushBackDepthBuffer(90);
 	MyScratch->DrawMesh(LoadedMesh2, PlayerLocation - vec3d{ 0,-1.3f,0 }, vec3d{ 0,totalTime,0 }, vec3d{ 1.25f,0.1f,1.25f });
-	//player
+	//box
 	MyScratch->SetTexture(Image03, w, h);
 	MyScratch->MeshColor = RGB_White;
 	MyScratch->TextureDrawOn = true;
 	MyScratch->PushBackDepthBuffer(90);
 	MyScratch->DrawMesh(LoadedMesh2, PlayerLocation, vec3d{ 0,totalTime,0 }, vec3d{ 1.0f,1.0f,1.0f });
+	
+
 
 	//TODO: In the exporter swap Y and Z! Blender is Z up, but we are Y up like Unity!
 
@@ -193,4 +206,16 @@ void GameTwo::AccumulatedBlur(float strength)
 	//MyScratch->AddBuffers(BlurBuffer); //smaller number == more blur!
 	MyScratch->CopyBufferToBuffer(MyScratch->MainSpace, BlurBuffer);
 
+}
+
+GameTwo::~GameTwo()
+{
+	delete Image01;
+	delete Image02;
+	delete Image03;
+	Image01 = nullptr;
+	Image02 = nullptr;
+	Image03 = nullptr;
+	delete PlayerMovement;
+	PlayerMovement = nullptr;
 }

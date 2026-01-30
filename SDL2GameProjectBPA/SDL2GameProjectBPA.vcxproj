@@ -148,6 +148,7 @@
     <ClCompile Include="ModelFileParser.cpp" />
     <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="TextFileReader.cpp" />
+    <ClCompile Include="ThirdPersonMovement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BMPReader.hpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="TextFileReader.h" />
     <ClInclude Include="TextSprites.h" />
+    <ClInclude Include="ThirdPersonMovement.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Assets\Read.txt">
