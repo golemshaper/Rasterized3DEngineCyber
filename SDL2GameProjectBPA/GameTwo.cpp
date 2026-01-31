@@ -78,7 +78,7 @@ void GameTwo::Tick(float DeltaTime)
 
 	//CAMERA:
 	//vec3d CameraLocation = vec3d{ 0.0f, -0.9f, -17.5f };
-	vec3d CameraLocation = PlayerLocation + vec3d{ 0.0f, -3.9f, -17.5f };
+	vec3d CameraLocation = PlayerLocation + vec3d{ 0.0f, -5.9f, -17.5f };
 	float CamOffsetY = 5.0f;
 	vec3d CamRotation = vec3d{ MyScratch->Input->GetMovementX(), CamOffsetY, 17.5f};
 	CameraSmoothRotation = MyScratch->Lerp(CameraSmoothRotation, CamRotation, (PlayerMovement->Speed / 2.0f) * DeltaTime);
@@ -96,13 +96,14 @@ void GameTwo::Tick(float DeltaTime)
 	PlayerLocation = MyScratch->SnapToMesh(PlayerLocation, TerrrainMesh, vec3d{ 0,0,0 }) + vec3d{ 0,-1.5f,0 };
 
 	//water:
-	MyScratch->ZWriteOn = false;
+	MyScratch->ZWriteOn = false; //Depth  off so we can draw as far as possible!
 	MyScratch->UvOffsetGlobal = vec2d{ totalTime * 0.25f,totalTime * 0.25f }; //Scrolling UV effect. Use this for water later!
 	MyScratch->SetTexture(water, w32, h32);
 	MyScratch->TextureDrawOn = true;
 	MyScratch->DrawMesh(WaterPlaneMesh, vec3d{ 0,0,0 }, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
 	MyScratch->ClearZBufffer();
 	//terrain:
+	MyScratch->PushBackDepthBuffer(2000); //Give us pleanty of space to draw the terrain!
 	MyScratch->ZWriteOn = true;
 	MyScratch->UvOffsetGlobal = vec2d{ 0.0f,0.0f };
 	MyScratch->SetTexture(grass, w16, h16);
