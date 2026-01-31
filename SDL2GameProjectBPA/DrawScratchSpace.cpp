@@ -1490,7 +1490,7 @@ vec3d DrawScratchSpace::SnapToMesh(const vec3d& worldPos, const Mesh& mesh, cons
 {
     //worldPos = player location in world space if snapping a player to the ground, for example
     // Convert world → mesh-local
-    vec3d localPos = worldPos - meshPos; //Not working?
+    vec3d localPos = worldPos - meshPos; //Not working? (FIX IT HERE, and IN THE COLOR FUNCTION BELLOW)
 
     float bestY = NAN;
     int i = 0;
@@ -1527,6 +1527,46 @@ vec3d DrawScratchSpace::SnapToMesh(const vec3d& worldPos, const Mesh& mesh, cons
 
 
 
+}
+
+RGB DrawScratchSpace::GetColorOfClosestTri(const vec3d& worldPos, const Mesh& mesh, const vec3d& meshPos, RGB fallbackColor)
+{
+    //YOU CAN USE THIS TO CREATE LIGHT PROB MESH VOLUMES IN BLENDER! INFINIT CHEAP FAKE LIGHT! 
+    //If you caclulate per triangle position on a mesh, and override that meshes vertex color on that triangle/vertex, you'll 
+    // get 3D vertex light from a bunch of triangle "light probs" that are created in blender. Do you get it future me?
+    // 
+    //This is a copy of SnapToMesh, but witout the snapping. When I fix the world position issue in that function, I should fix it here!
+    vec3d localPos = worldPos - meshPos; //Not working? (FIX IT HERE, and IN THE COLOR FUNCTION BELLOW)
+
+    float bestY = NAN;
+    int i = 0;
+    for (const auto& tri : mesh.Tris)
+    {
+
+        vec3d a = tri.p[0] - meshPos;
+        vec3d b = tri.p[1] - meshPos;
+        vec3d c = tri.p[2] - meshPos;
+
+        float y = GroundHeightOnTriangle(a, b, c, localPos.x, localPos.z);
+
+        if (!std::isnan(y))
+        {
+            if (std::isnan(bestY) || y > bestY)
+            {
+                fallbackColor = (tri.c[0] + SnapToMeshTriColor = tri.c[1] + SnapToMeshTriColor = tri.c[2]) / 3;
+                bestY = y;
+            }
+
+        }
+
+        i++;
+    }
+
+    if (!std::isnan(bestY)) {
+
+        return fallbackColor;
+    }
+    return fallbackColor;
 }
 
 triangle DrawScratchSpace::GetNearestTriangleInMeshRaw(const Mesh& m, vec3d p)

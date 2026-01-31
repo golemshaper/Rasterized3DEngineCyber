@@ -1,10 +1,10 @@
 #pragma once
 
+//#define SCREEN_X 240
+//#define SCREEN_Y 240//160
+//SCREEN SIZES: 240,240  or 24,160 or 160,240
 #define SCREEN_X 240
 #define SCREEN_Y 240//160
-
-//#define SCREEN_X 135
-//#define SCREEN_Y 240//160
 #define TOTAL_PIXELS (SCREEN_X * SCREEN_Y)
 
 
@@ -383,6 +383,7 @@ public:
     float GroundHeightOnTriangle(const vec3d& a, const vec3d& b, const vec3d& c, float px, float pz);
 
     vec3d SnapToMesh(const vec3d& worldPos, const Mesh& mesh, const vec3d& meshPos);
+    RGB GetColorOfClosestTri(const vec3d& worldPos, const Mesh& mesh, const vec3d& meshPos,RGB fallbackColor);
 
     triangle GetNearestTriangleInMeshRaw(const Mesh& m, vec3d p);
 
