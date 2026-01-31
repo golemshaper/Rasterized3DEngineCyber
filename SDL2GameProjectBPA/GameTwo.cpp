@@ -35,8 +35,8 @@ void GameTwo::Initialize()
 	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
 
 
-	int w = 32, h = 32;
-	Image01 = ReadBMP("Assets/HelloBitmap.bmp", w, h);
+	int wGB = 128, hGB = 112;
+	Image01 = ReadBMP("Assets/001.bmp", wGB, hGB);
 
 
 	int w2 = 16; int h2 = 16;
@@ -90,8 +90,12 @@ void GameTwo::Tick(float DeltaTime)
 
 	//terrain:
 	MyScratch->SetTexture(Image02, w, h);
+	int wGB = 128, hGB = 112;
+	MyScratch->SetTexture(Image01, wGB, hGB);
+
 	MyScratch->TextureDrawOn = true;
 	MyScratch->DrawMesh(TerrrainMesh, vec3d{ 0,0,0 }, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
+	AccumulatedBlur(0.75f);
 	//shadow:
 	MyScratch->MeshColor = RGB_Black;
 	MyScratch->TextureDrawOn = false;
@@ -107,7 +111,7 @@ MyScratch->PushBackDepthBuffer(90);
 	//FX
 	MyScratch->MoveMainspaceToExtraBuffer();
 	MyScratch->BrightnessContrastOnBuffer(MyScratch->MainSpace, 0.7f, 2.5f);
-
+	
 	//TODO: In the exporter swap Y and Z! Blender is Z up, but we are Y up like Unity!
 
 
