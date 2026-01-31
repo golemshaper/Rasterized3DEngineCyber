@@ -62,6 +62,7 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->TextureDrawOn = false;
 	int w16 = 16; int h16 = 16;
 	int w32 = 32; int h32 = 32;
+	int wGB = 128;int hGB = 112;
 
 	totalTime += DeltaTime;
 	animTimer += DeltaTime;
@@ -111,24 +112,26 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->ZWriteOn = true;
 	MyScratch->UvOffsetGlobal = vec2d{ 0.0f,0.0f };
 	MyScratch->SetTexture(grass, w16, h16);
-	//int wGB = 128, hGB = 112;
-	//MyScratch->SetTexture(Image01, wGB, hGB);
 
 	MyScratch->TextureDrawOn = true;
 	MyScratch->DrawMesh(TerrrainMesh, vec3d{ 0,0,0 }, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
 	//AccumulatedBlur(0.75f); //Blur only BKG if called here!
 	//shadow:
 	MyScratch->MeshColor = RGB_Black;
+	MyScratch->MeshColor.a = 128;
 	MyScratch->TextureDrawOn = false;
 MyScratch->PushBackDepthBuffer(90);
 	MyScratch->DrawMesh(LoadedMesh2, PlayerLocation - vec3d{ 0,-1.3f,0 }, vec3d{ 0,totalTime,0 }, vec3d{ 1.25f,0.1f,1.25f });
 	//player:
-	MyScratch->SetTexture(Image03, w16, h16);
-	MyScratch->MeshColor = RGB_White;
+	MyScratch->SetTexture(Image03, w16, w16);
+	MyScratch->MeshColor = (MyScratch->SnapToMeshTriColor)*2.5f; //psudo lighting
 	MyScratch->TextureDrawOn = true;
-//MyScratch->PushBackDepthBuffer(90);
 	MyScratch->DrawMesh(LoadedMesh2, PlayerLocation, vec3d{ 0,totalTime,0 }, vec3d{ 1.0f,1.0f,1.0f });
-	
+	//props:
+	MyScratch->SetTexture(Image01, wGB, hGB);
+	MyScratch->DrawMesh(LoadedMesh2, vec3d{ -53.478f,1.48093f,-29.807f }, vec3d{ 0,totalTime,0 }, vec3d{ 1.0f,1.0f,1.0f }); //position copied from blender, but swapped y and -z
+
+
 	//FX
 	MyScratch->MoveMainspaceToExtraBuffer();
 	MyScratch->BrightnessContrastOnBuffer(MyScratch->MainSpace, 0.7f, 2.5f);

@@ -1506,7 +1506,11 @@ vec3d DrawScratchSpace::SnapToMesh(const vec3d& worldPos, const Mesh& mesh, cons
         if (!std::isnan(y))
         {
             if (std::isnan(bestY) || y > bestY)
+            {
+                SnapToMeshTriColor = (tri.c[0]+ SnapToMeshTriColor = tri.c[1]+ SnapToMeshTriColor = tri.c[2]) /3;
                 bestY = y;
+            }
+               
         }
       
         i++;
@@ -1514,6 +1518,7 @@ vec3d DrawScratchSpace::SnapToMesh(const vec3d& worldPos, const Mesh& mesh, cons
 
     if (!std::isnan(bestY)) {
         LastSnapToMeshResult = true;
+        
         return { worldPos.x, bestY + meshPos.y, worldPos.z };
 
     }

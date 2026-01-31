@@ -88,6 +88,7 @@ const RGB RGB_Green{ 0,   255, 0,   255 };
 const RGB RGB_Blue{ 0,   0,   255, 255 };
 const RGB RGB_Yellow{ 255,   255,   0, 255 };
 const RGB RGB_White{ 255, 255, 255, 255 };
+const RGB RGB_Grey{ 128, 128, 128, 255 };
 const RGB RGB_Black{ 0,   0,   0,   255 };
 
 
@@ -321,6 +322,7 @@ public:
     int ZOffset = 0; //Used for illogical Drawing. Decals, Edge-lights and the like should use this
     float ZOffsetFloat = 0.0f; //Used for illogical Drawing. Decals, Edge-lights and the like should use this
     bool LastSnapToMeshResult = false;
+    RGB SnapToMeshTriColor;
     vec2d UvOffsetGlobal = vec2d{ 0.0f,0.0f };
 //3D Primitives:
     Mesh MeshCube;
@@ -379,6 +381,7 @@ public:
     bool PointInTriangle(const vec3d& p, const vec3d& a, const vec3d& b, const vec3d& c);
     float SolveTriangleY(const vec3d& a, const vec3d& b, const vec3d& c, float px, float pz);
     float GroundHeightOnTriangle(const vec3d& a, const vec3d& b, const vec3d& c, float px, float pz);
+
     vec3d SnapToMesh(const vec3d& worldPos, const Mesh& mesh, const vec3d& meshPos);
 
     triangle GetNearestTriangleInMeshRaw(const Mesh& m, vec3d p);
