@@ -12,6 +12,7 @@ public:
 	Mesh LoadedMesh;
 	Mesh LoadedMesh2;
 	Mesh TerrrainMesh;
+	Mesh WaterPlaneMesh;
 	ThirdPersonMovement* PlayerMovement;
 	vec3d CameraSmoothLocation = vec3d{ 0.0f, 12.9f, -17.5f };
 	vec3d CameraSmoothRotation = vec3d{ 0.0f, 8.0f, 17.5f };
@@ -24,7 +25,8 @@ public:
 	bool screenshot_fire_once = false;
 
 	RGB* Image01;
-	RGB* Image02;
+	RGB* grass;
+	RGB* water;
 	RGB* Image03;
 	~GameTwo();
 };

@@ -20,6 +20,7 @@ void GameTwo::Initialize()
 	LoadedMesh = parser.ParseFromFile("Assets/olexa.txt");
 	LoadedMesh2 = parser.ParseFromFile("Assets/CubeTiledUvs.txt");
 	TerrrainMesh = parser.ParseFromFile("Assets/TerrainModel.txt"); 
+	WaterPlaneMesh = parser.ParseFromFile("Assets/WaterPlaneCutoutCenter.txt");
 	//LoadedMesh2 = parser.ParseFromFile("Assets/cube_model.txt");
 
 	
@@ -40,7 +41,11 @@ void GameTwo::Initialize()
 
 
 	int w2 = 16; int h2 = 16;
-	Image02 = ReadBMP("Assets/grass.bmp", w2, h2);
+	grass = ReadBMP("Assets/grass.bmp", w2, h2);
+
+
+	int w32 = 32; int h32 = 32;
+	water = ReadBMP("Assets/water.bmp", w32, w32);
 
 
 	int w3 = 16; int h3 = 16;
@@ -55,7 +60,9 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->Clear();
 	MyScratch->ClearZBufffer();
 	MyScratch->TextureDrawOn = false;
-	int w = 16; int h = 16;
+	int w16 = 16; int h16 = 16;
+	int w32 = 32; int h32 = 32;
+
 	totalTime += DeltaTime;
 	animTimer += DeltaTime;
 
@@ -83,14 +90,22 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->ClearZBufffer();
 //MyScratch->PushBackDepthBuffer(140);
 
-	MyScratch->ZWriteOn = true;
+	
 
 	//collision + offset
 	PlayerLocation = MyScratch->SnapToMesh(PlayerLocation, TerrrainMesh, vec3d{ 0,0,0 }) + vec3d{ 0,-1.5f,0 };
 
+	//water:
+	MyScratch->ZWriteOn = false;
+	MyScratch->UvOffsetGlobal = vec2d{ totalTime * 0.25f,totalTime * 0.25f }; //Scrolling UV effect. Use this for water later!
+	MyScratch->SetTexture(water, w32, h32);
+	MyScratch->TextureDrawOn = true;
+	MyScratch->DrawMesh(WaterPlaneMesh, vec3d{ 0,0,0 }, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
+	MyScratch->ClearZBufffer();
 	//terrain:
-	MyScratch->UvOffsetGlobal = vec2d{ totalTime * 0.5f,totalTime * 0.5f }; //Scrolling UV effect. Use this for water later!
-	MyScratch->SetTexture(Image02, w, h);
+	MyScratch->ZWriteOn = true;
+	MyScratch->UvOffsetGlobal = vec2d{ 0.0f,0.0f };
+	MyScratch->SetTexture(grass, w16, h16);
 	//int wGB = 128, hGB = 112;
 	//MyScratch->SetTexture(Image01, wGB, hGB);
 
@@ -98,13 +113,12 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->DrawMesh(TerrrainMesh, vec3d{ 0,0,0 }, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
 	//AccumulatedBlur(0.75f); //Blur only BKG if called here!
 	//shadow:
-	MyScratch->UvOffsetGlobal = vec2d{ 0.0f,0.0f };
 	MyScratch->MeshColor = RGB_Black;
 	MyScratch->TextureDrawOn = false;
 MyScratch->PushBackDepthBuffer(90);
 	MyScratch->DrawMesh(LoadedMesh2, PlayerLocation - vec3d{ 0,-1.3f,0 }, vec3d{ 0,totalTime,0 }, vec3d{ 1.25f,0.1f,1.25f });
 	//player:
-	MyScratch->SetTexture(Image03, w, h);
+	MyScratch->SetTexture(Image03, w16, h16);
 	MyScratch->MeshColor = RGB_White;
 	MyScratch->TextureDrawOn = true;
 //MyScratch->PushBackDepthBuffer(90);
@@ -219,10 +233,10 @@ void GameTwo::AccumulatedBlur(float strength)
 GameTwo::~GameTwo()
 {
 	delete Image01;
-	delete Image02;
+	delete grass;
 	delete Image03;
 	Image01 = nullptr;
-	Image02 = nullptr;
+	grass = nullptr;
 	Image03 = nullptr;
 	delete PlayerMovement;
 	PlayerMovement = nullptr;
