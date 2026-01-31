@@ -97,10 +97,14 @@ void GameTwo::Tick(float DeltaTime)
 
 	//water:
 	MyScratch->ZWriteOn = false; //Depth  off so we can draw as far as possible!
-	MyScratch->UvOffsetGlobal = vec2d{ totalTime * 0.25f,totalTime * 0.25f }; //Scrolling UV effect. Use this for water later!
+	
+	vec3d WaterLocation= { PlayerLocation.x,0.0f,PlayerLocation.z };
 	MyScratch->SetTexture(water, w32, h32);
-	MyScratch->TextureDrawOn = true;
-	MyScratch->DrawMesh(WaterPlaneMesh, vec3d{ 0,0,0 }, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
+	MyScratch->TextureDrawOn = true; 
+	//Scroll the uvs, and add the water plane location to make water look infinite
+	MyScratch->UvOffsetGlobal = vec2d{ (totalTime * 0.25f) + (WaterLocation.x * 0.05f),(totalTime * 0.25f) - (WaterLocation.z * 0.05f)}; //Scrolling UV effect. Use this for water later!
+
+	MyScratch->DrawMesh(WaterPlaneMesh, WaterLocation, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
 	MyScratch->ClearZBufffer();
 	//terrain:
 	MyScratch->PushBackDepthBuffer(2000); //Give us pleanty of space to draw the terrain!
