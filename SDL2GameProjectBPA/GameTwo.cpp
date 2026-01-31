@@ -89,14 +89,16 @@ void GameTwo::Tick(float DeltaTime)
 	PlayerLocation = MyScratch->SnapToMesh(PlayerLocation, TerrrainMesh, vec3d{ 0,0,0 }) + vec3d{ 0,-1.5f,0 };
 
 	//terrain:
+	MyScratch->UvOffsetGlobal = vec2d{ totalTime * 0.5f,totalTime * 0.5f }; //Scrolling UV effect. Use this for water later!
 	MyScratch->SetTexture(Image02, w, h);
-	int wGB = 128, hGB = 112;
-	MyScratch->SetTexture(Image01, wGB, hGB);
+	//int wGB = 128, hGB = 112;
+	//MyScratch->SetTexture(Image01, wGB, hGB);
 
 	MyScratch->TextureDrawOn = true;
 	MyScratch->DrawMesh(TerrrainMesh, vec3d{ 0,0,0 }, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
-	AccumulatedBlur(0.75f);
+	//AccumulatedBlur(0.75f); //Blur only BKG if called here!
 	//shadow:
+	MyScratch->UvOffsetGlobal = vec2d{ 0.0f,0.0f };
 	MyScratch->MeshColor = RGB_Black;
 	MyScratch->TextureDrawOn = false;
 MyScratch->PushBackDepthBuffer(90);

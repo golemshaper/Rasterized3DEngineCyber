@@ -1852,29 +1852,17 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         //----------------------------------------------------------------------------------------------------------------------
         //TEXTURING
         //---------------------------------------------------------------------------------------------------------------------- 
-        /* */
+      
         
-        //TEXTURE SAMPLING WILL WORK LIKE THIS, BUT I NEED TO PASS IN UVS!
-       /* p0.u = 0.0f;
-        p0.v = 0.0f;
-        p1.u = 1.0f;
-        p1.v = 0.0f;
-        p2.u = 0.0f;
-        p2.v = 1.0f;*/
-        p0.u = triProjected.uv[0].u;
-        p0.v = triProjected.uv[0].v;
-        p1.u = triProjected.uv[1].u;
-        p1.v = triProjected.uv[1].v;
-        p2.u = triProjected.uv[2].u;
-        p2.v = triProjected.uv[2].v;
+       
+        p0.u = triProjected.uv[0].u + UvOffsetGlobal.u;
+        p0.v = triProjected.uv[0].v + UvOffsetGlobal.v;
+        p1.u = triProjected.uv[1].u + UvOffsetGlobal.u;
+        p1.v = triProjected.uv[1].v + UvOffsetGlobal.v;
+        p2.u = triProjected.uv[2].u + UvOffsetGlobal.u;
+        p2.v = triProjected.uv[2].v + UvOffsetGlobal.v;
 
-       /* RGB textured = SampleTexture(Smile_RGB, 8, 8, p0.u, p0.v);
-        R = textured.r;
-        G = textured.g;
-        B = textured.b;
-        p0.color = textured;
-        p1.color = textured;
-        p2.color = textured;*/
+      
        
         //----------------------------------------------------------------------------------------------------------------------
 
