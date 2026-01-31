@@ -3,6 +3,7 @@
 void ThirdPersonMovement::ApplyMovement(float DeltaTime, DrawScratchSpace* MyScratch)
 {
     //Auto tick input:
+    LastSafePos = Pos;
     MyScratch->Input->Tick(DeltaTime);
 
     //USE FOR COLLISION LATER: vec3d last_safe_pos = Pos;
@@ -32,4 +33,9 @@ void ThirdPersonMovement::ApplyMovement(float DeltaTime, DrawScratchSpace* MyScr
 void ThirdPersonMovement::ApplyGroundSnap(const Mesh& mesh, DrawScratchSpace* MyScratch, vec3d offsetMe)
 {
     Pos = MyScratch->SnapToMesh(Pos, mesh, vec3d{ 0,0,0 }) + offsetMe;
+    if (MyScratch->LastSnapToMeshResult == false)
+    {
+        //No walking off of terrain
+        Pos = LastSafePos;
+    }
 }

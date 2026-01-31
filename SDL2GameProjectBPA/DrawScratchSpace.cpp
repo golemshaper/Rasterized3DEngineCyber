@@ -1512,9 +1512,12 @@ vec3d DrawScratchSpace::SnapToMesh(const vec3d& worldPos, const Mesh& mesh, cons
         i++;
     }
 
-    if (!std::isnan(bestY))
+    if (!std::isnan(bestY)) {
+        LastSnapToMeshResult = true;
         return { worldPos.x, bestY + meshPos.y, worldPos.z };
 
+    }
+    LastSnapToMeshResult = false;
     return worldPos;
 
 

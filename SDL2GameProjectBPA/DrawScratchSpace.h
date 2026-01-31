@@ -320,6 +320,7 @@ public:
     bool ZWriteOn = false;
     int ZOffset = 0; //Used for illogical Drawing. Decals, Edge-lights and the like should use this
     float ZOffsetFloat = 0.0f; //Used for illogical Drawing. Decals, Edge-lights and the like should use this
+    bool LastSnapToMeshResult = false;
     vec2d UvOffsetGlobal = vec2d{ 0.0f,0.0f };
 //3D Primitives:
     Mesh MeshCube;

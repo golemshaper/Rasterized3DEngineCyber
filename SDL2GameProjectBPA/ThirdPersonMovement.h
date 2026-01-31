@@ -4,6 +4,7 @@ class ThirdPersonMovement
 {
 public: 
 	vec3d Pos = { 0,0,0 };
+	vec3d LastSafePos = { 0,0,0 };
 	vec3d Rot = { 0,0,0 };
 	float Speed = 12.0f;
 	void ApplyMovement(float DeltaTime, DrawScratchSpace* MyScratch);
