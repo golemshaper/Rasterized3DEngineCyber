@@ -23,7 +23,8 @@ public:
 	void AccumulatedBlur(float strength);
 
 	bool screenshot_fire_once = false;
-
+	RGB GI_Lighting = {255,255,255,255};
+	//textures
 	RGB* Image01;
 	RGB* grass;
 	RGB* water;

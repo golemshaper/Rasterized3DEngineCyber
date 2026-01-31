@@ -21,6 +21,10 @@ void ThirdPersonMovement::ApplyMovement(float DeltaTime, DrawScratchSpace* MyScr
 
     //Apply Movement
     vec3d Move = (right * MyScratch->Input->GetMovementX()) + (forward * MyScratch->Input->GetMovementY());
+    bMoving = abs(Move.length_squared()) > 0.01f;
+
+
+
     Pos = Pos + Move * Speed * DeltaTime;
 
 
@@ -38,4 +42,9 @@ void ThirdPersonMovement::ApplyGroundSnap(const Mesh& mesh, DrawScratchSpace* My
         //No walking off of terrain
         Pos = LastSafePos;
     }
+}
+
+bool ThirdPersonMovement::IsMoving()
+{
+    return bMoving;
 }

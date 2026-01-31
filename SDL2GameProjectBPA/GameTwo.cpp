@@ -124,10 +124,14 @@ MyScratch->PushBackDepthBuffer(90);
 	MyScratch->DrawMesh(LoadedMesh2, PlayerLocation - vec3d{ 0,-1.3f,0 }, vec3d{ 0,totalTime,0 }, vec3d{ 1.25f,0.1f,1.25f });
 	//player:
 	MyScratch->SetTexture(Image03, w16, w16);
-	MyScratch->MeshColor = (MyScratch->SnapToMeshTriColor)*2.5f; //psudo lighting
+	
+	GI_Lighting = MyScratch->Lerp(GI_Lighting, (MyScratch->SnapToMeshTriColor) * 2.5f, 6.0f * DeltaTime);//psudo lighting
+	MyScratch->MeshColor = GI_Lighting; //psudo lighting
+
 	MyScratch->TextureDrawOn = true;
 	MyScratch->DrawMesh(LoadedMesh2, PlayerLocation, vec3d{ 0,totalTime,0 }, vec3d{ 1.0f,1.0f,1.0f });
 	//props:
+	MyScratch->MeshColor = RGB_White;
 	MyScratch->SetTexture(Image01, wGB, hGB);
 	MyScratch->DrawMesh(LoadedMesh2, vec3d{ -53.478f,1.48093f,-29.807f }, vec3d{ 0,totalTime,0 }, vec3d{ 1.0f,1.0f,1.0f }); //position copied from blender, but swapped y and -z
 
