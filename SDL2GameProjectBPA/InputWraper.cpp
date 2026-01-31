@@ -65,6 +65,8 @@ void InputWraper::Tick(float DeltaTime)
         ly = Lerp(ly, -1.0f, grow * DeltaTime);
     }
 
+    //todo: Do camera stuff
+
 
 
     //TOGGLE KEYS:
@@ -93,6 +95,18 @@ float InputWraper::GetMovementX()
 float InputWraper::GetMovementY()
 {
     return ly;
+}
+
+float InputWraper::GetCameraXAxis()
+{
+    //todo: Do camera stuff
+    return cx;
+}
+
+float InputWraper::GetCameraYAxis()
+{
+    //todo: Do camera stuff
+    return cy;
 }
 
 bool InputWraper::GetToggleDepthKey()

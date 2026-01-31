@@ -473,28 +473,6 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2)
 }
 void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
 {
-
-
-//TEXTURE PLACEHOLDER
-    //const RGB TestTexture2[64] = {
-    //    // Row 0
-    //    {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
-    //    // Row 1
-    //    {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
-    //    // Row 2
-    //    {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220},
-    //    // Row 3
-    //    {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220},
-    //    // Row 4
-    //    {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
-    //    // Row 5
-    //    {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150},
-    //    // Row 6
-    //    {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220},
-    //    // Row 7
-    //    {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}, {140,140,150}, {140,140,150}, {180,200,220}, {180,200,220}
-    //};
-
     //const RGB* TestTexture = TextureBuffer;  //USE THE TEXTURE FROM THE TEXTURE BUFFER.
     const RGB* CurrentTexture = TextureBuffer;  //USE THE TEXTURE FROM THE TEXTURE BUFFER.
     //I DISABLED IT, BUT IT CAN BE LOADED FROM THE TEXTURE BUFFER.
@@ -510,19 +488,6 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
     if (v2.y < v0.y) std::swap(v0, v2);
     if (v2.y < v1.y) std::swap(v1, v2);
 
-    /*auto interpolate = [](int y, const Vertex& a, const Vertex& b) -> Vertex {
-        if (b.y == a.y) return a;
-        float t = static_cast<float>(y - a.y) / (b.y - a.y);
-        return {
-            static_cast<int>(a.x + t * (b.x - a.x)),
-            y,
-            {
-                static_cast<int>(a.color.r + t * (b.color.r - a.color.r)),
-                static_cast<int>(a.color.g + t * (b.color.g - a.color.g)),
-                static_cast<int>(a.color.b + t * (b.color.b - a.color.b))
-            }
-        };
-    };*/
     auto interpolate = [](int y, const Vertex& a, const Vertex& b) -> Vertex {
         if (b.y == a.y) return a;
         float t = float(y - a.y) / float(b.y - a.y);
@@ -587,9 +552,13 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
             //RGB textured = SampleTexture(TestTexture, 32, 32, u, v);
              RGB textured = SampleTexture(CurrentTexture, TextureBufferW, TextureBufferH, u, v);
             //RGB textured = SampleTexture(TestTexture, 8, 8, u, v);
-            
+            if (DrawHighlightEdgeOnly == true && TextureOnForEdgelight == false)
+            {
+                textured = RGB_White;
+            }
             if (TextureDrawOn) {
 
+                //TODO: Instead of overriding, have a blend by alpha option! Also consider getting rid of the non-multiply texture opti
                 if (!MultiplyInTextureMode)
                 {
                     MainSpace[y * SCREEN_X + x] = (color + textured) / 2;
@@ -1941,8 +1910,9 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
             Vertex light_fx_p1 = { static_cast<int>(triProjected.p[1].x), static_cast<int>(triProjected.p[1].y), RGB{R,G,B}*HighlightBrightness };
             Vertex light_fx_p2 = { static_cast<int>(triProjected.p[2].x), static_cast<int>(triProjected.p[2].y), RGB{R,G,B}*HighlightBrightness };*/
 
+
             Vertex light_fx_p0 = { static_cast<int>(triProjected.p[0].x), static_cast<int>(triProjected.p[0].y), p0.color * HighlightBrightness };
-            Vertex light_fx_p1 = { static_cast<int>(triProjected.p[1].x), static_cast<int>(triProjected.p[1].y), p1.color *HighlightBrightness };
+            Vertex light_fx_p1 = { static_cast<int>(triProjected.p[1].x), static_cast<int>(triProjected.p[1].y),p1.color *HighlightBrightness };
             Vertex light_fx_p2 = { static_cast<int>(triProjected.p[2].x), static_cast<int>(triProjected.p[2].y), p2.color  *HighlightBrightness };
 
             DrawTriangle(light_fx_p0 - 1, light_fx_p1 - 1, light_fx_p2 - 1, DepthValue);
@@ -1981,7 +1951,7 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool 
         //multipass
         DrawHighlightEdgeOnly = true; //this causes the offset
         //const float offset = -10.5f;
-        const int offset = 15;
+        const int offset = 215;
         ZOffset -= offset; // draw one point behind the mesh
         DrawUnlit = true;
         DrawMesh(m, loc, rot, scale);

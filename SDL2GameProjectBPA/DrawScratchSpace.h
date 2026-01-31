@@ -314,6 +314,8 @@ public:
     int EdgeBrightness = 255;
     float HighlightBrightness = 2.0f;
     bool TextureDrawOn = false;
+    bool TextureOnForEdgelight = true;
+
     bool MultiplyInTextureMode = true;
     bool DrawEdges = false;
     bool DrawHighlightEdgeOnly = false;

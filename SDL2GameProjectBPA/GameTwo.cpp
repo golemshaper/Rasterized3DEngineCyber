@@ -19,6 +19,7 @@ void GameTwo::Initialize()
 	//MY PC: C:\Users\brian\source\repos\Rasterized3DEngine\SDL2GameProjectBPA\Assets
 	LoadedMesh = parser.ParseFromFile("Assets/olexa.txt");
 	LoadedMesh2 = parser.ParseFromFile("Assets/CubeTiledUvs.txt");
+	PlayerMesh = parser.ParseFromFile("Assets/RPGWarriorRohan.txt");
 	TerrrainMesh = parser.ParseFromFile("Assets/TerrainModel.txt"); 
 	WaterPlaneMesh = parser.ParseFromFile("Assets/WaterPlaneCutoutCenter.txt");
 	//LoadedMesh2 = parser.ParseFromFile("Assets/cube_model.txt");
@@ -51,7 +52,9 @@ void GameTwo::Initialize()
 	int w3 = 16; int h3 = 16;
 	Image03 = ReadBMP("Assets/red_brick.bmp", w3, h3);
 	MyScratch->SetTexture(Image03,w3,h3);
-
+	
+	int w64 = 64; int h64 = 64;
+	Palette = ReadBMP("Assets/BasicPalette.bmp", w64, h64);
 	
 }
 void GameTwo::Tick(float DeltaTime)
@@ -66,6 +69,7 @@ void GameTwo::Tick(float DeltaTime)
 	int w16 = 16; int h16 = 16;
 	int w32 = 32; int h32 = 32;
 	int wGB = 128;int hGB = 112;
+	int w64 = 64; int h64 = 64;
 	totalTime += DeltaTime;
 	animTimer += DeltaTime;
 	MyScratch->MeshColor = RGB_White;
@@ -94,7 +98,7 @@ void GameTwo::Tick(float DeltaTime)
 	//---------------
 	//collision + offset
 	//---------------
-	PlayerLocation = MyScratch->SnapToMesh(PlayerLocation, TerrrainMesh, vec3d{ 0,0,0 }) + vec3d{ 0,-1.5f,0 };
+	PlayerLocation = MyScratch->SnapToMesh(PlayerLocation, TerrrainMesh, vec3d{ 0,0,0 });
 	//---------------
 	//water:
 	//---------------
@@ -133,17 +137,18 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->MeshColor.a = 128;
 	MyScratch->TextureDrawOn = false;
 	MyScratch->PushBackDepthBuffer(90);
-	MyScratch->DrawMesh(LoadedMesh2, PlayerLocation - vec3d{ 0,-1.3f,0 }, vec3d{ 0,totalTime,0 }, vec3d{ 1.25f,0.1f,1.25f });
+	MyScratch->MoveMainspaceToExtraBuffer();
+	MyScratch->DrawMesh(PlayerMesh, PlayerLocation+ vec3d{ 0,0,0 }, vec3d{ 0,totalTime,0 }, vec3d{ 2.5f,0.1f,2.5f });
+	MyScratch->BlendBuffers(0.5f);
 	//---------------
 	//player:
 	//---------------
-	MyScratch->SetTexture(Image03, w16, w16);
-	
+	MyScratch->SetTexture(Palette, w64, h64);
 	GI_Lighting = MyScratch->Lerp(GI_Lighting, (MyScratch->SnapToMeshTriColor) * 2.5f, 6.0f * DeltaTime);//psudo lighting
 	MyScratch->MeshColor = GI_Lighting; //psudo lighting
-
 	MyScratch->TextureDrawOn = true;
-	MyScratch->DrawMesh(LoadedMesh2, PlayerLocation, vec3d{ 0,totalTime,0 }, vec3d{ 1.0f,1.0f,1.0f });
+	
+	MyScratch->DrawMesh(PlayerMesh, PlayerLocation , vec3d{ 0,totalTime,0 }, vec3d{ 2.5f,2.5f,2.5f });
 	//---------------
 	//props:
 	//---------------

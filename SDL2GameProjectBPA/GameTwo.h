@@ -11,6 +11,7 @@ public:
 	void DrawBasics(float DeltaTime);
 	Mesh LoadedMesh;
 	Mesh LoadedMesh2;
+	Mesh PlayerMesh;
 	Mesh TerrrainMesh;
 	Mesh WaterPlaneMesh;
 	ThirdPersonMovement* PlayerMovement;
@@ -29,6 +30,7 @@ public:
 	RGB* grass;
 	RGB* water;
 	RGB* Image03;
+	RGB* Palette;
 	~GameTwo();
 };
 

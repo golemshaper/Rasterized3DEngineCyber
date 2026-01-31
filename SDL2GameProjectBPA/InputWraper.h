@@ -10,12 +10,18 @@ public:
 	void Tick(float DeltaTime);
 	float GetMovementX();
 	float GetMovementY();
+	float GetCameraXAxis();
+	float GetCameraYAxis();
 	bool GetToggleDepthKey();
 	void ResetToggleDepthKey();
 	bool GetFireOneHold();
 private:
 	float lx = 0.0f;
 	float ly = 0.0f;
+
+	float cx = 0.0f;
+	float cy = 0.0f;
+
 	float toggleCooldown = 0.0f;
 	bool zDepthDrawOn = false;
 	bool inputFireOneHeld = false;
