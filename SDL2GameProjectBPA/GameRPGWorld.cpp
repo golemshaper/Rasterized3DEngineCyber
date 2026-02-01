@@ -191,13 +191,17 @@ void GameRPGWorld::Tick(float DeltaTime)
 	//normal render
 	MyScratch->DrawMesh(PlayerMesh, PlayerLocation + PlayerOffset, vec3d{ 0,PlayerMovement->GetYaw(),0 }, PlayerScale);
 
+	//TEXT MAPPED TO PLAYER:
+	//vec3d player_2d_loc = MyScratch->Get2DPointFromLastLocation();
+	//MyScratch->DrawTextDropShadow(player_2d_loc.x, player_2d_loc.y, RGB_White, "Hello", MyTextSprites, 1.0f);
 
 	//---------------
 	//props:
 	//---------------
 	MyScratch->MeshColor = RGB_White;
 	MyScratch->SetTexture(Image03, w16, w16);
-	MyScratch->DrawMesh(LoadedMesh2, vec3d{ -53.478f,1.48093f,-29.807f }, vec3d{ 0,totalTime,0 }, vec3d{ 1.0f,1.0f,1.0f }); //position copied from blender, but swapped y and -z
+	vec3d BoxPropLoc = vec3d{ -53.478f,1.48093f,-29.807f };
+	MyScratch->DrawMesh(LoadedMesh2, BoxPropLoc, vec3d{ 0,totalTime,0 }, vec3d{ 1.0f,1.0f,1.0f }); //position copied from blender, but swapped y and -z
 
 	//---------------
 	//FX:
@@ -208,9 +212,10 @@ void GameRPGWorld::Tick(float DeltaTime)
 	//---------------
 	//Text
 	//---------------
-	//MyScratch->DrawTextDropShadow(32, 32, RGB_White, "Hello", MyTextSprites,1.0f);
-	textBoxProgressTick += 2.5f * DeltaTime;
-	TextBoxDraw(Reader->GetStringFromSheetTag(RequestedText));
+	TextUpdateTick(DeltaTime);
+	if (MyScratch->SquaredDistance2D(PlayerLocation, BoxPropLoc) <= 1.0f) {
+		RequestedText = "RpgNpcBox";
+	}
 }
 
 void GameRPGWorld::RenderMovie()
@@ -309,6 +314,12 @@ void GameRPGWorld::AccumulatedBlur(float strength)
 
 }
 
+
+void GameRPGWorld::TextUpdateTick(float DeltaTime)
+{
+	textBoxProgressTick += 2.5f * DeltaTime;
+	TextBoxDraw(Reader->GetStringFromSheetTag(RequestedText));
+}
 
 void GameRPGWorld::TextBoxDraw(const char* input)
 {

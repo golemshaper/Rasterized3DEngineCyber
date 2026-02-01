@@ -52,6 +52,7 @@ public:
 	float typingEffect = -1.0f;
 	float textBoxProgressTick = 0.0f;
 	const char* previous_text = "";
+	void TextUpdateTick(float DeltaTime);
 	void TextBoxDraw(const char* input);
 
 	~GameRPGWorld();

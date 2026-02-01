@@ -2098,6 +2098,7 @@ Mesh DrawScratchSpace::MorphMesh(const Mesh& from, const Mesh& to, float t)
 
 
             R.uv[j] = A.uv[j];
+            R.c[j] = A.c[j];
             
         }
     }
