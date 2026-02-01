@@ -21,9 +21,6 @@
     <ClCompile Include="DrawScratchSpace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameRPGWorld.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="InputWraper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

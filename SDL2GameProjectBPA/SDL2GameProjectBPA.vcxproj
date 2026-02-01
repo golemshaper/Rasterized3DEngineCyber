@@ -139,7 +139,6 @@
   <ItemGroup>
     <ClCompile Include="DrawScratchSpace.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameRPGWorld.cpp" />
     <ClCompile Include="GameAthenaSlashEmUp.cpp" />
     <ClCompile Include="GameModelViewer.cpp" />
     <ClCompile Include="GameOne.cpp" />
