@@ -7,6 +7,9 @@ void InputWraper::Prepare()
 {
     lx = 0.0f;
     ly = 0.0f;
+    cx = 0.0f;
+    cy = 0.0f;
+
 }
 
 void InputWraper::Tick(float DeltaTime)
