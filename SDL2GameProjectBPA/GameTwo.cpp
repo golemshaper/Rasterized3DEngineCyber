@@ -112,11 +112,12 @@ void GameTwo::Tick(float DeltaTime)
 	//Scroll the uvs, and add the water plane location to make water look infinite
 	MyScratch->UvOffsetGlobal = vec2d{ (totalTime * 0.25f) + (WaterLocation.x * 0.05f),(totalTime * 0.25f) - (WaterLocation.z * 0.05f)}; //Scrolling UV effect. Use this for water later!
 	//standard mesh
-	MyScratch->DrawMesh(WaterPlaneMesh, WaterLocation, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
+	Mesh wave = MyScratch->WaveMesh(WaterPlaneMesh, totalTime*12.0f, 0.25f);
+	MyScratch->DrawMesh(wave, WaterLocation, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
 	//Water second layerFX overlay:
 	MyScratch->MoveMainspaceToExtraBuffer();
 	MyScratch->UvOffsetGlobal = vec2d{ (totalTime * -0.25f) + (WaterLocation.x * 0.05f),(totalTime * -0.25f) - (WaterLocation.z * 0.05f) }; //Scrolling UV effect. Use this for water later!
-	MyScratch->DrawMesh(WaterPlaneMesh, WaterLocation, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
+	MyScratch->DrawMesh(wave, WaterLocation, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
 	MyScratch->BlendBuffers(abs(sin(totalTime))*0.5f); //blend two water layers
 	MyScratch->ClearZBufffer();//don't need this
 

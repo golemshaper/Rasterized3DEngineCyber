@@ -2099,6 +2099,25 @@ Mesh DrawScratchSpace::MorphMesh(const Mesh& from, const Mesh& to, float t)
     return out;
 }
 
+//Mesh DrawScratchSpace::WaveMesh(const Mesh& from, float time, float strength)
+//{
+//    Mesh out;
+//    out.Tris.resize(from.Tris.size());
+//
+//    for (size_t i = 0; i < from.Tris.size(); i++)
+//    {
+//        const triangle& A = from.Tris[i];
+//        triangle& R = out.Tris[i];
+//
+//        for (size_t j = 0; j < 3; j++)
+//        {
+//            R.p[j].x = A.p[j].x + (sin(time + i) * strength);
+//            R.p[j].y = A.p[j].y + (cos(time + i) * strength);
+//            R.p[j].z = A.p[j].z;// +(sin(time + i) * strength);
+//        }
+//    }
+//    return out;
+//}
 Mesh DrawScratchSpace::WaveMesh(const Mesh& from, float time, float strength)
 {
     Mesh out;
@@ -2109,13 +2128,17 @@ Mesh DrawScratchSpace::WaveMesh(const Mesh& from, float time, float strength)
         const triangle& A = from.Tris[i];
         triangle& R = out.Tris[i];
 
+        R = A; // copy ONCE
+
         for (size_t j = 0; j < 3; j++)
         {
-            R.p[j].x = A.p[j].x + (sin(time + j) * strength);
-            R.p[j].y = A.p[j].y + (sin(time + j) * strength);
-            R.p[j].z = A.p[j].z + (sin(time + j) * strength);
+            float wave =
+                sin(time + A.p[j].x * 0.1f + A.p[j].z * 0.1f) * strength;
+
+            R.p[j].y = A.p[j].y + wave;
         }
     }
+
     return out;
 }
 
