@@ -2089,11 +2089,16 @@ Mesh DrawScratchSpace::MorphMesh(const Mesh& from, const Mesh& to, float t)
         const triangle& B = to.Tris[i];
         triangle& R = out.Tris[i];
 
+      
         for (size_t j = 0; j < 3; j++)
         {
             R.p[j].x = Lerp(A.p[j].x, B.p[j].x, t);
             R.p[j].y = Lerp(A.p[j].y, B.p[j].y, t);
             R.p[j].z = Lerp(A.p[j].z, B.p[j].z, t);
+
+
+            R.uv[j] = A.uv[j];
+            
         }
     }
     return out;

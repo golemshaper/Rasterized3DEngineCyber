@@ -17,7 +17,11 @@ public:
 	void DrawBasics(float DeltaTime);
 	Mesh LoadedMesh;
 	Mesh LoadedMesh2;
+	//Player
+	Mesh PlayerMesh_Idle;
+	Mesh PlayerMesh_Walk;
 	Mesh PlayerMesh;
+
 	Mesh TerrrainMesh;
 	Mesh WaterPlaneMesh;
 	ThirdPersonMovement* PlayerMovement;

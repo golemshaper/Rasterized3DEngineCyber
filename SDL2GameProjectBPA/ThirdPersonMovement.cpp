@@ -21,6 +21,7 @@ void ThirdPersonMovement::ApplyMovement(float DeltaTime, DrawScratchSpace* MyScr
 
     //Apply Movement
     vec3d Move = (right * MyScratch->Input->GetMovementX()) + (forward * MyScratch->Input->GetMovementY());
+    MoveVec = Move;
     bMoving = abs(Move.length_squared()) > 0.01f;
 
 
@@ -47,4 +48,10 @@ void ThirdPersonMovement::ApplyGroundSnap(const Mesh& mesh, DrawScratchSpace* My
 bool ThirdPersonMovement::IsMoving()
 {
     return bMoving;
+}
+
+float ThirdPersonMovement::GetYaw()
+{
+    float yaw = atan2f(-MoveVec.x, -MoveVec.z);
+    return yaw;
 }

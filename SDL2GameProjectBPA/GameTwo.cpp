@@ -21,12 +21,18 @@ void GameTwo::Initialize()
 	//MY PC: C:\Users\brian\source\repos\Rasterized3DEngine\SDL2GameProjectBPA\Assets
 	LoadedMesh = parser.ParseFromFile("Assets/olexa.txt");
 	LoadedMesh2 = parser.ParseFromFile("Assets/CubeTiledUvs.txt");
-	PlayerMesh = parser.ParseFromFile("Assets/RPGWarriorRohan.txt");
+
+	//player
+	PlayerMesh_Idle = parser.ParseFromFile("Assets/RPGWarriorRohan.txt");
+	PlayerMesh_Walk = parser.ParseFromFile("Assets/RPGWarriorRohan_Walk_F1.txt");
+	PlayerMesh = PlayerMesh_Idle;
+
+
 	TerrrainMesh = parser.ParseFromFile("Assets/TerrainModel.txt"); 
 	WaterPlaneMesh = parser.ParseFromFile("Assets/WaterPlaneCutoutCenter.txt");
 	//LoadedMesh2 = parser.ParseFromFile("Assets/cube_model.txt");
 
-	
+	//How to animate:
 	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
 	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F1.txt"));
 	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F1.txt"));
@@ -68,6 +74,8 @@ void GameTwo::Tick(float DeltaTime)
 	//---------------
 	//Setup:
 	//---------------
+	totalTime += DeltaTime;
+	animTimer += DeltaTime;
 	MyScratch->ZWriteOn = false;
 	MyScratch->Clear();
 	MyScratch->ClearZBufffer();
@@ -76,8 +84,9 @@ void GameTwo::Tick(float DeltaTime)
 	int w32 = 32; int h32 = 32;
 	int wGB = 128;int hGB = 112;
 	int w64 = 64; int h64 = 64;
-	totalTime += DeltaTime;
-	animTimer += DeltaTime;
+	vec3d PlayerScale = vec3d{ 2.5f,2.5f,2.5f };
+	
+
 	MyScratch->MeshColor = RGB_White;
 
 	//---------------
@@ -85,6 +94,18 @@ void GameTwo::Tick(float DeltaTime)
 	//---------------
 	PlayerMovement->ApplyMovement(DeltaTime, MyScratch);
 	PlayerMovement->ApplyGroundSnap(TerrrainMesh, MyScratch, vec3d{ 0,-1.3f,0 });
+	//animate
+	vec3d PlayerOffset = vec3d{ 0,abs(sin(totalTime * 12.0f)) * -0.2f,0.0f };
+	if (PlayerMovement->IsMoving()) 
+	{
+		PlayerMesh = MyScratch->MorphMesh(PlayerMesh_Idle, PlayerMesh_Walk, sin(totalTime * 12.0f) * 0.5f);
+	}
+	else
+	{
+		PlayerMesh = PlayerMesh_Idle;
+		PlayerOffset = vec3d{ 0,0,0 };
+	}
+
 	vec3d PlayerLocation = PlayerMovement->Pos; //CIRCLE: vec3d{ sin(totalTime) * 10.0f,-12.5f,cos(totalTime) * 8.0f };
 	//---------------
 	//CAMERA:
@@ -109,16 +130,13 @@ void GameTwo::Tick(float DeltaTime)
 	//---------------
 	//water:
 	//---------------
-	
 	MyScratch->ZWriteOn = false; //Depth  off so we can draw as far as possible!
-		//want multi layered water that scrolls at different speeds? render the water twice, push the first ot the back buffer, render again, mix 50% opacity
 	vec3d WaterLocation= { PlayerLocation.x,0.0f,PlayerLocation.z };
-
 	MyScratch->SetTexture(water, w32, h32);
 	MyScratch->TextureDrawOn = true; 
 	//Scroll the uvs, and add the water plane location to make water look infinite
 	MyScratch->UvOffsetGlobal = vec2d{ (totalTime * 0.25f) + (WaterLocation.x * 0.05f),(totalTime * 0.25f) - (WaterLocation.z * 0.05f)}; //Scrolling UV effect. Use this for water later!
-	//standard mesh
+	//Wave mesh:
 	Mesh wave = MyScratch->WaveMesh(WaterPlaneMesh, totalTime*12.0f, 0.25f);
 	MyScratch->DrawMesh(wave, WaterLocation, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
 	//Water second layerFX overlay:
@@ -126,12 +144,9 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->UvOffsetGlobal = vec2d{ (totalTime * -0.25f) + (WaterLocation.x * 0.05f),(totalTime * -0.25f) - (WaterLocation.z * 0.05f) }; //Scrolling UV effect. Use this for water later!
 	MyScratch->DrawMesh(wave, WaterLocation, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
 
-	//Reflection
-	MyScratch->DrawMesh(PlayerMesh, PlayerLocationMirrored, vec3d{ 0,totalTime,0 }, vec3d{ 2.5f,-2.5f,2.5f });
-
+	//Reflection:
+	MyScratch->DrawMesh(PlayerMesh, PlayerLocationMirrored, vec3d{ 0,PlayerMovement->GetYaw(),0 }, vec3d{ PlayerScale.x,-PlayerScale.y,PlayerScale.z});
 	MyScratch->BlendBuffers(0.25f +abs(sin(totalTime))*0.5f); //blend two water layers
-
-
 	MyScratch->ClearZBufffer();//don't need this
 
 	//---------------
@@ -152,7 +167,7 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->TextureDrawOn = false;
 	MyScratch->PushBackDepthBuffer(90);
 	MyScratch->MoveMainspaceToExtraBuffer();
-	MyScratch->DrawMesh(PlayerMesh, PlayerLocation+ vec3d{ 0,0,0 }, vec3d{ 0,totalTime,0 }, vec3d{ 2.5f,0.1f,2.5f });
+	MyScratch->DrawMesh(PlayerMesh, PlayerLocation+ vec3d{ 0,0,0 }, vec3d{ 0,PlayerMovement->GetYaw(),0 }, vec3d{ PlayerScale.x,0.1f,PlayerScale.z });
 	MyScratch->BlendBuffers(0.5f);
 	//---------------
 	//player:
@@ -162,12 +177,21 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->MeshColor = GI_Lighting; //psudo lighting
 	MyScratch->TextureDrawOn = true;
 	
-	MyScratch->DrawMesh(PlayerMesh, PlayerLocation , vec3d{ 0,totalTime,0 }, vec3d{ 2.5f,2.5f,2.5f });
+	//edge light
+	MyScratch->MeshColor = GI_Lighting * 2.0f;
+	MyScratch->DrawMesh(PlayerMesh, PlayerLocation + PlayerOffset - vec3d{ 0.09f,0.09f,0.0f }, vec3d{ 0,PlayerMovement->GetYaw(),0 }, PlayerScale);
+	MyScratch->PushBackDepthBuffer(32);
+	//end edge light
+	MyScratch->MeshColor = GI_Lighting; //psudo lighting
+	//normal render
+	MyScratch->DrawMesh(PlayerMesh, PlayerLocation + PlayerOffset, vec3d{ 0,PlayerMovement->GetYaw(),0 }, PlayerScale);
+
+
 	//---------------
 	//props:
 	//---------------
 	MyScratch->MeshColor = RGB_White;
-	MyScratch->SetTexture(Image01, wGB, hGB);
+	MyScratch->SetTexture(Image03, w16, w16);
 	MyScratch->DrawMesh(LoadedMesh2, vec3d{ -53.478f,1.48093f,-29.807f }, vec3d{ 0,totalTime,0 }, vec3d{ 1.0f,1.0f,1.0f }); //position copied from blender, but swapped y and -z
 
 	//---------------
