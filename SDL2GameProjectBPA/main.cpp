@@ -152,10 +152,8 @@ bool wasm_main(double time, void* renderer) {
 
 int main(int argc, char* argv[]) {
     
-    //RESET SCRATCH
-   // MyScratch->Initialize();
-    TheGame->Initialize();
-    //TheGame->MyScratch->Initialize();
+    //INIT GAME
+    TheGame->Initialize();   //We may need to add resolution parameters here...
 
     if (!SDL_Init(SDL_INIT_VIDEO)) {
         std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
