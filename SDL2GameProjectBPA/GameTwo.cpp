@@ -99,6 +99,7 @@ void GameTwo::Tick(float DeltaTime)
 	//collision + offset
 	//---------------
 	PlayerLocation = MyScratch->SnapToMesh(PlayerLocation, TerrrainMesh, vec3d{ 0,0,0 });
+	vec3d PlayerLocationMirrored = { PlayerLocation.x,-PlayerLocation.y + 29.0f, PlayerLocation.z };
 	//---------------
 	//water:
 	//---------------
@@ -118,7 +119,13 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->MoveMainspaceToExtraBuffer();
 	MyScratch->UvOffsetGlobal = vec2d{ (totalTime * -0.25f) + (WaterLocation.x * 0.05f),(totalTime * -0.25f) - (WaterLocation.z * 0.05f) }; //Scrolling UV effect. Use this for water later!
 	MyScratch->DrawMesh(wave, WaterLocation, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
-	MyScratch->BlendBuffers(abs(sin(totalTime))*0.5f); //blend two water layers
+
+	//Reflection
+	MyScratch->DrawMesh(PlayerMesh, PlayerLocationMirrored, vec3d{ 0,totalTime,0 }, vec3d{ 2.5f,-2.5f,2.5f });
+
+	MyScratch->BlendBuffers(0.25f +abs(sin(totalTime))*0.5f); //blend two water layers
+
+
 	MyScratch->ClearZBufffer();//don't need this
 
 	//---------------
