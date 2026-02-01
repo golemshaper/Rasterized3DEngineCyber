@@ -16,12 +16,12 @@
 #include "DrawScratchSpace.h"
 #include "Game.h"
 #include "GameOne.h"
-#include "GameTwo.h"
+#include "GameRPGWorld.h"
 #include "GameAthenaSlashEmUp.h"
 #include "GameModelViewer.h"
 //
 //Game* TheGame = new Game();
-GameTwo* TheGame = new GameTwo();
+GameRPGWorld* TheGame = new GameRPGWorld();
 //GameOne* TheGame = new GameOne();
 //GameModelViewer* TheGame = new GameModelViewer();
 //GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();

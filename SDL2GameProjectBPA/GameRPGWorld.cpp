@@ -1,4 +1,4 @@
-#include "GameTwo.h"
+#include "GameRPGWorld.h"
 #include "MonkeyMesh.h"
 #include <string>
 
@@ -12,7 +12,7 @@
 #include "miniaudio.h"
 
 
-void GameTwo::Initialize()
+void GameRPGWorld::Initialize()
 {
 	MyScratch = new DrawScratchSpace();
 	MyScratch->Initialize();
@@ -74,7 +74,7 @@ void GameTwo::Initialize()
 	ma_engine_play_sound(&audioEngine, "Assets/noise_transition.wav", NULL);
 
 }
-void GameTwo::Tick(float DeltaTime)
+void GameRPGWorld::Tick(float DeltaTime)
 {
 	//---------------
 	//Setup:
@@ -213,7 +213,7 @@ void GameTwo::Tick(float DeltaTime)
 	TextBoxDraw(Reader->GetStringFromSheetTag(RequestedText));
 }
 
-void GameTwo::RenderMovie()
+void GameRPGWorld::RenderMovie()
 {
 	float totalTime = -1.5f;
 	float min = -1.5f;
@@ -250,7 +250,7 @@ void GameTwo::RenderMovie()
 
 }
 
-void GameTwo::DrawBasics(float DeltaTime)
+void GameRPGWorld::DrawBasics(float DeltaTime)
 {
 	//Basic example of drawing model to the screen
 	MyScratch->ZWriteOn = false;
@@ -300,7 +300,7 @@ void GameTwo::DrawBasics(float DeltaTime)
 	//LOAD FROM FILE STRING
 }
 
-void GameTwo::AccumulatedBlur(float strength)
+void GameRPGWorld::AccumulatedBlur(float strength)
 {
 	MyScratch->BlendBuffers(BlurBuffer, 1.0f - strength); //smaller number == more blur!
 	//For crazy SaGa Frontier style mix
@@ -310,7 +310,7 @@ void GameTwo::AccumulatedBlur(float strength)
 }
 
 
-void GameTwo::TextBoxDraw(const char* input)
+void GameRPGWorld::TextBoxDraw(const char* input)
 {
 
 	if (input != previous_text)
@@ -374,7 +374,7 @@ void GameTwo::TextBoxDraw(const char* input)
 }
 
 
-GameTwo::~GameTwo()
+GameRPGWorld::~GameRPGWorld()
 {
 	delete Reader;
 	Reader = nullptr;

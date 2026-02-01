@@ -139,10 +139,11 @@
   <ItemGroup>
     <ClCompile Include="DrawScratchSpace.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameRPGWorld.cpp" />
     <ClCompile Include="GameAthenaSlashEmUp.cpp" />
     <ClCompile Include="GameModelViewer.cpp" />
     <ClCompile Include="GameOne.cpp" />
-    <ClCompile Include="GameTwo.cpp" />
+    <ClCompile Include="GameRPGWorld.cpp" />
     <ClCompile Include="InputWraper.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelFileParser.cpp" />
@@ -158,7 +159,7 @@
     <ClInclude Include="GameAthenaSlashEmUp.h" />
     <ClInclude Include="GameModelViewer.h" />
     <ClInclude Include="GameOne.h" />
-    <ClInclude Include="GameTwo.h" />
+    <ClInclude Include="GameRPGWorld.h" />
     <ClInclude Include="InputWraper.h" />
     <ClInclude Include="miniaudio.h" />
     <ClInclude Include="ModelFileParser.h" />

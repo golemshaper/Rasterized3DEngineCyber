@@ -21,13 +21,13 @@
     <ClCompile Include="DrawScratchSpace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Game.cpp">
+    <ClCompile Include="GameRPGWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InputWraper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameTwo.cpp">
+    <ClCompile Include="GameRPGWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameAthenaSlashEmUp.cpp">
@@ -51,6 +51,9 @@
     <ClCompile Include="ThirdPersonMovement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DrawScratchSpace.h">
@@ -68,7 +71,7 @@
     <ClInclude Include="InputWraper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameTwo.h">
+    <ClInclude Include="GameRPGWorld.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameAthenaSlashEmUp.h">

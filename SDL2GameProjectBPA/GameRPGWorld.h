@@ -4,7 +4,7 @@
 class ThirdPersonMovement;
 class TextSprites;
 class TextFileReader;
-class GameTwo : public Game
+class GameRPGWorld : public Game
 {
 public:
 
@@ -54,6 +54,6 @@ public:
 	const char* previous_text = "";
 	void TextBoxDraw(const char* input);
 
-	~GameTwo();
+	~GameRPGWorld();
 };
 
