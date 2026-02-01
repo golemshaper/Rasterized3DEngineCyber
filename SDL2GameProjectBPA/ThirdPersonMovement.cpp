@@ -52,6 +52,11 @@ bool ThirdPersonMovement::IsMoving()
 
 float ThirdPersonMovement::GetYaw()
 {
+    if(!bMoving)
+    {
+        return LastYaw;
+    }
     float yaw = atan2f(-MoveVec.x, -MoveVec.z);
+    LastYaw = yaw;
     return yaw;
 }

@@ -4,6 +4,8 @@ class ThirdPersonMovement
 {
 private:
 	bool bMoving = false;
+	float LastYaw = 0.0f;
+
 public: 
 	vec3d Pos = { 0,0,0 };
 	vec3d LastSafePos = { 0,0,0 };
