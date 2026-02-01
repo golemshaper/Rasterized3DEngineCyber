@@ -2097,8 +2097,8 @@ Mesh DrawScratchSpace::MorphMesh(const Mesh& from, const Mesh& to, float t)
             R.p[j].z = Lerp(A.p[j].z, B.p[j].z, t);
 
 
-            R.uv[j] = A.uv[j];
-            R.c[j] = A.c[j];
+            R.uv[j] = A.uv[j]; //You can have morphing uvs if you tween these!
+            R.c[j] = A.c[j];  //IDEA! You can have morphing vertex colors if you tween these!
             
         }
     }
