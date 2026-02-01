@@ -7,4 +7,6 @@ Debug3,End,You'll read the last line\and then close the text.
 AnotherBitOfDialogue1,tart,Dialogue we won't hit.
 LevelUp,End,Level up!
 EndOfFile,End,End...?!
+RpgIntro,End,In the land Varuin.
+RpgNpcBox,End,You are weak.\Drink from the river \to get stronger.
 EndOfFileSafeBuffer,End,End...?!
