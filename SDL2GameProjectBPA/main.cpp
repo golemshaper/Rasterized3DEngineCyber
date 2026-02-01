@@ -33,7 +33,7 @@ GameRPGWorld* TheGame = new GameRPGWorld();
 Uint64 lastTicks = SDL_GetTicks();  // Store this at the end of your previous frame
 
 
-const int PIXEL_SCALE = 6;
+const int PIXEL_SCALE = 8;
 //CHANGE HERE TO MATCH SCRATCH SIZE
 const int SCREEN_NATIVE_X = 240;
 const int SCREEN_NATIVE_Y = 240;// 160;

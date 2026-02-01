@@ -76,6 +76,7 @@ void GameRPGWorld::Initialize()
 }
 void GameRPGWorld::Tick(float DeltaTime)
 {
+	//DeltaTime = 1.0f / 30.0f; //classic slowdown
 	//---------------
 	//Setup:
 	//---------------
@@ -115,9 +116,25 @@ void GameRPGWorld::Tick(float DeltaTime)
 	//---------------
 	//CAMERA:
 	//---------------
-	vec3d CameraLocation = PlayerLocation + vec3d{ 0.0f, -5.9f, -17.5f };
+	//Camera code should move in to the ThridPersonMovement function once I get a chance!
+	PlayerMovement->CameraOrientation.x += PlayerMovement->CameraRotationSpeed * DeltaTime * MyScratch->Input->GetCameraXAxis();
+	float orbitAngle = PlayerMovement->CameraOrientation.x;
+	float c = cos(orbitAngle);
+	float s = sin(orbitAngle);
+	vec3d baseOffset = { 0.0f, -5.9f, -17.5f };
+	vec3d offset;
+	offset.x = baseOffset.x * c + baseOffset.z * s;
+	offset.y = baseOffset.y;
+	offset.z = -baseOffset.x * s + baseOffset.z * c;
+	vec3d CameraLocation = PlayerLocation + offset;
+
+
 	float CamOffsetY = 5.0f;
 	vec3d CamRotation = vec3d{ MyScratch->Input->GetMovementX(), CamOffsetY, 17.5f};
+
+	CamRotation = PlayerLocation - CameraLocation + vec3d{ MyScratch->Input->GetMovementX(),0,0 };
+
+
 	CameraSmoothRotation = MyScratch->Lerp(CameraSmoothRotation, CamRotation, (PlayerMovement->Speed / 2.0f) * DeltaTime);
 	CameraSmoothLocation = MyScratch->Lerp(CameraSmoothLocation, CameraLocation, (PlayerMovement->Speed/2.0f) * DeltaTime);
 	MyScratch->SetCamera(CameraSmoothLocation, CameraSmoothRotation);
@@ -126,7 +143,7 @@ void GameRPGWorld::Tick(float DeltaTime)
 
 	//Push zbuffer back to make more "room" for the depth of the scene
 	MyScratch->ClearZBufffer();
-	
+
 	//---------------
 	//collision + offset
 	//---------------

@@ -40,6 +40,9 @@ void InputWraper::Tick(float DeltaTime)
     ly = Lerp(ly, 0.0f, shrink * DeltaTime);
 
 
+ 
+
+
 
     //Walking input
     if (keyboard[SDL_SCANCODE_A] || keyboard[SDL_SCANCODE_LEFT] )
@@ -66,8 +69,21 @@ void InputWraper::Tick(float DeltaTime)
     }
 
     //todo: Do camera stuff
-
-
+    //flush cam movement
+    cx = Lerp(cx, 0.0f, shrink * DeltaTime);
+    cy = Lerp(cy, 0.0f, shrink * DeltaTime);
+    //X axis camera
+    if (keyboard[SDL_SCANCODE_Q])  //TODO Also read Horizontal mouse movement
+    {
+        //lx = -1.0f;
+        cx = Lerp(cx, -1.0f, grow * DeltaTime);
+    }
+    if (keyboard[SDL_SCANCODE_E])  //TODO Also read Horizontal mouse movement
+    {
+        //lx = -1.0f;
+        cx = Lerp(cx, 1.0f, grow * DeltaTime);
+    }
+    //TODO Y axis for camera needed as well
 
     //TOGGLE KEYS:
     if (toggleCooldown > 0.0f)
