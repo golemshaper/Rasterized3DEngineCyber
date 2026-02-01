@@ -2,7 +2,8 @@
 #include "Game.h"
 #include "miniaudio.h"
 class ThirdPersonMovement;
-
+class TextSprites;
+class TextFileReader;
 class GameTwo : public Game
 {
 public:
@@ -15,6 +16,11 @@ public:
 	void RenderMovie();
 
 	void DrawBasics(float DeltaTime);
+	//Text
+	TextSprites* MyTextSprites;
+	TextFileReader* Reader;
+
+	//Mesh
 	Mesh LoadedMesh;
 	Mesh LoadedMesh2;
 	//Player
@@ -41,6 +47,13 @@ public:
 	RGB* water;
 	RGB* Image03;
 	RGB* Palette;
+
+	const char* RequestedText = "RpgIntro";
+	float typingEffect = -1.0f;
+	float textBoxProgressTick = 0.0f;
+	const char* previous_text = "";
+	void TextBoxDraw(const char* input);
+
 	~GameTwo();
 };
 

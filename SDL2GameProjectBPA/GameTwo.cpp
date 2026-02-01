@@ -2,6 +2,9 @@
 #include "MonkeyMesh.h"
 #include <string>
 
+#include "TextSprites.h"
+#include "TextFileReader.h";
+
 #include "ModelFileParser.h"
 #include "BMPWriter.hpp"
 #include "BMPReader.hpp"
@@ -16,7 +19,9 @@ void GameTwo::Initialize()
 	PlayerMovement = new ThirdPersonMovement();
 	PlayerMovement->Pos = vec3d{ 0,-1.3f,0 };
 	ModelFileParser parser;
-
+	MyTextSprites = new TextSprites();
+	Reader = new TextFileReader();
+	Reader->ReadText();
 	//LoadedMesh = parser.ParseFromStr(text);
 	//MY PC: C:\Users\brian\source\repos\Rasterized3DEngine\SDL2GameProjectBPA\Assets
 	LoadedMesh = parser.ParseFromFile("Assets/olexa.txt");
@@ -143,7 +148,7 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->MoveMainspaceToExtraBuffer();
 	MyScratch->UvOffsetGlobal = vec2d{ (totalTime * -0.25f) + (WaterLocation.x * 0.05f),(totalTime * -0.25f) - (WaterLocation.z * 0.05f) }; //Scrolling UV effect. Use this for water later!
 	MyScratch->DrawMesh(wave, WaterLocation, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
-
+	
 	//Reflection:
 	MyScratch->DrawMesh(PlayerMesh, PlayerLocationMirrored, vec3d{ 0,PlayerMovement->GetYaw(),0 }, vec3d{ PlayerScale.x,-PlayerScale.y,PlayerScale.z});
 	MyScratch->BlendBuffers(0.25f +abs(sin(totalTime))*0.5f); //blend two water layers
@@ -200,6 +205,12 @@ void GameTwo::Tick(float DeltaTime)
 	MyScratch->MoveMainspaceToExtraBuffer();
 	MyScratch->BrightnessContrastOnBuffer(MyScratch->MainSpace, 0.7f, 2.5f);
 
+	//---------------
+	//Text
+	//---------------
+	//MyScratch->DrawTextDropShadow(32, 32, RGB_White, "Hello", MyTextSprites,1.0f);
+	textBoxProgressTick += 2.5f * DeltaTime;
+	TextBoxDraw(Reader->GetStringFromSheetTag(RequestedText));
 }
 
 void GameTwo::RenderMovie()
@@ -298,8 +309,79 @@ void GameTwo::AccumulatedBlur(float strength)
 
 }
 
+
+void GameTwo::TextBoxDraw(const char* input)
+{
+
+	if (input != previous_text)
+	{
+		textBoxProgressTick = 0.0f;
+		previous_text = input;
+	}
+
+
+	if (textBoxProgressTick > 5.0f)
+	{
+		//Auto-Advanced text until "End" tag found
+		if (Reader->HasEventAtIndex(Reader->CurrentLine, "End") == false && Reader->HasEventAtIndex(Reader->CurrentLine + 1, "Start") == false)
+		{
+			textBoxProgressTick = 0.0f;
+			TextBoxDraw(Reader->GetStringFromSheetIndex(Reader->CurrentLine + 1));
+		}
+
+		return;
+	}
+
+
+	//TEXT BOX
+	int boarder = 2;
+	//Fill
+	MyScratch->DrawRectangle(
+		boarder, SCREEN_Y - (64 + boarder),
+		SCREEN_X - (boarder * 2),
+		64,
+		RGB{ 0,0,255,128 },
+		RGB{ 0,222,0,128 },
+		RGB{ 0,0,255,0 },
+		RGB{ 0,0,111,0 }
+
+	);
+
+	//Top Line
+	MyScratch->DrawLine(boarder, SCREEN_Y - (64 + boarder), SCREEN_X - boarder - 1, SCREEN_Y - (64 + boarder), RGB{ 222,222,222,255 });
+	//Bottom Line
+	MyScratch->DrawLine(boarder, SCREEN_Y - boarder, SCREEN_X - boarder - 1, SCREEN_Y - boarder, RGB{ 222,222,222,255 });
+	//Right Side
+	MyScratch->DrawLine(SCREEN_X - boarder - 1, SCREEN_Y - (64 + boarder), SCREEN_X - boarder - 1, SCREEN_Y - boarder, RGB{ 222,222,222,255 });
+	//Left Side
+	MyScratch->DrawLine(boarder, SCREEN_Y - (64 + boarder), boarder, SCREEN_Y - boarder, RGB{ 222,222,222,255 });
+
+	//Coordinates
+	const int textX = boarder + 2;
+	const int textY = SCREEN_Y - (64);
+	//Shadow
+	MyScratch->DrawText(textX + 1, textY + 1, { 1, 1, 1, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
+	//Text
+	MyScratch->DrawText(textX, textY, { 255, 255, 255, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
+
+	//Blinking cursor 
+	if (sin(totalTime * 8.0f) > 0.0f)
+	{
+
+		MyScratch->DrawText(SCREEN_X - 10, SCREEN_Y - boarder - 7, { 0, 255, 255, 255, }, "|", MyTextSprites, 1.0f);
+
+	}
+}
+
+
 GameTwo::~GameTwo()
 {
+	delete Reader;
+	Reader = nullptr;
+	delete MyScratch;
+	MyScratch = nullptr;
+	delete MyTextSprites;
+	MyTextSprites = nullptr;
 	delete Image01;
 	delete grass;
 	delete Image03;
@@ -309,3 +391,5 @@ GameTwo::~GameTwo()
 	delete PlayerMovement;
 	PlayerMovement = nullptr;
 }
+
+

@@ -7,4 +7,5 @@ Debug3,End,You'll read the last line\and then close the text.
 AnotherBitOfDialogue1,tart,Dialogue we won't hit.
 LevelUp,End,Level up!
 EndOfFile,End,End...?!
+RpgIntro,End,In the land Varuin.
 EndOfFileSafeBuffer,End,End...?!
