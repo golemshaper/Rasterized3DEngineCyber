@@ -6,6 +6,8 @@
 #include "BMPWriter.hpp"
 #include "BMPReader.hpp"
 #include "ThirdPersonMovement.h"
+#include "miniaudio.h"
+
 
 void GameTwo::Initialize()
 {
@@ -55,7 +57,11 @@ void GameTwo::Initialize()
 	
 	int w64 = 64; int h64 = 64;
 	Palette = ReadBMP("Assets/BasicPalette.bmp", w64, h64);
-	
+
+	ma_result r = ma_engine_init(NULL, &audioEngine);
+	printf("engine init: %d\n", r);
+	ma_engine_play_sound(&audioEngine, "Assets/noise_transition.wav", NULL);
+
 }
 void GameTwo::Tick(float DeltaTime)
 {

@@ -1,6 +1,13 @@
 #include <SDL3/SDL.h>
 #include <iostream>
 
+
+//Audio----------------------------
+#define MINIAUDIO_IMPLEMENTATION
+#include "miniaudio.h"
+//---------------------------------
+
+
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #include <emscripten/html5.h>

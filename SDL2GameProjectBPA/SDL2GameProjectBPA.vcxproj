@@ -160,6 +160,7 @@
     <ClInclude Include="GameOne.h" />
     <ClInclude Include="GameTwo.h" />
     <ClInclude Include="InputWraper.h" />
+    <ClInclude Include="miniaudio.h" />
     <ClInclude Include="ModelFileParser.h" />
     <ClInclude Include="MonkeyMesh.h" />
     <ClInclude Include="MonkeySprite.h" />

@@ -1,9 +1,15 @@
 #pragma once
 #include "Game.h"
+#include "miniaudio.h"
 class ThirdPersonMovement;
+
 class GameTwo : public Game
 {
 public:
+
+	ma_engine audioEngine;   // <— audio playback
+
+
 	void Initialize();
 	void Tick(float DeltaTime);
 	void RenderMovie();
