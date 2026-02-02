@@ -9,7 +9,8 @@ class GameRPGWorld : public Game
 public:
 
 	ma_engine audioEngine;   // <— audio playback
-
+	bool MusicLimitOnce = false;
+	float startMusicTimer = 5.0f;
 
 	void Initialize();
 	void Tick(float DeltaTime);

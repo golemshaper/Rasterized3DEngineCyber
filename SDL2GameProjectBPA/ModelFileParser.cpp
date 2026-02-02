@@ -11,7 +11,7 @@ using namespace std;
 
 
 
-Mesh ModelFileParser::ParseFromFile(const std::string path)
+Mesh ModelFileParser::ParseModelFromFile(const std::string path)
 {
 
 	std::ifstream file(path);
@@ -27,10 +27,10 @@ Mesh ModelFileParser::ParseFromFile(const std::string path)
 		file_contents += str;
 		file_contents.push_back('\n');
 	}
-	return ParseFromStr(file_contents);
+	return ParseModelFromStr(file_contents);
 }
 
-Mesh ModelFileParser::ParseFromStr(const std::string str)
+Mesh ModelFileParser::ParseModelFromStr(const std::string str)
 {
 
 	std::string sb; 

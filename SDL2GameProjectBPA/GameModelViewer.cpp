@@ -9,8 +9,8 @@ void GameModelViewer::Initialize()
     MyScratch = new DrawScratchSpace();
 	MyScratch->Initialize(RGB{0,0,0,255});
     ModelFileParser parser;
-    LoadedMesh = parser.ParseFromFile("Assets/DeleteMe_Laura.txt");
-    LoadedMesh2 = parser.ParseFromFile("Assets/KartaModels.txt");
+    LoadedMesh = parser.ParseModelFromFile("Assets/DeleteMe_Laura.txt");
+    LoadedMesh2 = parser.ParseModelFromFile("Assets/KartaModels.txt");
     //Palette
     int bpw = 64;
     int bph = 64;

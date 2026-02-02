@@ -24,30 +24,30 @@ void GameRPGWorld::Initialize()
 	Reader->ReadText();
 	//LoadedMesh = parser.ParseFromStr(text);
 	//MY PC: C:\Users\brian\source\repos\Rasterized3DEngine\SDL2GameProjectBPA\Assets
-	LoadedMesh = parser.ParseFromFile("Assets/olexa.txt");
-	LoadedMesh2 = parser.ParseFromFile("Assets/CubeTiledUvs.txt");
+	LoadedMesh = parser.ParseModelFromFile("Assets/olexa.txt");
+	LoadedMesh2 = parser.ParseModelFromFile("Assets/CubeTiledUvs.txt");
 
 	//player
-	PlayerMesh_Idle = parser.ParseFromFile("Assets/RPGWarriorRohan.txt");
-	PlayerMesh_Walk = parser.ParseFromFile("Assets/RPGWarriorRohan_Walk_F1.txt");
+	PlayerMesh_Idle = parser.ParseModelFromFile("Assets/RPGWarriorRohan.txt");
+	PlayerMesh_Walk = parser.ParseModelFromFile("Assets/RPGWarriorRohan_Walk_F1.txt");
 	PlayerMesh = PlayerMesh_Idle;
 
 
-	TerrrainMesh = parser.ParseFromFile("Assets/TerrainModel.txt"); 
-	WaterPlaneMesh = parser.ParseFromFile("Assets/WaterPlaneCutoutCenter.txt");
+	TerrrainMesh = parser.ParseModelFromFile("Assets/TerrainModel.txt"); 
+	WaterPlaneMesh = parser.ParseModelFromFile("Assets/WaterPlaneCutoutCenter.txt");
 	//LoadedMesh2 = parser.ParseFromFile("Assets/cube_model.txt");
 
 	//How to animate:
-	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
-	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F1.txt"));
-	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F1.txt"));
-	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F2.txt"));
-	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F3.txt"));
-	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F4.txt"));
-	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F5.txt"));
-	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F6.txt"));
-	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
-	MeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
+	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F0.txt"));
+	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F1.txt"));
+	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F1.txt"));
+	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F2.txt"));
+	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F3.txt"));
+	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F4.txt"));
+	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F5.txt"));
+	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F6.txt"));
+	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F0.txt"));
+	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F0.txt"));
 
 
 	int wGB = 128, hGB = 112;
@@ -72,10 +72,20 @@ void GameRPGWorld::Initialize()
 	ma_result r = ma_engine_init(NULL, &audioEngine);
 	printf("engine init: %d\n", r);
 	ma_engine_play_sound(&audioEngine, "Assets/noise_transition.wav", NULL);
-
+	
 }
 void GameRPGWorld::Tick(float DeltaTime)
 {
+	if (!MusicLimitOnce && startMusicTimer <= 0.0f)
+	{
+		MusicLimitOnce = true;
+		ma_engine_play_sound(&audioEngine, "Assets/e-thena.wav", NULL);
+
+	}
+	else
+	{
+		startMusicTimer -= DeltaTime;
+	}
 	//DeltaTime = 1.0f / 30.0f; //classic slowdown
 	//---------------
 	//Setup:
@@ -242,7 +252,7 @@ void GameRPGWorld::RenderMovie()
 	float max = 1.5f*4.0f;
 	int frames = 120;
 	ModelFileParser parser;
-	LoadedMesh = parser.ParseFromFile("Assets/olexa.txt");
+	LoadedMesh = parser.ParseModelFromFile("Assets/olexa.txt");
 	for (int i = 0; i < frames; ++i)
 	{
 		totalTime = MyScratch->Lerp(min,max,(float)i/(float)frames);

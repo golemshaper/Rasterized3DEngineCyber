@@ -56,18 +56,18 @@ void GameAthenaSlashEmUp::Initialize()
         0.0f
         });
     //Athena animated
-    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
-    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F1.txt"));
-    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F1.txt"));
-    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F2.txt"));
-    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F3.txt"));
-    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F4.txt"));
-    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F5.txt"));
-    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F6.txt"));
-    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_F0.txt"));
-    PlayerMeshSequence.push_back(parser.ParseFromFile("Assets/Athena_Neutral.txt"));
-    CurrentAthenaFrame = parser.ParseFromFile("Assets/Athena_Neutral.txt");
-    AlienMesh = parser.ParseFromFile("Assets/AlienModel.txt");
+    PlayerMeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F0.txt"));
+    PlayerMeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F1.txt"));
+    PlayerMeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F1.txt"));
+    PlayerMeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F2.txt"));
+    PlayerMeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F3.txt"));
+    PlayerMeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F4.txt"));
+    PlayerMeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F5.txt"));
+    PlayerMeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F6.txt"));
+    PlayerMeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F0.txt"));
+    PlayerMeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_Neutral.txt"));
+    CurrentAthenaFrame = parser.ParseModelFromFile("Assets/Athena_Neutral.txt");
+    AlienMesh = parser.ParseModelFromFile("Assets/AlienModel.txt");
 
 
     ////Load textures like this:

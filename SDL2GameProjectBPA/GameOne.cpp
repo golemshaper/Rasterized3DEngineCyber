@@ -9,8 +9,8 @@ void GameOne::Initialize()
 	MyScratch->ZWriteOn = true;
 	MyScratch->Initialize();
 	ModelFileParser parser;
-	LoadedMesh = parser.ParseFromFile("Assets/TeapotModel.txt");
-	LoadedMesh2 = parser.ParseFromFile("Assets/hello_vertex_color_model.txt");
+	LoadedMesh = parser.ParseModelFromFile("Assets/TeapotModel.txt");
+	LoadedMesh2 = parser.ParseModelFromFile("Assets/hello_vertex_color_model.txt");
 }
 void GameOne::Tick(float DeltaTime)
 {
