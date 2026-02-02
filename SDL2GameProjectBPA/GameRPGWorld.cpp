@@ -79,7 +79,13 @@ void GameRPGWorld::Tick(float DeltaTime)
 	if (!MusicLimitOnce && startMusicTimer <= 0.0f)
 	{
 		MusicLimitOnce = true;
-		ma_engine_play_sound(&audioEngine, "Assets/e-thena.wav", NULL);
+	//	ma_engine_play_sound(&audioEngine, "Assets/e-thena.wav", NULL);
+
+
+		ma_sound_init_from_file(&audioEngine, "Assets/e-thena.wav", 0, NULL, NULL, &music);
+		ma_sound_set_looping(&music, MA_TRUE);
+		ma_sound_start(&music);
+
 
 	}
 	else
