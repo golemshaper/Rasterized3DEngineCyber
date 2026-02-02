@@ -12,12 +12,13 @@ public:
 	ma_sound music;
 
 	bool MusicLimitOnce = false;
-	float startMusicTimer = 5.0f;
+	float fStartMusicTimer = 1.9f;
+	bool EnableTextbox = false;
 
 	void Initialize();
 	void Tick(float DeltaTime);
+	void MusicAndFadeIn(float DeltaTime);
 	void RenderMovie();
-
 	void DrawBasics(float DeltaTime);
 	//Text
 	TextSprites* MyTextSprites;

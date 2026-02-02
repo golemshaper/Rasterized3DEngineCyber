@@ -74,24 +74,26 @@ void GameRPGWorld::Initialize()
 	ma_engine_play_sound(&audioEngine, "Assets/noise_transition.wav", NULL);
 	
 }
-void GameRPGWorld::Tick(float DeltaTime)
+void GameRPGWorld::MusicAndFadeIn(float DeltaTime)
 {
-	if (!MusicLimitOnce && startMusicTimer <= 0.0f)
+	if (!MusicLimitOnce && fStartMusicTimer <= 0.0f)
 	{
 		MusicLimitOnce = true;
-	//	ma_engine_play_sound(&audioEngine, "Assets/e-thena.wav", NULL);
-
-
 		ma_sound_init_from_file(&audioEngine, "Assets/e-thena.wav", 0, NULL, NULL, &music);
 		ma_sound_set_looping(&music, MA_TRUE);
 		ma_sound_start(&music);
-
-
+		EnableTextbox = true;
 	}
-	else
+	else if (MusicLimitOnce==false)
 	{
-		startMusicTimer -= DeltaTime;
+		fStartMusicTimer -= DeltaTime;
+		float fade = (fStartMusicTimer) / 1.5f;
+		MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, RGB{ 0,0,0,(int)(255 * fade) });
 	}
+}
+void GameRPGWorld::Tick(float DeltaTime)
+{
+	//Music
 	//DeltaTime = 1.0f / 30.0f; //classic slowdown
 	//---------------
 	//Setup:
@@ -241,6 +243,7 @@ void GameRPGWorld::Tick(float DeltaTime)
 	//---------------
 	MyScratch->MoveMainspaceToExtraBuffer();
 	MyScratch->BrightnessContrastOnBuffer(MyScratch->MainSpace, 0.7f, 2.5f);
+	MusicAndFadeIn(DeltaTime);
 
 	//---------------
 	//Text
@@ -287,6 +290,8 @@ void GameRPGWorld::RenderMovie()
 	}
 
 }
+
+
 
 void GameRPGWorld::DrawBasics(float DeltaTime)
 {
@@ -350,12 +355,20 @@ void GameRPGWorld::AccumulatedBlur(float strength)
 
 void GameRPGWorld::TextUpdateTick(float DeltaTime)
 {
+	if (!EnableTextbox)
+	{
+		return;
+	}
 	textBoxProgressTick += 2.5f * DeltaTime;
 	TextBoxDraw(Reader->GetStringFromSheetTag(RequestedText));
 }
 
 void GameRPGWorld::TextBoxDraw(const char* input)
 {
+	if (!EnableTextbox)
+	{
+		return;
+	}
 
 	if (input != previous_text)
 	{
