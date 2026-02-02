@@ -48,6 +48,7 @@ public:
 	//textures
 	RGB* Image01;
 	RGB* grass;
+	RGB* overworldTexture;
 	RGB* water;
 	RGB* Image03;
 	RGB* Palette;

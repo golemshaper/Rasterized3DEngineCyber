@@ -33,7 +33,7 @@ void GameRPGWorld::Initialize()
 	PlayerMesh = PlayerMesh_Idle;
 
 
-	TerrrainMesh = parser.ParseModelFromFile("Assets/TerrainModel.txt"); 
+	TerrrainMesh = parser.ParseModelFromFile("Assets/OverworldTerrain.txt"); 
 	WaterPlaneMesh = parser.ParseModelFromFile("Assets/WaterPlaneCutoutCenter.txt");
 	//LoadedMesh2 = parser.ParseFromFile("Assets/cube_model.txt");
 
@@ -56,6 +56,10 @@ void GameRPGWorld::Initialize()
 
 	int w2 = 16; int h2 = 16;
 	grass = ReadBMP("Assets/grass.bmp", w2, h2);
+
+
+	int w256 = 256; int h256 = 256;
+	overworldTexture = ReadBMP("Assets/Overworld.bmp", w256, h256);
 
 
 	int w32 = 32; int h32 = 32;
@@ -110,7 +114,8 @@ void GameRPGWorld::Tick(float DeltaTime)
 	MyScratch->TextureDrawOn = false;
 	int w16 = 16; int h16 = 16;
 	int w32 = 32; int h32 = 32;
-	int wGB = 128;int hGB = 112;
+	int wGB = 128; int hGB = 112;
+	int w256 = 256;int h256 = 256;
 	int w64 = 64; int h64 = 64;
 	vec3d PlayerScale = vec3d{ 2.5f,2.5f,2.5f };
 	
@@ -199,7 +204,7 @@ void GameRPGWorld::Tick(float DeltaTime)
 	MyScratch->PushBackDepthBuffer(2000); //Give us pleanty of space to draw the terrain!
 	MyScratch->ZWriteOn = true;
 	MyScratch->UvOffsetGlobal = vec2d{ 0.0f,0.0f };
-	MyScratch->SetTexture(grass, w16, h16);
+	MyScratch->SetTexture(overworldTexture, w256, h256);
 	MyScratch->TextureDrawOn = true;
 	MyScratch->DrawMesh(TerrrainMesh, vec3d{ 0,0,0 }, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
 	//AccumulatedBlur(0.75f); //Blur only BKG if called here!
