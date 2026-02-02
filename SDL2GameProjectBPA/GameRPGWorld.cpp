@@ -72,6 +72,9 @@ void GameRPGWorld::Initialize()
 	ma_result r = ma_engine_init(NULL, &audioEngine);
 	printf("engine init: %d\n", r);
 	ma_engine_play_sound(&audioEngine, "Assets/noise_transition.wav", NULL);
+
+
+
 	
 }
 void GameRPGWorld::MusicAndFadeIn(float DeltaTime)

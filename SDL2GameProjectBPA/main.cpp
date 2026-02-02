@@ -71,6 +71,9 @@ bool run(SDL_Renderer* renderer) {
             }
         }
     }
+    SDL_PumpEvents();//used to be in the input code. Trying it here to see if it helps audio stutter
+
+
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
 

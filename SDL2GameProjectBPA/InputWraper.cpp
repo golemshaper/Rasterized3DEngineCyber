@@ -15,7 +15,7 @@ void InputWraper::Prepare()
 void InputWraper::Tick(float DeltaTime)
 {
     // Make sure SDL updates the keyboard state
-    SDL_PumpEvents();
+  //Moved to main for now....  SDL_PumpEvents();
 
     int numkeys = 0;
     const bool* keyboard = SDL_GetKeyboardState(&numkeys);
