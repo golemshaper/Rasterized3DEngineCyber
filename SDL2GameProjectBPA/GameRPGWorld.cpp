@@ -252,6 +252,13 @@ void GameRPGWorld::Tick(float DeltaTime)
 	if (MyScratch->SquaredDistance2D(PlayerLocation, BoxPropLoc) <= 1.0f) {
 		RequestedText = "RpgNpcBox";
 	}
+
+	/*if (MyScratch->Input->GetFireOneHold())
+	{
+	//LOAD A  MODEL IN REAL TIME!
+		ModelFileParser parser;
+		TerrrainMesh = parser.ParseModelFromFile("Assets/DomeModel.txt");
+	}*/
 }
 
 void GameRPGWorld::RenderMovie()

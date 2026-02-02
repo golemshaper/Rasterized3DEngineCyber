@@ -128,7 +128,7 @@ def export_mesh_as_custom(obj):
 class BPACE_OT_CopyMesh(bpy.types.Operator):
     bl_idname = "bpacyber.copy_mesh"
     bl_label = "Copy Mesh to Clipboard"
-    bl_description = "Exports the active mesh to your custom format and copies it to the clipboard"
+    bl_description = "Exports the active mesh to Cyber Athena format and copies it to the clipboard"
 
     def execute(self, context):
         obj = context.active_object
