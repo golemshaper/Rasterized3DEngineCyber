@@ -71,7 +71,6 @@ bool run(SDL_Renderer* renderer) {
             }
         }
     }
-    SDL_PumpEvents();//used to be in the input code. Trying it here to see if it helps audio stutter
 
 
 
@@ -157,6 +156,7 @@ int main(int argc, char* argv[]) {
     
     //INIT GAME
     TheGame->Initialize();   //We may need to add resolution parameters here...
+    SDL_PumpEvents();//used to be in the input code. Trying it here to see if it helps audio stutter
 
     if (!SDL_Init(SDL_INIT_VIDEO)) {
         std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;

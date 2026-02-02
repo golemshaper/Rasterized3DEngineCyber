@@ -567,6 +567,7 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
                 else
                 {
                     MainSpace[y * SCREEN_X + x] = (color * textured) / 255;
+
                 }
             }
             else
