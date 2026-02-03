@@ -70,10 +70,13 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 
 	//RAW DATA --------------------------------------------
 	std::vector<SceneObject> scene_objects;
-	std::map<int, TexturePack> texture_pack_map;
-	int CurrentTextureID = 0;
-	std::map<int, Mesh> model_map;
+	std::vector<Mesh> Meshes;
+	std::vector<std::string> model_names;
 	int CurrentModelID = 0;
+
+	std::vector<TexturePack> TexturePacks;
+	std::vector<std::string> texture_pack_names;
+	int CurrentTextureID = 0;
 	//--------------------------------------------
 
 	std::vector<DialogueTriggers> dialogue_triggers;
@@ -115,6 +118,7 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 			}
 			if ((sb) == "DialogueTriggers")
 			{
+				//low priority right now.
 				Mode = M_Dialogue;
 			}
 		}
@@ -169,6 +173,32 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 					assetName = results[0];
 					textureName = results[1];
 
+
+					//RAW DATA --------------------------------------------
+					//std::vector<SceneObject> scene_objects;
+					//std::vector<Mesh> Meshes;
+					//std::vector<std::string> model_names;
+					//int CurrentModelID = 0;
+					//std::vector<TexturePack> TexturePacks;
+					//std::vector<std::string> texture_pack_names;
+					//int CurrentTextureID = 0;
+					//--------------------------------------------
+
+					int model_index = FindStringIndex(assetName, model_names);
+					if (model_index == -1)
+					{
+						model_names.push_back(assetName);
+						model_index = model_names.size()-1;
+					}
+					
+					int texture_index = FindStringIndex(assetName, model_names);
+					if (texture_index == -1)
+					{
+						model_names.push_back(assetName);
+						//consider parsing texture size data from the scene data in blender somehow...
+						texture_index = texture_pack_names.size() - 1;
+					}
+
 					posIndex = std::stoi(results[2]);
 					rotIndex = std::stoi(results[3]);
 					sclIndex = std::stoi(results[4]);
@@ -180,8 +210,9 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 
 					working_scene_object = {
 						assetName,
-						GetModelID(assetName), //Dummy data right now! I will need to create Model IDs and Texture packs BEFORE this even runs.
-						GetTexturePackId(textureName),
+						textureName,
+						model_index, 
+						texture_index,
 						id_positions_map[posIndex],
 						id_rotations_map[rotIndex],
 						id_scales_map[sclIndex],
@@ -195,7 +226,7 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 				break;
 				//case M_Dialogue:
 				//	//Build dialogue
-
+				//do this later...
 				//break;
 			}
 		}
@@ -207,6 +238,9 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 
 	}
 	//I MAY WANT TO LOOP THROUGH ALL SCENE OBJECTS, AND PUT THE REAL TEXTURE AND MODEL DATA INSIDE BASED ON THE FINAL DATA IN THE SCENE FILE!
+	//todo assign Texture and Model data to ResultingSceneFile...
+	ResultingSceneFile.Meshes = Meshes;
+	ResultingSceneFile.TexturePacks = TexturePacks;
 	ResultingSceneFile.scene_objects = scene_objects;
 
 
@@ -217,22 +251,22 @@ int SceneFileParser::GetModelID(const std::string& str, Scene* scene)
 	//DO WE STORE THE CURRENT SCENE INSIDE OF THIS OBJECT?
 	//DO WE MAKE THE PROGRAMMER STORE TEXTURE PACKS AND SCENE PACKS THEMSELEVES (AND BY PROGRAMMER, I MEAN ME)
 	//We need to store model IDs and persist this data. 
-	return 0;
+	return -1;
 }
 
 int SceneFileParser::GetModelID(const std::string& str)
 {
-	return 0;
+	return -1;
 }
 
 int SceneFileParser::GetTexturePackId(const std::string& str, Scene* scene)
 {
-	return 0;
+	return -1;
 }
 
 int SceneFileParser::GetTexturePackId(const std::string& str)
 {
-	return 0;
+	return -1;
 }
 
 int SceneFileParser::GetTagID(const std::string& tag, Scene* scene)
@@ -267,4 +301,15 @@ std::string SceneFileParser::trim(const std::string& s)
 		--end;
 
 	return s.substr(start, end - start);
+}
+
+int SceneFileParser::FindStringIndex(const std::string& target, const std::vector<std::string>& list)
+{
+	for (int i = 0; i < (int)list.size(); ++i)
+	{
+		if (list[i] == target)
+			return i;
+	}
+	return -1; // not found
+
 }

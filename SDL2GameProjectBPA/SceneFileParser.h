@@ -4,6 +4,7 @@
 #include <map>
 struct SceneObject {
 	std::string AssetPath; //The name of the mesh asset. 
+	std::string TextureAssetPath; //The name of the mesh asset. 
 	int model_id; //should this need to be explicitly loaded by the programmer?
 	int texture_id; //id of the texture map
 	vec3d pos;
@@ -24,8 +25,8 @@ struct DialogueTriggers {
 
 struct Scene {
 	std::vector<SceneObject> scene_objects;
-	std::map<int, TexturePack> texture_pack_map;
-	std::map<int, Mesh> model_map;
+	std::vector<TexturePack> TexturePacks;
+	std::vector<Mesh> Meshes;
 
 	std::map<std::string, int> tag_map;
 	std::map<std::string, int> dialogue_map;
@@ -47,6 +48,7 @@ class SceneFileParser
 	//DO WE MAKE THE PROGRAMMER STORE TEXTURE PACKS AND SCENE PACKS THEMSELEVES (AND BY PROGRAMMER, I MEAN ME)
 	std::vector<std::string> SplitByChar(const std::string& str, char c);
 	std::string trim(const std::string& s);
+	int FindStringIndex(const std::string& target, const std::vector<std::string>& list);
 
 
 };
