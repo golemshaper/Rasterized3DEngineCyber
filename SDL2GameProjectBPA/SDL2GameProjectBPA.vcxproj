@@ -146,6 +146,7 @@
     <ClCompile Include="InputWraper.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelFileParser.cpp" />
+    <ClCompile Include="SceneFileParser.cpp" />
     <ClCompile Include="StateMachine.cpp" />
     <ClCompile Include="TextFileReader.cpp" />
     <ClCompile Include="ThirdPersonMovement.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="ModelFileParser.h" />
     <ClInclude Include="MonkeyMesh.h" />
     <ClInclude Include="MonkeySprite.h" />
+    <ClInclude Include="SceneFileParser.h" />
     <ClInclude Include="StateMachine.h" />
     <ClInclude Include="TextFileReader.h" />
     <ClInclude Include="TextSprites.h" />
