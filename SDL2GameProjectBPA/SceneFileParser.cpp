@@ -136,11 +136,13 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 			int sclIndex = 0;
 			int model_id_holder = 0;
 			int texture_id_holder = 0;
-			bool working_visible = true;
 			std::string assetName;
 			std::string textureName;
 			std::vector<std::string> tags;
 
+			int model_index = 0;
+			int texture_index = 0;
+			bool working_visible = true;
 
 			Comment_Mode = false; //comments have ended
 			switch (Mode)
@@ -184,14 +186,14 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 					//int CurrentTextureID = 0;
 					//--------------------------------------------
 
-					int model_index = FindStringIndex(assetName, model_names);
+					model_index = FindStringIndex(assetName, model_names);
 					if (model_index == -1)
 					{
 						model_names.push_back(assetName);
 						model_index = model_names.size()-1;
 					}
 					
-					int texture_index = FindStringIndex(assetName, model_names);
+					texture_index = FindStringIndex(assetName, model_names);
 					if (texture_index == -1)
 					{
 						model_names.push_back(assetName);
@@ -202,7 +204,7 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 					posIndex = std::stoi(results[2]);
 					rotIndex = std::stoi(results[3]);
 					sclIndex = std::stoi(results[4]);
-					bool visible = (results[5] == "true"); //5 is the index for the visible bool! If it changes, make a constant for it.
+					working_visible = (results[5] == "true"); //5 is the index for the visible bool! If it changes, make a constant for it.
 					for (int i = 6; i < results.size(); ++i) //6 is the start of the tags. if we add or remove any properties, change this and make a const for it.
 					{
 						tags.push_back(results[i]);
