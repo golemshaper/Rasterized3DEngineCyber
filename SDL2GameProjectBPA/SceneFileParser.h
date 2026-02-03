@@ -10,28 +10,41 @@ struct SceneObject {
 	vec3d rot;
 	vec3d scale;
 	bool visible;
-	std::vector<std::string> tags;
+	std::vector<std::string> tags; //REPLACE THESE WITH TAG IDS!
 };
 struct TexturePack {
 	std::string Texture;
 	int width;
 	int height;
 };
-struct Scene {
-	std::vector<SceneObject> scene_objects;
-	std::map<int, TexturePack > texture_pack_map;
-};
 struct DialogueTriggers {
 	std::string dialogue;
-	int model_id;
+	int scene_object_ID; //index of the specific scene object...
+};
+
+struct Scene {
+	std::vector<SceneObject> scene_objects;
+	std::map<int, TexturePack> texture_pack_map;
+	std::map<int, Mesh> model_map;
+
+	std::map<std::string, int> tag_map;
+	std::map<std::string, int> dialogue_map;
+	std::vector<DialogueTriggers> dialogue_triggers;
 };
 
 class SceneFileParser
 {
-	void ParseSceneFromFile(const std::string path, const std::string mesh_asset_path_root);
-	void ParseSceneFromString(const std::string str, const std::string mesh_asset_path_root);
-	int GetModelID(const std::string str);
-	int GetTextureId(const std::string str);
+	Scene ParseSceneFromFile(const std::string path, const std::string mesh_asset_path_root);
+	Scene ParseSceneFromString(const std::string str, const std::string mesh_asset_path_root);
+	int GetModelID(const std::string& str, Scene* scene);
+	int GetModelID(const std::string& str); //Instead of passing a scene, should this just be a function of Scene?
+	int GetTexturePackId(const std::string& str, Scene* scene);
+	int GetTexturePackId(const std::string& str);
+	int GetTagID(const std::string& tag, Scene* scene);
+
+
+	//DO WE STORE THE CURRENT SCENE INSIDE OF THIS OBJECT?
+	//DO WE MAKE THE PROGRAMMER STORE TEXTURE PACKS AND SCENE PACKS THEMSELEVES (AND BY PROGRAMMER, I MEAN ME)
 	std::vector<std::string> SplitByChar(const std::string& str, char c);
 	std::string trim(const std::string& s);
 

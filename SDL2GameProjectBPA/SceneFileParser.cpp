@@ -4,7 +4,7 @@
 #include <fstream>
 #include <map>
 
-void SceneFileParser::ParseSceneFromFile(const std::string path, const std::string mesh_asset_path_root)
+Scene SceneFileParser::ParseSceneFromFile(const std::string path, const std::string mesh_asset_path_root)
 {
 	std::ifstream file(path);
 	std::string str;
@@ -19,10 +19,10 @@ void SceneFileParser::ParseSceneFromFile(const std::string path, const std::stri
 		file_contents += str;
 		file_contents.push_back('\n');
 	}
-	ParseSceneFromString(file_contents, mesh_asset_path_root);
+	return ParseSceneFromString(file_contents, mesh_asset_path_root);
 }
 
-void SceneFileParser::ParseSceneFromString(const std::string str, const std::string mesh_asset_path_root)
+Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::string mesh_asset_path_root)
 {
 	
 	/*NEW DRAFT:
@@ -43,7 +43,7 @@ void SceneFileParser::ParseSceneFromString(const std::string str, const std::str
 					"WelcomeToTheWorld",obj ID
 	----------------------------------------------------------------------------------------
 	*/
-
+	Scene ResultingSceneFile;
 	std::string sb;
 	sb.reserve(1024);
 
@@ -68,8 +68,13 @@ void SceneFileParser::ParseSceneFromString(const std::string str, const std::str
 	std::vector<vec3d> scale_vectors;
 	std::map<int, vec3d > id_scales_map;
 
-
+	//RAW DATA --------------------------------------------
 	std::vector<SceneObject> scene_objects;
+	std::map<int, TexturePack> texture_pack_map;
+	int CurrentTextureID = 0;
+	std::map<int, Mesh> model_map;
+	int CurrentModelID = 0;
+	//--------------------------------------------
 
 	std::vector<DialogueTriggers> dialogue_triggers;
 
@@ -77,6 +82,8 @@ void SceneFileParser::ParseSceneFromString(const std::string str, const std::str
 	vec3d working_vec2{ 0,0,0 };
 	vec3d working_vec3{0,0,0};
 	SceneObject working_scene_object;
+	
+
 
 	for (std::size_t i = 0; i < str.size(); ++i)
 	{
@@ -173,8 +180,8 @@ void SceneFileParser::ParseSceneFromString(const std::string str, const std::str
 
 					working_scene_object = {
 						assetName,
-						GetModelID(assetName),
-						GetTextureId(textureName),
+						GetModelID(assetName), //Dummy data right now! I will need to create Model IDs and Texture packs BEFORE this even runs.
+						GetTexturePackId(textureName),
 						id_positions_map[posIndex],
 						id_rotations_map[rotIndex],
 						id_scales_map[sclIndex],
@@ -199,14 +206,44 @@ void SceneFileParser::ParseSceneFromString(const std::string str, const std::str
 		}
 
 	}
+	//I MAY WANT TO LOOP THROUGH ALL SCENE OBJECTS, AND PUT THE REAL TEXTURE AND MODEL DATA INSIDE BASED ON THE FINAL DATA IN THE SCENE FILE!
+	ResultingSceneFile.scene_objects = scene_objects;
+
+
+	return ResultingSceneFile;
 }
-int SceneFileParser::GetModelID(const std::string str)
+int SceneFileParser::GetModelID(const std::string& str, Scene* scene)
+{
+	//DO WE STORE THE CURRENT SCENE INSIDE OF THIS OBJECT?
+	//DO WE MAKE THE PROGRAMMER STORE TEXTURE PACKS AND SCENE PACKS THEMSELEVES (AND BY PROGRAMMER, I MEAN ME)
+	//We need to store model IDs and persist this data. 
+	return 0;
+}
+
+int SceneFileParser::GetModelID(const std::string& str)
 {
 	return 0;
 }
-int SceneFileParser::GetTextureId(const std::string str)
+
+int SceneFileParser::GetTexturePackId(const std::string& str, Scene* scene)
 {
 	return 0;
+}
+
+int SceneFileParser::GetTexturePackId(const std::string& str)
+{
+	return 0;
+}
+
+int SceneFileParser::GetTagID(const std::string& tag, Scene* scene)
+{
+	auto it = scene->tag_map.find(tag);
+	if (it != scene->tag_map.end())
+		return it->second;
+
+	int newID = scene->tag_map.size();
+	scene->tag_map[tag] = newID;
+	return newID;
 }
 std::vector<std::string> SceneFileParser::SplitByChar(const std::string& str, char c)
 {
