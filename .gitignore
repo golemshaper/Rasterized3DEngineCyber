@@ -76,3 +76,4 @@ build/
 .venv/
 # ignore any "tmp" folder used for testing docker output
 tmp/
+enc_temp_folder/d3f81690e554a42d3e434039f7bf94f5/HelloSceneFile.cpp
