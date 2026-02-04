@@ -1,8 +1,10 @@
+#pragma once
 #include "SceneFileParser.h"
 #include <string>
 #include <sstream>
 #include <fstream>
 #include <map>
+#include "ModelFileParser.h"
 
 Scene SceneFileParser::ParseSceneFromFile(const std::string path, const std::string mesh_asset_path_root)
 {
@@ -70,7 +72,6 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 
 	//RAW DATA --------------------------------------------
 	std::vector<SceneObject> scene_objects;
-	std::vector<Mesh> Meshes;
 	std::vector<std::string> model_names;
 	int CurrentModelID = 0;
 
@@ -121,11 +122,15 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 				//low priority right now.
 				Mode = M_Dialogue;
 			}
+			sb.clear();//clearing data
+			continue;
 		}
 		if (c == '\n')
 		{
 			sb = trim(sb); //Trim this string on both sides.
-			std::vector<std::string>  results = SplitByChar(sb, ' ');
+			std::vector<std::string>  results = SplitByChars(sb, ' ',',');
+			if (results.size() <= 0)continue;
+			if (results.size() <= 1)continue;
 			int lineIndex_pos = postion_vectors.size();
 			int lineIndex_rot = rotation_vectors.size();
 			int lineIndex_scl = scale_vectors.size();
@@ -175,17 +180,6 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 					assetName = results[0];
 					textureName = results[1];
 
-
-					//RAW DATA --------------------------------------------
-					//std::vector<SceneObject> scene_objects;
-					//std::vector<Mesh> Meshes;
-					//std::vector<std::string> model_names;
-					//int CurrentModelID = 0;
-					//std::vector<TexturePack> TexturePacks;
-					//std::vector<std::string> texture_pack_names;
-					//int CurrentTextureID = 0;
-					//--------------------------------------------
-
 					model_index = FindStringIndex(assetName, model_names);
 					if (model_index == -1)
 					{
@@ -231,6 +225,7 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 				//do this later...
 				//break;
 			}
+			sb.clear();//clearing data
 		}
 
 		if (!Comment_Mode)
@@ -241,7 +236,13 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 	}
 	//I MAY WANT TO LOOP THROUGH ALL SCENE OBJECTS, AND PUT THE REAL TEXTURE AND MODEL DATA INSIDE BASED ON THE FINAL DATA IN THE SCENE FILE!
 	//todo assign Texture and Model data to ResultingSceneFile...
-	ResultingSceneFile.Meshes = Meshes;
+	ModelFileParser model_loader;
+	for (int i = 0; i < model_names.size(); i++)
+	{
+		Mesh cMesh = model_loader.ParseModelFromFile(mesh_asset_path_root + model_names[i]+".txt");
+		ResultingSceneFile.Meshes.push_back(cMesh);
+		
+	}
 	ResultingSceneFile.TexturePacks = TexturePacks;
 	ResultingSceneFile.scene_objects = scene_objects;
 
@@ -290,6 +291,27 @@ std::vector<std::string> SceneFileParser::SplitByChar(const std::string& str, ch
 		strings.push_back(s);
 	}
 	return strings;
+}
+std::vector<std::string> SceneFileParser::SplitByChars(const std::string& str,char c1, char c2)
+{
+	std::vector<std::string> out;
+	std::string current;
+
+	for (char ch : str)
+	{
+		if (ch == c1 || ch == c2)
+		{
+			out.push_back(current);
+			current.clear();
+		}
+		else
+		{
+			current += ch;
+		}
+	}
+
+	out.push_back(current);
+	return out;
 }
 
 std::string SceneFileParser::trim(const std::string& s)

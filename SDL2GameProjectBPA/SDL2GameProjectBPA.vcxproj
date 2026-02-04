@@ -143,6 +143,7 @@
     <ClCompile Include="GameModelViewer.cpp" />
     <ClCompile Include="GameOne.cpp" />
     <ClCompile Include="GameRPGWorld.cpp" />
+    <ClCompile Include="HelloSceneFile.cpp" />
     <ClCompile Include="InputWraper.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelFileParser.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="GameModelViewer.h" />
     <ClInclude Include="GameOne.h" />
     <ClInclude Include="GameRPGWorld.h" />
+    <ClInclude Include="HelloSceneFile.h" />
     <ClInclude Include="InputWraper.h" />
     <ClInclude Include="miniaudio.h" />
     <ClInclude Include="ModelFileParser.h" />

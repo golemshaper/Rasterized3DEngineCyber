@@ -1,0 +1,19 @@
+Positions:
+ 0.000 0.000 -3.444
+ 2.312 0.000 -0.006
+ -2.403 0.000 -0.006
+
+Rotations:
+ 0.000 0.000 0.000
+
+Scales:
+ 1.000,1.000,1.000
+ 2.159,2.159,2.159
+ 1.101,1.101,1.101
+
+Objects:
+RPGWarriorRohan,OPF,0,0,0,true,
+RPGWarriorRohan,OPF,1,0,1,true,
+RPGWarriorRohan,OPF,2,0,2,true,
+
+DialogueTriggers:

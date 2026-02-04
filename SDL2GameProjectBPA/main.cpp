@@ -19,12 +19,16 @@
 #include "GameRPGWorld.h"
 #include "GameAthenaSlashEmUp.h"
 #include "GameModelViewer.h"
+#include "HelloSceneFile.h"
+
+
 //
 //Game* TheGame = new Game();
-GameRPGWorld* TheGame = new GameRPGWorld();
 //GameOne* TheGame = new GameOne();
 //GameModelViewer* TheGame = new GameModelViewer();
 //GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
+//GameRPGWorld* TheGame = new GameRPGWorld();
+HelloSceneFile* TheGame = new HelloSceneFile();
 
 
 //For another game example, inherit the base class, and override the Tick function. GameTwo* TheGame = new GameTwo();

@@ -35,6 +35,7 @@ struct Scene {
 
 class SceneFileParser
 {
+public:
 	Scene ParseSceneFromFile(const std::string path, const std::string mesh_asset_path_root);
 	Scene ParseSceneFromString(const std::string str, const std::string mesh_asset_path_root);
 	int GetModelID(const std::string& str, Scene* scene);
@@ -47,6 +48,7 @@ class SceneFileParser
 	//DO WE STORE THE CURRENT SCENE INSIDE OF THIS OBJECT?
 	//DO WE MAKE THE PROGRAMMER STORE TEXTURE PACKS AND SCENE PACKS THEMSELEVES (AND BY PROGRAMMER, I MEAN ME)
 	std::vector<std::string> SplitByChar(const std::string& str, char c);
+	std::vector<std::string> SplitByChars(const std::string& str, char c1, char c2);
 	std::string trim(const std::string& s);
 	int FindStringIndex(const std::string& target, const std::vector<std::string>& list);
 
