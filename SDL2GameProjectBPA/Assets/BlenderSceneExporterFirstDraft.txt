@@ -1,0 +1,122 @@
+import bpy
+import math
+
+def export_scene_as_custom():
+    out = ""
+
+    # ---------------------------------------
+    # Collect positions, rotations, scales
+    # ---------------------------------------
+    positions = []
+    rotations = []
+    scales = []
+    scale_lookup = {}
+
+    objs = [o for o in bpy.context.scene.objects if o.type in {"MESH", "EMPTY"}]
+
+    for obj in objs:
+        # Position
+        loc = obj.location
+        positions.append((loc.x, loc.y, loc.z))
+
+        # Rotation (radians → degrees)
+        rot = obj.rotation_euler
+        rotations.append((
+            math.degrees(rot.x),
+            math.degrees(rot.y),
+            math.degrees(rot.z)
+        ))
+
+        # Scale
+        sc = tuple(obj.scale)
+        if sc not in scale_lookup:
+            scale_lookup[sc] = len(scales)
+            scales.append(sc)
+
+    # ---------------------------------------
+    # Write Positions
+    # ---------------------------------------
+    out += "Positions:\n"
+    for (x, y, z) in positions:
+        out += f" {x:.3f} {y:.3f} {z:.3f}\n"
+    out += "\n"
+
+    # ---------------------------------------
+    # Write Rotations
+    # ---------------------------------------
+    out += "Rotations:\n"
+    for (rx, ry, rz) in rotations:
+        out += f" {rx:.3f} {ry:.3f} {rz:.3f}\n"
+    out += "\n"
+
+    # ---------------------------------------
+    # Write Scales
+    # ---------------------------------------
+    out += "Scales:\n"
+    for (sx, sy, sz) in scales:
+        out += f" {sx:.3f},{sy:.3f},{sz:.3f}\n"
+    out += "\n"
+
+    # ---------------------------------------
+    # Objects block
+    # ---------------------------------------
+    out += "Objects:\n"
+    out += "#Model, Texture, Location, Rotation, ScaleID, visibility, MiscTags\n"
+
+    for i, obj in enumerate(objs):
+        model = obj.name
+
+        # Texture = first material name or "None"
+        if obj.type == "MESH" and obj.data.materials:
+            texture = obj.data.materials[0].name
+        else:
+            texture = "None"
+
+        # Location
+        loc = positions[i]
+        loc_str = f"{loc[0]:.3f},{loc[1]:.3f},{loc[2]:.3f}"
+
+        # Rotation
+        rot = rotations[i]
+        rot_str = f"{rot[0]:.3f},{rot[1]:.3f},{rot[2]:.3f}"
+
+        # Scale ID
+        sc = tuple(obj.scale)
+        scale_id = scale_lookup[sc]
+
+        # Visibility
+        vis = "true" if obj.visible_get() else "false"
+
+        # Tags
+        tags = []
+        if "tags" in obj:
+            raw = obj["tags"]
+            if isinstance(raw, (list, tuple)):
+                tags = list(raw)
+            else:
+                tags = [str(raw)]
+        tag_str = ",".join(tags) if tags else ""
+
+        out += f"{model},{texture},{loc_str},{rot_str},{scale_id},{vis},{tag_str}\n"
+
+    out += "\n"
+
+    # ---------------------------------------
+    # DialogueTriggers
+    # ---------------------------------------
+    out += "DialogueTriggers:\n"
+    for i, obj in enumerate(objs):
+        if "dialogue" in obj:
+            dlg = obj["dialogue"]
+            out += f" \"{dlg}\",{i}\n"
+
+    # ---------------------------------------
+    # Assign to clipboard
+    # ---------------------------------------
+    bpy.context.window_manager.clipboard = out
+    print("Scene exported to clipboard.")
+    print(out)
+
+
+# Run exporter
+export_scene_as_custom()
