@@ -67,7 +67,7 @@ def export_scene_as_custom():
     # ---------------------------------------
     out += "Rotations:\n"
     for (rx, ry, rz) in rotations:
-        out += f" {rx:.3f} {ry:.3f} {rz:.3f}\n"
+        out += f" {rx:.3f} {rz:.3f} {ry:.3f}\n"
     out += "\n"
 
     # ---------------------------------------

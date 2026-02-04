@@ -11,10 +11,13 @@ void HelloSceneFile::Initialize()
 void HelloSceneFile::Tick(float DeltaTime)
 {
     totalTime += DeltaTime;
+    MyScratch->ZWriteOn = true;
     MyScratch->Clear(RGB{ 122,2,43 });
+    MyScratch->ClearZBufffer();
     MyScratch->SetCameraFOV(90);
     MyScratch->MeshColor = RGB{ 90,90,90,255 };
     MyScratch->SetCamera(vec3d{ 0.0f, -4.8f, -10.1f }, vec3d{ 0.0f,0.4f, 1.0f });
+    MyScratch->PushBackDepthBuffer(1000);
 
     for (int i = 0; i < MyScene.scene_objects.size(); i++)
     {

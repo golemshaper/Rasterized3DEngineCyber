@@ -154,13 +154,13 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 			{
 				case M_Positions:
 					//Build positions
-					working_vec = vec3d{ std::stof((results[0])), std::stof((results[1])), std::stof((results[2])) };
+					working_vec = vec3d{ std::stof((results[0])), -std::stof((results[1])), std::stof((results[2])) };
 					postion_vectors.push_back(working_vec);
 					id_positions_map[lineIndex_pos] = working_vec;
 				break;
 				case M_Rotations:
 					//Build rotations
-					working_vec = vec3d{ std::stof((results[0])), std::stof((results[1])), std::stof((results[2])) };
+					working_vec = vec3d{ std::stof((results[0])), std::stof((results[1])) /360.0f, std::stof((results[2])) };
 					rotation_vectors.push_back(working_vec);
 					id_rotations_map[lineIndex_rot] = working_vec;
 
