@@ -5,8 +5,17 @@ void HelloSceneFile::Initialize()
     MyScratch = new DrawScratchSpace();
     MyScratch->Initialize();
     SceneParser = new SceneFileParser();
+    LoadSceneFiles();
 
-    SceneParserObject = SceneParser->ParseSceneFromFile("Assets/Scenes/HELLO_SCENE_FILE.txt","Assets/Models/");
+}
+void HelloSceneFile::LoadSceneFiles()
+{
+    SceneParserObject = SceneParser->ParseSceneFromFile("Assets/Scenes/HELLO_SCENE_FILE.txt", "Assets/Models/");
+    //Ideas: Loop through lists of scene objects, find objects with certain gameplay tags, and add them to categories, like
+    //for example, and NPC_WALK[] list. Then in the game, you can loop through those and apply movement code to them.
+    //TODO: Add custom data dictionary on each scene object for tracking in-game stats, like HP or movement data.
+    //One for each data type.
+
 }
 void HelloSceneFile::Tick(float DeltaTime)
 {
@@ -34,7 +43,7 @@ void HelloSceneFile::Tick(float DeltaTime)
     //RELOAD CALL
     if (reload_scene_limit_once == false && MyScratch->Input->GetFireOneHold())
     {
-        SceneParserObject = SceneParser->ParseSceneFromFile("Assets/Scenes/HELLO_SCENE_FILE.txt", "Assets/Models/");
+        LoadSceneFiles();
         reload_scene_limit_once = true;
     }
     if (!MyScratch->Input->GetFireOneHold())
