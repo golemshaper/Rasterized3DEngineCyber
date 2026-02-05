@@ -348,7 +348,7 @@ class BPACE_OT_CopyMesh(bpy.types.Operator):
                 continue
 
             # Clean the name
-            clean = bpy.path.clean_name(obj.name)
+            clean = clean_name(obj.name)
 
             # Skip duplicates
             if clean in exported_names:
@@ -471,7 +471,7 @@ class BPACE_OT_SendAll(bpy.types.Operator):
                 if obj.type != 'MESH':
                     continue
 
-                clean = bpy.path.clean_name(obj.name)
+                clean = clean_name(obj.name)
 
                 if clean in exported_names:
                     continue
