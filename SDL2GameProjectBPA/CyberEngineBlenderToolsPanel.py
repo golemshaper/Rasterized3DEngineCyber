@@ -325,7 +325,7 @@ class BPACE_PT_Tools(bpy.types.Panel):
 # ---------------------------------------------------------
 # . Operator that calls mesh exporter
 # ---------------------------------------------------------
-
+#MESH
 class BPACE_OT_CopyMesh(bpy.types.Operator):
     bl_idname = "bpacyber.copy_mesh"
     bl_label = "Copy Meshes to Folder"
@@ -381,7 +381,7 @@ class BPACE_OT_CopyMesh(bpy.types.Operator):
 # ---------------------------------------------------------
 # . Operator that calls scene exporter
 # ---------------------------------------------------------
-
+#SCENE
 class BPACE_OT_CopyScene(bpy.types.Operator):
     bl_idname = "bpacyber.copy_scene"
     bl_label = "Copy Scene to Folder"
@@ -421,7 +421,82 @@ class BPACE_OT_CopyScene(bpy.types.Operator):
             self.report({'WARNING'}, "ScenePath not set — only copied to clipboard")
 
         return {'FINISHED'}
+#----------------------------------------------------------
+#----------------------------------------------------------
+#DO IT ALL
+#----------------------------------------------------------
+class BPACE_OT_SendAll(bpy.types.Operator):
+    bl_idname = "bpacyber.send_all"
+    bl_label = "Send All"
+    bl_description = "Exports the scene and all selected meshes to their output folders"
 
+    def execute(self, context):
+        scene = context.scene
+
+        import os
+
+        # ---------------------------------------------------------
+        # Export Scene
+        # ---------------------------------------------------------
+        scene_dir = scene.bpace_path_a
+        if scene_dir:
+            text = export_scene_as_custom()
+
+            blend_path = bpy.data.filepath
+            if blend_path:
+                base = os.path.splitext(os.path.basename(blend_path))[0]
+                filename = base + ".txt"
+            else:
+                filename = "untitled_scene.txt"
+
+            full_path = os.path.join(scene_dir, filename)
+
+            try:
+                with open(full_path, "w", encoding="utf-8") as f:
+                    f.write(text)
+            except Exception as e:
+                self.report({'ERROR'}, f"Failed to save scene: {e}")
+        else:
+            self.report({'WARNING'}, "ScenePath not set — skipping scene export")
+
+        # ---------------------------------------------------------
+        # Export Meshes
+        # ---------------------------------------------------------
+        mesh_dir = scene.bpace_path_b
+        if mesh_dir:
+            exported_names = set()
+            count = 0
+
+            for obj in context.selected_objects:
+                if obj.type != 'MESH':
+                    continue
+
+                clean = bpy.path.clean_name(obj.name)
+
+                if clean in exported_names:
+                    continue
+                exported_names.add(clean)
+
+                mesh_text = export_mesh_as_custom(obj)
+
+                filename = clean + ".txt"
+                full_path = os.path.join(mesh_dir, filename)
+
+                try:
+                    with open(full_path, "w", encoding="utf-8") as f:
+                        f.write(mesh_text)
+                    count += 1
+                except Exception as e:
+                    self.report({'ERROR'}, f"Failed to save {filename}: {e}")
+
+            self.report({'INFO'}, f"Exported {count} mesh files")
+        else:
+            self.report({'WARNING'}, "ModelPath not set — skipping mesh export")
+
+
+        self.report({'INFO'}, "SendAll complete")
+        return {'FINISHED'}
+#----------------------------------------------------------
 # ---------------------------------------------------------
 # . Panel in the 3D Viewport (N-panel)
 # ---------------------------------------------------------
@@ -442,6 +517,7 @@ class BPACE_PT_Tools(bpy.types.Panel):
 
         layout.operator("bpacyber.copy_mesh", icon='COPYDOWN')
         layout.operator("bpacyber.copy_scene", icon='COPYDOWN')
+        layout.operator("bpacyber.send_all", icon='FILE_TICK')
 
 
 # ---------------------------------------------------------
@@ -452,6 +528,7 @@ classes = (
     BPACE_OT_CopyMesh,
     BPACE_OT_CopyScene,
     BPACE_PT_Tools,
+    BPACE_OT_SendAll,
 )
 
 def register():

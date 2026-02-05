@@ -23,7 +23,12 @@ void HelloSceneFile::Tick(float DeltaTime)
     for (int i = 0; i < SceneParserObject.scene_objects.size(); i++)
     {
         int MeshId = SceneParserObject.scene_objects[i].model_id;
-        MyScratch->DrawMesh(SceneParserObject.Meshes[MeshId], SceneParserObject.scene_objects[i].pos, SceneParserObject.scene_objects[i].rot, SceneParserObject.scene_objects[i].scale);
+        MyScratch->DrawMesh(
+            SceneParserObject.Meshes[MeshId], 
+            SceneParserObject.scene_objects[i].pos, 
+            SceneParserObject.scene_objects[i].rot, 
+            SceneParserObject.scene_objects[i].scale
+        );
     }
     //RELOAD CALL
     if (reload_scene_limit_once == false && MyScratch->Input->GetFireOneHold())
