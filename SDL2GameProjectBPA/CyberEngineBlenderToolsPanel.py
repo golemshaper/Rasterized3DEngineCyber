@@ -1,5 +1,158 @@
 import bpy
+import math
+import re
+#===================================================================================================
+#===================================================================================================
+#===================================================================================================
+#===================================================================================================
+#===================================================================================================
+#===================================================================================================
+                                            #SCENE
+#===================================================================================================
 
+
+# Remove Blender's .001 / .002 suffixes
+def clean_name(name: str) -> str:
+    return re.sub(r"\.\d+$", "", name)
+
+def export_scene_as_custom():
+    out = ""
+
+    # ---------------------------------------
+    # Collect positions, rotations, scales
+    # ---------------------------------------
+    positions = []
+    rotations = []
+    scales = []
+
+    pos_lookup = {}
+    rot_lookup = {}
+    scale_lookup = {}
+
+    obj_pos_ids = []
+    obj_rot_ids = []
+    obj_scale_ids = []
+
+    objs = [o for o in bpy.context.scene.objects if o.type in {"MESH", "EMPTY"}]
+
+    for obj in objs:
+        # Position
+        loc = obj.location
+        pos = (loc.x, loc.z, loc.y)
+        if pos not in pos_lookup:
+            pos_lookup[pos] = len(positions)
+            positions.append(pos)
+        obj_pos_ids.append(pos_lookup[pos])
+
+        # Rotation (radians → degrees)
+        rot = obj.rotation_euler
+        rot_deg = (
+            math.degrees(rot.x),
+            math.degrees(rot.y),
+            math.degrees(rot.z),
+        )
+        if rot_deg not in rot_lookup:
+            rot_lookup[rot_deg] = len(rotations)
+            rotations.append(rot_deg)
+        obj_rot_ids.append(rot_lookup[rot_deg])
+
+        # Scale
+        sc = tuple(obj.scale)
+        if sc not in scale_lookup:
+            scale_lookup[sc] = len(scales)
+            scales.append(sc)
+        obj_scale_ids.append(scale_lookup[sc])
+
+    # ---------------------------------------
+    # Write Positions
+    # ---------------------------------------
+    out += "Positions:\n"
+    for (x, y, z) in positions:
+        out += f" {x:.3f} {y:.3f} {z:.3f}\n"
+    out += "\n"
+
+    # ---------------------------------------
+    # Write Rotations
+    # ---------------------------------------
+    out += "Rotations:\n"
+    for (rx, ry, rz) in rotations:
+        out += f" {rx:.3f} {rz:.3f} {ry:.3f}\n"
+    out += "\n"
+
+    # ---------------------------------------
+    # Write Scales
+    # ---------------------------------------
+    out += "Scales:\n"
+    for (sx, sy, sz) in scales:
+        out += f" {sx:.3f},{sy:.3f},{sz:.3f}\n"
+    out += "\n"
+
+    # ---------------------------------------
+    # Objects block
+    # ---------------------------------------
+    out += "Objects:\n"
+    #out += "#Model, Texture, PositionID, RotationID, ScaleID, visibility, MiscTags\n"
+
+    for i, obj in enumerate(objs):
+        model = clean_name(obj.name)
+
+        # Texture = first material name or "None"
+        if obj.type == "MESH" and obj.data.materials:
+            texture = obj.data.materials[0].name
+        else:
+            texture = "None"
+
+        pos_id = obj_pos_ids[i]
+        rot_id = obj_rot_ids[i]
+        scale_id = obj_scale_ids[i]
+
+        # Visibility
+        vis = "true" if obj.visible_get() else "false"
+
+        # Tags
+        tags = []
+        if "tags" in obj:
+            raw = obj["tags"]
+            if isinstance(raw, (list, tuple)):
+                tags = list(raw)
+            else:
+                tags = [str(raw)]
+        tag_str = ",".join(tags) if tags else ""
+
+        out += f"{model},{texture},{pos_id},{rot_id},{scale_id},{vis},{tag_str}\n"
+
+    out += "\n"
+
+    # ---------------------------------------
+    # DialogueTriggers
+    # ---------------------------------------
+    out += "DialogueTriggers:\n"
+    for i, obj in enumerate(objs):
+        if "dialogue" in obj:
+            dlg = obj["dialogue"]
+            out += f" \"{dlg}\",{i}\n"
+
+    # ---------------------------------------
+    # Assign to clipboard
+    # ---------------------------------------
+    bpy.context.window_manager.clipboard = out
+    print("Scene exported to clipboard.")
+    print(out)
+
+
+# Run exporter
+export_scene_as_custom()
+
+
+
+#===================================================================================================
+#===================================================================================================
+#===================================================================================================
+#===================================================================================================
+#===================================================================================================
+#===================================================================================================
+                                            #MESH
+#===================================================================================================
 # ---------------------------------------------------------
 # 1. Your mesh export function (unchanged)
 # ---------------------------------------------------------
@@ -120,9 +273,16 @@ def export_mesh_as_custom(obj):
     bpy.context.window_manager.clipboard = out
     print(out)
 
-
+#===================================================================================================
+#===================================================================================================
+#===================================================================================================
+#===================================================================================================
+#===================================================================================================
+#===================================================================================================
+                                        # PANEL INTERFACE
+#===================================================================================================
 # ---------------------------------------------------------
-# 2. Operator that calls your exporter
+# . Operator that calls mesh exporter
 # ---------------------------------------------------------
 
 class BPACE_OT_CopyMesh(bpy.types.Operator):
@@ -140,9 +300,22 @@ class BPACE_OT_CopyMesh(bpy.types.Operator):
         self.report({'INFO'}, "Mesh copied to clipboard")
         return {'FINISHED'}
 
+# ---------------------------------------------------------
+# . Operator that calls scene exporter
+# ---------------------------------------------------------
+
+class BPACE_OT_CopyMesh(bpy.types.Operator):
+    bl_idname = "bpacyber.copy_scene"
+    bl_label = "Copy Scene to Clipboard"
+    bl_description = "Exports the active scene to Cyber Athena format and copies it to the clipboard"
+
+    def execute(self, context):
+        export_scene_as_custom()
+        self.report({'INFO'}, "Scene copied to clipboard")
+        return {'FINISHED'}
 
 # ---------------------------------------------------------
-# 3. Panel in the 3D Viewport (N-panel)
+# . Panel in the 3D Viewport (N-panel)
 # ---------------------------------------------------------
 
 class BPACE_PT_Tools(bpy.types.Panel):
@@ -155,10 +328,11 @@ class BPACE_PT_Tools(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         layout.operator("bpacyber.copy_mesh", icon='COPYDOWN')
+        layout.operator("bpacyber.copy_scene", icon='COPYDOWN')
 
 
 # ---------------------------------------------------------
-# 4. Registration
+# . Registration
 # ---------------------------------------------------------
 
 classes = (
@@ -176,3 +350,5 @@ def unregister():
 
 if __name__ == "__main__":
     register()
+    
+#===================================================================================================
