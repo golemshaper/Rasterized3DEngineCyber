@@ -22,7 +22,7 @@ Scene SceneFileParser::ParseSceneFromFile(const std::string path, const std::str
 		file_contents += str;
 		file_contents.push_back('\n');
 	}
-	std::cout << "loaded file\n";
+	//std::cout << "loaded file\n";
 	return ParseSceneFromString(file_contents, mesh_asset_path_root);
 
 }

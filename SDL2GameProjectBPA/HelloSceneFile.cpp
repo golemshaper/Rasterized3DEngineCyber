@@ -6,7 +6,7 @@ void HelloSceneFile::Initialize()
     MyScratch->Initialize();
     SceneParser = new SceneFileParser();
 
-    SceneParserObject = SceneParser->ParseSceneFromFile("Assets/Scenes/HELLO_SCENE_FILE.txt","Assets/");
+    SceneParserObject = SceneParser->ParseSceneFromFile("Assets/Scenes/HELLO_SCENE_FILE.txt","Assets/Models/");
 }
 void HelloSceneFile::Tick(float DeltaTime)
 {
@@ -28,7 +28,7 @@ void HelloSceneFile::Tick(float DeltaTime)
     //RELOAD CALL
     if (reload_scene_limit_once == false && MyScratch->Input->GetFireOneHold())
     {
-        SceneParserObject = SceneParser->ParseSceneFromFile("Assets/Scenes/HELLO_SCENE_FILE.txt", "Assets/");
+        SceneParserObject = SceneParser->ParseSceneFromFile("Assets/Scenes/HELLO_SCENE_FILE.txt", "Assets/Models/");
         reload_scene_limit_once = true;
     }
     if (!MyScratch->Input->GetFireOneHold())

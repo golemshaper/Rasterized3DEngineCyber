@@ -138,6 +138,7 @@ def export_scene_as_custom():
     bpy.context.window_manager.clipboard = out
     print("Scene exported to clipboard.")
     print(out)
+    return out
 
 
 # Run exporter
@@ -272,11 +273,51 @@ def export_mesh_as_custom(obj):
 
     bpy.context.window_manager.clipboard = out
     print(out)
+    return out
 
 #===================================================================================================
 #===================================================================================================
 #===================================================================================================
 #===================================================================================================
+                                        #Path options
+#===================================================================================================
+
+def register_properties():
+    bpy.types.Scene.bpace_path_a = bpy.props.StringProperty(
+        name="ScenePath",
+        description="Scene file path",
+        subtype='FILE_PATH'
+    )
+
+    bpy.types.Scene.bpace_path_b = bpy.props.StringProperty(
+        name="ModelPath",
+        description="Model file path",
+        subtype='FILE_PATH'
+    )
+
+def unregister_properties():
+    del bpy.types.Scene.bpace_path_a
+    del bpy.types.Scene.bpace_path_b
+
+class BPACE_PT_Tools(bpy.types.Panel):
+    bl_label = "BPACyberEngineTools"
+    bl_idname = "VIEW3D_PT_bpa_cyber_engine_tools"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = "BPACyberEngineTools"
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+
+        layout.prop(scene, "bpace_path_a")
+        layout.prop(scene, "bpace_path_b")
+
+        layout.separator()
+
+        layout.operator("bpacyber.copy_mesh", icon='COPYDOWN')
+        layout.operator("bpacyber.copy_scene", icon='COPYDOWN')
+        
 #===================================================================================================
 #===================================================================================================
                                         # PANEL INTERFACE
@@ -287,31 +328,98 @@ def export_mesh_as_custom(obj):
 
 class BPACE_OT_CopyMesh(bpy.types.Operator):
     bl_idname = "bpacyber.copy_mesh"
-    bl_label = "Copy Mesh to Clipboard"
-    bl_description = "Exports the active mesh to Cyber Athena format and copies it to the clipboard"
+    bl_label = "Copy Meshes to Folder"
+    bl_description = "Exports selected meshes to Cyber Athena format and saves them to the ModelPath folder"
 
     def execute(self, context):
-        obj = context.active_object
-        if not obj or obj.type != 'MESH':
-            self.report({'ERROR'}, "Select a mesh object first")
+        scene = context.scene
+        directory = scene.bpace_path_b  # ModelPath
+
+        if not directory:
+            self.report({'ERROR'}, "ModelPath not set")
             return {'CANCELLED'}
 
-        export_mesh_as_custom(obj)
-        self.report({'INFO'}, "Mesh copied to clipboard")
-        return {'FINISHED'}
+        import os
+        exported_names = set()
+        count = 0
 
+        for obj in context.selected_objects:
+            if obj.type != 'MESH':
+                continue
+
+            # Clean the name
+            clean = bpy.path.clean_name(obj.name)
+
+            # Skip duplicates
+            if clean in exported_names:
+                continue
+            exported_names.add(clean)
+
+            # Export text
+            text = export_mesh_as_custom(obj)
+
+            # Build full file path
+            filename = clean + ".txt"
+            full_path = os.path.join(directory, filename)
+
+            # Write file
+            try:
+                with open(full_path, "w", encoding="utf-8") as f:
+                    f.write(text)
+                count += 1
+            except Exception as e:
+                self.report({'ERROR'}, f"Failed to save {filename}: {e}")
+
+        # Clipboard behavior: copy active mesh (your original behavior)
+        active = context.active_object
+        if active and active.type == 'MESH':
+            text = export_mesh_as_custom(active)
+            bpy.context.window_manager.clipboard = text
+
+        self.report({'INFO'}, f"Exported {count} mesh files")
+        return {'FINISHED'}
 # ---------------------------------------------------------
 # . Operator that calls scene exporter
 # ---------------------------------------------------------
 
 class BPACE_OT_CopyScene(bpy.types.Operator):
     bl_idname = "bpacyber.copy_scene"
-    bl_label = "Copy Scene to Clipboard"
+    bl_label = "Copy Scene to Folder"
     bl_description = "Exports the active scene to Cyber Athena format and copies it to the clipboard"
 
     def execute(self, context):
-        export_scene_as_custom()
-        self.report({'INFO'}, "Scene copied to clipboard")
+        scene = context.scene
+
+        # 1. Get exported text
+        text = export_scene_as_custom()
+
+        # 2. Get the directory the user selected
+        directory = scene.bpace_path_a
+
+        if directory:
+            import os
+
+            # 3. Build filename from the .blend file name
+            blend_path = bpy.data.filepath
+            if blend_path:
+                base = os.path.splitext(os.path.basename(blend_path))[0]
+                filename = base + ".txt"
+            else:
+                filename = "untitled_scene.txt"
+
+            # 4. Combine directory + filename
+            full_path = os.path.join(directory, filename)
+
+            # 5. Write the file
+            try:
+                with open(full_path, "w", encoding="utf-8") as f:
+                    f.write(text)
+                self.report({'INFO'}, f"Scene saved to {full_path}")
+            except Exception as e:
+                self.report({'ERROR'}, f"Failed to save file: {e}")
+        else:
+            self.report({'WARNING'}, "ScenePath not set — only copied to clipboard")
+
         return {'FINISHED'}
 
 # ---------------------------------------------------------
@@ -327,6 +435,11 @@ class BPACE_PT_Tools(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
+        scene = context.scene
+
+        layout.prop(scene, "bpace_path_a")
+        layout.prop(scene, "bpace_path_b")
+
         layout.operator("bpacyber.copy_mesh", icon='COPYDOWN')
         layout.operator("bpacyber.copy_scene", icon='COPYDOWN')
 
@@ -344,8 +457,10 @@ classes = (
 def register():
     for c in classes:
         bpy.utils.register_class(c)
+        register_properties()
 
 def unregister():
+    unregister_properties()
     for c in reversed(classes):
         bpy.utils.unregister_class(c)
 
