@@ -304,7 +304,7 @@ class BPACE_OT_CopyMesh(bpy.types.Operator):
 # . Operator that calls scene exporter
 # ---------------------------------------------------------
 
-class BPACE_OT_CopyMesh(bpy.types.Operator):
+class BPACE_OT_CopyScene(bpy.types.Operator):
     bl_idname = "bpacyber.copy_scene"
     bl_label = "Copy Scene to Clipboard"
     bl_description = "Exports the active scene to Cyber Athena format and copies it to the clipboard"
@@ -337,6 +337,7 @@ class BPACE_PT_Tools(bpy.types.Panel):
 
 classes = (
     BPACE_OT_CopyMesh,
+    BPACE_OT_CopyScene,
     BPACE_PT_Tools,
 )
 
