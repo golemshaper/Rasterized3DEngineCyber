@@ -5,6 +5,7 @@
 #include <fstream>
 #include <map>
 #include "ModelFileParser.h"
+#include <iostream>
 
 Scene SceneFileParser::ParseSceneFromFile(const std::string path, const std::string mesh_asset_path_root)
 {
@@ -21,7 +22,9 @@ Scene SceneFileParser::ParseSceneFromFile(const std::string path, const std::str
 		file_contents += str;
 		file_contents.push_back('\n');
 	}
+	std::cout << "loaded file\n";
 	return ParseSceneFromString(file_contents, mesh_asset_path_root);
+
 }
 
 Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::string mesh_asset_path_root)

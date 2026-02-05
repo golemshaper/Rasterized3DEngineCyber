@@ -7,8 +7,8 @@ class HelloSceneFile :public Game
 public:
 	void Initialize();
 	void Tick(float DeltaTime);
-
+	bool reload_scene_limit_once = false;
 	SceneFileParser* SceneParser;
-	Scene MyScene;
+	Scene SceneParserObject;
 };
 
