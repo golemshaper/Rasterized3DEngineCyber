@@ -23,6 +23,7 @@ void HelloSceneFile::Tick(float DeltaTime)
     for (int i = 0; i < SceneParserObject.scene_objects.size(); i++)
     {
         int MeshId = SceneParserObject.scene_objects[i].model_id;
+        if (SceneParserObject.scene_objects[i].visible == false) { continue; }
         MyScratch->DrawMesh(
             SceneParserObject.Meshes[MeshId], 
             SceneParserObject.scene_objects[i].pos, 
