@@ -31,9 +31,11 @@ void HelloSceneFile::Tick(float DeltaTime)
     //Draw Calls
     for (int i = 0; i < SceneParserObject.scene_objects.size(); i++)
     {
+        //IDs
         int MeshId = SceneParserObject.scene_objects[i].model_id;
         if (SceneParserObject.scene_objects[i].visible == false) { continue; }
         int TextureID = SceneParserObject.scene_objects[i].texture_id;
+        //TEXTURE
         if (TextureID != -1 && SceneParserObject.TexturePacks.size() >= TextureID)
         {
             MyScratch->TextureDrawOn = true;
@@ -47,11 +49,13 @@ void HelloSceneFile::Tick(float DeltaTime)
         {
             MyScratch->TextureDrawOn = false;
         }
+        //MESH
         MyScratch->DrawMesh(
             SceneParserObject.Meshes[MeshId], 
             SceneParserObject.scene_objects[i].pos, 
             SceneParserObject.scene_objects[i].rot, 
-            SceneParserObject.scene_objects[i].scale
+            SceneParserObject.scene_objects[i].scale,
+            false
         );
     }
     //RELOAD CALL
