@@ -33,6 +33,20 @@ void HelloSceneFile::Tick(float DeltaTime)
     {
         int MeshId = SceneParserObject.scene_objects[i].model_id;
         if (SceneParserObject.scene_objects[i].visible == false) { continue; }
+        int TextureID = SceneParserObject.scene_objects[i].texture_id;
+        if (TextureID != -1 && SceneParserObject.TexturePacks.size() >= TextureID)
+        {
+            MyScratch->TextureDrawOn = true;
+            MyScratch->SetTexture(
+                SceneParserObject.TexturePacks[TextureID].TextureData,
+                SceneParserObject.TexturePacks[TextureID].width,
+                SceneParserObject.TexturePacks[TextureID].height
+            );
+        }
+        else
+        {
+            MyScratch->TextureDrawOn = false;
+        }
         MyScratch->DrawMesh(
             SceneParserObject.Meshes[MeshId], 
             SceneParserObject.scene_objects[i].pos, 

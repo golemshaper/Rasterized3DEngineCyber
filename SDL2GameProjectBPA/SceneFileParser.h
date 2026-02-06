@@ -14,7 +14,8 @@ struct SceneObject {
 	std::vector<std::string> tags; //REPLACE THESE WITH TAG IDS!
 };
 struct TexturePack {
-	std::string Texture;
+	std::string TextureName;
+	RGB* TextureData;
 	int width;
 	int height;
 };

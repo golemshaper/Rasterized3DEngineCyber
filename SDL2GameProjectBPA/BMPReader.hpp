@@ -53,17 +53,19 @@ inline RGB* ReadBMP(const char* filename, int& outW, int& outH)
     fread(&bmp, sizeof(bmp), 1, f);
     fread(&dib, sizeof(dib), 1, f);
 
+
     // Validate minimal BMP
     if (bmp.bfType != 0x4D42 || dib.biBitCount != 24 || dib.biCompression != 0) {
         fclose(f);
         return nullptr;
     }
+    //printf("ReadBMP: width=%d height=%d\n", dib.biWidth, dib.biHeight);
+
 
     const int width = dib.biWidth;
     const int height = dib.biHeight;
     outW = width;
     outH = height;
-
     const int bytesPerPixel = 3;
     const int unpaddedRow = width * bytesPerPixel;
     const int padding = (4 - (unpaddedRow % 4)) % 4;

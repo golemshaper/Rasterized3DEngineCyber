@@ -19,12 +19,12 @@ Scales:
  0.300,0.300,0.300
 
 Objects:
-RPGWarriorRohan,OPF,0,0,0,true,
+RPGWarriorRohan,BasicPalette,0,0,0,true,
 Text,None,1,1,1,true,
-RPGWarriorRohan,OPF,2,0,0,true,
-DemoTowerTemp,None,3,0,2,true,
-Torus,None,4,0,2,true,
-Torus,None,5,0,3,true,
-Torus,None,6,0,4,true,
+RPGWarriorRohan,BasicPalette,2,0,0,true,
+DemoTowerTemp,DoorTemp,3,0,2,true,
+Torus,DoorTemp,4,0,2,true,
+Torus,DoorTemp,5,0,3,true,
+Torus,DoorTemp,6,0,4,true,
 
 DialogueTriggers:

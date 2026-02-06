@@ -6,6 +6,7 @@
 #include <map>
 #include "ModelFileParser.h"
 #include <iostream>
+#include "BMPReader.hpp"
 
 Scene SceneFileParser::ParseSceneFromFile(const std::string path, const std::string mesh_asset_path_root)
 {
@@ -76,6 +77,7 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 	//RAW DATA --------------------------------------------
 	std::vector<SceneObject> scene_objects;
 	std::vector<std::string> model_names;
+	std::vector<std::string> texture_names;
 	int CurrentModelID = 0;
 
 	std::vector<TexturePack> TexturePacks;
@@ -180,22 +182,23 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 					//ASSUME INPUT LIKE:
 					//"Human, BasicPaletteTexture, 1, 0, 0, true, Tag1, Tag2"
 					
+					//Grab data:
 					assetName = results[0];
 					textureName = results[1];
-
+					//Build model list:
 					model_index = FindStringIndex(assetName, model_names);
 					if (model_index == -1)
 					{
 						model_names.push_back(assetName);
 						model_index = model_names.size()-1;
 					}
-					
-					texture_index = FindStringIndex(assetName, model_names);
-					if (texture_index == -1)
+					//Build texture list:
+					texture_index = FindStringIndex(textureName, texture_names);
+					if (texture_index == -1 && textureName != "None")
 					{
-						model_names.push_back(assetName);
+						texture_names.push_back(textureName);
 						//consider parsing texture size data from the scene data in blender somehow...
-						texture_index = texture_pack_names.size() - 1;
+						texture_index = texture_names.size() - 1;
 					}
 
 					posIndex = std::stoi(results[2]);
@@ -245,6 +248,23 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 		Mesh cMesh = model_loader.ParseModelFromFile(mesh_asset_path_root + model_names[i]+".txt");
 		ResultingSceneFile.Meshes.push_back(cMesh);
 		
+	}
+	
+	for (int i = 0; i < texture_names.size(); i++)
+	{
+		if (texture_names[i] == "None")continue;
+		//find a way to get the real w and h from the texture...
+		//This is annoying to do, please make a version of the function that takes the string for you, and does this conversion later...
+		std::string full = mesh_asset_path_root + texture_names[i] + ".bmp";
+		const char* tex_path = full.c_str();
+		int w = 32; 
+		int h = 32;
+		RGB* texture = ReadBMP(tex_path, w, h);
+		//printf("CALLER: w=%d h=%d &w=%p &h=%p\n", w, h, (void*)&w, (void*)&h);
+
+		TexturePack CurTex = TexturePack{texture_names[i], texture,w,h };
+		TexturePacks.push_back(CurTex);
+
 	}
 	ResultingSceneFile.TexturePacks = TexturePacks;
 	ResultingSceneFile.scene_objects = scene_objects;
