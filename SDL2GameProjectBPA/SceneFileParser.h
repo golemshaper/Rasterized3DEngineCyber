@@ -37,8 +37,11 @@ struct Scene {
 class SceneFileParser
 {
 public:
-	Scene ParseSceneFromFile(const std::string path, const std::string mesh_asset_path_root);
+	Scene ParseSceneFromFile(const std::string scene_file_path, const std::string mesh_asset_path_root);
+	Scene ParseSceneFromFile(const std::string scene_file_path, const std::string mesh_asset_path_root, const std::string texture_asset_path_root);
+	
 	Scene ParseSceneFromString(const std::string str, const std::string mesh_asset_path_root);
+	Scene ParseSceneFromString(const std::string str, const std::string mesh_asset_path_root, const std::string texture_asset_path_root);
 	int GetModelID(const std::string& str, Scene* scene);
 	int GetModelID(const std::string& str); //Instead of passing a scene, should this just be a function of Scene?
 	int GetTexturePackId(const std::string& str, Scene* scene);

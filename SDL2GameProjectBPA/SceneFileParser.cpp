@@ -8,14 +8,21 @@
 #include <iostream>
 #include "BMPReader.hpp"
 
-Scene SceneFileParser::ParseSceneFromFile(const std::string path, const std::string mesh_asset_path_root)
+
+
+Scene SceneFileParser::ParseSceneFromFile(const std::string scene_file_path, const std::string mesh_asset_path_root)
 {
-	std::ifstream file(path);
+	return ParseSceneFromFile(scene_file_path, mesh_asset_path_root, mesh_asset_path_root);
+}
+
+Scene SceneFileParser::ParseSceneFromFile(const std::string scene_file_path, const std::string mesh_asset_path_root, const std::string texture_asset_path_root)
+{
+	std::ifstream file(scene_file_path);
 	std::string str;
 	std::string file_contents;
 
 	if (!file.is_open()) {
-		file_contents = "F:" + path;
+		file_contents = "F:" + scene_file_path;
 	}
 
 	while (std::getline(file, str))
@@ -29,6 +36,11 @@ Scene SceneFileParser::ParseSceneFromFile(const std::string path, const std::str
 }
 
 Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::string mesh_asset_path_root)
+{
+	return ParseSceneFromString(str,mesh_asset_path_root, mesh_asset_path_root);
+}
+
+Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::string mesh_asset_path_root, const std::string texture_asset_path_root)
 {
 	
 	/*NEW DRAFT:
@@ -255,7 +267,7 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 		if (texture_names[i] == "None")continue;
 		//find a way to get the real w and h from the texture...
 		//This is annoying to do, please make a version of the function that takes the string for you, and does this conversion later...
-		std::string full = mesh_asset_path_root + texture_names[i] + ".bmp";
+		std::string full = texture_asset_path_root + texture_names[i] + ".bmp";
 		const char* tex_path = full.c_str();
 		int w = 32; 
 		int h = 32;
