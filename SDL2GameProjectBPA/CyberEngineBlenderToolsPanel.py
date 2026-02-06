@@ -141,8 +141,7 @@ def export_scene_as_custom():
     return out
 
 
-# Run exporter
-export_scene_as_custom()
+
 
 
 
@@ -278,8 +277,54 @@ def export_mesh_as_custom(obj):
 #===================================================================================================
 #===================================================================================================
 #===================================================================================================
+                                        #Tag Data
+bpy.types.Object.bpace_tag_string = bpy.props.StringProperty(
+    name="Tags",
+    description="Comma-separated tags stored on this object"
+)
+class BPACE_OT_LoadTags(bpy.types.Operator):
+    bl_idname = "bpacyber.load_tags"
+    bl_label = "Load Tags"
+
+    def execute(self, context):
+        obj = context.active_object
+        if not obj:
+            self.report({'ERROR'}, "No active object")
+            return {'CANCELLED'}
+
+        tags = []
+        if "tags" in obj:
+            raw = obj["tags"]
+            if isinstance(raw, (list, tuple)):
+                tags = list(raw)
+            else:
+                tags = [str(raw)]
+
+        obj.bpace_tag_string = ",".join(tags)
+        return {'FINISHED'}
+class BPACE_OT_ApplyTags(bpy.types.Operator):
+    bl_idname = "bpacyber.apply_tags"
+    bl_label = "Apply Tags"
+
+    def execute(self, context):
+        obj = context.active_object
+        if not obj:
+            self.report({'ERROR'}, "No active object")
+            return {'CANCELLED'}
+
+        text = obj.bpace_tag_string.strip()
+
+        if text == "":
+            obj["tags"] = []
+        else:
+            tags = [t.strip() for t in text.split(",") if t.strip()]
+            obj["tags"] = tags
+
+        self.report({'INFO'}, "Tags updated")
+        return {'FINISHED'}
+
 #===================================================================================================
-                                        #Path options
+                                        #Path Data
 #===================================================================================================
 
 def register_properties():
@@ -511,13 +556,26 @@ class BPACE_PT_Tools(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         scene = context.scene
-
+        obj = context.active_object
+        #Paths
         layout.prop(scene, "bpace_path_a")
         layout.prop(scene, "bpace_path_b")
 
+            
+        #Export
         layout.operator("bpacyber.copy_mesh", icon='COPYDOWN')
         layout.operator("bpacyber.copy_scene", icon='COPYDOWN')
         layout.operator("bpacyber.send_all", icon='FILE_TICK')
+                # --- Tag Editing UI ---
+    
+
+        if obj:
+            box = layout.box()
+            box.label(text="Object Tags")
+            box.prop(obj, "bpace_tag_string", text="")
+            row = box.row()
+            row.operator("bpacyber.load_tags", icon='IMPORT')
+            row.operator("bpacyber.apply_tags", icon='EXPORT')
 
 
 # ---------------------------------------------------------
@@ -529,6 +587,9 @@ classes = (
     BPACE_OT_CopyScene,
     BPACE_PT_Tools,
     BPACE_OT_SendAll,
+    BPACE_OT_LoadTags,
+    BPACE_OT_ApplyTags,
+    
 )
 
 def register():

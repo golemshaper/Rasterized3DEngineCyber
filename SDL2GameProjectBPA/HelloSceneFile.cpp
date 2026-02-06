@@ -28,7 +28,6 @@ void HelloSceneFile::Tick(float DeltaTime)
     MyScratch->SetCameraFOV(90);
     MyScratch->MeshColor = RGB{ 255,255,255,255 };
     MyScratch->SetCamera(vec3d{ 0.0f, -4.8f, -10.1f }, vec3d{ 0.0f,0.4f, 1.0f });
-    MyScratch->PushBackDepthBuffer(1000);
     //Draw Calls
     for (int i = 0; i < SceneParserObject.scene_objects.size(); i++)
     {
@@ -49,6 +48,10 @@ void HelloSceneFile::Tick(float DeltaTime)
         else
         {
             MyScratch->TextureDrawOn = false;
+        }
+        if (SceneParserObject.scene_objects[i].HasTagStringCompare("Spin"))
+        {
+            SceneParserObject.scene_objects[i].rot.y = totalTime;
         }
         //MESH
         MyScratch->DrawMesh(

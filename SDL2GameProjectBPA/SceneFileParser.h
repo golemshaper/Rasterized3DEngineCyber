@@ -12,6 +12,21 @@ struct SceneObject {
 	vec3d scale;
 	bool visible;
 	std::vector<std::string> tags; //REPLACE THESE WITH TAG IDS!
+
+	/// <summary>
+	/// String comparisons are to slow for a game. Make an ID system!
+	/// </summary>
+	/// <param name="tag"></param>
+	/// <returns></returns>
+	bool HasTagStringCompare(const std::string& tag)
+	{
+		for (int i = 0; i < tags.size(); ++i)
+		{
+			if (tags[i] == tag)return true;
+		}
+		return false;
+	}
+
 };
 struct TexturePack {
 	std::string TextureName;
