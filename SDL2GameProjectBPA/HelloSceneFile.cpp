@@ -44,11 +44,10 @@ void HelloSceneFile::LoadSceneFiles(std::string SceneFileName)
             CameraEnd = SceneParserObject.scene_objects[i].pos;
         }
         //Get the args of the level link tag, which is the next tag over.
-       
         if (SceneParserObject.scene_objects[i].HasTagIDOutIndex(Tag_LevelLink, level_link_index))
         {
            std::string level_link_arg = SceneParserObject.GetTagStringFromID(SceneParserObject.scene_objects[i].tag_ids[level_link_index + 1]);
-           //TEST: std::cout << level_link_arg;
+           std::cout << level_link_arg <<" was found in the level link";
         }
        
     }
@@ -108,6 +107,8 @@ void HelloSceneFile::Tick(float DeltaTime)
         int level_link_index = -1;
         if (totalTime >= 5.0f && SceneParserObject.scene_objects[i].HasTagIDOutIndex(Tag_LevelLink, level_link_index))
         {
+            //After 5 seconds, we get check if we have a level link tag, and then we also get the neighboring tag, which stores the name of our level. 
+            //we then load and replace our current scene with this new level. In a game, we'd do a collision check instead of a timer usually
             totalTime = 0.0f;
             std::string level_link_arg = SceneParserObject.GetTagStringFromID(SceneParserObject.scene_objects[i].tag_ids[level_link_index + 1]);
             std::cout << level_link_arg;
