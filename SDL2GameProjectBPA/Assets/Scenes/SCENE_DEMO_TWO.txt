@@ -1,0 +1,20 @@
+Positions:
+ 0.034 -0.325 -2.626
+ 0.000 0.000 0.000
+ -0.178 1.542 -3.380
+ -0.226 5.500 -16.016
+
+Rotations:
+ 0.000 0.000 -0.000
+
+Scales:
+ 2.159,2.159,2.159
+ 1.000,1.000,1.000
+
+Objects:
+RPGWarriorRohan,BasicPalette,0,0,0,true,Player,Shadow,Spin
+DemoTwoPlane,None,1,0,1,true,Terrain
+CameraTarget,None,2,0,1,true,Hidden,CameraAim
+CameraLocation,None,3,0,1,true,Hidden,CamLoc
+
+DialogueTriggers:

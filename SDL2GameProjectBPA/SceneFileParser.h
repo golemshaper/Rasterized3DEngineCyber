@@ -27,6 +27,19 @@ struct SceneObject {
 		}
 		return false;
 	}
+	bool HasTagIDOutIndex(int tag_id, int& index)
+	{
+		for (int i = 0; i < tag_ids.size(); ++i)
+		{
+			if (tag_ids[i] == tag_id)
+			{
+				index = i;
+				return true;
+			}
+		}
+		index = -1;
+		return false;
+	}
 	bool HasTagByID(int tag_id)
 	{
 		for (int i = 0; i < tag_ids.size(); ++i)

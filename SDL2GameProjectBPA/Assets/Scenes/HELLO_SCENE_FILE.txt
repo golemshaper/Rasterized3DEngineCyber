@@ -31,8 +31,8 @@ DemoTowerTemp,DoorTemp,3,0,2,true,Spin
 Torus,DoorTemp,4,0,2,true,
 Torus,DoorTemp,5,0,3,true,
 Torus,None,6,0,4,true,
-Cube,None,7,0,2,true,LevelLink,MapFileNumberTwo.txt
-Plane,None,8,0,2,true,Terrain
+Cube,None,7,0,2,true,LevelLink,SCENE_DEMO_TWO.txt
+PlaneHelloScene,None,8,0,2,true,Terrain
 CameraTarget,None,9,0,2,true,Hidden,CameraAim
 CameraLocation,None,10,0,2,true,Hidden,CamLoc
 DemoTowerTemp,DoorTemp,11,0,2,true,Spin

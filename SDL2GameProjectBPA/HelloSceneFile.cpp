@@ -1,5 +1,6 @@
 #include "HelloSceneFile.h"
 #include "SceneFileParser.h"
+#include <iostream>
 void HelloSceneFile::Initialize()
 {
     MyScratch = new DrawScratchSpace();
@@ -10,14 +11,25 @@ void HelloSceneFile::Initialize()
 }
 void HelloSceneFile::LoadSceneFiles()
 {
-    SceneParserObject = SceneParser->ParseSceneFromFile("Assets/Scenes/HELLO_SCENE_FILE.txt", "Assets/Models/");
+   LoadSceneFiles(SceneLink);
+}
+void HelloSceneFile::LoadSceneFiles(std::string SceneFileName)
+{
+    SceneParserObject = SceneParser->ParseSceneFromFile(ScenePath+ SceneFileName, "Assets/Models/");
     //Ideas: Loop through lists of scene objects, find objects with certain gameplay tags, and add them to categories, like
     //for example, and NPC_WALK[] list. Then in the game, you can loop through those and apply movement code to them.
     //TODO: Add custom data dictionary on each scene object for tracking in-game stats, like HP or movement data.
     //One for each data type.
     //You can do things like load the terrain, or other single action commands related to tags here.
+    int level_link_index = -1;
+    Tag_LevelLink = SceneParserObject.GetTagID("LevelLink");
     for (int i = 0; i < SceneParserObject.scene_objects.size(); i++)
     {
+        if (SceneParserObject.scene_objects[i].HasTagStringCompare("Player"))
+        {
+            PlayerID = i; //Do this to have a direct "pointer" to the player. You can perform movement on it before the render loop even happens
+            //You can use this concept to put together ID lists of categories of objects
+        }
         if (SceneParserObject.scene_objects[i].HasTagStringCompare("Terrain"))
         {
             int MeshId = SceneParserObject.scene_objects[i].model_id;
@@ -31,6 +43,14 @@ void HelloSceneFile::LoadSceneFiles()
         {
             CameraEnd = SceneParserObject.scene_objects[i].pos;
         }
+        //Get the args of the level link tag, which is the next tag over.
+       
+        if (SceneParserObject.scene_objects[i].HasTagIDOutIndex(Tag_LevelLink, level_link_index))
+        {
+           std::string level_link_arg = SceneParserObject.GetTagStringFromID(SceneParserObject.scene_objects[i].tag_ids[level_link_index + 1]);
+           //TEST: std::cout << level_link_arg;
+        }
+       
     }
     Tag_Hidden = SceneParserObject.GetTagID("Hidden");
     Tag_Spin = SceneParserObject.GetTagID("Spin");
@@ -84,6 +104,17 @@ void HelloSceneFile::Tick(float DeltaTime)
         {
             SceneParserObject.scene_objects[i].pos = MyScratch->SnapToMesh(SceneParserObject.scene_objects[i].pos , TerrainCollider, vec3d{0,0,0}) - vec3d{ 0,0.35f,0 };
         }
+        //LevelLink---
+        int level_link_index = -1;
+        if (totalTime >= 5.0f && SceneParserObject.scene_objects[i].HasTagIDOutIndex(Tag_LevelLink, level_link_index))
+        {
+            totalTime = 0.0f;
+            std::string level_link_arg = SceneParserObject.GetTagStringFromID(SceneParserObject.scene_objects[i].tag_ids[level_link_index + 1]);
+            std::cout << level_link_arg;
+            LoadSceneFiles(level_link_arg);
+            return;
+        }
+        //---
         if (SceneParserObject.scene_objects[i].HasTagStringCompare("Shadow"))
         {
             bool texOn = MyScratch->TextureDrawOn; 
@@ -108,6 +139,7 @@ void HelloSceneFile::Tick(float DeltaTime)
             SceneParserObject.scene_objects[i].scale,
             false
         );
+        
     }
     //RELOAD CALL
     if (reload_scene_limit_once == false && MyScratch->Input->GetFireOneHold())
