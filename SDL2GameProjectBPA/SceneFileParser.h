@@ -29,7 +29,7 @@ struct SceneObject {
 	}
 	bool HasTagByID(int tag_id)
 	{
-		for (int i = 0; i < tag_strings.size(); ++i)
+		for (int i = 0; i < tag_ids.size(); ++i)
 		{
 			if (tag_ids[i] == tag_id)
 			{
