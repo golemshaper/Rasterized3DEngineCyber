@@ -16,6 +16,7 @@ void HelloSceneFile::LoadSceneFiles()
 void HelloSceneFile::LoadSceneFiles(std::string SceneFileName)
 {
     SceneParserObject = SceneParser->ParseSceneFromFile(ScenePath+ SceneFileName, "Assets/Models/");
+    totalTime = 0.0f;
     //Ideas: Loop through lists of scene objects, find objects with certain gameplay tags, and add them to categories, like
     //for example, and NPC_WALK[] list. Then in the game, you can loop through those and apply movement code to them.
     //Bad idea don't do it: Add custom data dictionary on each scene object for tracking in-game stats, like HP or movement data.
@@ -117,10 +118,11 @@ void HelloSceneFile::Tick(float DeltaTime)
         //    return;
         //}
         std::string level_link_arg; //store the resulting args
-        if (totalTime >= 5.0f &&
-            SceneParserObject.GetTagArgument(SceneParserObject.scene_objects[i],
-                Tag_LevelLink,
-                level_link_arg))
+        if (
+            totalTime >= 5.0f 
+            && 
+            SceneParserObject.GetTagArgument(SceneParserObject.scene_objects[i],Tag_LevelLink,level_link_arg)
+           )
         {
             totalTime = 0.0f;
             LoadSceneFiles(level_link_arg);
