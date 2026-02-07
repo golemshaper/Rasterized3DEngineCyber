@@ -12,6 +12,7 @@ struct SceneObject {
 	vec3d scale;
 	bool visible;
 	std::vector<std::string> tag_strings; //REPLACE THESE WITH TAG IDS!
+	std::vector<int> tag_ids;
 
 	/// <summary>
 	/// String comparisons are to slow for a game. Make an ID system!
@@ -26,7 +27,17 @@ struct SceneObject {
 		}
 		return false;
 	}
-
+	bool HasTagByID(int tag_id)
+	{
+		for (int i = 0; i < tag_strings.size(); ++i)
+		{
+			if (tag_ids[i] == tag_id)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 };
 struct TexturePack {
 	std::string TextureName;
@@ -44,10 +55,19 @@ struct Scene {
 	std::vector<TexturePack> TexturePacks;
 	std::vector<Mesh> Meshes;
 	std::vector<std::string> TagStrList;
+	
+	int GetTagID(std::string tag) {
 
-
-	//std::map<std::string, int> tag_map;
-
+		for (int i = 0; i < TagStrList.size(); ++i)
+		{
+			if (TagStrList[i] == tag)return i;
+		}
+		return -1;
+	}
+	std::string GetTagStringFromID(int tag_id)
+	{
+		return TagStrList[tag_id];
+	}
 	//UNUSED:
 	std::map<std::string, int> dialogue_map;
 	std::vector<DialogueTriggers> dialogue_triggers;

@@ -96,6 +96,7 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 	std::vector<std::string> texture_pack_names;
 	int CurrentTextureID = 0;
 	//--------------------------------------------
+	std::vector<std::string> all_tags;
 
 	std::vector<DialogueTriggers> dialogue_triggers;
 
@@ -160,7 +161,8 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 			int texture_id_holder = 0;
 			std::string assetName;
 			std::string textureName;
-			std::vector<std::string> tags;
+			std::vector<std::string> local_tags;
+			std::vector<int> local_tagIds;
 
 			int model_index = 0;
 			int texture_index = 0;
@@ -217,21 +219,35 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 					rotIndex = std::stoi(results[3]);
 					sclIndex = std::stoi(results[4]);
 					working_visible = (results[5] == "true"); //5 is the index for the visible bool! If it changes, make a constant for it.
+					//tags
 					for (int i = 6; i < results.size(); ++i) //6 is the start of the tags. if we add or remove any properties, change this and make a const for it.
 					{
-						tags.push_back(results[i]);
+						local_tags.push_back(results[i]);
+					
+						int tag_id = FindStringIndex(results[i], all_tags);
+						if (tag_id == -1)
+						{
+							all_tags.push_back(results[i]);
+							tag_id = all_tags.size() - 1;
+						}
+
+						if (tag_id != -1)
+						{
+							local_tagIds.push_back(tag_id);
+						}
 					}
 
 					working_scene_object = {
 						assetName,
 						textureName,
-						model_index, 
+						model_index,
 						texture_index,
 						id_positions_map[posIndex],
 						id_rotations_map[rotIndex],
 						id_scales_map[sclIndex],
 						working_visible,
-						tags
+						local_tags,
+						local_tagIds
 					};
 					
 					scene_objects.push_back(working_scene_object);
@@ -278,6 +294,7 @@ Scene SceneFileParser::ParseSceneFromString(const std::string str, const std::st
 		TexturePacks.push_back(CurTex);
 
 	}
+	ResultingSceneFile.TagStrList = all_tags;
 	ResultingSceneFile.TexturePacks = TexturePacks;
 	ResultingSceneFile.scene_objects = scene_objects;
 

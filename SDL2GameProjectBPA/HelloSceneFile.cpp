@@ -32,6 +32,9 @@ void HelloSceneFile::LoadSceneFiles()
             CameraEnd = SceneParserObject.scene_objects[i].pos;
         }
     }
+    Tag_Hidden = SceneParserObject.GetTagID("Hidden");
+    Tag_Spin = SceneParserObject.GetTagID("Spin");
+
 }
 void HelloSceneFile::Tick(float DeltaTime)
 {
@@ -69,11 +72,11 @@ void HelloSceneFile::Tick(float DeltaTime)
             MyScratch->TextureDrawOn = false;
         }
         //Tags
-        if (SceneParserObject.scene_objects[i].HasTagStringCompare("Hidden"))
+        if (SceneParserObject.scene_objects[i].HasTagByID(Tag_Hidden))
         {
             continue;
         }
-        if (SceneParserObject.scene_objects[i].HasTagStringCompare("Spin"))
+        if (SceneParserObject.scene_objects[i].HasTagByID(Tag_Spin))
         {
             SceneParserObject.scene_objects[i].rot.y = totalTime;
         }
@@ -91,7 +94,7 @@ void HelloSceneFile::Tick(float DeltaTime)
                 SceneParserObject.Meshes[MeshId],
                 SceneParserObject.scene_objects[i].pos + vec3d{0,0.001f,0},
                 SceneParserObject.scene_objects[i].rot,
-                vec3d{ SceneParserObject.scene_objects[i].scale.x,0.001f,SceneParserObject.scene_objects[i].scale.z},
+                vec3d{ SceneParserObject.scene_objects[i].scale.x,0.02f,SceneParserObject.scene_objects[i].scale.z},
                 false
             );
             MyScratch->TextureDrawOn = texOn;

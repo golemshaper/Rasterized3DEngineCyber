@@ -15,5 +15,9 @@ public:
 	vec3d CameraStart;
 	vec3d CameraEnd;
 
+	int Tag_Hidden = -1;
+	int Tag_Spin= -1;
+
+
 };
 
