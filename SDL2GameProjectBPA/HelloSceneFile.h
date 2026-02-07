@@ -9,6 +9,7 @@ public:
 	void LoadSceneFiles();
 	void Tick(float DeltaTime);
 	bool reload_scene_limit_once = false;
+	Mesh TerrainCollider;
 	SceneFileParser* SceneParser;
 	Scene SceneParserObject;
 };

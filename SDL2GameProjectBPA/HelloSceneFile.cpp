@@ -16,6 +16,17 @@ void HelloSceneFile::LoadSceneFiles()
     //TODO: Add custom data dictionary on each scene object for tracking in-game stats, like HP or movement data.
     //One for each data type.
 
+    //You can do things like load the terrain, or other single action commands related to tags here.
+    for (int i = 0; i < SceneParserObject.scene_objects.size(); i++)
+    {
+        if (SceneParserObject.scene_objects[i].HasTagStringCompare("Terrain"))
+        {
+            int MeshId = SceneParserObject.scene_objects[i].model_id;
+            TerrainCollider = SceneParserObject.Meshes[MeshId];
+            break;
+        }
+    }
+
 }
 void HelloSceneFile::Tick(float DeltaTime)
 {
@@ -53,6 +64,11 @@ void HelloSceneFile::Tick(float DeltaTime)
         {
             SceneParserObject.scene_objects[i].rot.y = totalTime;
         }
+        if (SceneParserObject.scene_objects[i].HasTagStringCompare("Player"))
+        {
+            SceneParserObject.scene_objects[i].pos = MyScratch->SnapToMesh(SceneParserObject.scene_objects[i].pos, TerrainCollider, vec3d{0,0,0});
+        }
+
         //MESH
         MyScratch->DrawMesh(
             SceneParserObject.Meshes[MeshId], 

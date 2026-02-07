@@ -6,6 +6,8 @@ Positions:
  0.000 3.500 -3.605
  0.000 4.500 -3.605
  0.000 5.500 -3.605
+ 6.563 0.000 -3.112
+ 0.000 0.000 0.000
 
 Rotations:
  0.000 0.000 -0.000
@@ -19,12 +21,14 @@ Scales:
  0.300,0.300,0.300
 
 Objects:
-RPGWarriorRohan,BasicPalette,0,0,0,true,Tag1,Tag2,Brian
+RPGWarriorRohan,BasicPalette,0,0,0,true,Player,Tag2,Tag3
 Text,None,1,1,1,true,
 RPGWarriorRohan,BasicPalette,2,0,0,true,Spin
 DemoTowerTemp,DoorTemp,3,0,2,true,Spin
 Torus,DoorTemp,4,0,2,true,
 Torus,DoorTemp,5,0,3,true,
 Torus,None,6,0,4,true,
+Cube,None,7,0,2,true,LevelLink,MapFileNumberTwo.txt
+Plane,None,8,0,2,true,Terrain
 
 DialogueTriggers:
