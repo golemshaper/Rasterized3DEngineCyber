@@ -2,6 +2,16 @@ import bpy
 import math
 import re
 #===================================================================================================
+bl_info = {
+    "name": "BPACyberEngineTools",
+    "author": "Brian",
+    "version": (1, 0),
+    "blender": (4, 0, 0),
+    "location": "View3D > N‑Panel > BPACyberEngineTools",
+    "description": "Cyber Athena mesh/scene export tools",
+    "category": "Import-Export",
+}
+
 #===================================================================================================
 #===================================================================================================
 #===================================================================================================
@@ -278,10 +288,7 @@ def export_mesh_as_custom(obj):
 #===================================================================================================
 #===================================================================================================
                                         #Tag Data
-bpy.types.Object.bpace_tag_string = bpy.props.StringProperty(
-    name="Tags",
-    description="Comma-separated tags stored on this object"
-)
+
 class BPACE_OT_LoadTags(bpy.types.Operator):
     bl_idname = "bpacyber.load_tags"
     bl_label = "Load Tags"
@@ -339,10 +346,16 @@ def register_properties():
         description="Model file path",
         subtype='FILE_PATH'
     )
+    bpy.types.Object.bpace_tag_string = bpy.props.StringProperty(
+        name="Tags"
+    )
+
 
 def unregister_properties():
     del bpy.types.Scene.bpace_path_a
     del bpy.types.Scene.bpace_path_b
+    del bpy.types.Object.bpace_tag_string
+
 
 class BPACE_PT_Tools(bpy.types.Panel):
     bl_label = "BPACyberEngineTools"
@@ -595,7 +608,7 @@ classes = (
 def register():
     for c in classes:
         bpy.utils.register_class(c)
-        register_properties()
+    register_properties()
 
 def unregister():
     unregister_properties()
@@ -604,5 +617,6 @@ def unregister():
 
 if __name__ == "__main__":
     register()
-    
+
+
 #===================================================================================================
