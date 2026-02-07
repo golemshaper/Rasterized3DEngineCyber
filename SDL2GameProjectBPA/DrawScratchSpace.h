@@ -345,6 +345,7 @@ public:
     mat4x4 Matrix_PointAt(vec3d pos, vec3d target, vec3d up);
     mat4x4 Matrix_QuickInverse(mat4x4& m);
     mat4x4 CalculateViewMatrix();
+    void SetCamera_Legacy(vec3d loc, vec3d target);
     void SetCamera(vec3d loc, vec3d target);
     void SetCameraFOV(float nFov);
    

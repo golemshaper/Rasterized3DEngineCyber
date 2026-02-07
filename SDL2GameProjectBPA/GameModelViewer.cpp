@@ -41,7 +41,7 @@ void GameModelViewer::DrawLaura(float DeltaTime)
     totalTime += DeltaTime;
     MyScratch->SetCameraFOV(30);
     MyScratch->MeshColor = RGB{ 90,90,90,255 };
-    MyScratch->SetCamera(vec3d{ 0.0f, -0.8f, -3.1f }, vec3d{ 0.0f,0.20f, 1.0f });
+    MyScratch->SetCamera_Legacy(vec3d{ 0.0f, -0.8f, -3.1f }, vec3d{ 0.0f,0.20f, 1.0f });
     MyScratch->EdgeBrightness = 0.5f;
     MyScratch->SetTexture(LauraTexture, 256, 184);
     MyScratch->DrawMesh(LoadedMesh, vec3d{ 0,0.0f,0 }, vec3d{ 1.55f,totalTime,0 }, vec3d{ 1,1,1 }, true);
@@ -52,7 +52,7 @@ void GameModelViewer::DrawModelUsingBasicPalette(float DeltaTime)
     totalTime += DeltaTime;
     MyScratch->SetCameraFOV(30);
     //MyScratch->MeshColor = RGB{ 190,190,190,255 };
-    MyScratch->SetCamera(vec3d{ 0.0f, -0.0f, -1.1f }, vec3d{ 0.0f,0.02f, 1.0f });
+    MyScratch->SetCamera_Legacy(vec3d{ 0.0f, -0.0f, -1.1f }, vec3d{ 0.0f,0.02f, 1.0f });
     MyScratch->EdgeBrightness = 0.5f;
     MyScratch->DrawUnlit = true;
     MyScratch->SetTexture(BasicPalette, 64, 64);

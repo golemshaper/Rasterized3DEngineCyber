@@ -567,6 +567,7 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
                 else
                 {
                     MainSpace[y * SCREEN_X + x] = (color * textured) / 255;
+
                 }
             }
             else
@@ -1252,7 +1253,7 @@ mat4x4 DrawScratchSpace::IdentityMatrix()
     m.m[3][3] = 1.0f;
     return m;
 }
-void DrawScratchSpace::SetCamera(vec3d loc, vec3d target)
+void DrawScratchSpace::SetCamera_Legacy(vec3d loc, vec3d target)
 {
     CameraLoc = loc;
     CameraTargetLoc = target;
@@ -1260,6 +1261,15 @@ void DrawScratchSpace::SetCamera(vec3d loc, vec3d target)
     //Draw camera: Draw3DLine(loc, target,RGB{255,255,255,255});
 
 }
+void DrawScratchSpace::SetCamera(vec3d loc, vec3d target)
+{
+    CameraLoc = loc;
+    CameraTargetLoc = target - loc;
+
+    //Draw camera: Draw3DLine(loc, target,RGB{255,255,255,255});
+
+}
+
 void DrawScratchSpace::SetCameraFOV(float nFov)
 {
     // Projection Matrix

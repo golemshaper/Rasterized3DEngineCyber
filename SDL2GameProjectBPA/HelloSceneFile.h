@@ -12,5 +12,8 @@ public:
 	Mesh TerrainCollider;
 	SceneFileParser* SceneParser;
 	Scene SceneParserObject;
+	vec3d CameraStart;
+	vec3d CameraEnd;
+
 };
 

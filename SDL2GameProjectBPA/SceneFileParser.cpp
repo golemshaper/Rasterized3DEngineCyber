@@ -307,16 +307,16 @@ int SceneFileParser::GetTexturePackId(const std::string& str)
 	return -1;
 }
 
-int SceneFileParser::GetTagID(const std::string& tag, Scene* scene)
-{
-	auto it = scene->tag_map.find(tag);
-	if (it != scene->tag_map.end())
-		return it->second;
-
-	int newID = scene->tag_map.size();
-	scene->tag_map[tag] = newID;
-	return newID;
-}
+//int SceneFileParser::GetTagID(const std::string& tag, Scene* scene)
+//{
+//	auto it = scene->tag_map.find(tag);
+//	if (it != scene->tag_map.end())
+//		return it->second;
+//
+//	int newID = scene->tag_map.size();
+//	scene->tag_map[tag] = newID;
+//	return newID;
+//}
 std::vector<std::string> SceneFileParser::SplitByChar(const std::string& str, char c)
 {
 	std::vector<std::string> strings;

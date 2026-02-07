@@ -164,7 +164,7 @@ void GameRPGWorld::Tick(float DeltaTime)
 
 	CameraSmoothRotation = MyScratch->Lerp(CameraSmoothRotation, CamRotation, (PlayerMovement->Speed / 2.0f) * DeltaTime);
 	CameraSmoothLocation = MyScratch->Lerp(CameraSmoothLocation, CameraLocation, (PlayerMovement->Speed/2.0f) * DeltaTime);
-	MyScratch->SetCamera(CameraSmoothLocation, CameraSmoothRotation);
+	MyScratch->SetCamera_Legacy(CameraSmoothLocation, CameraSmoothRotation);
 	//MyScratch->SetCameraFOV(90);
 	MyScratch->SetCameraFOV(65);
 
@@ -319,7 +319,7 @@ void GameRPGWorld::DrawBasics(float DeltaTime)
 	MonkeyMesh monkeymesher; //Mesh loading tool
 	MyScratch->MeshColor = { 255,255,255,255 };
 	MyScratch->SetCameraFOV(122);
-	MyScratch->SetCamera(vec3d{ 0.0f, -0.0f, -4.0f }, vec3d{ 0.0f,-0.1f, 1.0f });
+	MyScratch->SetCamera_Legacy(vec3d{ 0.0f, -0.0f, -4.0f }, vec3d{ 0.0f,-0.1f, 1.0f });
 	//use vec3d to give position, rotation, and scale
 	MyScratch->DrawMesh(
 		monkeymesher.GetTeapotMesh(),

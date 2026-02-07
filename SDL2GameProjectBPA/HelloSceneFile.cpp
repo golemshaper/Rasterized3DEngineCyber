@@ -15,7 +15,6 @@ void HelloSceneFile::LoadSceneFiles()
     //for example, and NPC_WALK[] list. Then in the game, you can loop through those and apply movement code to them.
     //TODO: Add custom data dictionary on each scene object for tracking in-game stats, like HP or movement data.
     //One for each data type.
-
     //You can do things like load the terrain, or other single action commands related to tags here.
     for (int i = 0; i < SceneParserObject.scene_objects.size(); i++)
     {
@@ -23,10 +22,16 @@ void HelloSceneFile::LoadSceneFiles()
         {
             int MeshId = SceneParserObject.scene_objects[i].model_id;
             TerrainCollider = SceneParserObject.Meshes[MeshId];
-            break;
+        }
+        if (SceneParserObject.scene_objects[i].HasTagStringCompare("CamLoc"))
+        {
+            CameraStart = SceneParserObject.scene_objects[i].pos;
+        }
+        if (SceneParserObject.scene_objects[i].HasTagStringCompare("CameraAim"))
+        {
+            CameraEnd = SceneParserObject.scene_objects[i].pos;
         }
     }
-
 }
 void HelloSceneFile::Tick(float DeltaTime)
 {
@@ -37,9 +42,12 @@ void HelloSceneFile::Tick(float DeltaTime)
     MyScratch->Clear(RGB{ 122,2,43 });
     MyScratch->ClearZBufffer();
     MyScratch->SetCameraFOV(90);
+    
     MyScratch->MeshColor = RGB{ 255,255,255,255 };
-    MyScratch->SetCamera(vec3d{ 0.0f, -4.8f, -10.1f }, vec3d{ 0.0f,0.4f, 1.0f });
+   // MyScratch->SetCamera(vec3d{ 0.0f, -4.8f, -10.1f }, vec3d{ 0.0f,0.4f, 1.0f });
+    MyScratch->SetCamera(CameraStart, CameraEnd);
     //Draw Calls
+
     for (int i = 0; i < SceneParserObject.scene_objects.size(); i++)
     {
         //IDs
@@ -60,20 +68,40 @@ void HelloSceneFile::Tick(float DeltaTime)
         {
             MyScratch->TextureDrawOn = false;
         }
+        //Tags
+        if (SceneParserObject.scene_objects[i].HasTagStringCompare("Hidden"))
+        {
+            continue;
+        }
         if (SceneParserObject.scene_objects[i].HasTagStringCompare("Spin"))
         {
             SceneParserObject.scene_objects[i].rot.y = totalTime;
         }
         if (SceneParserObject.scene_objects[i].HasTagStringCompare("Player"))
         {
-            SceneParserObject.scene_objects[i].pos = MyScratch->SnapToMesh(SceneParserObject.scene_objects[i].pos, TerrainCollider, vec3d{0,0,0});
+            SceneParserObject.scene_objects[i].pos = MyScratch->SnapToMesh(SceneParserObject.scene_objects[i].pos , TerrainCollider, vec3d{0,0,0}) - vec3d{ 0,0.35f,0 };
         }
-
+        if (SceneParserObject.scene_objects[i].HasTagStringCompare("Shadow"))
+        {
+            bool texOn = MyScratch->TextureDrawOn; 
+            MyScratch->TextureDrawOn = false;
+            MyScratch->ZOffset = 90;
+            MyScratch->MeshColor = RGB{ 32,32,32,128 };
+            MyScratch->DrawMesh(
+                SceneParserObject.Meshes[MeshId],
+                SceneParserObject.scene_objects[i].pos + vec3d{0,0.001f,0},
+                SceneParserObject.scene_objects[i].rot,
+                vec3d{ SceneParserObject.scene_objects[i].scale.x,0.001f,SceneParserObject.scene_objects[i].scale.z},
+                false
+            );
+            MyScratch->TextureDrawOn = texOn;
+            MyScratch->MeshColor = RGB{ 255,255,255,255 };
+        }
         //MESH
         MyScratch->DrawMesh(
             SceneParserObject.Meshes[MeshId], 
-            SceneParserObject.scene_objects[i].pos, 
-            SceneParserObject.scene_objects[i].rot, 
+            SceneParserObject.scene_objects[i].pos,
+            SceneParserObject.scene_objects[i].rot,
             SceneParserObject.scene_objects[i].scale,
             false
         );

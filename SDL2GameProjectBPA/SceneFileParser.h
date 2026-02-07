@@ -11,7 +11,7 @@ struct SceneObject {
 	vec3d rot;
 	vec3d scale;
 	bool visible;
-	std::vector<std::string> tags; //REPLACE THESE WITH TAG IDS!
+	std::vector<std::string> tag_strings; //REPLACE THESE WITH TAG IDS!
 
 	/// <summary>
 	/// String comparisons are to slow for a game. Make an ID system!
@@ -20,9 +20,9 @@ struct SceneObject {
 	/// <returns></returns>
 	bool HasTagStringCompare(const std::string& tag)
 	{
-		for (int i = 0; i < tags.size(); ++i)
+		for (int i = 0; i < tag_strings.size(); ++i)
 		{
-			if (tags[i] == tag)return true;
+			if (tag_strings[i] == tag)return true;
 		}
 		return false;
 	}
@@ -43,8 +43,12 @@ struct Scene {
 	std::vector<SceneObject> scene_objects;
 	std::vector<TexturePack> TexturePacks;
 	std::vector<Mesh> Meshes;
+	std::vector<std::string> TagStrList;
 
-	std::map<std::string, int> tag_map;
+
+	//std::map<std::string, int> tag_map;
+
+	//UNUSED:
 	std::map<std::string, int> dialogue_map;
 	std::vector<DialogueTriggers> dialogue_triggers;
 };
@@ -61,7 +65,7 @@ public:
 	int GetModelID(const std::string& str); //Instead of passing a scene, should this just be a function of Scene?
 	int GetTexturePackId(const std::string& str, Scene* scene);
 	int GetTexturePackId(const std::string& str);
-	int GetTagID(const std::string& tag, Scene* scene);
+	//int GetTagID(const std::string& tag, Scene* scene);
 
 
 	//DO WE STORE THE CURRENT SCENE INSIDE OF THIS OBJECT?
