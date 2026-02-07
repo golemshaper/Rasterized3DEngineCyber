@@ -103,19 +103,30 @@ void HelloSceneFile::Tick(float DeltaTime)
         {
             SceneParserObject.scene_objects[i].pos = MyScratch->SnapToMesh(SceneParserObject.scene_objects[i].pos , TerrainCollider, vec3d{0,0,0}) - vec3d{ 0,0.35f,0 };
         }
-        //LevelLink---
-        int level_link_index = -1;
-        if (totalTime >= 5.0f && SceneParserObject.scene_objects[i].HasTagIDOutIndex(Tag_LevelLink, level_link_index))
+    //LEVEL LINK TAG:
+        //RAW WAY OF DOING IT:
+        //int level_link_index = -1;
+        //if (totalTime >= 5.0f && SceneParserObject.scene_objects[i].HasTagIDOutIndex(Tag_LevelLink, level_link_index))
+        //{
+        //    //After 5 seconds, we get check if we have a level link tag, and then we also get the neighboring tag, which stores the name of our level. 
+        //    //we then load and replace our current scene with this new level. In a game, we'd do a collision check instead of a timer usually
+        //    totalTime = 0.0f;
+        //    std::string level_link_arg = SceneParserObject.GetTagStringFromID(SceneParserObject.scene_objects[i].tag_ids[level_link_index + 1]);
+        //    std::cout << level_link_arg;
+        //    LoadSceneFiles(level_link_arg);
+        //    return;
+        //}
+        std::string level_link_arg; //store the resulting args
+        if (totalTime >= 5.0f &&
+            SceneParserObject.GetTagArgument(SceneParserObject.scene_objects[i],
+                Tag_LevelLink,
+                level_link_arg))
         {
-            //After 5 seconds, we get check if we have a level link tag, and then we also get the neighboring tag, which stores the name of our level. 
-            //we then load and replace our current scene with this new level. In a game, we'd do a collision check instead of a timer usually
             totalTime = 0.0f;
-            std::string level_link_arg = SceneParserObject.GetTagStringFromID(SceneParserObject.scene_objects[i].tag_ids[level_link_index + 1]);
-            std::cout << level_link_arg;
             LoadSceneFiles(level_link_arg);
             return;
         }
-        //---
+    //---
         if (SceneParserObject.scene_objects[i].HasTagStringCompare("Shadow"))
         {
             bool texOn = MyScratch->TextureDrawOn; 

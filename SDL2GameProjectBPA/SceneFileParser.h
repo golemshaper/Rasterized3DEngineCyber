@@ -59,6 +59,7 @@ struct TexturePack {
 	int height;
 };
 struct DialogueTriggers {
+	//not in use currently
 	std::string dialogue;
 	int scene_object_ID; //index of the specific scene object...
 };
@@ -84,6 +85,16 @@ struct Scene {
 	//UNUSED:
 	std::map<std::string, int> dialogue_map;
 	std::vector<DialogueTriggers> dialogue_triggers;
+
+	/// <summary>
+	/// Returns the tag to the right of the given tag id.
+	/// </summary>
+	/// <param name="obj"></param>
+	/// <param name="tag_id"></param>
+	/// <param name="out_arg"></param>
+	/// <returns></returns>
+	bool GetTagArgument(const SceneObject& obj, int tag_id, std::string& out_arg) const;
+	
 };
 
 class SceneFileParser

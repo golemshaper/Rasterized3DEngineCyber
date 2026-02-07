@@ -389,3 +389,27 @@ int SceneFileParser::FindStringIndex(const std::string& target, const std::vecto
 	return -1; // not found
 
 }
+
+/// <summary>
+/// Returns the tag to the right of the given tag id.
+/// </summary>
+/// <param name="obj"></param>
+/// <param name="tag_id"></param>
+/// <param name="out_arg"></param>
+/// <returns></returns>
+bool Scene::GetTagArgument(const SceneObject& obj, int tag_id, std::string& out_arg) const
+{
+	for (int i = 0; i < obj.tag_ids.size(); ++i)
+	{
+		if (obj.tag_ids[i] == tag_id)
+		{
+			if (i + 1 < obj.tag_ids.size())
+			{
+				out_arg = TagStrList[obj.tag_ids[i + 1]];
+				return true;
+			}
+			return false; // tag found, but no argument
+		}
+	}
+	return false; // tag not found
+}
