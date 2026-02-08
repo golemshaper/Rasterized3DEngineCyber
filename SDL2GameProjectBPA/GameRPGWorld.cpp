@@ -146,6 +146,10 @@ void GameRPGWorld::MusicAndFadeIn(float DeltaTime)
 }
 void GameRPGWorld::Tick(float DeltaTime)
 {
+	
+	//Instead of ticking directly, we will have a state machine for the game modes. The scene file itself will tell the engine what mode the scene should be in.
+	//A battle scene file, will change to the battle mode state, and when the battle scene load, the game will be in battle mode!
+	
 	if (MyScratch->Input->GetToggleDepthKey())
 	{
 		MyScratch->Input->ResetToggleDepthKey();
