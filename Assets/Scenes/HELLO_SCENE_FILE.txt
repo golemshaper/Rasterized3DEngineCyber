@@ -1,0 +1,40 @@
+Positions:
+ 2.762 -0.325 -3.351
+ -5.222 4.115 -2.371
+ -2.784 -0.991 -3.351
+ 0.000 0.000 -3.646
+ 0.000 3.500 -3.605
+ 0.000 4.500 -3.605
+ 0.000 5.500 -3.605
+ -5.617 1.129 -3.822
+ 0.000 0.000 0.000
+ 2.787 2.906 -4.212
+ -0.044 2.688 -7.071
+ 6.000 0.000 -1.646
+
+Rotations:
+ 0.000 0.000 -0.000
+ 90.000 0.000 0.000
+
+Scales:
+ 2.159,2.159,2.159
+ 1.210,1.210,1.210
+ 1.000,1.000,1.000
+ 0.600,0.600,0.600
+ 0.300,0.300,0.300
+
+Objects:
+RPGWarriorRohan,BasicPalette,0,0,0,true,Player,Shadow,Spin
+Text,None,1,1,1,true,
+RPGWarriorRohan,BasicPalette,2,0,0,true,Spin
+DemoTowerTemp,DoorTemp,3,0,2,true,Spin
+Torus,DoorTemp,4,0,2,true,
+Torus,DoorTemp,5,0,3,true,
+Torus,None,6,0,4,true,
+Cube,None,7,0,2,true,LevelLink,SCENE_DEMO_TWO.txt
+PlaneHelloScene,None,8,0,2,true,Terrain
+CameraTarget,None,9,0,2,true,Hidden,CameraAim
+CameraLocation,None,10,0,2,true,Hidden,CamLoc
+DemoTowerTemp,DoorTemp,11,0,2,true,Spin
+
+DialogueTriggers:

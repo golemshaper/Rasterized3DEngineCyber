@@ -1,0 +1,22 @@
+Positions:
+ 8.268 -7.020 -107.310
+ 0.000 0.000 0.000
+ 8.269 -3.694 -110.489
+ -66.139 -7.398 -131.963
+ -52.660 -1.221 41.965
+
+Rotations:
+ 0.000 0.000 0.000
+
+Scales:
+ 1.000,1.000,1.000
+
+Objects:
+TownOne,Overworld,0,0,0,true,Town,Hildaberg
+RPG_World,Overworld,1,0,0,true,Terrain,B
+SpawnPoint,Overworld,2,0,0,true,PlayerSpawn,Hidden
+RPG_World_Collider,Overworld,1,0,0,true,TerrainCollider
+TownTwo,Overworld,3,0,0,true,Town,Brom-Vale
+ForestA,Overworld,4,0,0,true,
+
+DialogueTriggers:
