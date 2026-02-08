@@ -31,7 +31,7 @@ Scene SceneFileParser::ParseSceneFromFile(const std::string scene_file_path, con
 		file_contents.push_back('\n');
 	}
 	//std::cout << "loaded file\n";
-	return ParseSceneFromString(file_contents, mesh_asset_path_root);
+	return ParseSceneFromString(file_contents, mesh_asset_path_root, texture_asset_path_root);
 
 }
 

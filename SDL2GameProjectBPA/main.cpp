@@ -26,9 +26,9 @@
 //Game* TheGame = new Game();
 //GameOne* TheGame = new GameOne();
 //GameModelViewer* TheGame = new GameModelViewer();
+//HelloSceneFile* TheGame = new HelloSceneFile();
 //GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
-//GameRPGWorld* TheGame = new GameRPGWorld();
-HelloSceneFile* TheGame = new HelloSceneFile();
+GameRPGWorld* TheGame = new GameRPGWorld();
 
 
 //For another game example, inherit the base class, and override the Tick function. GameTwo* TheGame = new GameTwo();
