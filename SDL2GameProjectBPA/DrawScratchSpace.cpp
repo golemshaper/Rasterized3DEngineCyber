@@ -954,12 +954,12 @@ void DrawScratchSpace::DrawSpriteAdd(int startX, int startY, RGB* SpriteData, in
         }
     }
 }
-void DrawScratchSpace::DrawText(int X, int Y, RGB color, const char* text, TextSprites* tSprites)
+void DrawScratchSpace::DrawTextAtPos(int X, int Y, RGB color, const char* text, TextSprites* tSprites)
 {
-    DrawText(X,Y,color,text,tSprites,1.0f);
+    DrawTextAtPos(X,Y,color,text,tSprites,1.0f);
 }
 
-void DrawScratchSpace::DrawText(int X, int Y, RGB color, const char* text, TextSprites* tSprites, float amount_revealed)
+void DrawScratchSpace::DrawTextAtPos(int X, int Y, RGB color, const char* text, TextSprites* tSprites, float amount_revealed)
 {
     
     int cursorX = X;
@@ -1017,8 +1017,8 @@ void DrawScratchSpace::DrawText(int X, int Y, RGB color, const char* text, TextS
 
 void DrawScratchSpace::DrawTextDropShadow(int X, int Y, RGB color, const char* text, TextSprites* tSprites, float amount_revealed)
 {
-    DrawText(X + 1, Y + 1, RGB{1,1,1,175}, text, tSprites, amount_revealed);
-    DrawText(X, Y, color, text, tSprites, amount_revealed);
+    DrawTextAtPos(X + 1, Y + 1, RGB{1,1,1,175}, text, tSprites, amount_revealed);
+    DrawTextAtPos(X, Y, color, text, tSprites, amount_revealed);
 }
 
 //Bresenham’s line algorithm
@@ -1721,7 +1721,6 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
 //leaving the old camera stuff here but commented out. I like it in this function, and I thought I needed it in another, but it turns out I do not...
 //Will decide if I want to keep  CalculateViewMatrix() or not soon...
 
-
     // -----------------------------
     //DRAW
     //-----------------------------
@@ -1789,13 +1788,27 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         triProjected.uv[2] = tri.uv[2];
        //copy normals
         // After WORLD transform:
-        vec3d n = ComputeTriangleNormal(
-            triWorld.p[0],
-            triWorld.p[1],
-            triWorld.p[2]
-        ); //TODO PUT [3] NORMALS, ONE PER VERTEX IN TO THE TRIANGLE FOR SMOOTH SHADING INSTEAD OF THIS
 
-        triProjected.normal = Normalize(n);
+        vec3d n = ComputeTriangleNormal(triWorld.p[0], triWorld.p[1], triWorld.p[2]);
+        //n = ComputeTriangleNormal(triViewed.p[0], triViewed.p[1], triViewed.p[2]);
+        //TODO PUT [3] NORMALS, ONE PER VERTEX IN TO THE TRIANGLE FOR SMOOTH SHADING INSTEAD OF THIS
+
+
+        // Bias toward camera direction hack:
+        //vec3d viewDir = {-matView.m[0][2],-matView.m[1][2],-matView.m[2][2]}; // attempt to extract camera direction...
+        //n = Normalize(n * 0.7f + viewDir * 0.3f);
+
+
+
+        triProjected.normal[0] = Normalize(n); //use n for "real" normals
+        triProjected.normal[1] = Normalize(n);
+        triProjected.normal[2] = Normalize(n);  //This all needs to be pulled out of here, and it needs to happen on mesh load I think : ( 
+
+
+
+       
+
+
 
 
         vecTrianglesToRaster.push_back(triProjected);
@@ -1887,9 +1900,9 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         //lighting
         if (UseGouraudShading && !DrawUnlit)
         {
-            RGB color0 = GouraudShade(triProjected.normal, p0.color);
-            RGB color1 = GouraudShade(triProjected.normal, p1.color);
-            RGB color2 = GouraudShade(triProjected.normal, p2.color);
+            RGB color0 = GouraudShade(triProjected.normal[0], p0.color);
+            RGB color1 = GouraudShade(triProjected.normal[1], p1.color);
+            RGB color2 = GouraudShade(triProjected.normal[2], p2.color);
             p0.color = color0;
             p1.color = color1;
             p2.color = color2;
@@ -2073,6 +2086,9 @@ vec3d DrawScratchSpace::ComputeTriangleNormal(const vec3d& p0, const vec3d& p1, 
 }
 RGB DrawScratchSpace::GouraudShade(const vec3d& normal, const RGB& base)
 {
+    //Search Helper: Lambert Phong Shading Lighting 
+    // 
+    // 
     // Simple directional light
     vec3d lightDir = Normalize(LightDir);
 
@@ -2081,8 +2097,8 @@ RGB DrawScratchSpace::GouraudShade(const vec3d& normal, const RGB& base)
 
     //Half Lamber term instead
     float ndotl = DotProduct(normal, lightDir);
-    //ndotl = ndotl * 0.5f + 0.5f;   //using Half-Lambert instead...
-    ndotl = Clamp(ndotl, 0.12f, 1.0f); //changed clamp so it can't go super dark.
+    //ndotl = ndotl * 0.5f + 0.5f;   //using Half-Lambert instead...changed my mind. 
+    ndotl = Clamp(ndotl, 0.25f, 1.0f); //changed clamp so it can't go super dark. Better results then the half lambert?
 
     // Apply to color
     RGB out;

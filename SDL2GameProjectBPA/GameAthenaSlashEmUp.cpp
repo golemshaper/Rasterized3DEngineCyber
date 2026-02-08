@@ -154,7 +154,7 @@ void GameAthenaSlashEmUp::TitleScreenTick(float DeltaTime)
    
     MyScratch->DrawMesh(monkeymesher.GetAthenaMesh(), working_vector, vec3d{ 1.35f,totalTime*2.0f,0 }, vec3d{ 1,1,1 } );
     //TXT  (Center text by subtracting half the character count, and multiplying by character text width)
-    MyScratch->DrawText((SCREEN_X/2)-(3*12), 32, { 255, 255, 255, 255, }, "CYBER-ATHENA ", MyTextSprites, 1.0f);
+    MyScratch->DrawTextAtPos((SCREEN_X/2)-(3*12), 32, { 255, 255, 255, 255, }, "CYBER-ATHENA ", MyTextSprites, 1.0f);
 
     MyScratch->SetFade({0,0,0,0}, working_float);
     
@@ -399,7 +399,7 @@ void GameAthenaSlashEmUp::GameModeTick(float DeltaTime)
 
         //Label on bullets
         vec3d textCoordinates2D = MyScratch->Get2DPointInFromSpace(bullets[i]);
-        MyScratch->DrawText((int)textCoordinates2D.x, (int)textCoordinates2D.y, { 64, 128, 255, 255, }, "B", MyTextSprites, 1.0f);
+        MyScratch->DrawTextAtPos((int)textCoordinates2D.x, (int)textCoordinates2D.y, { 64, 128, 255, 255, }, "B", MyTextSprites, 1.0f);
 
     }
     MyScratch->AddBuffers();
@@ -611,15 +611,15 @@ void GameAthenaSlashEmUp::TextBoxDraw(const char* input)
     const int textX = boarder + 2;
     const int textY = SCREEN_Y - (64);
     //Shadow
-    MyScratch->DrawText(textX+1, textY+1, { 1, 1, 1, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
+    MyScratch->DrawTextAtPos(textX+1, textY+1, { 1, 1, 1, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
     //Text
-    MyScratch->DrawText(textX, textY, { 255, 255, 255, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
+    MyScratch->DrawTextAtPos(textX, textY, { 255, 255, 255, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
 
     //Blinking cursor 
     if (sin(totalTime * 8.0f) > 0.0f)
     {
         
-        MyScratch->DrawText(SCREEN_X - 10, SCREEN_Y - boarder - 7, { 0, 255, 255, 255, }, "|", MyTextSprites, 1.0f);
+        MyScratch->DrawTextAtPos(SCREEN_X - 10, SCREEN_Y - boarder - 7, { 0, 255, 255, 255, }, "|", MyTextSprites, 1.0f);
 
     }
 }
@@ -868,7 +868,7 @@ void GameAthenaSlashEmUp::TickArcShots(vec3d start, vec3d end, float DeltaTime)
         const char* AlphabetSoup = "LuckShotLuckShot";
         char letter[2] = { AlphabetSoup[i%17], '\0' };
 
-        MyScratch->DrawText((int)textCoordinates2D.x, (int)textCoordinates2D.y, { 155 + i, 155 + i, 155 + i, 255, }, letter, MyTextSprites, 1.0f);
+        MyScratch->DrawTextAtPos((int)textCoordinates2D.x, (int)textCoordinates2D.y, { 155 + i, 155 + i, 155 + i, 255, }, letter, MyTextSprites, 1.0f);
 
     }
    
@@ -923,7 +923,7 @@ void GameAthenaSlashEmUp::DrawReticle(vec3d pos, int radius, float progress)
    //TEXT AT 3D LOCATION
    //------------------------------
     vec3d textCoordinates2D = MyScratch->Get2DPointInFromSpace(vec3d{ 2.0f,0.0f,-0.25f });
-    MyScratch->DrawText((int)n_loc.x+5, (int)n_loc.y+5, { 0, 255, 0, 255, }, "Target!", MyTextSprites, typingEffect * 2.0f);
+    MyScratch->DrawTextAtPos((int)n_loc.x+5, (int)n_loc.y+5, { 0, 255, 0, 255, }, "Target!", MyTextSprites, typingEffect * 2.0f);
 
 
 }
@@ -992,7 +992,7 @@ void GameAthenaSlashEmUp::StateMachineHelloWorldTick()
 
     char buffer[64];
     snprintf(buffer, sizeof(buffer), "Hello State Machine \n T %.2f D %.2f", sm.TimeInState, sm.StateDeltaTime);   // format however you want
-    MyScratch->DrawText(34, 55, { 255,124,13,255 }, buffer, MyTextSprites,1.0f);
+    MyScratch->DrawTextAtPos(34, 55, { 255,124,13,255 }, buffer, MyTextSprites,1.0f);
     if (sm.TimeInState > 4.0f)
     {
         sm.SetState(-1); //end all state calls
@@ -1086,10 +1086,10 @@ void GameAthenaSlashEmUp::DrawHUD(float DeltaTime)
     float cam_z = MyScratch->CameraTargetLoc.z;
     char buffer[64];
     snprintf(buffer, sizeof(buffer), "Look X %.2f,\nLook Y %.2f,\nLook Z %.2f", cam_x, cam_y, cam_z);   // format however you want
-    MyScratch->DrawText(4, 4, { 255,255,255,255 }, buffer, MyTextSprites);
+    MyScratch->DrawTextAtPos(4, 4, { 255,255,255,255 }, buffer, MyTextSprites);
 
     typingEffect += 2 * DeltaTime;
-    MyScratch->DrawText(32, 32, { 255, 255, 0, 255, }, "GOODBYE \nWORLD!", MyTextSprites, typingEffect);
+    MyScratch->DrawTextAtPos(32, 32, { 255, 255, 0, 255, }, "GOODBYE \nWORLD!", MyTextSprites, typingEffect);
     if (typingEffect >= 1.5f)
     {
         //reset typing effect

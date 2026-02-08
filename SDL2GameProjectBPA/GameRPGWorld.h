@@ -20,6 +20,7 @@ public:
 	void LoadSceneFiles();
 	void LoadSceneFiles(std::string SceneFileName);
 	void Tick(float DeltaTime);
+	void CollisionProcess(int objId);
 	void OldTick(float DeltaTime);
 	void MusicAndFadeIn(float DeltaTime);
 	void RenderMovie();
@@ -29,9 +30,10 @@ public:
 	std::string SceneLink = "RPG_WorldMap.txt";
 	std::string ScenePath = "Assets/Scenes/";
 	std::vector<int> MeshPropIDs;
-
 	SceneFileParser* SceneParser;
 	Scene CurrentScene;
+	//Scene Tags
+	int Tag_Town = -1;
 	//Text
 	TextSprites* MyTextSprites;
 	TextFileReader* Reader;

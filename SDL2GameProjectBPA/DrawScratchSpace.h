@@ -190,7 +190,7 @@ struct triangle{
                  {255,255,255,255} };
 
 
-    vec3d normal = { 0.0f,0.0f,0.0f };
+    vec3d normal[3];
 };
 
 struct Mesh {
@@ -277,8 +277,8 @@ public:
     void DrawSprite(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight, bool wrap);
     void DrawSprite(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight,float angle);
     void DrawSpriteAdd(int startX, int startY, RGB* SpriteData, int spriteWidth, int spriteHeight);
-    void DrawText(int X, int Y, RGB color, const char* text, TextSprites* tSprites);
-    void DrawText(int X, int Y, RGB color, const char* text, TextSprites* tSprites, float amount_revealed);
+    void DrawTextAtPos(int X, int Y, RGB color, const char* text, TextSprites* tSprites);
+    void DrawTextAtPos(int X, int Y, RGB color, const char* text, TextSprites* tSprites, float amount_revealed);
     void DrawTextDropShadow(int X, int Y, RGB color, const char* text, TextSprites* tSprites, float amount_revealed);
 
 

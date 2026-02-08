@@ -97,6 +97,8 @@ void GameRPGWorld::LoadSceneFiles(std::string SceneFileName)
 	totalTime = 0.0f;
 	
 	MeshPropIDs.clear(); //Collect non-terrain meshes here
+	//Collect tags here:
+	Tag_Town = CurrentScene.GetTagID("Town");
 	for (int i = 0; i < CurrentScene.scene_objects.size(); i++)
 	{
 		if (CurrentScene.scene_objects[i].HasTagStringCompare("Terrain"))
@@ -125,6 +127,7 @@ void GameRPGWorld::LoadSceneFiles(std::string SceneFileName)
 		else
 		{
 			//WARNING THIS IS THE END OF AN IF-ELSE CHAIN. THE ABOVE OBJECTS DID NOT GET PLACED IN THE DRAWING LIST!
+			
 			MeshPropIDs.push_back(i);
 		}
 	}
@@ -329,11 +332,14 @@ void GameRPGWorld::Tick(float DeltaTime)
 	////---------------
 	for (int i = 0; i < MeshPropIDs.size(); ++i)
 	{
+		//ID
 		int objId = MeshPropIDs[i];
 
-		int TextureID = CurrentScene.scene_objects[objId].texture_id;
+		//Test collisions
+		CollisionProcess(objId);
 
 		//TEXTURE
+		int TextureID = CurrentScene.scene_objects[objId].texture_id;
 		if (TextureID != -1 && CurrentScene.TexturePacks.size() >= TextureID)
 		{
 			MyScratch->TextureDrawOn = true;
@@ -343,7 +349,6 @@ void GameRPGWorld::Tick(float DeltaTime)
 				CurrentScene.TexturePacks[TextureID].height
 			);
 		}
-		//MyScratch->SetTexture(overworldTexture, w256, h256);
 		//MESH
 		MyScratch->DrawMesh(
 			CurrentScene.Meshes[CurrentScene.scene_objects[objId].model_id],
@@ -373,6 +378,22 @@ void GameRPGWorld::Tick(float DeltaTime)
 		ModelFileParser parser;
 		TerrrainMesh = parser.ParseModelFromFile("Assets/DomeModel.txt");
 	}*/
+}
+void GameRPGWorld::CollisionProcess(int objId)
+{
+	//Town collision
+	std::string TownNameDisplay;
+	if (MyScratch->SquaredDistance2D(PlayerMovement->Pos, CurrentScene.scene_objects[objId].pos) > 12.0f)
+	{
+		//no collision
+		return;
+	}
+	if (CurrentScene.GetTagArgument(CurrentScene.scene_objects[objId], Tag_Town, TownNameDisplay))
+	{
+		MyScratch->DrawTextAtPos(3, 3, RGB_Yellow, TownNameDisplay.c_str(), MyTextSprites);
+	}
+	//Other collision types:
+
 }
 void GameRPGWorld::OldTick(float DeltaTime)
 {
@@ -725,15 +746,15 @@ void GameRPGWorld::TextBoxDraw(const char* input)
 	const int textX = boarder + 2;
 	const int textY = SCREEN_Y - (64);
 	//Shadow
-	MyScratch->DrawText(textX + 1, textY + 1, { 1, 1, 1, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
+	MyScratch->DrawTextAtPos(textX + 1, textY + 1, { 1, 1, 1, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
 	//Text
-	MyScratch->DrawText(textX, textY, { 255, 255, 255, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
+	MyScratch->DrawTextAtPos(textX, textY, { 255, 255, 255, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
 
 	//Blinking cursor 
 	if (sin(totalTime * 8.0f) > 0.0f)
 	{
 
-		MyScratch->DrawText(SCREEN_X - 10, SCREEN_Y - boarder - 7, { 0, 255, 255, 255, }, "|", MyTextSprites, 1.0f);
+		MyScratch->DrawTextAtPos(SCREEN_X - 10, SCREEN_Y - boarder - 7, { 0, 255, 255, 255, }, "|", MyTextSprites, 1.0f);
 
 	}
 }
