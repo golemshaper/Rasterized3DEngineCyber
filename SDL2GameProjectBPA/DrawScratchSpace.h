@@ -190,7 +190,7 @@ struct triangle{
                  {255,255,255,255} };
 
 
-
+    vec3d normal = { 0.0f,0.0f,0.0f };
 };
 
 struct Mesh {
@@ -310,6 +310,9 @@ public:
 
 //DRAW MODE:
     RGB MeshColor = { 255,255,255,255 };
+    bool UseFogHackyShading = true;
+    bool UseGouraudShading = false;
+    bool UseDepthFog = false;
     bool DrawVerticies = false;
     int EdgeBrightness = 255;
     float HighlightBrightness = 2.0f;
@@ -334,6 +337,7 @@ public:
     vec3d LastLocation;
     vec3d CameraLoc;
     vec3d CameraTargetLoc;
+    vec3d LightDir = { 0.0f, -1.0f, -1.0f };
 //3D Functions:
     void MultiplyMatrixVector(vec3d& i, vec3d& o, mat4x4& m);
 
@@ -360,7 +364,8 @@ public:
     void DifferDrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale);
     void DifferDrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool edge_light);
     void DrawSortedDifferedMeshes();
-
+    vec3d ComputeTriangleNormal(const vec3d& p0, const vec3d& p1, const vec3d& p2);
+    RGB GouraudShade(const vec3d& normal, const RGB& base);
     void DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale);
 
     Mesh MorphMesh(const Mesh& from, const Mesh& to, float t);

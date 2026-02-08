@@ -1729,6 +1729,8 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
 
     for (auto tri : m.Tris)
     {
+       
+
         triangle triWorld, triViewed, triProjected;
 
         // Apply WORLD transform
@@ -1760,6 +1762,9 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         MultiplyMatrixVector(triViewed.p[2], triProjected.p[2], MatrixProj);
 
 
+       
+
+
         // Scale into view space
         triProjected.p[0].x = (triProjected.p[0].x + 1.0f) * 0.5f * SCREEN_X;
         triProjected.p[0].y = (triProjected.p[0].y + 1.0f) * 0.5f * SCREEN_Y;
@@ -1782,7 +1787,15 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         triProjected.uv[0] = tri.uv[0];
         triProjected.uv[1] = tri.uv[1];
         triProjected.uv[2] = tri.uv[2];
-       
+       //copy normals
+        // After WORLD transform:
+        vec3d n = ComputeTriangleNormal(
+            triWorld.p[0],
+            triWorld.p[1],
+            triWorld.p[2]
+        ); //TODO PUT [3] NORMALS, ONE PER VERTEX IN TO THE TRIANGLE FOR SMOOTH SHADING INSTEAD OF THIS
+
+        triProjected.normal = Normalize(n);
 
 
         vecTrianglesToRaster.push_back(triProjected);
@@ -1807,13 +1820,24 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
     // Rasterize
     for (auto& triProjected : vecTrianglesToRaster)
     {
-        //dumb fog
+        //dumb fog / bad fog /bs shading
+       
         if (!DrawUnlit)
         {
-            ZFog += 4.0f / vecTrianglesToRaster.size() * 0.2f;
+            if (UseFogHackyShading)
+            {
+                ZFog += 4.0f / vecTrianglesToRaster.size() * 0.2f;  //<-Old lighting model
+               
+               
+            }
+            else
+            {
+                ZFog = 1.0f;
+            }
         }
         else
         {
+
             ZFog = 1.0f;
         }
         //todo: Add a shading mode enum.
@@ -1838,14 +1862,39 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         int G = MeshColor.g * ZFog * 0.75f;
         int B = MeshColor.b * ZFog * 0.75f;
 
-       
+        if (UseDepthFog)
+        {
+            //these numbers are insane. I may need to find the max depth of the color depth, and divide by that instead. You can track when you write to the buffer what that value is!
+            //reset on buffer clear
+            R = R - (triProjected.depth);
+            G = G - (triProjected.depth);
+            B = B - (triProjected.depth);
+        }
+        
+
+        
+    
+
 
         //----------------------------------------------------------------------------------------------------------------------
         //COLOR FROM F+GLOBAL MESH COLOR:
         //----------------------------------------------------------------------------------------------------------------------
-        Vertex p0 = { static_cast<int>(triProjected.p[0].x), static_cast<int>(triProjected.p[0].y), {1*R,G,B} };
-        Vertex p1 = { static_cast<int>(triProjected.p[1].x), static_cast<int>(triProjected.p[1].y), {R,1*G,B} };
-        Vertex p2 = { static_cast<int>(triProjected.p[2].x), static_cast<int>(triProjected.p[2].y), {R,G,1*B} };
+        Vertex p0 = { static_cast<int>(triProjected.p[0].x), static_cast<int>(triProjected.p[0].y), RGB{1*R,G,B}};
+        Vertex p1 = { static_cast<int>(triProjected.p[1].x), static_cast<int>(triProjected.p[1].y), RGB{R,1*G,B}};
+        Vertex p2 = { static_cast<int>(triProjected.p[2].x), static_cast<int>(triProjected.p[2].y), RGB{R,G,1*B}};
+        
+
+        //lighting
+        if (UseGouraudShading && !DrawUnlit)
+        {
+            RGB color0 = GouraudShade(triProjected.normal, p0.color);
+            RGB color1 = GouraudShade(triProjected.normal, p1.color);
+            RGB color2 = GouraudShade(triProjected.normal, p2.color);
+            p0.color = color0;
+            p1.color = color1;
+            p2.color = color2;
+        }
+       
 
 
      //VERTEX COLOR:::::::::::::::::
@@ -1869,6 +1918,8 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         p2.color.r = (p2.color.r * triProjected.c[2].r) / 255;
         p2.color.g = (p2.color.g * triProjected.c[2].g) / 255;
         p2.color.b = (p2.color.b * triProjected.c[2].b) / 255;
+
+       
 
 
        /* p0.color = { 255,255,255 };
@@ -1907,19 +1958,12 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         //only do upper left, and left side for more style...
 
 
-        //Draw to ZBuffer (EXPERIMENTAL)
         
-        //NOTE: IF Zoffset being an int is too imprecise, we can do the same thing using a float, but added to the tris depth!
-        //We probably should do it this way for the precision! But for right now, I will not
-        //DrawTriangleToZBuffer(p0, p1, p2, (int)((((triProjected.depth)*0.5f) * 64)-ZOffset));
+        
         int DepthValue = (int)((((triProjected.depth) * 0.5f) * 64) - ZOffset);
         //NORMAL DRAW or Highlight offset
         if (DrawHighlightEdgeOnly)
         {
-            //Highlight the Game needs to turn this on, and then draw two mesh passes (It auto-turns off after the mesh is done rendering.
-           /* Vertex light_fx_p0 = { static_cast<int>(triProjected.p[0].x), static_cast<int>(triProjected.p[0].y), RGB{R,G,B}*HighlightBrightness };
-            Vertex light_fx_p1 = { static_cast<int>(triProjected.p[1].x), static_cast<int>(triProjected.p[1].y), RGB{R,G,B}*HighlightBrightness };
-            Vertex light_fx_p2 = { static_cast<int>(triProjected.p[2].x), static_cast<int>(triProjected.p[2].y), RGB{R,G,B}*HighlightBrightness };*/
 
 
             Vertex light_fx_p0 = { static_cast<int>(triProjected.p[0].x), static_cast<int>(triProjected.p[0].y), p0.color * HighlightBrightness };
@@ -2021,6 +2065,34 @@ void DrawScratchSpace::DrawSortedDifferedMeshes()
     recipes.clear();
 }
 
+vec3d DrawScratchSpace::ComputeTriangleNormal(const vec3d& p0, const vec3d& p1, const vec3d& p2)
+{
+    vec3d a = p1 - p0;
+    vec3d b = p2 - p0;
+    return Normalize(CrossProduct(a, b));
+}
+RGB DrawScratchSpace::GouraudShade(const vec3d& normal, const RGB& base)
+{
+    // Simple directional light
+    vec3d lightDir = Normalize(LightDir);
+
+    // Lambert term
+    //float ndotl = std::max(0.0f, DotProduct(normal, lightDir));
+
+    //Half Lamber term instead
+    float ndotl = DotProduct(normal, lightDir);
+    //ndotl = ndotl * 0.5f + 0.5f;   //using Half-Lambert instead...
+    ndotl = Clamp(ndotl, 0.12f, 1.0f); //changed clamp so it can't go super dark.
+
+    // Apply to color
+    RGB out;
+    out.r = (int)(base.r * ndotl);
+    out.g = (int)(base.g * ndotl);
+    out.b = (int)(base.b * ndotl);
+    out.a = base.a;
+
+    return out;
+}
 void DrawScratchSpace::DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale)
 {
     // Build WORLD matrix (Scale → RotZ → RotX → Trans)

@@ -16,6 +16,10 @@ void GameRPGWorld::Initialize()
 {
 	MyScratch = new DrawScratchSpace();
 	MyScratch->Initialize();
+	MyScratch->UseGouraudShading = true;
+	MyScratch->UseFogHackyShading = false;
+	MyScratch->UseDepthFog = true;
+
 	SceneParser = new SceneFileParser();
 	PlayerMovement = new ThirdPersonMovement();
 	PlayerMovement->Pos = vec3d{ 0,-1.3f,0 };
@@ -150,6 +154,8 @@ void GameRPGWorld::Tick(float DeltaTime)
 	//Instead of ticking directly, we will have a state machine for the game modes. The scene file itself will tell the engine what mode the scene should be in.
 	//A battle scene file, will change to the battle mode state, and when the battle scene load, the game will be in battle mode!
 	
+	//TODO Implement Gouraud shading.
+
 	if (MyScratch->Input->GetToggleDepthKey())
 	{
 		MyScratch->Input->ResetToggleDepthKey();
@@ -163,6 +169,8 @@ void GameRPGWorld::Tick(float DeltaTime)
 	//---------------
 	totalTime += DeltaTime;
 	animTimer += DeltaTime;
+	//MyScratch->LightDir = { sin(totalTime),cos(totalTime),sin(totalTime) };
+	
 	MyScratch->ZWriteOn = false;
 	MyScratch->Clear();
 	MyScratch->ClearZBufffer();
@@ -227,6 +235,10 @@ void GameRPGWorld::Tick(float DeltaTime)
 	MyScratch->ClearZBufffer();
 
 	//---------------
+	// Lighting
+	// --------------
+	//MyScratch->LightDir = vec3d{ 12,32,64 };
+	//---------------
 	//collision + offset
 	//---------------
 	PlayerLocation = MyScratch->SnapToMesh(PlayerLocation, TerrrainMeshCollider, vec3d{ 0,0,0 });
@@ -276,10 +288,14 @@ void GameRPGWorld::Tick(float DeltaTime)
 	//---------------
 	//player:
 	//---------------
+	MyScratch->UseDepthFog = false;
+	MyScratch->UseFogHackyShading = true;
+	MyScratch->UseGouraudShading = false;
 	MyScratch->SetTexture(Palette, w64, h64);
 	GI_Lighting = MyScratch->Lerp(GI_Lighting, (MyScratch->SnapToMeshTriColor) * 2.5f, 6.0f * DeltaTime);//psudo lighting
 	MyScratch->MeshColor = GI_Lighting; //psudo lighting
 	MyScratch->TextureDrawOn = true;
+
 
 	//edge light
 	MyScratch->MeshColor = GI_Lighting * 2.0f;
@@ -289,6 +305,11 @@ void GameRPGWorld::Tick(float DeltaTime)
 	MyScratch->MeshColor = GI_Lighting; //psudo lighting
 	//normal render
 	MyScratch->DrawMesh(PlayerMesh, PlayerLocation + PlayerOffset, vec3d{ 0,PlayerMovement->GetYaw(),0 }, PlayerScale);
+
+	MyScratch->UseDepthFog = true;
+	MyScratch->UseFogHackyShading = false;
+	MyScratch->UseGouraudShading = true;
+
 
 	//TEXT MAPPED TO PLAYER:
 	//vec3d player_2d_loc = MyScratch->Get2DPointFromLastLocation();
