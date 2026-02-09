@@ -4,6 +4,12 @@ Positions:
  8.269 -3.694 -110.489
  -66.139 -7.398 -131.963
  -52.660 -1.221 41.965
+ -30.340 -1.221 165.029
+ 2.855 16.720 -105.951
+ -7.796 6.555 -93.190
+ -124.598 -5.714 166.530
+ 116.684 -5.497 146.604
+ 116.689 -5.714 136.104
 
 Rotations:
  0.000 0.000 0.000
@@ -18,5 +24,13 @@ SpawnPoint,Overworld,2,0,0,true,PlayerSpawn,Hidden
 RPG_World_Collider,Overworld,1,0,0,true,TerrainCollider
 TownTwo,Overworld,3,0,0,true,Town,Brom-Vale
 ForestA,Overworld,4,0,0,true,
+ForestB,Overworld,5,0,0,true,
+Point,Overworld,6,0,0,true,Hidden,LightStart
+Point,Overworld,7,0,0,true,Hidden,LightEnd
+Point,Overworld,8,0,0,true,Hidden,Town,Forgotten-Cave
+CastleA,Overworld,9,0,0,true,Town,Castle-Otenia
+Point,Overworld,10,0,0,true,Hidden,Town,Castle-Otenia
+CastleWindowGlow,Overworld,9,0,0,true,Unlit
+TowerLights,Overworld,1,0,0,true,Unlit
 
 DialogueTriggers:

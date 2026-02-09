@@ -34,6 +34,11 @@ public:
 	Scene CurrentScene;
 	//Scene Tags
 	int Tag_Town = -1;
+	int Tag_Hidden = -1;
+	int Tag_Unlit = -1;
+	//ObjectIDs
+	int LightStartID;
+	int LightEndID;
 	//Text
 	TextSprites* MyTextSprites;
 	TextFileReader* Reader;
@@ -75,6 +80,9 @@ public:
 	void TextUpdateTick(float DeltaTime);
 	void TextBoxDraw(const char* input);
 
+	int lightning_phase = 0;
+	float lightning = 0.0f;
+	void LightningFX(int phase, float progress);
 	~GameRPGWorld();
 };
 

@@ -99,6 +99,8 @@ void GameRPGWorld::LoadSceneFiles(std::string SceneFileName)
 	MeshPropIDs.clear(); //Collect non-terrain meshes here
 	//Collect tags here:
 	Tag_Town = CurrentScene.GetTagID("Town");
+	Tag_Hidden = CurrentScene.GetTagID("Hidden");
+	Tag_Unlit = CurrentScene.GetTagID("Unlit");
 	for (int i = 0; i < CurrentScene.scene_objects.size(); i++)
 	{
 		if (CurrentScene.scene_objects[i].HasTagStringCompare("Terrain"))
@@ -123,6 +125,14 @@ void GameRPGWorld::LoadSceneFiles(std::string SceneFileName)
 				CameraSmoothLocation = CameraLocation;
 				loadPositionOnce = false;
 			}
+		}
+		else if (CurrentScene.scene_objects[i].HasTagStringCompare("LightStart"))
+		{
+			LightStartID = i;
+		}
+		else if (CurrentScene.scene_objects[i].HasTagStringCompare("LightEnd"))
+		{
+			LightEndID = i;
 		}
 		else
 		{
@@ -219,7 +229,8 @@ void GameRPGWorld::Tick(float DeltaTime)
 	offset.x = baseOffset.x * c + baseOffset.z * s;
 	offset.y = baseOffset.y;
 	offset.z = -baseOffset.x * s + baseOffset.z * c;
-	vec3d CameraLocation = PlayerLocation + offset;
+	//INTERESTING HILL ONLY VIEW CAMERA:    vec3d CameraLocation = vec3d{ PlayerLocation.x,-3.0f,PlayerLocation.z } + offset;
+	vec3d CameraLocation = vec3d{ PlayerLocation.x,2.0f,PlayerLocation.z} + offset;
 
 
 	float CamOffsetY = 5.0f;
@@ -240,12 +251,25 @@ void GameRPGWorld::Tick(float DeltaTime)
 	//---------------
 	// Lighting
 	// --------------
-	//MyScratch->LightDir = vec3d{ 12,32,64 };
+	MyScratch->LightDir = MyScratch->Normalize(CurrentScene.scene_objects[LightStartID].pos - CurrentScene.scene_objects[LightEndID].pos);
+	
 	//---------------
 	//collision + offset
 	//---------------
 	PlayerLocation = MyScratch->SnapToMesh(PlayerLocation, TerrrainMeshCollider, vec3d{ 0,0,0 });
-	vec3d PlayerLocationMirrored = { PlayerLocation.x,-PlayerLocation.y + 29.0f, PlayerLocation.z };
+	vec3d PlayerLocationMirrored = { PlayerLocation.x,-PlayerLocation.y + 27.0f, PlayerLocation.z }; //was 29.0f
+
+	//---------------
+	//LIGHTNING
+	//---------------
+	LightningFX(lightning_phase, lightning);
+	LightningFX(lightning_phase + 3, lightning * 1.5f);
+	lightning += DeltaTime;
+	if (lightning >= 9.5f)
+	{
+		lightning = 0.0f;
+		lightning_phase++;
+	}
 	//---------------
 	//water:
 	//---------------
@@ -268,6 +292,9 @@ void GameRPGWorld::Tick(float DeltaTime)
 	MyScratch->BlendBuffers(0.25f + abs(sin(totalTime)) * 0.5f); //blend two water layers
 	MyScratch->ClearZBufffer();//don't need this
 
+
+
+	
 	//---------------
 	//terrain:
 	//---------------
@@ -337,6 +364,22 @@ void GameRPGWorld::Tick(float DeltaTime)
 
 		//Test collisions
 		CollisionProcess(objId);
+		
+		if (CurrentScene.scene_objects[objId].HasTagByID(Tag_Hidden))
+		{
+			continue; //DO NOT RENDER
+		}
+		//Render modifications
+		bool UnlitState = MyScratch->DrawUnlit;
+		bool FogState = MyScratch->UseDepthFog;
+		bool GouraudState = MyScratch->UseGouraudShading;
+		
+		if (CurrentScene.scene_objects[objId].HasTagByID(Tag_Unlit))
+		{
+			MyScratch->DrawUnlit = true;
+			MyScratch->UseDepthFog = false;
+			MyScratch->UseGouraudShading = false;
+		}
 
 		//TEXTURE
 		int TextureID = CurrentScene.scene_objects[objId].texture_id;
@@ -356,6 +399,10 @@ void GameRPGWorld::Tick(float DeltaTime)
 			CurrentScene.scene_objects[objId].rot,
 			CurrentScene.scene_objects[objId].scale,
 			false);
+		//Undo render modifications
+		MyScratch->DrawUnlit = UnlitState;
+		MyScratch->UseDepthFog = FogState;
+		MyScratch->UseGouraudShading = GouraudState;
 	}
 	//---------------
 	//FX:
@@ -382,8 +429,13 @@ void GameRPGWorld::Tick(float DeltaTime)
 void GameRPGWorld::CollisionProcess(int objId)
 {
 	//Town collision
+	float StandardTownSize = 12.0f;
+	float LargeCastleSize = 32.0f;
 	std::string TownNameDisplay;
-	if (MyScratch->SquaredDistance2D(PlayerMovement->Pos, CurrentScene.scene_objects[objId].pos) > 12.0f)
+
+
+
+	if (MyScratch->SquaredDistance2D(PlayerMovement->Pos, CurrentScene.scene_objects[objId].pos) > StandardTownSize)
 	{
 		//no collision
 		return;
@@ -779,3 +831,45 @@ GameRPGWorld::~GameRPGWorld()
 }
 
 
+void GameRPGWorld::LightningFX(int phase, float progress)
+{
+	if (progress <= 0.02f)
+	{
+		MyScratch->DrawRectangle(0, 0, SCREEN_X, (int)SCREEN_Y * 0.15f, RGB{ 255,255,0,64 }, RGB{ 255,255,255,64 }, RGB{ 255,255,255,0 }, RGB{ 255,255,0,0 });
+	}
+	const int total_verts = 23;
+	//const int total_rand = 16;
+	/*const int pseudo_random[16] =
+	{
+		1, -1, 4, -9, 12, -19, 17, -5,1, -5, 9, -3, 3, -1, 4, -15
+	};*/
+
+	int offset = (phase % total_verts) * 3;
+	vec3d start = { SCREEN_X * 0.5f + offset, 0, 0 };
+	vec3d end = {(SCREEN_X * 0.25f + offset + 2), SCREEN_Y, 0 };
+	vec3d prev = start;
+	vec3d camera_offset = {CameraSmoothRotation.y,0,0};
+	float additional_progress_time = 0.0f;
+
+	int mult = 2; //make color brighter
+	RGB StartColor = { 255 * mult,0,255 * mult,(int)(255 * (1 - progress)) };
+	RGB EndColor = { 255 * mult,255 * mult,0,0 };
+
+
+	for (int i = 0; i < total_verts; i++)
+	{
+		float t0 = (float)(i + 1) / (float)total_verts;
+
+		// Step toward the end point
+		vec3d halfway = MyScratch->Lerp(start, end, t0);
+
+		// Apply horizontal offset
+		//halfway.x += pseudo_random[(int)(i + phase) % total_rand];
+		halfway.x += MyScratch->GetNext(-8, 8);
+
+		// Draw segment
+		MyScratch->DrawLine(prev.x, prev.y, halfway.x, halfway.y, MyScratch->Lerp(StartColor, EndColor, t0 * 2.0f));
+
+		prev = halfway;
+	}
+}
