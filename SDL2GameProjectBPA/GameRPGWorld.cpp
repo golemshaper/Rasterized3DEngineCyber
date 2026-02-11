@@ -230,7 +230,7 @@ void GameRPGWorld::Tick(float DeltaTime)
 	offset.y = baseOffset.y;
 	offset.z = -baseOffset.x * s + baseOffset.z * c;
 	//INTERESTING HILL ONLY VIEW CAMERA:    vec3d CameraLocation = vec3d{ PlayerLocation.x,-3.0f,PlayerLocation.z } + offset;
-	vec3d CameraLocation = vec3d{ PlayerLocation.x,2.0f,PlayerLocation.z} + offset;
+	vec3d CameraLocation = vec3d{ PlayerLocation.x,3.0f,PlayerLocation.z} + offset; //use PlayerLocation+offset to get the old behavior
 
 
 	float CamOffsetY = 5.0f;
@@ -262,14 +262,14 @@ void GameRPGWorld::Tick(float DeltaTime)
 	//---------------
 	//LIGHTNING
 	//---------------
-	LightningFX(lightning_phase, lightning);
+	/*LightningFX(lightning_phase, lightning);
 	LightningFX(lightning_phase + 3, lightning * 1.5f);
 	lightning += DeltaTime;
 	if (lightning >= 9.5f)
 	{
 		lightning = 0.0f;
 		lightning_phase++;
-	}
+	}*/
 	//---------------
 	//water:
 	//---------------

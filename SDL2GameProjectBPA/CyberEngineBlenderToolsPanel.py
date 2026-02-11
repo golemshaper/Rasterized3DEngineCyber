@@ -145,8 +145,8 @@ def export_scene_as_custom():
     # ---------------------------------------
     # Assign to clipboard
     # ---------------------------------------
-    bpy.context.window_manager.clipboard = out
-    print("Scene exported to clipboard.")
+    #bpy.context.window_manager.clipboard = out
+    #print("Scene exported to clipboard.")
     print(out)
     return out
 
@@ -280,8 +280,8 @@ def export_mesh_as_custom(obj):
         i0, i1, i2 = tri_cols
         out += f" {i0} {i1} {i2}\n\n"
 
-    bpy.context.window_manager.clipboard = out
-    print(out)
+    #bpy.context.window_manager.clipboard = out
+    #print(out)
     return out
 
 #===================================================================================================
