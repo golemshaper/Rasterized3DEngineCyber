@@ -101,6 +101,8 @@ void GameRPGWorld::LoadSceneFiles(std::string SceneFileName)
 	Tag_Town = CurrentScene.GetTagID("Town");
 	Tag_Hidden = CurrentScene.GetTagID("Hidden");
 	Tag_Unlit = CurrentScene.GetTagID("Unlit");
+	Tag_Character = CurrentScene.GetTagID("Character");
+
 	for (int i = 0; i < CurrentScene.scene_objects.size(); i++)
 	{
 		if (CurrentScene.scene_objects[i].HasTagStringCompare("Terrain"))
@@ -372,13 +374,45 @@ void GameRPGWorld::Tick(float DeltaTime)
 		//Render modifications
 		bool UnlitState = MyScratch->DrawUnlit;
 		bool FogState = MyScratch->UseDepthFog;
+		bool FogHackyShadingState = MyScratch->UseFogHackyShading;
 		bool GouraudState = MyScratch->UseGouraudShading;
+		bool EdgeLight = false;
+		bool TexturedEdgeLight = false;
 		
 		if (CurrentScene.scene_objects[objId].HasTagByID(Tag_Unlit))
 		{
 			MyScratch->DrawUnlit = true;
 			MyScratch->UseDepthFog = false;
 			MyScratch->UseGouraudShading = false;
+		}
+		if (CurrentScene.scene_objects[objId].HasTagByID(Tag_Character))
+		{
+			//TODO: Move this to a function please
+			//---------------
+			//character rendering
+			//---------------
+			MyScratch->UseFogHackyShading = true;
+			MyScratch->UseGouraudShading = false;
+			EdgeLight = true;
+			//---------------
+			//character's shadow:
+			//---------------
+			MyScratch->MeshColor = RGB_Black;
+			MyScratch->MeshColor.a = 128;
+			MyScratch->TextureDrawOn = false;
+			MyScratch->PushBackDepthBuffer(90);
+			MyScratch->MoveMainspaceToExtraBuffer();
+			MyScratch->DrawMesh(
+				CurrentScene.Meshes[CurrentScene.scene_objects[objId].model_id], 
+				CurrentScene.scene_objects[objId].pos, 
+				vec3d{ 0,CurrentScene.scene_objects[objId].rot.y,0 }, 
+				vec3d{ CurrentScene.scene_objects[objId].scale.x,
+				0.1f,CurrentScene.scene_objects[objId].scale.z
+				});
+			MyScratch->BlendBuffers(0.5f);
+			MyScratch->MeshColor = RGB_White;
+			MyScratch->PushBackDepthBuffer(-90);
+
 		}
 
 		//TEXTURE
@@ -398,11 +432,13 @@ void GameRPGWorld::Tick(float DeltaTime)
 			CurrentScene.scene_objects[objId].pos,
 			CurrentScene.scene_objects[objId].rot,
 			CurrentScene.scene_objects[objId].scale,
-			false);
+			EdgeLight,
+			TexturedEdgeLight);
 		//Undo render modifications
 		MyScratch->DrawUnlit = UnlitState;
 		MyScratch->UseDepthFog = FogState;
 		MyScratch->UseGouraudShading = GouraudState;
+		MyScratch->UseFogHackyShading = FogHackyShadingState;
 	}
 	//---------------
 	//FX:

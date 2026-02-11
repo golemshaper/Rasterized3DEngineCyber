@@ -2013,25 +2013,51 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
 
 void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool edge_light)
 {
+    DrawMesh(m, loc, rot, scale, edge_light, true);
+}
+
+void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool edge_light, bool texture_edge_light)
+{
     if (edge_light)
     {
         bool remember_light_setting = DrawUnlit;
+        bool RememberTextureDrawOn = TextureDrawOn;
+        RGB StoreColor = MeshColor;
         //multipass
         DrawHighlightEdgeOnly = true; //this causes the offset
         //const float offset = -10.5f;
         const int offset = 215;
         ZOffset -= offset; // draw one point behind the mesh
         DrawUnlit = true;
+
+        if (texture_edge_light == false)
+        {
+            MeshColor = MeshColor * 0.35f;
+            TextureDrawOn = false;
+
+        }
+        
+        //DRAW 1
         DrawMesh(m, loc, rot, scale);
+
+        if (texture_edge_light == false)
+        {
+            TextureDrawOn = RememberTextureDrawOn;
+        }
+        
+        MeshColor = StoreColor;
         ZOffset += offset; //restore mesh back to normal depth location
         DrawUnlit = remember_light_setting;
+
+        //DRAW 2
         DrawMesh(m, loc, rot, scale);
     }
     else
     {
-        DrawMesh(m,loc,rot,scale);
+        DrawMesh(m, loc, rot, scale);
     }
 }
+
 
 void DrawScratchSpace::DifferDrawMesh(Mesh m)
 {

@@ -36,9 +36,18 @@ public:
 	int Tag_Town = -1;
 	int Tag_Hidden = -1;
 	int Tag_Unlit = -1;
+	int Tag_Character = -1;
 	//ObjectIDs
 	int LightStartID;
 	int LightEndID;
+	//Animatables
+	struct {
+		//TODO: Find a way to automatically grab a mesh, and the morph frame needed for walking
+		//then put these structs in an array, and pre-proceess the animation for each before drawing
+		int scene_obj_id;
+		Mesh idle;
+		Mesh Walk;
+	};
 	//Text
 	TextSprites* MyTextSprites;
 	TextFileReader* Reader;
