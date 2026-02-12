@@ -13,7 +13,7 @@ struct SceneObject {
 	bool visible;
 	std::vector<std::string> tag_strings; //REPLACE THESE WITH TAG IDS!
 	std::vector<int> tag_ids;
-
+	RGB color = RGB_White;
 	/// <summary>
 	/// String comparisons are to slow for a game. Make an ID system!
 	/// </summary>

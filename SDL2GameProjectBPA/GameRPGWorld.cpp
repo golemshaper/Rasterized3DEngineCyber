@@ -494,6 +494,7 @@ void GameRPGWorld::DrawSingleSceneObject(int objId,vec3d CustomOffsetPos, Mesh C
 	//MESH
 	if (UseCustomMesh)
 	{
+		MyScratch->MeshColor = CurrentScene.scene_objects[objId].color;
 		MyScratch->DrawMesh(
 			CustomMesh,
 			CurrentScene.scene_objects[objId].pos + CustomOffsetPos,
@@ -504,6 +505,7 @@ void GameRPGWorld::DrawSingleSceneObject(int objId,vec3d CustomOffsetPos, Mesh C
 	}
 	else
 	{
+		MyScratch->MeshColor = CurrentScene.scene_objects[objId].color;
 		MyScratch->DrawMesh(
 			CurrentScene.Meshes[CurrentScene.scene_objects[objId].model_id],
 			CurrentScene.scene_objects[objId].pos + CustomOffsetPos,
@@ -865,7 +867,9 @@ void GameRPGWorld::ProcessWalkComps(float DeltaTime)
 			}
 			//WE NEED TO GET THIS COLOR DATA BACK TO THE MESH NOW THAT WE DO COLLISION HERE!
 			//JUST STICK A COLOR ON A SCENE OBJECT?
-			MyScratch->MeshColor = MyScratch->SnapToMeshTriColor * 4.5f; //larger brightness then player, it's further away...
+			RGB NColor = CurrentScene.scene_objects[objId].color; //larger brightness then player, it's further away...
+			NColor = MyScratch->Lerp(NColor, (MyScratch->SnapToMeshTriColor * 4.5f), 6.0f * DeltaTime);
+			CurrentScene.scene_objects[objId].color = NColor;
 		}
 		if (!MyScratch->LastSnapToMeshResult)
 		{
