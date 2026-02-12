@@ -128,6 +128,11 @@ void GameRPGWorld::LoadSceneFiles(std::string SceneFileName)
 				loadPositionOnce = false;
 			}
 		}
+		else if (CurrentScene.scene_objects[i].HasTagStringCompare("Character"))
+		{
+			CharacterNPCIDs.push_back(i); //i is the object scene ID
+			CreateAnimationComp(i);
+		}
 		else if (CurrentScene.scene_objects[i].HasTagStringCompare("LightStart"))
 		{
 			LightStartID = i;
@@ -138,9 +143,8 @@ void GameRPGWorld::LoadSceneFiles(std::string SceneFileName)
 		}
 		else
 		{
-			//WARNING THIS IS THE END OF AN IF-ELSE CHAIN. THE ABOVE OBJECTS DID NOT GET PLACED IN THE DRAWING LIST!
-			
-			MeshPropIDs.push_back(i);
+			//WARNING THIS IS THE END OF AN IF-ELSE CHAIN. THE ABOVE OBJECTS DID NOT GET PLACED IN THE "STATIC MESH PROP" DRAWING LIST!
+			MeshPropIDs.push_back(i); //i is the object scene ID
 		}
 	}
 }
@@ -393,8 +397,12 @@ void GameRPGWorld::DrawSceneObjects(float DeltaTime)
 }
 void GameRPGWorld::DrawSingleSceneObject(int objId)
 {
+	DrawSingleSceneObject(objId,vec3d{0,0,0}, {}, false);
 	
-	
+}
+void GameRPGWorld::DrawSingleSceneObject(int objId,vec3d CustomOffsetPos, Mesh CustomMesh, bool UseCustomMesh)
+{
+
 	//Render modifications
 	MyScratch->MeshColor = RGB_White;
 	bool UnlitState = MyScratch->DrawUnlit;
@@ -453,13 +461,29 @@ void GameRPGWorld::DrawSingleSceneObject(int objId)
 	}
 
 	//MESH
-	MyScratch->DrawMesh(
-		CurrentScene.Meshes[CurrentScene.scene_objects[objId].model_id],
-		CurrentScene.scene_objects[objId].pos,
-		CurrentScene.scene_objects[objId].rot,
-		CurrentScene.scene_objects[objId].scale,
-		EdgeLight,
-		TexturedEdgeLight);
+	if (UseCustomMesh)
+	{
+		MyScratch->DrawMesh(
+			CustomMesh,
+			CurrentScene.scene_objects[objId].pos + CustomOffsetPos,
+			CurrentScene.scene_objects[objId].rot,
+			CurrentScene.scene_objects[objId].scale,
+			EdgeLight,
+			TexturedEdgeLight);
+	}
+	else
+	{
+		MyScratch->DrawMesh(
+			CurrentScene.Meshes[CurrentScene.scene_objects[objId].model_id],
+			CurrentScene.scene_objects[objId].pos + CustomOffsetPos,
+			CurrentScene.scene_objects[objId].rot,
+			CurrentScene.scene_objects[objId].scale,
+			EdgeLight,
+			TexturedEdgeLight);
+	}
+	
+
+
 	//Undo render modifications
 	MyScratch->DrawUnlit = UnlitState;
 	MyScratch->UseDepthFog = FogState;
@@ -671,7 +695,7 @@ void GameRPGWorld::DeleteAnimations()
 	for (int i = 0; i < MaxAnimatedComponents; ++i)
 	{
 		AnimationComponents[i].scene_obj_id = -1 ;
-		AnimationComponents[i].idle = {};
+		AnimationComponents[i].Idle = {};
 		AnimationComponents[i].Walk= {};
 		AnimationComponents[i].enfOfList = true; //mark as "null" data
 	}
@@ -687,7 +711,7 @@ void GameRPGWorld::CreateAnimationComp(int OnSceneObjectID)
 	AnimationComponents[CurrentAnimationComponentIndex].enfOfList = false; //Mark this as a real item, and not null data.
 	AnimationComponents[CurrentAnimationComponentIndex].scene_obj_id = OnSceneObjectID;
 	//Defualt mesh is the idle frame
-	AnimationComponents[CurrentAnimationComponentIndex].idle = CurrentScene.Meshes[CurrentScene.scene_objects[OnSceneObjectID].model_id];
+	AnimationComponents[CurrentAnimationComponentIndex].Idle = CurrentScene.Meshes[CurrentScene.scene_objects[OnSceneObjectID].model_id];
 	//Get the walk frame from the tag data:
 	std::string AnimFrameFileName;
 	if (CurrentScene.GetTagArgument(OnSceneObjectID,Tag_Animation,AnimFrameFileName))
@@ -715,12 +739,13 @@ void GameRPGWorld::ProcessAnimations(float DeltaTime)
 			//bad data!
 			continue;
 		}
-		if (AnimationComponents[i].model_to_mutate_id == -1)
-		{
-			//bad data!
-			continue;
-		}
-
+		vec3d MeshBobOffset = vec3d{ 0,abs(sin(totalTime * 12.0f)) * -0.2f,0.0f };
+		DrawSingleSceneObject(
+			AnimationComponents[i].scene_obj_id,
+			MeshBobOffset,
+			MyScratch->MorphMesh(AnimationComponents[i].Idle, AnimationComponents[i].Walk, sin(totalTime * 12.0f) * 0.5f),
+			true
+			);
 
 	}
 }

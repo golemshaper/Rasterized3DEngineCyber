@@ -24,6 +24,7 @@ public:
 	void Tick(float DeltaTime);
 	void DrawSceneObjects(float DeltaTime);
 	void DrawSingleSceneObject(int objId);
+	void DrawSingleSceneObject(int objId, vec3d CustomOffsetPos, Mesh CustomMesh, bool UseCustomMesh);
 	void CollisionProcess(int objId);
 	void MusicAndFadeIn(float DeltaTime);
 	void RenderMovie();
@@ -35,6 +36,7 @@ public:
 	std::string ModelsPath = "Assets/Models/";
 
 	std::vector<int> MeshPropIDs;
+	std::vector<int> CharacterNPCIDs;
 
 	SceneFileParser* SceneParser;
 	Scene CurrentScene;
@@ -95,8 +97,7 @@ public:
 	//Animatables
 	struct AnimationComp {
 		int scene_obj_id;
-		int model_to_mutate_id = -1;
-		Mesh idle;
+		Mesh Idle;
 		Mesh Walk;
 		bool enfOfList = true; //If true, we abort all further animation updating
 	};
