@@ -5,6 +5,8 @@
 class ThirdPersonMovement;
 class TextSprites;
 class TextFileReader;
+
+
 class GameRPGWorld : public Game
 {
 public:
@@ -20,8 +22,9 @@ public:
 	void LoadSceneFiles();
 	void LoadSceneFiles(std::string SceneFileName);
 	void Tick(float DeltaTime);
+	void DrawSceneObjects(float DeltaTime);
+	void DrawSingleSceneObject(int objId);
 	void CollisionProcess(int objId);
-	void OldTick(float DeltaTime);
 	void MusicAndFadeIn(float DeltaTime);
 	void RenderMovie();
 	void DrawBasics(float DeltaTime);
@@ -29,7 +32,10 @@ public:
 	//Scene
 	std::string SceneLink = "RPG_WorldMap.txt";
 	std::string ScenePath = "Assets/Scenes/";
+	std::string ModelsPath = "Assets/Models/";
+
 	std::vector<int> MeshPropIDs;
+
 	SceneFileParser* SceneParser;
 	Scene CurrentScene;
 	//Scene Tags
@@ -37,17 +43,12 @@ public:
 	int Tag_Hidden = -1;
 	int Tag_Unlit = -1;
 	int Tag_Character = -1;
+	int Tag_Animation = -1;
 	//ObjectIDs
 	int LightStartID;
 	int LightEndID;
-	//Animatables
-	struct {
-		//TODO: Find a way to automatically grab a mesh, and the morph frame needed for walking
-		//then put these structs in an array, and pre-proceess the animation for each before drawing
-		int scene_obj_id;
-		Mesh idle;
-		Mesh Walk;
-	};
+
+
 	//Text
 	TextSprites* MyTextSprites;
 	TextFileReader* Reader;
@@ -75,11 +76,9 @@ public:
 	bool screenshot_fire_once = false;
 	RGB GI_Lighting = {255,255,255,255};
 	//textures
-	RGB* Image01;
 	RGB* grass;
 	RGB* overworldTexture;
 	RGB* water;
-	RGB* Image03;
 	RGB* Palette;
 
 	const char* RequestedText = "RpgIntro";
@@ -92,6 +91,22 @@ public:
 	int lightning_phase = 0;
 	float lightning = 0.0f;
 	void LightningFX(int phase, float progress);
+
+	//Animatables
+	struct AnimationComp {
+		int scene_obj_id;
+		int model_to_mutate_id = -1;
+		Mesh idle;
+		Mesh Walk;
+		bool enfOfList = true; //If true, we abort all further animation updating
+	};
+	static constexpr int MaxAnimatedComponents = 16;
+	AnimationComp AnimationComponents[MaxAnimatedComponents];
+	int CurrentAnimationComponentIndex = 0;
+	void DeleteAnimations();
+	void CreateAnimationComp(int OnSceneObjectID);
+	void ProcessAnimations(float DeltaTime);
+	
 	~GameRPGWorld();
 };
 

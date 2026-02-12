@@ -11,7 +11,6 @@ Positions:
  116.684 -5.497 146.604
  116.689 -5.714 136.104
  -6.497 -6.989 -97.600
- -3.445 -7.235 -97.061
  143.522 -10.391 28.772
  88.250 -0.580 62.466
  97.868 -2.182 63.348
@@ -54,9 +53,9 @@ CastleA,Overworld,9,0,0,true,Town,Castle-Otenia
 Point,Overworld,10,0,0,true,Hidden,Town,Castle-Otenia
 CastleWindowGlow,Overworld,9,0,0,true,Unlit
 TowerLights,Overworld,1,0,0,true,Unlit
-Anna,BasicPalette,11,0,1,true,Character,Anna
-Anna_WalkF1,BasicPalette,12,0,1,true,Character,Anna
-TownThree,Overworld,13,0,0,true,Town,Hinten-Vale
+Anna,BasicPalette,11,0,1,true,Character,Anna,Animation,Anna_WalkF1
+TownThree,Overworld,12,0,0,true,Town,Hinten-Vale
+SingleTree,Overworld,13,0,0,true,None
 SingleTree,Overworld,14,0,0,true,None
 SingleTree,Overworld,15,0,0,true,None
 SingleTree,Overworld,16,0,0,true,None
@@ -73,7 +72,6 @@ SingleTree,Overworld,26,0,0,true,None
 SingleTree,Overworld,27,0,0,true,None
 SingleTree,Overworld,28,0,0,true,None
 SingleTree,Overworld,29,0,0,true,None
-SingleTree,Overworld,30,0,0,true,None
-BridgeReflection,Overworld,31,0,0,true,None
+BridgeReflection,Overworld,30,0,0,true,None
 
 DialogueTriggers:

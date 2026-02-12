@@ -94,6 +94,9 @@ struct Scene {
 	/// <param name="out_arg"></param>
 	/// <returns></returns>
 	bool GetTagArgument(const SceneObject& obj, int tag_id, std::string& out_arg) const;
+	bool GetTagArgument(const SceneObject& obj, int tag_id, std::string& out_arg,int arg_Number) const;
+	bool GetTagArgument(int objId, int tag_id, std::string& out_arg) const;
+	bool GetTagArgument(int objId, int tag_id, std::string& out_arg, int arg_number) const;
 	
 };
 

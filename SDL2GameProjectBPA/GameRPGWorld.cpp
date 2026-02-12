@@ -43,7 +43,7 @@ void GameRPGWorld::Initialize()
 	//LoadedMesh2 = parser.ParseFromFile("Assets/cube_model.txt");
 
 	//How to animate:
-	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F0.txt"));
+	/*MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F0.txt"));
 	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F1.txt"));
 	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F1.txt"));
 	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F2.txt"));
@@ -52,11 +52,11 @@ void GameRPGWorld::Initialize()
 	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F5.txt"));
 	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F6.txt"));
 	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F0.txt"));
-	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F0.txt"));
+	MeshSequence.push_back(parser.ParseModelFromFile("Assets/Athena_F0.txt"));*/
 
 
-	int wGB = 128, hGB = 112;
-	Image01 = ReadBMP("Assets/001.bmp", wGB, hGB);
+	/*int wGB = 128, hGB = 112;
+	Image01 = ReadBMP("Assets/001.bmp", wGB, hGB);*/
 
 
 	int w2 = 16; int h2 = 16;
@@ -71,9 +71,9 @@ void GameRPGWorld::Initialize()
 	water = ReadBMP("Assets/water.bmp", w32, w32);
 
 
-	int w3 = 16; int h3 = 16;
+	/*int w3 = 16; int h3 = 16;
 	Image03 = ReadBMP("Assets/red_brick.bmp", w3, h3);
-	MyScratch->SetTexture(Image03,w3,h3);
+	MyScratch->SetTexture(Image03,w3,h3);*/
 	
 	int w64 = 64; int h64 = 64;
 	Palette = ReadBMP("Assets/BasicPalette.bmp", w64, h64);
@@ -81,8 +81,8 @@ void GameRPGWorld::Initialize()
 	ma_result r = ma_engine_init(NULL, &audioEngine);
 	printf("engine init: %d\n", r);
 	ma_engine_play_sound(&audioEngine, "Assets/noise_transition.wav", NULL);
-
-
+	
+	
 	//TODO Call LoadSceneFiles()
 	LoadSceneFiles();
 	
@@ -93,7 +93,7 @@ void GameRPGWorld::LoadSceneFiles()
 }
 void GameRPGWorld::LoadSceneFiles(std::string SceneFileName)
 {
-	CurrentScene = SceneParser->ParseSceneFromFile(ScenePath + SceneFileName, "Assets/Models/","Assets/");
+	CurrentScene = SceneParser->ParseSceneFromFile(ScenePath + SceneFileName, ModelsPath,"Assets/");
 	totalTime = 0.0f;
 	
 	MeshPropIDs.clear(); //Collect non-terrain meshes here
@@ -102,7 +102,7 @@ void GameRPGWorld::LoadSceneFiles(std::string SceneFileName)
 	Tag_Hidden = CurrentScene.GetTagID("Hidden");
 	Tag_Unlit = CurrentScene.GetTagID("Unlit");
 	Tag_Character = CurrentScene.GetTagID("Character");
-
+	Tag_Animation = CurrentScene.GetTagID("Animation");
 	for (int i = 0; i < CurrentScene.scene_objects.size(); i++)
 	{
 		if (CurrentScene.scene_objects[i].HasTagStringCompare("Terrain"))
@@ -295,7 +295,6 @@ void GameRPGWorld::Tick(float DeltaTime)
 	MyScratch->ClearZBufffer();//don't need this
 
 
-
 	
 	//---------------
 	//terrain:
@@ -347,99 +346,11 @@ void GameRPGWorld::Tick(float DeltaTime)
 	//vec3d player_2d_loc = MyScratch->Get2DPointFromLastLocation();
 	//MyScratch->DrawTextDropShadow(player_2d_loc.x, player_2d_loc.y, RGB_White, "Hello", MyTextSprites, 1.0f);
 
-	//---------------
-	//props:
-	//---------------
-	MyScratch->MeshColor = RGB_White;
-	MyScratch->SetTexture(Image03, w16, w16);
-	vec3d BoxPropLoc = vec3d{ -53.478f,1.48093f,-29.807f };
-	MyScratch->DrawMesh(LoadedMesh2, BoxPropLoc, vec3d{ 0,totalTime,0 }, vec3d{ 1.0f,1.0f,1.0f }); //position copied from blender, but swapped y and -z
-
 
 	////---------------
 	////Scene file objects:
 	////---------------
-	for (int i = 0; i < MeshPropIDs.size(); ++i)
-	{
-		//ID
-		int objId = MeshPropIDs[i];
-
-		//Test collisions
-		CollisionProcess(objId);
-		
-		if (CurrentScene.scene_objects[objId].HasTagByID(Tag_Hidden))
-		{
-			continue; //DO NOT RENDER
-		}
-		//Render modifications
-		bool UnlitState = MyScratch->DrawUnlit;
-		bool FogState = MyScratch->UseDepthFog;
-		bool FogHackyShadingState = MyScratch->UseFogHackyShading;
-		bool GouraudState = MyScratch->UseGouraudShading;
-		bool EdgeLight = false;
-		bool TexturedEdgeLight = false;
-		
-		if (CurrentScene.scene_objects[objId].HasTagByID(Tag_Unlit))
-		{
-			MyScratch->DrawUnlit = true;
-			MyScratch->UseDepthFog = false;
-			MyScratch->UseGouraudShading = false;
-		}
-		if (CurrentScene.scene_objects[objId].HasTagByID(Tag_Character))
-		{
-			//TODO: Move this to a function please
-			//---------------
-			//character rendering
-			//---------------
-			MyScratch->UseFogHackyShading = true;
-			MyScratch->UseGouraudShading = false;
-			EdgeLight = true;
-			//---------------
-			//character's shadow:
-			//---------------
-			MyScratch->MeshColor = RGB_Black;
-			MyScratch->MeshColor.a = 128;
-			MyScratch->TextureDrawOn = false;
-			MyScratch->PushBackDepthBuffer(90);
-			MyScratch->MoveMainspaceToExtraBuffer();
-			MyScratch->DrawMesh(
-				CurrentScene.Meshes[CurrentScene.scene_objects[objId].model_id], 
-				CurrentScene.scene_objects[objId].pos, 
-				vec3d{ 0,CurrentScene.scene_objects[objId].rot.y,0 }, 
-				vec3d{ CurrentScene.scene_objects[objId].scale.x,
-				0.1f,CurrentScene.scene_objects[objId].scale.z
-				});
-			MyScratch->BlendBuffers(0.5f);
-			MyScratch->MeshColor = RGB_White;
-			MyScratch->PushBackDepthBuffer(-90);
-
-		}
-
-		//TEXTURE
-		int TextureID = CurrentScene.scene_objects[objId].texture_id;
-		if (TextureID != -1 && CurrentScene.TexturePacks.size() >= TextureID)
-		{
-			MyScratch->TextureDrawOn = true;
-			MyScratch->SetTexture(
-				CurrentScene.TexturePacks[TextureID].TextureData,
-				CurrentScene.TexturePacks[TextureID].width,
-				CurrentScene.TexturePacks[TextureID].height
-			);
-		}
-		//MESH
-		MyScratch->DrawMesh(
-			CurrentScene.Meshes[CurrentScene.scene_objects[objId].model_id],
-			CurrentScene.scene_objects[objId].pos,
-			CurrentScene.scene_objects[objId].rot,
-			CurrentScene.scene_objects[objId].scale,
-			EdgeLight,
-			TexturedEdgeLight);
-		//Undo render modifications
-		MyScratch->DrawUnlit = UnlitState;
-		MyScratch->UseDepthFog = FogState;
-		MyScratch->UseGouraudShading = GouraudState;
-		MyScratch->UseFogHackyShading = FogHackyShadingState;
-	}
+	DrawSceneObjects(DeltaTime);
 	//---------------
 	//FX:
 	//---------------
@@ -451,16 +362,106 @@ void GameRPGWorld::Tick(float DeltaTime)
 	//Text
 	//---------------
 	TextUpdateTick(DeltaTime);
-	if (MyScratch->SquaredDistance2D(PlayerLocation, BoxPropLoc) <= 1.0f) {
+
+	//NPC_HOW_TO_READ:
+	/*if (MyScratch->SquaredDistance2D(PlayerLocation, NpcLocationHere) <= 1.0f) {
 		RequestedText = "RpgNpcBox";
+	}*/
+
+	if (MyScratch->Input->GetFireOneHold())
+	{
+	
+	}
+}
+void GameRPGWorld::DrawSceneObjects(float DeltaTime)
+{
+	//Draw Props
+	for (int i = 0; i < MeshPropIDs.size(); ++i)
+	{
+		//ID
+		int objId = MeshPropIDs[i];
+		if (CurrentScene.scene_objects[objId].HasTagByID(Tag_Hidden))
+		{
+			continue; //DO NOT RENDER
+		}
+		DrawSingleSceneObject(objId);
+	}
+	//Draw Characters
+}
+void GameRPGWorld::DrawSingleSceneObject(int objId)
+{
+	//Test collisions
+	CollisionProcess(objId);
+
+	
+	//Render modifications
+	bool UnlitState = MyScratch->DrawUnlit;
+	bool FogState = MyScratch->UseDepthFog;
+	bool FogHackyShadingState = MyScratch->UseFogHackyShading;
+	bool GouraudState = MyScratch->UseGouraudShading;
+	bool EdgeLight = false;
+	bool TexturedEdgeLight = false;
+
+	if (CurrentScene.scene_objects[objId].HasTagByID(Tag_Unlit))
+	{
+		MyScratch->DrawUnlit = true;
+		MyScratch->UseDepthFog = false;
+		MyScratch->UseGouraudShading = false;
+	}
+	if (CurrentScene.scene_objects[objId].HasTagByID(Tag_Character))
+	{
+		//TODO: Move this to a function please
+		//---------------
+		//character rendering
+		//---------------
+		MyScratch->UseFogHackyShading = true;
+		MyScratch->UseGouraudShading = false;
+		EdgeLight = true;
+		//---------------
+		//character's shadow:
+		//---------------
+		MyScratch->MeshColor = RGB_Black;
+		MyScratch->MeshColor.a = 128;
+		MyScratch->TextureDrawOn = false;
+		MyScratch->PushBackDepthBuffer(90);
+		MyScratch->MoveMainspaceToExtraBuffer();
+		MyScratch->DrawMesh(
+			CurrentScene.Meshes[CurrentScene.scene_objects[objId].model_id],
+			CurrentScene.scene_objects[objId].pos,
+			vec3d{ 0,CurrentScene.scene_objects[objId].rot.y,0 },
+			vec3d{ CurrentScene.scene_objects[objId].scale.x,
+			0.1f,CurrentScene.scene_objects[objId].scale.z
+			});
+		MyScratch->BlendBuffers(0.5f);
+		MyScratch->MeshColor = RGB_White;
+		MyScratch->PushBackDepthBuffer(-90);
+
 	}
 
-	/*if (MyScratch->Input->GetFireOneHold())
+	//TEXTURE
+	int TextureID = CurrentScene.scene_objects[objId].texture_id;
+	if (TextureID != -1 && CurrentScene.TexturePacks.size() >= TextureID)
 	{
-	//LOAD A  MODEL IN REAL TIME!
-		ModelFileParser parser;
-		TerrrainMesh = parser.ParseModelFromFile("Assets/DomeModel.txt");
-	}*/
+		MyScratch->TextureDrawOn = true;
+		MyScratch->SetTexture(
+			CurrentScene.TexturePacks[TextureID].TextureData,
+			CurrentScene.TexturePacks[TextureID].width,
+			CurrentScene.TexturePacks[TextureID].height
+		);
+	}
+	//MESH
+	MyScratch->DrawMesh(
+		CurrentScene.Meshes[CurrentScene.scene_objects[objId].model_id],
+		CurrentScene.scene_objects[objId].pos,
+		CurrentScene.scene_objects[objId].rot,
+		CurrentScene.scene_objects[objId].scale,
+		EdgeLight,
+		TexturedEdgeLight);
+	//Undo render modifications
+	MyScratch->DrawUnlit = UnlitState;
+	MyScratch->UseDepthFog = FogState;
+	MyScratch->UseGouraudShading = GouraudState;
+	MyScratch->UseFogHackyShading = FogHackyShadingState;
 }
 void GameRPGWorld::CollisionProcess(int objId)
 {
@@ -483,193 +484,7 @@ void GameRPGWorld::CollisionProcess(int objId)
 	//Other collision types:
 
 }
-void GameRPGWorld::OldTick(float DeltaTime)
-{
-	
-	//Music
-	//DeltaTime = 1.0f / 30.0f; //classic slowdown
-	//---------------
-	//Setup:
-	//---------------
-	totalTime += DeltaTime;
-	animTimer += DeltaTime;
-	MyScratch->ZWriteOn = false;
-	MyScratch->Clear();
-	MyScratch->ClearZBufffer();
-	MyScratch->TextureDrawOn = false;
-	int w16 = 16; int h16 = 16;
-	int w32 = 32; int h32 = 32;
-	int wGB = 128; int hGB = 112;
-	int w256 = 256;int h256 = 256;
-	int w64 = 64; int h64 = 64;
-	vec3d PlayerScale = vec3d{ 2.5f,2.5f,2.5f };
-	
 
-	MyScratch->MeshColor = RGB_White;
-
-	//---------------
-	//PLAYER MOVEMENT:
-	//---------------
-	PlayerMovement->ApplyMovement(DeltaTime, MyScratch);
-	PlayerMovement->ApplyGroundSnap(TerrrainMesh, MyScratch, vec3d{ 0,-1.3f,0 });
-	//animate
-	vec3d PlayerOffset = vec3d{ 0,abs(sin(totalTime * 12.0f)) * -0.2f,0.0f };
-	if (PlayerMovement->IsMoving()) 
-	{
-		PlayerMesh = MyScratch->MorphMesh(PlayerMesh_Idle, PlayerMesh_Walk, sin(totalTime * 12.0f) * 0.5f);
-	}
-	else
-	{
-		PlayerMesh = PlayerMesh_Idle;
-		PlayerOffset = vec3d{ 0,0,0 };
-	}
-
-	vec3d PlayerLocation = PlayerMovement->Pos; //CIRCLE: vec3d{ sin(totalTime) * 10.0f,-12.5f,cos(totalTime) * 8.0f };
-	//---------------
-	//CAMERA:
-	//---------------
-	//Camera code should move in to the ThridPersonMovement function once I get a chance!
-	PlayerMovement->CameraOrientation.x += PlayerMovement->CameraRotationSpeed * DeltaTime * MyScratch->Input->GetCameraXAxis();
-	float orbitAngle = PlayerMovement->CameraOrientation.x;
-	float c = cos(orbitAngle);
-	float s = sin(orbitAngle);
-	vec3d baseOffset = { 0.0f, -5.9f, -17.5f };
-	vec3d offset;
-	offset.x = baseOffset.x * c + baseOffset.z * s;
-	offset.y = baseOffset.y;
-	offset.z = -baseOffset.x * s + baseOffset.z * c;
-	vec3d CameraLocation = PlayerLocation + offset;
-
-
-	float CamOffsetY = 5.0f;
-	vec3d CamRotation = vec3d{ MyScratch->Input->GetMovementX(), CamOffsetY, 17.5f};
-
-	CamRotation = PlayerLocation - CameraLocation + vec3d{ MyScratch->Input->GetMovementX(),0,0 };
-
-
-	CameraSmoothRotation = MyScratch->Lerp(CameraSmoothRotation, CamRotation, (PlayerMovement->Speed / 2.0f) * DeltaTime);
-	CameraSmoothLocation = MyScratch->Lerp(CameraSmoothLocation, CameraLocation, (PlayerMovement->Speed/2.0f) * DeltaTime);
-	MyScratch->SetCamera_Legacy(CameraSmoothLocation, CameraSmoothRotation);
-	//MyScratch->SetCameraFOV(90);
-	MyScratch->SetCameraFOV(65);
-
-	//Push zbuffer back to make more "room" for the depth of the scene
-	MyScratch->ClearZBufffer();
-
-	//---------------
-	//collision + offset
-	//---------------
-	PlayerLocation = MyScratch->SnapToMesh(PlayerLocation, TerrrainMesh, vec3d{ 0,0,0 });
-	//vec3d PlayerLocationMirrored = { PlayerLocation.x,-PlayerLocation.y + 29.0f, PlayerLocation.z };
-	vec3d PlayerLocationMirrored = { PlayerLocation.x,-PlayerLocation.y+40.0f, PlayerLocation.z };
-	//---------------
-	//water:
-	//---------------
-	MyScratch->ZWriteOn = false; //Depth  off so we can draw as far as possible!
-	vec3d WaterLocation= { PlayerLocation.x,0.0f,PlayerLocation.z };
-	MyScratch->SetTexture(water, w32, h32);
-	MyScratch->TextureDrawOn = true; 
-	//Scroll the uvs, and add the water plane location to make water look infinite
-	MyScratch->UvOffsetGlobal = vec2d{ (totalTime * 0.25f) + (WaterLocation.x * 0.05f),(totalTime * 0.25f) - (WaterLocation.z * 0.05f)}; //Scrolling UV effect. Use this for water later!
-	//Wave mesh:
-	Mesh wave = MyScratch->WaveMesh(WaterPlaneMesh, totalTime*12.0f, 0.25f);
-	MyScratch->DrawMesh(wave, WaterLocation, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
-	//Water second layerFX overlay:
-	MyScratch->MoveMainspaceToExtraBuffer();
-	MyScratch->UvOffsetGlobal = vec2d{ (totalTime * -0.25f) + (WaterLocation.x * 0.05f),(totalTime * -0.25f) - (WaterLocation.z * 0.05f) }; //Scrolling UV effect. Use this for water later!
-	MyScratch->DrawMesh(wave, WaterLocation, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
-	
-	//Reflection:
-	MyScratch->DrawMesh(PlayerMesh, PlayerLocationMirrored, vec3d{ 0,PlayerMovement->GetYaw(),0 }, vec3d{ PlayerScale.x,-PlayerScale.y,PlayerScale.z});
-	MyScratch->BlendBuffers(0.25f +abs(sin(totalTime))*0.5f); //blend two water layers
-	MyScratch->ClearZBufffer();//don't need this
-
-	//---------------
-	//terrain:
-	//---------------
-	MyScratch->PushBackDepthBuffer(2000); //Give us pleanty of space to draw the terrain!
-	MyScratch->ZWriteOn = true;
-	MyScratch->UvOffsetGlobal = vec2d{ 0.0f,0.0f };
-	MyScratch->SetTexture(overworldTexture, w256, h256);
-	MyScratch->TextureDrawOn = true;
-	MyScratch->DrawMesh(TerrrainMesh, vec3d{ 0,0,0 }, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
-	//AccumulatedBlur(0.75f); //Blur only BKG if called here!
-	//---------------
-	//player's shadow:
-	//---------------
-	MyScratch->MeshColor = RGB_Black;
-	MyScratch->MeshColor.a = 128;
-	MyScratch->TextureDrawOn = false;
-	MyScratch->PushBackDepthBuffer(90);
-	MyScratch->MoveMainspaceToExtraBuffer();
-	MyScratch->DrawMesh(PlayerMesh, PlayerLocation+ vec3d{ 0,0,0 }, vec3d{ 0,PlayerMovement->GetYaw(),0 }, vec3d{ PlayerScale.x,0.1f,PlayerScale.z });
-	MyScratch->BlendBuffers(0.5f);
-	//---------------
-	//player:
-	//---------------
-	MyScratch->SetTexture(Palette, w64, h64);
-	GI_Lighting = MyScratch->Lerp(GI_Lighting, (MyScratch->SnapToMeshTriColor) * 2.5f, 6.0f * DeltaTime);//psudo lighting
-	MyScratch->MeshColor = GI_Lighting; //psudo lighting
-	MyScratch->TextureDrawOn = true;
-	
-	//edge light
-	MyScratch->MeshColor = GI_Lighting * 2.0f;
-	MyScratch->DrawMesh(PlayerMesh, PlayerLocation + PlayerOffset - vec3d{ 0.09f,0.09f,0.0f }, vec3d{ 0,PlayerMovement->GetYaw(),0 }, PlayerScale);
-	MyScratch->PushBackDepthBuffer(32);
-	//end edge light
-	MyScratch->MeshColor = GI_Lighting; //psudo lighting
-	//normal render
-	MyScratch->DrawMesh(PlayerMesh, PlayerLocation + PlayerOffset, vec3d{ 0,PlayerMovement->GetYaw(),0 }, PlayerScale);
-
-	//TEXT MAPPED TO PLAYER:
-	//vec3d player_2d_loc = MyScratch->Get2DPointFromLastLocation();
-	//MyScratch->DrawTextDropShadow(player_2d_loc.x, player_2d_loc.y, RGB_White, "Hello", MyTextSprites, 1.0f);
-
-	//---------------
-	//props:
-	//---------------
-	MyScratch->MeshColor = RGB_White;
-	MyScratch->SetTexture(Image03, w16, w16);
-	vec3d BoxPropLoc = vec3d{ -53.478f,1.48093f,-29.807f };
-	MyScratch->DrawMesh(LoadedMesh2, BoxPropLoc, vec3d{ 0,totalTime,0 }, vec3d{ 1.0f,1.0f,1.0f }); //position copied from blender, but swapped y and -z
-
-
-	////---------------
-	////Scene file objects:
-	////---------------
-	//MyScratch->ZWriteOn = false;
-	//for (int i = 0; i < MeshPropIDs.size(); ++i)
-	//{
-	//	int objId = MeshPropIDs[i];
-	//	MyScratch->DrawMesh(
-	//		CurrentScene.Meshes[CurrentScene.scene_objects[objId].model_id],
-	//		CurrentScene.scene_objects[objId].pos,
-	//		CurrentScene.scene_objects[objId].rot,
-	//		CurrentScene.scene_objects[objId].scale,
-	//		false);
-	//}
-	//---------------
-	//FX:
-	//---------------
-	MyScratch->MoveMainspaceToExtraBuffer();
-	MyScratch->BrightnessContrastOnBuffer(MyScratch->MainSpace, 0.7f, 2.5f);
-	MusicAndFadeIn(DeltaTime);
-
-	//---------------
-	//Text
-	//---------------
-	TextUpdateTick(DeltaTime);
-	if (MyScratch->SquaredDistance2D(PlayerLocation, BoxPropLoc) <= 1.0f) {
-		RequestedText = "RpgNpcBox";
-	}
-
-	/*if (MyScratch->Input->GetFireOneHold())
-	{
-	//LOAD A  MODEL IN REAL TIME!
-		ModelFileParser parser;
-		TerrrainMesh = parser.ParseModelFromFile("Assets/DomeModel.txt");
-	}*/
-}
 
 void GameRPGWorld::RenderMovie()
 {
@@ -848,20 +663,77 @@ void GameRPGWorld::TextBoxDraw(const char* input)
 }
 
 
+void GameRPGWorld::DeleteAnimations()
+{
+	for (int i = 0; i < MaxAnimatedComponents; ++i)
+	{
+		AnimationComponents[i].scene_obj_id = -1 ;
+		AnimationComponents[i].idle = {};
+		AnimationComponents[i].Walk= {};
+		AnimationComponents[i].enfOfList = true; //mark as "null" data
+	}
+}
+
+void GameRPGWorld::CreateAnimationComp(int OnSceneObjectID)
+{/*
+	static constexpr int MaxAnimatedComponents = 16;
+	AnimationComp AnimationComponents[MaxAnimatedComponents];
+	int CurrentAnimationComponentIndex = 0;
+	void CreateAnimationComp(int OnSceneObjectID);*/
+
+	AnimationComponents[CurrentAnimationComponentIndex].enfOfList = false; //Mark this as a real item, and not null data.
+	AnimationComponents[CurrentAnimationComponentIndex].scene_obj_id = OnSceneObjectID;
+	//Defualt mesh is the idle frame
+	AnimationComponents[CurrentAnimationComponentIndex].idle = CurrentScene.Meshes[CurrentScene.scene_objects[OnSceneObjectID].model_id];
+	//Get the walk frame from the tag data:
+	std::string AnimFrameFileName;
+	if (CurrentScene.GetTagArgument(OnSceneObjectID,Tag_Animation,AnimFrameFileName))
+	{
+		ModelFileParser parser;
+		//if true, we now have the animation args.
+		//we can only get the first animation using this method, not an entire list. To get a different arg index, provide a custom offset in the if statement above.
+		AnimationComponents[CurrentAnimationComponentIndex].Walk= parser.ParseModelFromFile(ModelsPath+AnimFrameFileName+".txt");
+	}
+
+
+}
+
+void GameRPGWorld::ProcessAnimations(float DeltaTime)
+{
+	for (int i = 0; i < MaxAnimatedComponents; ++i)
+	{
+		if (AnimationComponents[i].enfOfList)
+		{
+			//end of the line!
+			return;
+		}
+		if (AnimationComponents[i].scene_obj_id == -1)
+		{
+			//bad data!
+			continue;
+		}
+		if (AnimationComponents[i].model_to_mutate_id == -1)
+		{
+			//bad data!
+			continue;
+		}
+
+
+	}
+}
+
 GameRPGWorld::~GameRPGWorld()
 {
 	delete Reader;
+	
+	
 	Reader = nullptr;
 	delete MyScratch;
 	MyScratch = nullptr;
 	delete MyTextSprites;
 	MyTextSprites = nullptr;
-	delete Image01;
 	delete grass;
-	delete Image03;
-	Image01 = nullptr;
 	grass = nullptr;
-	Image03 = nullptr;
 	delete PlayerMovement;
 	PlayerMovement = nullptr;
 }

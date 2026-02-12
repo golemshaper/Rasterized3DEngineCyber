@@ -399,17 +399,32 @@ int SceneFileParser::FindStringIndex(const std::string& target, const std::vecto
 /// <returns></returns>
 bool Scene::GetTagArgument(const SceneObject& obj, int tag_id, std::string& out_arg) const
 {
+	return GetTagArgument(obj, tag_id, out_arg, 1);
+}
+
+bool Scene::GetTagArgument(const SceneObject& obj, int tag_id, std::string& out_arg, int arg_Number) const
+{
 	for (int i = 0; i < obj.tag_ids.size(); ++i)
 	{
 		if (obj.tag_ids[i] == tag_id)
 		{
 			if (i + 1 < obj.tag_ids.size())
 			{
-				out_arg = TagStrList[obj.tag_ids[i + 1]];
+				out_arg = TagStrList[obj.tag_ids[i + arg_Number]];
 				return true;
 			}
 			return false; // tag found, but no argument
 		}
 	}
 	return false; // tag not found
+}
+
+bool Scene::GetTagArgument(int objId, int tag_id, std::string& out_arg) const
+{
+	return GetTagArgument(scene_objects[objId], tag_id, out_arg);
+}
+
+bool Scene::GetTagArgument(int objId, int tag_id, std::string& out_arg, int arg_number) const
+{
+	return GetTagArgument(scene_objects[objId], tag_id, out_arg, arg_number);
 }
