@@ -384,17 +384,19 @@ void GameRPGWorld::DrawSceneObjects(float DeltaTime)
 		{
 			continue; //DO NOT RENDER
 		}
+		//Test collisions
+		CollisionProcess(objId);
 		DrawSingleSceneObject(objId);
 	}
 	//Draw Characters
+	ProcessAnimations(DeltaTime);
 }
 void GameRPGWorld::DrawSingleSceneObject(int objId)
 {
-	//Test collisions
-	CollisionProcess(objId);
-
+	
 	
 	//Render modifications
+	MyScratch->MeshColor = RGB_White;
 	bool UnlitState = MyScratch->DrawUnlit;
 	bool FogState = MyScratch->UseDepthFog;
 	bool FogHackyShadingState = MyScratch->UseFogHackyShading;
@@ -449,6 +451,7 @@ void GameRPGWorld::DrawSingleSceneObject(int objId)
 			CurrentScene.TexturePacks[TextureID].height
 		);
 	}
+
 	//MESH
 	MyScratch->DrawMesh(
 		CurrentScene.Meshes[CurrentScene.scene_objects[objId].model_id],
