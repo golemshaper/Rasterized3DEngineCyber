@@ -721,6 +721,11 @@ void GameRPGWorld::CreateAnimationComp(int OnSceneObjectID)
 		//we can only get the first animation using this method, not an entire list. To get a different arg index, provide a custom offset in the if statement above.
 		AnimationComponents[CurrentAnimationComponentIndex].Walk= parser.ParseModelFromFile(ModelsPath+AnimFrameFileName+".txt");
 	}
+	else
+	{
+		printf("Error, no animation tags on character: %s !\n", CurrentScene.scene_objects[OnSceneObjectID].AssetPath);
+		AnimationComponents[CurrentAnimationComponentIndex].enfOfList = true;
+	}
 
 
 }
