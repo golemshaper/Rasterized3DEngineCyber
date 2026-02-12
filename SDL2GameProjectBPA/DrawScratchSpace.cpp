@@ -2026,13 +2026,14 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool 
         //multipass
         DrawHighlightEdgeOnly = true; //this causes the offset
         //const float offset = -10.5f;
-        const int offset = 215;
+        //const int offset = 215;
+        const int offset = 64;
         ZOffset -= offset; // draw one point behind the mesh
         DrawUnlit = true;
 
         if (texture_edge_light == false)
         {
-            MeshColor = MeshColor * 0.35f;
+            MeshColor = MeshColor * 1.15f;
             TextureDrawOn = false;
 
         }

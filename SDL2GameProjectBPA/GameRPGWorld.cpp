@@ -103,6 +103,8 @@ void GameRPGWorld::LoadSceneFiles(std::string SceneFileName)
 	Tag_Unlit = CurrentScene.GetTagID("Unlit");
 	Tag_Character = CurrentScene.GetTagID("Character");
 	Tag_Animation = CurrentScene.GetTagID("Animation");
+	Tag_SnapToGround = CurrentScene.GetTagID("SnapToGround");
+	Tag_RandomWalk = CurrentScene.GetTagID("RandomWalk");
 	for (int i = 0; i < CurrentScene.scene_objects.size(); i++)
 	{
 		if (CurrentScene.scene_objects[i].HasTagStringCompare("Terrain"))
@@ -447,7 +449,18 @@ void GameRPGWorld::DrawSingleSceneObject(int objId,vec3d CustomOffsetPos, Mesh C
 		MyScratch->PushBackDepthBuffer(-90);
 
 	}
+	if (Tag_RandomWalk)
+	{
+		//TODO Process random walk!
+		//We could do a component like system similar to the animation, 
+		//or we could store a few variables that are usable for walking vectors, and select which we use as a first come first serve sort of deal...
 
+	}
+	if (CurrentScene.scene_objects[objId].HasTagByID(Tag_SnapToGround))
+	{
+		CurrentScene.scene_objects[objId].pos = MyScratch->SnapToMesh(CurrentScene.scene_objects[objId].pos,TerrrainMeshCollider,vec3d{0,0,0});
+		MyScratch->MeshColor = MyScratch->SnapToMeshTriColor * 4.5f; //larger brightness then player, it's further away...
+	}
 	//TEXTURE
 	int TextureID = CurrentScene.scene_objects[objId].texture_id;
 	if (TextureID != -1 && CurrentScene.TexturePacks.size() >= TextureID)
@@ -702,12 +715,10 @@ void GameRPGWorld::DeleteAnimations()
 }
 
 void GameRPGWorld::CreateAnimationComp(int OnSceneObjectID)
-{/*
-	static constexpr int MaxAnimatedComponents = 16;
-	AnimationComp AnimationComponents[MaxAnimatedComponents];
-	int CurrentAnimationComponentIndex = 0;
-	void CreateAnimationComp(int OnSceneObjectID);*/
-
+{
+	//Creates animation components for Scene objects marked with an Animation tag, followed by the name of the animation frame file.
+	//As more animation frames get added, we'll put them in the struct. Later, some stop-motion-animations will be mixed with this morph system.
+	//Morph for walking, and stop motion frames for battle. (SNES RPG style animations, or SaGa Frontier Style even)
 	AnimationComponents[CurrentAnimationComponentIndex].enfOfList = false; //Mark this as a real item, and not null data.
 	AnimationComponents[CurrentAnimationComponentIndex].scene_obj_id = OnSceneObjectID;
 	//Defualt mesh is the idle frame
@@ -745,6 +756,7 @@ void GameRPGWorld::ProcessAnimations(float DeltaTime)
 			continue;
 		}
 		vec3d MeshBobOffset = vec3d{ 0,abs(sin(totalTime * 12.0f)) * -0.2f,0.0f };
+		
 		DrawSingleSceneObject(
 			AnimationComponents[i].scene_obj_id,
 			MeshBobOffset,

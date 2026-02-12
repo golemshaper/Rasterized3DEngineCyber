@@ -46,6 +46,8 @@ public:
 	int Tag_Unlit = -1;
 	int Tag_Character = -1;
 	int Tag_Animation = -1;
+	int Tag_SnapToGround = -1;
+	int Tag_RandomWalk = -1;
 	//ObjectIDs
 	int LightStartID;
 	int LightEndID;
