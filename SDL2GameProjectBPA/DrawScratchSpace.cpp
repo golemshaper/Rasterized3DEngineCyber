@@ -1064,7 +1064,21 @@ int DrawScratchSpace::GetRandom(int a, int b)
     std::mt19937 gen(rd());
     std::uniform_int_distribution<int> dist(a, b);
     return dist(gen);*/
-    return GetNext(a, b);
+    unsigned int r = GetNext();
+    unsigned int range = (b - a + 1);
+    unsigned int value = (r >> 24) % range; // use high bits
+    return a + value;
+
+
+    //return GetNext(a, b);
+}
+
+float DrawScratchSpace::GetRandomFloat(float a, float b)
+{
+    unsigned int r = GetNext();
+    // Normalize
+    float t = (float)r / 4294967295.0f; // UINT32_MAX
+    return a + t * (b - a);
 }
 
 float DrawScratchSpace::Clamp(float value, float min, float max)
@@ -1502,6 +1516,7 @@ vec3d DrawScratchSpace::SnapToMesh(const vec3d& worldPos, const Mesh& mesh, cons
         return { worldPos.x, bestY + meshPos.y, worldPos.z };
 
     }
+    
     LastSnapToMeshResult = false;
     return worldPos;
 

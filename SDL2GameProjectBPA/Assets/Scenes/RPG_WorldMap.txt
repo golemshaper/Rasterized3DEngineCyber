@@ -10,7 +10,7 @@ Positions:
  -124.598 -5.714 166.530
  116.684 -5.497 146.604
  116.689 -5.714 136.104
- -13.737 -4.971 -82.839
+ -13.737 -7.200 -82.839
  143.522 -10.391 28.772
  88.250 -0.580 62.466
  97.868 -2.182 63.348
@@ -53,7 +53,7 @@ CastleA,Overworld,9,0,0,true,Town,Castle-Otenia
 Point,Overworld,10,0,0,true,Hidden,Town,Castle-Otenia
 CastleWindowGlow,Overworld,9,0,0,true,Unlit
 TowerLights,Overworld,1,0,0,true,Unlit
-Anna,BasicPalette,11,0,1,true,Character,Anna,SnapToGround,Animation,Anna_WalkF1
+Anna,BasicPalette,11,0,1,true,Character,Anna,RandomWalk,SnapToGround,Animation,Anna_WalkF1
 TownThree,Overworld,12,0,0,true,Town,Hinten-Vale
 SingleTree,Overworld,13,0,0,true,None
 SingleTree,Overworld,14,0,0,true,None

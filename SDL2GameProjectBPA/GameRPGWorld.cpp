@@ -95,8 +95,13 @@ void GameRPGWorld::LoadSceneFiles(std::string SceneFileName)
 {
 	CurrentScene = SceneParser->ParseSceneFromFile(ScenePath + SceneFileName, ModelsPath,"Assets/");
 	totalTime = 0.0f;
-	
+
+	//CLEANUP FIRST:
+	DeleteAnimations();
+	DeleteRandomWalkComps();
+	CharacterNPCIDs.clear(); //Collect non-terrain meshes here
 	MeshPropIDs.clear(); //Collect non-terrain meshes here
+
 	//Collect tags here:
 	Tag_Town = CurrentScene.GetTagID("Town");
 	Tag_Hidden = CurrentScene.GetTagID("Hidden");
@@ -107,6 +112,14 @@ void GameRPGWorld::LoadSceneFiles(std::string SceneFileName)
 	Tag_RandomWalk = CurrentScene.GetTagID("RandomWalk");
 	for (int i = 0; i < CurrentScene.scene_objects.size(); i++)
 	{
+		//ANYTHING GOES CHAIN: You can have any or all of these:
+		if (CurrentScene.scene_objects[i].HasTagByID(Tag_RandomWalk))
+		{
+			
+			CreateRandomWalkComp(i);
+		}
+
+		//IF ELSE CHAINS: Only one of these at a time are processed! ITS AN IF-ELSE CHAIN!
 		if (CurrentScene.scene_objects[i].HasTagStringCompare("Terrain"))
 		{
 			int MeshId = CurrentScene.scene_objects[i].model_id;
@@ -133,7 +146,9 @@ void GameRPGWorld::LoadSceneFiles(std::string SceneFileName)
 		else if (CurrentScene.scene_objects[i].HasTagStringCompare("Character"))
 		{
 			CharacterNPCIDs.push_back(i); //i is the object scene ID
-			CreateAnimationComp(i);
+			CreateAnimationComp(i); //WE ARE CREATING AN ANIMATION ON CHARACTER COMPONENT, NOT ANIMATION RIGHT NOW.
+									//WE COULD CHANGE THIS LATER. CHARACTER WILL ALSO DO OTHER THINGS POTENTIALLY IN FUTURE
+									//CHARACTERS MAIN JOB IS NOT BEING A PROP OBJECT RIGHT NOW. ITS TIED TO THE ANIMATION CONCEPT. SO WE MUST HAVE BOTH
 		}
 		else if (CurrentScene.scene_objects[i].HasTagStringCompare("LightStart"))
 		{
@@ -145,6 +160,16 @@ void GameRPGWorld::LoadSceneFiles(std::string SceneFileName)
 		}
 		else
 		{
+			//Replace if-else chain with a (SAFE_TO_PLACE_IN_COMMON_OBJECTS_LIST) flag!!
+			//Replace if-else chain with a (SAFE_TO_PLACE_IN_COMMON_OBJECTS_LIST) flag!!
+			//Replace if-else chain with a (SAFE_TO_PLACE_IN_COMMON_OBJECTS_LIST) flag!!
+			//Replace if-else chain with a (SAFE_TO_PLACE_IN_COMMON_OBJECTS_LIST) flag!!
+			//Replace if-else chain with a (SAFE_TO_PLACE_IN_COMMON_OBJECTS_LIST) flag!!
+			//Replace if-else chain with a (SAFE_TO_PLACE_IN_COMMON_OBJECTS_LIST) flag!!
+			//Replace if-else chain with a (SAFE_TO_PLACE_IN_COMMON_OBJECTS_LIST) flag!!
+			//Replace if-else chain with a (SAFE_TO_PLACE_IN_COMMON_OBJECTS_LIST) flag!!
+			// 
+			// 
 			//WARNING THIS IS THE END OF AN IF-ELSE CHAIN. THE ABOVE OBJECTS DID NOT GET PLACED IN THE "STATIC MESH PROP" DRAWING LIST!
 			MeshPropIDs.push_back(i); //i is the object scene ID
 		}
@@ -352,6 +377,10 @@ void GameRPGWorld::Tick(float DeltaTime)
 	//vec3d player_2d_loc = MyScratch->Get2DPointFromLastLocation();
 	//MyScratch->DrawTextDropShadow(player_2d_loc.x, player_2d_loc.y, RGB_White, "Hello", MyTextSprites, 1.0f);
 
+	//----------------
+	//NPC WALK:
+	//----------------
+	ProcessWalkComps(DeltaTime);
 
 	////---------------
 	////Scene file objects:
@@ -449,18 +478,7 @@ void GameRPGWorld::DrawSingleSceneObject(int objId,vec3d CustomOffsetPos, Mesh C
 		MyScratch->PushBackDepthBuffer(-90);
 
 	}
-	if (Tag_RandomWalk)
-	{
-		//TODO Process random walk!
-		//We could do a component like system similar to the animation, 
-		//or we could store a few variables that are usable for walking vectors, and select which we use as a first come first serve sort of deal...
-
-	}
-	if (CurrentScene.scene_objects[objId].HasTagByID(Tag_SnapToGround))
-	{
-		CurrentScene.scene_objects[objId].pos = MyScratch->SnapToMesh(CurrentScene.scene_objects[objId].pos,TerrrainMeshCollider,vec3d{0,0,0});
-		MyScratch->MeshColor = MyScratch->SnapToMeshTriColor * 4.5f; //larger brightness then player, it's further away...
-	}
+	
 	//TEXTURE
 	int TextureID = CurrentScene.scene_objects[objId].texture_id;
 	if (TextureID != -1 && CurrentScene.TexturePacks.size() >= TextureID)
@@ -671,47 +689,48 @@ void GameRPGWorld::TextBoxDraw(const char* input)
 		64,
 		RGB{ 0,0,255,128 },
 		RGB{ 0,222,0,128 },
-		RGB{ 0,0,255,0 },
-		RGB{ 0,0,111,0 }
+			RGB{ 0,0,255,0 },
+			RGB{ 0,0,111,0 }
 
-	);
+			);
 
-	//Top Line
-	MyScratch->DrawLine(boarder, SCREEN_Y - (64 + boarder), SCREEN_X - boarder - 1, SCREEN_Y - (64 + boarder), RGB{ 222,222,222,255 });
-	//Bottom Line
-	MyScratch->DrawLine(boarder, SCREEN_Y - boarder, SCREEN_X - boarder - 1, SCREEN_Y - boarder, RGB{ 222,222,222,255 });
-	//Right Side
-	MyScratch->DrawLine(SCREEN_X - boarder - 1, SCREEN_Y - (64 + boarder), SCREEN_X - boarder - 1, SCREEN_Y - boarder, RGB{ 222,222,222,255 });
-	//Left Side
-	MyScratch->DrawLine(boarder, SCREEN_Y - (64 + boarder), boarder, SCREEN_Y - boarder, RGB{ 222,222,222,255 });
+			//Top Line
+			MyScratch->DrawLine(boarder, SCREEN_Y - (64 + boarder), SCREEN_X - boarder - 1, SCREEN_Y - (64 + boarder), RGB{ 222,222,222,255 });
+			//Bottom Line
+			MyScratch->DrawLine(boarder, SCREEN_Y - boarder, SCREEN_X - boarder - 1, SCREEN_Y - boarder, RGB{ 222,222,222,255 });
+			//Right Side
+			MyScratch->DrawLine(SCREEN_X - boarder - 1, SCREEN_Y - (64 + boarder), SCREEN_X - boarder - 1, SCREEN_Y - boarder, RGB{ 222,222,222,255 });
+			//Left Side
+			MyScratch->DrawLine(boarder, SCREEN_Y - (64 + boarder), boarder, SCREEN_Y - boarder, RGB{ 222,222,222,255 });
 
-	//Coordinates
-	const int textX = boarder + 2;
-	const int textY = SCREEN_Y - (64);
-	//Shadow
-	MyScratch->DrawTextAtPos(textX + 1, textY + 1, { 1, 1, 1, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
-	//Text
-	MyScratch->DrawTextAtPos(textX, textY, { 255, 255, 255, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
+			//Coordinates
+			const int textX = boarder + 2;
+			const int textY = SCREEN_Y - (64);
+			//Shadow
+			MyScratch->DrawTextAtPos(textX + 1, textY + 1, { 1, 1, 1, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
+			//Text
+			MyScratch->DrawTextAtPos(textX, textY, { 255, 255, 255, 255, }, input, MyTextSprites, textBoxProgressTick * 0.8f);
 
-	//Blinking cursor 
-	if (sin(totalTime * 8.0f) > 0.0f)
-	{
+			//Blinking cursor 
+			if (sin(totalTime * 8.0f) > 0.0f)
+			{
 
-		MyScratch->DrawTextAtPos(SCREEN_X - 10, SCREEN_Y - boarder - 7, { 0, 255, 255, 255, }, "|", MyTextSprites, 1.0f);
+				MyScratch->DrawTextAtPos(SCREEN_X - 10, SCREEN_Y - boarder - 7, { 0, 255, 255, 255, }, "|", MyTextSprites, 1.0f);
 
-	}
+			}
 }
 
 
 void GameRPGWorld::DeleteAnimations()
 {
-	for (int i = 0; i < MaxAnimatedComponents; ++i)
+	for (int i = 0; i < MaxComponentCount; ++i)
 	{
-		AnimationComponents[i].scene_obj_id = -1 ;
+		AnimationComponents[i].scene_obj_id = -1;
 		AnimationComponents[i].Idle = {};
-		AnimationComponents[i].Walk= {};
+		AnimationComponents[i].Walk = {};
 		AnimationComponents[i].enfOfList = true; //mark as "null" data
 	}
+	CurrentAnimationComponentIndex = 0; //RESET!
 }
 
 void GameRPGWorld::CreateAnimationComp(int OnSceneObjectID)
@@ -725,25 +744,145 @@ void GameRPGWorld::CreateAnimationComp(int OnSceneObjectID)
 	AnimationComponents[CurrentAnimationComponentIndex].Idle = CurrentScene.Meshes[CurrentScene.scene_objects[OnSceneObjectID].model_id];
 	//Get the walk frame from the tag data:
 	std::string AnimFrameFileName;
-	if (CurrentScene.GetTagArgument(OnSceneObjectID,Tag_Animation,AnimFrameFileName))
+	if (CurrentScene.GetTagArgument(OnSceneObjectID, Tag_Animation, AnimFrameFileName))
 	{
 		ModelFileParser parser;
 		//if true, we now have the animation args.
 		//we can only get the first animation using this method, not an entire list. To get a different arg index, provide a custom offset in the if statement above.
-		AnimationComponents[CurrentAnimationComponentIndex].Walk= parser.ParseModelFromFile(ModelsPath+AnimFrameFileName+".txt");
+		AnimationComponents[CurrentAnimationComponentIndex].Walk = parser.ParseModelFromFile(ModelsPath + AnimFrameFileName + ".txt");
 	}
 	else
 	{
-		printf("Error, no animation tags on character: %s !\n", CurrentScene.scene_objects[OnSceneObjectID].AssetPath);
+		printf("Error, no animation tags on character: %s !\n", CurrentScene.scene_objects[OnSceneObjectID].AssetPath.c_str());
 		AnimationComponents[CurrentAnimationComponentIndex].enfOfList = true;
 	}
 
 
 }
 
+void GameRPGWorld::DeleteRandomWalkComps()
+{
+	for (int i = 0; i < MaxComponentCount; ++i)
+	{
+		RandomWalkComponents[i].scene_obj_id = -1; //-1 is like null!
+	}
+	CurrentWalkomponentIndex = 0; //RESET
+}
+
+void GameRPGWorld::CreateRandomWalkComp(int OnSceneObjectID)
+{
+	RandomWalkComponents[CurrentWalkomponentIndex].scene_obj_id = OnSceneObjectID;
+	CurrentWalkomponentIndex++; //INCREMENT
+}
+
+void GameRPGWorld::ProcessWalkComps(float DeltaTime)
+{
+	/*struct RandomWalkComp {
+		int scene_obj_id = -1;
+		vec3d direction = { 1.0f,0.0f,0.0f };
+		float speed = 1.0f;
+		float walkForTimeMin = 0.5f;
+		float walkForTimeMax = 1.25f;
+		float curWalkForTimer = 0.0f;
+	};*/
+	for (int i = 0; i < MaxComponentCount; ++i)
+	{
+		
+		if(RandomWalkComponents[i].scene_obj_id == -1)
+		{
+			// end of components once a "null" is found.
+			return;
+		}
+
+		int objId = RandomWalkComponents[i].scene_obj_id;
+		vec3d safe_pos = CurrentScene.scene_objects[objId].pos;
+
+		if (RandomWalkComponents[i].curWalkForTimer <= 0.0f)
+		{
+			//Starting fresh, set timer, and pick direction
+			RandomWalkComponents[i].curWalkForTimer =0.2f + MyScratch->GetRandomFloat(
+				RandomWalkComponents[i].walkForTimeMin,
+				RandomWalkComponents[i].walkForTimeMax
+			);
+			//direction
+			/*float dirX = (float)MyScratch->GetRandom(-1, 1);
+			float dirZ = (float)MyScratch->GetRandom(-1, 1);*/
+
+
+
+			float angle = MyScratch->GetRandomFloat(0.0f, 6.283185f);
+			if (angle < 0.0f) angle = 0.0f;
+			if (angle > 6.283185f) angle = 6.283185f;
+			float dirX = sinf(angle);
+			float dirZ = cosf(angle);
+			RandomWalkComponents[i].direction.x = dirX;
+			RandomWalkComponents[i].direction.z = dirZ;
+			
+
+			int r = MyScratch->GetRandom(0, 3);
+			
+			//vec3d dir = { 0.0f, 0.0f,  1.0f };
+			//switch (r)
+			//{
+			//	case 0: dir = { 0.0f, 0.0f,  1.0f }; break; // up
+			//	case 1: dir = { 0.0f, 0.0f, -1.0f }; break; // down
+			//	case 2: dir = { 1.0f, 0.0f,  0.0f }; break; // right
+			//	case 3: dir = { -1.0f, 0.0f,  0.0f }; break; // left
+			//}
+			//RandomWalkComponents[i].direction = dir;
+			
+			RandomWalkComponents[i].direction = MyScratch->Normalize(RandomWalkComponents[i].direction);
+			
+		}
+		RandomWalkComponents[i].curWalkForTimer -= DeltaTime;
+		//--- ROTATION UPDATE
+		if (RandomWalkComponents[i].followRotation)
+		{
+			
+			float yaw = atan2f(-RandomWalkComponents[i].direction.x,-RandomWalkComponents[i].direction.z);
+
+
+			CurrentScene.scene_objects[RandomWalkComponents[i].scene_obj_id].rot.y = yaw;
+			//printf("Walk DIR: %f%f\n", RandomWalkComponents[i].direction.x, RandomWalkComponents[i].direction.z);
+			//printf("Walk COMP ID: %i\n", i);
+
+		}
+		//--- POSTION UPDATE
+		
+
+		CurrentScene.scene_objects[RandomWalkComponents[i].scene_obj_id].pos = 
+		CurrentScene.scene_objects[RandomWalkComponents[i].scene_obj_id].pos + 
+		RandomWalkComponents[i].direction * RandomWalkComponents[i].speed * DeltaTime;
+		
+		MyScratch->LastSnapToMeshResult = false;
+		if (CurrentScene.scene_objects[objId].HasTagByID(Tag_SnapToGround))
+		{
+			//IF WE WANT SNAP TO GROUND ON NON-WALKING OBJECTS, DO IT ON LOAD ONLY!!!!!!!
+			CurrentScene.scene_objects[objId].pos = MyScratch->SnapToMesh(CurrentScene.scene_objects[objId].pos, TerrrainMeshCollider, vec3d{ 0,0,0 });
+			if (MyScratch->LastSnapToMeshResult == false)
+			{
+				CurrentScene.scene_objects[objId].pos = safe_pos;
+			}
+			//WE NEED TO GET THIS COLOR DATA BACK TO THE MESH NOW THAT WE DO COLLISION HERE!
+			//JUST STICK A COLOR ON A SCENE OBJECT?
+			MyScratch->MeshColor = MyScratch->SnapToMeshTriColor * 4.5f; //larger brightness then player, it's further away...
+		}
+		if (!MyScratch->LastSnapToMeshResult)
+		{
+			RandomWalkComponents[i].curWalkForTimer = 0.0f;
+			//pick a new direction!
+		}
+		
+	}
+
+}
+
+
+
+
 void GameRPGWorld::ProcessAnimations(float DeltaTime)
 {
-	for (int i = 0; i < MaxAnimatedComponents; ++i)
+	for (int i = 0; i < MaxComponentCount; ++i)
 	{
 		if (AnimationComponents[i].enfOfList)
 		{
@@ -826,3 +965,4 @@ void GameRPGWorld::LightningFX(int phase, float progress)
 		prev = halfway;
 	}
 }
+

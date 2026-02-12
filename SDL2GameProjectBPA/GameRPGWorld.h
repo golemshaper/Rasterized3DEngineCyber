@@ -35,6 +35,7 @@ public:
 	std::string ScenePath = "Assets/Scenes/";
 	std::string ModelsPath = "Assets/Models/";
 
+	//REMEMBER TO CLEAR THESE INSIDE OF THE LOAD SCENE OBJECT:
 	std::vector<int> MeshPropIDs;
 	std::vector<int> CharacterNPCIDs;
 
@@ -103,11 +104,31 @@ public:
 		Mesh Walk;
 		bool enfOfList = true; //If true, we abort all further animation updating
 	};
-	static constexpr int MaxAnimatedComponents = 16;
-	AnimationComp AnimationComponents[MaxAnimatedComponents];
+	static constexpr int MaxComponentCount = 16;
+	AnimationComp AnimationComponents[MaxComponentCount];
 	int CurrentAnimationComponentIndex = 0;
 	void DeleteAnimations();
 	void CreateAnimationComp(int OnSceneObjectID);
+
+	//Walkables
+	struct RandomWalkComp {
+		int scene_obj_id= -1;
+		vec3d direction = { 0.0f,0.0f,0.0f };
+		float speed = 12.0f;
+		float walkForTimeMin = 0.25f;
+		float walkForTimeMax = 2.0f;
+		float curWalkForTimer = 0.0f;
+		bool followRotation = true;
+	};
+	int CurrentWalkomponentIndex = 0;
+	void DeleteRandomWalkComps();
+	void CreateRandomWalkComp(int OnSceneObjectID);
+	void ProcessWalkComps(float DeltaTime);
+	RandomWalkComp RandomWalkComponents[MaxComponentCount];
+
+
+
+	
 	void ProcessAnimations(float DeltaTime);
 	
 	~GameRPGWorld();
