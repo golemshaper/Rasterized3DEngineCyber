@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "miniaudio.h"
 #include "SceneFileParser.h"
+#include "StateMachine.h"
 class ThirdPersonMovement;
 class TextSprites;
 class TextFileReader;
@@ -29,13 +30,7 @@ public:
 	void MusicAndFadeIn(float DeltaTime);
 	void RenderMovie();
 	void DrawBasics(float DeltaTime);
-	//Game State
-	/*
-	StateMachine sm;
-	void StateOverworldUpdate();
-	void StateBattleUpdate();
 
-	*/
 
 	//Scene
 	std::string SceneLink = "RPG_WorldMap.txt";
@@ -139,6 +134,29 @@ public:
 	
 	void ProcessAnimations(float DeltaTime);
 	
+
+	//Game State
+
+	StateMachine* sm;
+	enum State {
+		TitleScreen = 0,
+		WorldMap = 1,
+		BattleTransition = 2,
+		Battle = 3,
+		GameOver = 4,
+	};
+
+	void SetupStateMachine();
+	void StateOverworldUpdate();
+	void StateBattleTransitionStart();
+	void StateBattleTransitionUpdate();
+	void StateBattleUpdate();
+
+
+
+
+
+
 	~GameRPGWorld();
 };
 

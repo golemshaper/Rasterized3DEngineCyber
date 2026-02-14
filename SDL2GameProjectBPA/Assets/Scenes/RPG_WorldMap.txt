@@ -53,7 +53,7 @@ CastleA,Overworld,9,0,0,true,Town,Castle-Otenia
 Point,Overworld,10,0,0,true,Hidden,Town,Castle-Otenia
 CastleWindowGlow,Overworld,9,0,0,true,Unlit
 TowerLights,Overworld,1,0,0,true,Unlit
-Anna,BasicPalette,11,0,1,true,Character,Anna,RandomWalk,SnapToGround,Animation,Anna_WalkF1
+Anna,BasicPalette,11,0,1,true,Character,Anna,RandomWalk,SnapToGround,Animation,Anna_WalkF1,Dialogue,RpgNpcBox
 TownThree,Overworld,12,0,0,true,Town,Hinten-Vale
 SingleTree,Overworld,13,0,0,true,None
 SingleTree,Overworld,14,0,0,true,None

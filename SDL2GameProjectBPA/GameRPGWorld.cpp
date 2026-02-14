@@ -14,6 +14,7 @@
 
 void GameRPGWorld::Initialize()
 {
+	SetupStateMachine();
 	MyScratch = new DrawScratchSpace();
 	MyScratch->Initialize();
 	MyScratch->UseGouraudShading = true;
@@ -85,6 +86,8 @@ void GameRPGWorld::Initialize()
 	
 	//TODO Call LoadSceneFiles()
 	LoadSceneFiles();
+
+	
 	
 }
 void GameRPGWorld::LoadSceneFiles()
@@ -196,217 +199,8 @@ void GameRPGWorld::MusicAndFadeIn(float DeltaTime)
 }
 void GameRPGWorld::Tick(float DeltaTime)
 {
+	sm->Tick(DeltaTime);
 	
-	//Instead of ticking directly, we will have a state machine for the game modes. The scene file itself will tell the engine what mode the scene should be in.
-	//A battle scene file, will change to the battle mode state, and when the battle scene load, the game will be in battle mode!
-	
-	//TODO Implement Gouraud shading.
-
-	if (MyScratch->Input->GetToggleDepthKey())
-	{
-		MyScratch->Input->ResetToggleDepthKey();
-		LoadSceneFiles();
-		return;
-	}
-	//Music
-	//DeltaTime = 1.0f / 30.0f; //classic slowdown
-	//---------------
-	//Setup:
-	//---------------
-	totalTime += DeltaTime;
-	animTimer += DeltaTime;
-	//MyScratch->LightDir = { sin(totalTime),cos(totalTime),sin(totalTime) };
-	
-	MyScratch->ZWriteOn = false;
-	MyScratch->Clear();
-	MyScratch->ClearZBufffer();
-	MyScratch->TextureDrawOn = false;
-	int w16 = 16; int h16 = 16;
-	int w32 = 32; int h32 = 32;
-	int wGB = 128; int hGB = 112;
-	int w256 = 256; int h256 = 256;
-	int w64 = 64; int h64 = 64;
-	vec3d PlayerScale = vec3d{ 2.5f,2.5f,2.5f };
-
-
-	MyScratch->MeshColor = RGB_White;
-
-	//---------------
-	//PLAYER MOVEMENT:
-	//---------------
-	PlayerMovement->UpdateMovement(DeltaTime, MyScratch);
-	PlayerMovement->ApplyGroundSnap(TerrrainMeshCollider, MyScratch, vec3d{ 0,-1.3f,0 });
-	//animate
-	vec3d PlayerOffset = vec3d{ 0,abs(sin(totalTime * 12.0f)) * -0.2f,0.0f };
-	if (PlayerMovement->IsMoving())
-	{
-		PlayerMesh = MyScratch->MorphMesh(PlayerMesh_Idle, PlayerMesh_Walk, sin(totalTime * 12.0f) * 0.5f);
-	}
-	else
-	{
-		PlayerMesh = PlayerMesh_Idle;
-		PlayerOffset = vec3d{ 0,0,0 };
-	}
-
-	vec3d PlayerLocation = PlayerMovement->Pos; //CIRCLE: vec3d{ sin(totalTime) * 10.0f,-12.5f,cos(totalTime) * 8.0f };
-	//---------------
-	//CAMERA:
-	//---------------
-	//Camera code should move in to the ThridPersonMovement function once I get a chance!
-	PlayerMovement->CameraOrientation.x += PlayerMovement->CameraRotationSpeed * DeltaTime * MyScratch->Input->GetCameraXAxis();
-	float orbitAngle = PlayerMovement->CameraOrientation.x;
-	float c = cos(orbitAngle);
-	float s = sin(orbitAngle);
-	vec3d baseOffset = { 0.0f, -5.9f, -17.5f };
-	vec3d offset;
-	offset.x = baseOffset.x * c + baseOffset.z * s;
-	offset.y = baseOffset.y;
-	offset.z = -baseOffset.x * s + baseOffset.z * c;
-	//INTERESTING HILL ONLY VIEW CAMERA:    vec3d CameraLocation = vec3d{ PlayerLocation.x,-3.0f,PlayerLocation.z } + offset;
-	vec3d CameraLocation = vec3d{ PlayerLocation.x,3.0f,PlayerLocation.z} + offset; //use PlayerLocation+offset to get the old behavior
-
-
-	float CamOffsetY = 5.0f;
-	vec3d CamRotation = vec3d{ MyScratch->Input->GetMovementX(), CamOffsetY, 17.5f };
-
-	CamRotation = PlayerLocation - CameraLocation + vec3d{ MyScratch->Input->GetMovementX(),0,0 };
-
-
-	CameraSmoothRotation = MyScratch->Lerp(CameraSmoothRotation, CamRotation, (PlayerMovement->Speed / 2.0f) * DeltaTime);
-	CameraSmoothLocation = MyScratch->Lerp(CameraSmoothLocation, CameraLocation, (PlayerMovement->Speed / 2.0f) * DeltaTime);
-	MyScratch->SetCamera_Legacy(CameraSmoothLocation, CameraSmoothRotation);
-	//MyScratch->SetCameraFOV(90);
-	MyScratch->SetCameraFOV(65);
-
-	//Push zbuffer back to make more "room" for the depth of the scene
-	MyScratch->ClearZBufffer();
-
-	//---------------
-	// Lighting
-	// --------------
-	MyScratch->LightDir = MyScratch->Normalize(CurrentScene.scene_objects[LightStartID].pos - CurrentScene.scene_objects[LightEndID].pos);
-	
-	//---------------
-	//collision + offset
-	//---------------
-	PlayerLocation = MyScratch->SnapToMesh(PlayerLocation, TerrrainMeshCollider, vec3d{ 0,0,0 });
-	vec3d PlayerLocationMirrored = { PlayerLocation.x,-PlayerLocation.y + 27.0f, PlayerLocation.z }; //was 29.0f
-
-	//---------------
-	//LIGHTNING
-	//---------------
-	/*LightningFX(lightning_phase, lightning);
-	LightningFX(lightning_phase + 3, lightning * 1.5f);
-	lightning += DeltaTime;
-	if (lightning >= 9.5f)
-	{
-		lightning = 0.0f;
-		lightning_phase++;
-	}*/
-	//---------------
-	//water:
-	//---------------
-	MyScratch->ZWriteOn = false; //Depth  off so we can draw as far as possible!
-	vec3d WaterLocation = { PlayerLocation.x,0.0f,PlayerLocation.z };
-	MyScratch->SetTexture(water, w32, h32);
-	MyScratch->TextureDrawOn = true;
-	//Scroll the uvs, and add the water plane location to make water look infinite
-	MyScratch->UvOffsetGlobal = vec2d{ (totalTime * 0.25f) + (WaterLocation.x * 0.05f),(totalTime * 0.25f) - (WaterLocation.z * 0.05f) }; //Scrolling UV effect. Use this for water later!
-	//Wave mesh:
-	Mesh wave = MyScratch->WaveMesh(WaterPlaneMesh, totalTime * 12.0f, 0.25f);
-	MyScratch->DrawMesh(wave, WaterLocation, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
-	//Water second layerFX overlay:
-	MyScratch->MoveMainspaceToExtraBuffer();
-	MyScratch->UvOffsetGlobal = vec2d{ (totalTime * -0.25f) + (WaterLocation.x * 0.05f),(totalTime * -0.25f) - (WaterLocation.z * 0.05f) }; //Scrolling UV effect. Use this for water later!
-	MyScratch->DrawMesh(wave, WaterLocation, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
-
-	//Reflection:
-	MyScratch->DrawMesh(PlayerMesh, PlayerLocationMirrored, vec3d{ 0,PlayerMovement->GetYaw(),0 }, vec3d{ PlayerScale.x,-PlayerScale.y,PlayerScale.z });
-	MyScratch->BlendBuffers(0.25f + abs(sin(totalTime)) * 0.5f); //blend two water layers
-	MyScratch->ClearZBufffer();//don't need this
-
-
-	
-	//---------------
-	//terrain:
-	//---------------
-	MyScratch->PushBackDepthBuffer(20000); //Give us pleanty of space to draw the terrain!
-	MyScratch->ZWriteOn = true;
-	MyScratch->UvOffsetGlobal = vec2d{ 0.0f,0.0f };
-	MyScratch->SetTexture(overworldTexture, w256, h256);
-	MyScratch->TextureDrawOn = true;
-	MyScratch->DrawMesh(TerrrainMesh, vec3d{ 0,0,0 }, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
-	//AccumulatedBlur(0.75f); //Blur only BKG if called here!
-	//---------------
-	//player's shadow:
-	//---------------
-	MyScratch->MeshColor = RGB_Black;
-	MyScratch->MeshColor.a = 128;
-	MyScratch->TextureDrawOn = false;
-	MyScratch->PushBackDepthBuffer(90);
-	MyScratch->MoveMainspaceToExtraBuffer();
-	MyScratch->DrawMesh(PlayerMesh, PlayerLocation + vec3d{ 0,0,0 }, vec3d{ 0,PlayerMovement->GetYaw(),0 }, vec3d{ PlayerScale.x,0.1f,PlayerScale.z });
-	MyScratch->BlendBuffers(0.5f);
-	//---------------
-	//player:
-	//---------------
-	MyScratch->UseDepthFog = false;
-	MyScratch->UseFogHackyShading = true;
-	MyScratch->UseGouraudShading = false;
-	MyScratch->SetTexture(Palette, w64, h64);
-	GI_Lighting = MyScratch->Lerp(GI_Lighting, (MyScratch->SnapToMeshTriColor) * 2.5f, 6.0f * DeltaTime);//psudo lighting
-	MyScratch->MeshColor = GI_Lighting; //psudo lighting
-	MyScratch->TextureDrawOn = true;
-
-
-	//edge light
-	MyScratch->MeshColor = GI_Lighting * 2.0f;
-	MyScratch->DrawMesh(PlayerMesh, PlayerLocation + PlayerOffset - vec3d{ 0.09f,0.09f,0.0f }, vec3d{ 0,PlayerMovement->GetYaw(),0 }, PlayerScale);
-	MyScratch->PushBackDepthBuffer(32);
-	//end edge light
-	MyScratch->MeshColor = GI_Lighting; //psudo lighting
-	//normal render
-	MyScratch->DrawMesh(PlayerMesh, PlayerLocation + PlayerOffset, vec3d{ 0,PlayerMovement->GetYaw(),0 }, PlayerScale);
-
-	MyScratch->UseDepthFog = true;
-	MyScratch->UseFogHackyShading = false;
-	MyScratch->UseGouraudShading = true;
-
-
-	//TEXT MAPPED TO PLAYER:
-	//vec3d player_2d_loc = MyScratch->Get2DPointFromLastLocation();
-	//MyScratch->DrawTextDropShadow(player_2d_loc.x, player_2d_loc.y, RGB_White, "Hello", MyTextSprites, 1.0f);
-
-	//----------------
-	//NPC WALK:
-	//----------------
-	ProcessWalkComps(DeltaTime);
-
-	////---------------
-	////Scene file objects:
-	////---------------
-	DrawSceneObjects(DeltaTime);
-	//---------------
-	//FX:
-	//---------------
-	MyScratch->MoveMainspaceToExtraBuffer();
-	MyScratch->BrightnessContrastOnBuffer(MyScratch->MainSpace, 0.7f, 2.5f);
-	MusicAndFadeIn(DeltaTime);
-
-	//---------------
-	//Text
-	//---------------
-	TextUpdateTick(DeltaTime);
-
-	//NPC_HOW_TO_READ:
-	/*if (MyScratch->SquaredDistance2D(PlayerLocation, NpcLocationHere) <= 1.0f) {
-		RequestedText = "RpgNpcBox";
-	}*/
-
-	if (MyScratch->Input->GetFireOneHold())
-	{
-	
-	}
 }
 void GameRPGWorld::DrawSceneObjects(float DeltaTime)
 {
@@ -897,12 +691,249 @@ void GameRPGWorld::ProcessAnimations(float DeltaTime)
 	}
 }
 
+void GameRPGWorld::SetupStateMachine()
+{
+	sm = new StateMachine();
+	sm->MapState(State::WorldMap, [this]() { StateOverworldUpdate(); });
+
+	//INIT
+	sm->SetState(State::WorldMap);
+}
+
+void GameRPGWorld::StateOverworldUpdate()
+{
+	float DeltaTime = sm->StateDeltaTime;
+	//Instead of ticking directly, we will have a state machine for the game modes. The scene file itself will tell the engine what mode the scene should be in.
+	//A battle scene file, will change to the battle mode state, and when the battle scene load, the game will be in battle mode!
+
+	//TODO Implement Gouraud shading.
+
+	if (MyScratch->Input->GetToggleDepthKey())
+	{
+		MyScratch->Input->ResetToggleDepthKey();
+		LoadSceneFiles();
+		return;
+	}
+	//Music
+	//DeltaTime = 1.0f / 30.0f; //classic slowdown
+	//---------------
+	//Setup:
+	//---------------
+	totalTime += DeltaTime;
+	animTimer += DeltaTime;
+	//MyScratch->LightDir = { sin(totalTime),cos(totalTime),sin(totalTime) };
+
+	MyScratch->ZWriteOn = false;
+	MyScratch->Clear();
+	MyScratch->ClearZBufffer();
+	MyScratch->TextureDrawOn = false;
+	int w16 = 16; int h16 = 16;
+	int w32 = 32; int h32 = 32;
+	int wGB = 128; int hGB = 112;
+	int w256 = 256; int h256 = 256;
+	int w64 = 64; int h64 = 64;
+	vec3d PlayerScale = vec3d{ 2.5f,2.5f,2.5f };
+
+
+	MyScratch->MeshColor = RGB_White;
+
+	//---------------
+	//PLAYER MOVEMENT:
+	//---------------
+	PlayerMovement->UpdateMovement(DeltaTime, MyScratch);
+	PlayerMovement->ApplyGroundSnap(TerrrainMeshCollider, MyScratch, vec3d{ 0,-1.3f,0 });
+	//animate
+	vec3d PlayerOffset = vec3d{ 0,abs(sin(totalTime * 12.0f)) * -0.2f,0.0f };
+	if (PlayerMovement->IsMoving())
+	{
+		PlayerMesh = MyScratch->MorphMesh(PlayerMesh_Idle, PlayerMesh_Walk, sin(totalTime * 12.0f) * 0.5f);
+	}
+	else
+	{
+		PlayerMesh = PlayerMesh_Idle;
+		PlayerOffset = vec3d{ 0,0,0 };
+	}
+
+	vec3d PlayerLocation = PlayerMovement->Pos; //CIRCLE: vec3d{ sin(totalTime) * 10.0f,-12.5f,cos(totalTime) * 8.0f };
+	//---------------
+	//CAMERA:
+	//---------------
+	//Camera code should move in to the ThridPersonMovement function once I get a chance!
+	PlayerMovement->CameraOrientation.x += PlayerMovement->CameraRotationSpeed * DeltaTime * MyScratch->Input->GetCameraXAxis();
+	float orbitAngle = PlayerMovement->CameraOrientation.x;
+	float c = cos(orbitAngle);
+	float s = sin(orbitAngle);
+	vec3d baseOffset = { 0.0f, -5.9f, -17.5f };
+	vec3d offset;
+	offset.x = baseOffset.x * c + baseOffset.z * s;
+	offset.y = baseOffset.y;
+	offset.z = -baseOffset.x * s + baseOffset.z * c;
+	//INTERESTING HILL ONLY VIEW CAMERA:    vec3d CameraLocation = vec3d{ PlayerLocation.x,-3.0f,PlayerLocation.z } + offset;
+	vec3d CameraLocation = vec3d{ PlayerLocation.x,3.0f,PlayerLocation.z } + offset; //use PlayerLocation+offset to get the old behavior
+
+
+	float CamOffsetY = 5.0f;
+	vec3d CamRotation = vec3d{ MyScratch->Input->GetMovementX(), CamOffsetY, 17.5f };
+
+	CamRotation = PlayerLocation - CameraLocation + vec3d{ MyScratch->Input->GetMovementX(),0,0 };
+
+
+	CameraSmoothRotation = MyScratch->Lerp(CameraSmoothRotation, CamRotation, (PlayerMovement->Speed / 2.0f) * DeltaTime);
+	CameraSmoothLocation = MyScratch->Lerp(CameraSmoothLocation, CameraLocation, (PlayerMovement->Speed / 2.0f) * DeltaTime);
+	MyScratch->SetCamera_Legacy(CameraSmoothLocation, CameraSmoothRotation);
+	//MyScratch->SetCameraFOV(90);
+	MyScratch->SetCameraFOV(65);
+
+	//Push zbuffer back to make more "room" for the depth of the scene
+	MyScratch->ClearZBufffer();
+
+	//---------------
+	// Lighting
+	// --------------
+	MyScratch->LightDir = MyScratch->Normalize(CurrentScene.scene_objects[LightStartID].pos - CurrentScene.scene_objects[LightEndID].pos);
+
+	//---------------
+	//collision + offset
+	//---------------
+	PlayerLocation = MyScratch->SnapToMesh(PlayerLocation, TerrrainMeshCollider, vec3d{ 0,0,0 });
+	vec3d PlayerLocationMirrored = { PlayerLocation.x,-PlayerLocation.y + 27.0f, PlayerLocation.z }; //was 29.0f
+
+	//---------------
+	//LIGHTNING
+	//---------------
+	/*LightningFX(lightning_phase, lightning);
+	LightningFX(lightning_phase + 3, lightning * 1.5f);
+	lightning += DeltaTime;
+	if (lightning >= 9.5f)
+	{
+		lightning = 0.0f;
+		lightning_phase++;
+	}*/
+	//---------------
+	//water:
+	//---------------
+	MyScratch->ZWriteOn = false; //Depth  off so we can draw as far as possible!
+	vec3d WaterLocation = { PlayerLocation.x,0.0f,PlayerLocation.z };
+	MyScratch->SetTexture(water, w32, h32);
+	MyScratch->TextureDrawOn = true;
+	//Scroll the uvs, and add the water plane location to make water look infinite
+	MyScratch->UvOffsetGlobal = vec2d{ (totalTime * 0.25f) + (WaterLocation.x * 0.05f),(totalTime * 0.25f) - (WaterLocation.z * 0.05f) }; //Scrolling UV effect. Use this for water later!
+	//Wave mesh:
+	Mesh wave = MyScratch->WaveMesh(WaterPlaneMesh, totalTime * 12.0f, 0.25f);
+	MyScratch->DrawMesh(wave, WaterLocation, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
+	//Water second layerFX overlay:
+	MyScratch->MoveMainspaceToExtraBuffer();
+	MyScratch->UvOffsetGlobal = vec2d{ (totalTime * -0.25f) + (WaterLocation.x * 0.05f),(totalTime * -0.25f) - (WaterLocation.z * 0.05f) }; //Scrolling UV effect. Use this for water later!
+	MyScratch->DrawMesh(wave, WaterLocation, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
+
+	//Reflection:
+	MyScratch->DrawMesh(PlayerMesh, PlayerLocationMirrored, vec3d{ 0,PlayerMovement->GetYaw(),0 }, vec3d{ PlayerScale.x,-PlayerScale.y,PlayerScale.z });
+	MyScratch->BlendBuffers(0.25f + abs(sin(totalTime)) * 0.5f); //blend two water layers
+	MyScratch->ClearZBufffer();//don't need this
+
+
+
+	//---------------
+	//terrain:
+	//---------------
+	MyScratch->PushBackDepthBuffer(20000); //Give us pleanty of space to draw the terrain!
+	MyScratch->ZWriteOn = true;
+	MyScratch->UvOffsetGlobal = vec2d{ 0.0f,0.0f };
+	MyScratch->SetTexture(overworldTexture, w256, h256);
+	MyScratch->TextureDrawOn = true;
+	MyScratch->DrawMesh(TerrrainMesh, vec3d{ 0,0,0 }, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
+	//AccumulatedBlur(0.75f); //Blur only BKG if called here!
+	//---------------
+	//player's shadow:
+	//---------------
+	MyScratch->MeshColor = RGB_Black;
+	MyScratch->MeshColor.a = 128;
+	MyScratch->TextureDrawOn = false;
+	MyScratch->PushBackDepthBuffer(90);
+	MyScratch->MoveMainspaceToExtraBuffer();
+	MyScratch->DrawMesh(PlayerMesh, PlayerLocation + vec3d{ 0,0,0 }, vec3d{ 0,PlayerMovement->GetYaw(),0 }, vec3d{ PlayerScale.x,0.1f,PlayerScale.z });
+	MyScratch->BlendBuffers(0.5f);
+	//---------------
+	//player:
+	//---------------
+	MyScratch->UseDepthFog = false;
+	MyScratch->UseFogHackyShading = true;
+	MyScratch->UseGouraudShading = false;
+	MyScratch->SetTexture(Palette, w64, h64);
+	GI_Lighting = MyScratch->Lerp(GI_Lighting, (MyScratch->SnapToMeshTriColor) * 2.5f, 6.0f * DeltaTime);//psudo lighting
+	MyScratch->MeshColor = GI_Lighting; //psudo lighting
+	MyScratch->TextureDrawOn = true;
+
+
+	//edge light
+	MyScratch->MeshColor = GI_Lighting * 2.0f;
+	MyScratch->DrawMesh(PlayerMesh, PlayerLocation + PlayerOffset - vec3d{ 0.09f,0.09f,0.0f }, vec3d{ 0,PlayerMovement->GetYaw(),0 }, PlayerScale);
+	MyScratch->PushBackDepthBuffer(32);
+	//end edge light
+	MyScratch->MeshColor = GI_Lighting; //psudo lighting
+	//normal render
+	MyScratch->DrawMesh(PlayerMesh, PlayerLocation + PlayerOffset, vec3d{ 0,PlayerMovement->GetYaw(),0 }, PlayerScale);
+
+	MyScratch->UseDepthFog = true;
+	MyScratch->UseFogHackyShading = false;
+	MyScratch->UseGouraudShading = true;
+
+
+	//TEXT MAPPED TO PLAYER:
+	//vec3d player_2d_loc = MyScratch->Get2DPointFromLastLocation();
+	//MyScratch->DrawTextDropShadow(player_2d_loc.x, player_2d_loc.y, RGB_White, "Hello", MyTextSprites, 1.0f);
+
+	//----------------
+	//NPC WALK:
+	//----------------
+	ProcessWalkComps(DeltaTime);
+
+	////---------------
+	////Scene file objects:
+	////---------------
+	DrawSceneObjects(DeltaTime);
+	//---------------
+	//FX:
+	//---------------
+	MyScratch->MoveMainspaceToExtraBuffer();
+	MyScratch->BrightnessContrastOnBuffer(MyScratch->MainSpace, 0.7f, 2.5f);
+	MusicAndFadeIn(DeltaTime);
+
+	//---------------
+	//Text
+	//---------------
+	TextUpdateTick(DeltaTime);
+
+	//NPC_HOW_TO_READ:  (FIND NPC WITH TAG Dialogue, and the next Arg is the text tag!
+	/*if (MyScratch->SquaredDistance2D(PlayerLocation, NpcLocationHere) <= 1.0f) {
+		RequestedText = "RpgNpcBox";
+	}*/
+
+	/*if (MyScratch->Input->GetFireOneHold())
+	{
+
+	}*/
+}
+
+void GameRPGWorld::StateBattleTransitionStart()
+{
+}
+
+void GameRPGWorld::StateBattleTransitionUpdate()
+{
+}
+
+void GameRPGWorld::StateBattleUpdate()
+{
+
+}
+
 GameRPGWorld::~GameRPGWorld()
 {
 	delete Reader;
-	
-	
 	Reader = nullptr;
+	delete sm;
+	sm = nullptr;
 	delete MyScratch;
 	MyScratch = nullptr;
 	delete MyTextSprites;
