@@ -82,7 +82,6 @@ void GameRPGWorld::Initialize()
 
 	ma_result r = ma_engine_init(NULL, &audioEngine);
 	printf("engine init: %d\n", r);
-	ma_engine_play_sound(&audioEngine, "Assets/noise_transition.wav", NULL);
 	
 	
 	//TODO Call LoadSceneFiles()
@@ -998,6 +997,8 @@ void GameRPGWorld::StateBattleTransitionStart()
 	MyScratch->CopyBufferToBuffer(CopyOfPreviousFrame, MyScratch->MainSpace);
 	MyScratch->CopyBufferToBuffer(CopyOfPreviousFrame, MyScratch->ExtraBuffer);
 	MyScratch->ZWriteOn = false;
+	ma_engine_play_sound(&audioEngine, "Assets/noise_transition.wav", NULL);
+
 }
 
 void GameRPGWorld::StateBattleTransitionUpdate()
@@ -1005,11 +1006,14 @@ void GameRPGWorld::StateBattleTransitionUpdate()
 	WipeFX(sm->StateDeltaTime);
 	MyScratch->MoveMainspaceToExtraBuffer();
 	MyScratch->Clear(RGB_Black);//wipe to black
-	MyScratch->BlendBuffers(sm->StateDeltaTime); //blend black with previous frame!
+	MyScratch->BlendBuffers(1.5f * sm->StateDeltaTime); //blend black with previous frame!
 
-	MyScratch->DrawTextAtPos(3, 3, RGB_Blue, "ENCOUNTER STARTED", MyTextSprites);
+	//MyScratch->DrawTextAtPos(3, 3, RGB_Blue, "ENCOUNTER STARTED", MyTextSprites);
 	
-	
+	if (sm->TimeInState >= 1.5f)
+	{
+		sm->SetState(State::WorldMap);
+	}
 
 }
 

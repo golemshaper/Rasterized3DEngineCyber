@@ -24,9 +24,12 @@ void StateMachine::SetState(int NState)
 	{
 		return;
 	}
+	
+
 	if (ExitMap.find(CurrentState) != ExitMap.end()) {
 		ExitMap[CurrentState](); //OnExit Called
 	}
+	TimeInState = 0.0f;
 	CurrentState = NState;
 	SubstateValue0 = 0; //Reset substate
 	if (EnterMap.find(CurrentState) != EnterMap.end()) {
