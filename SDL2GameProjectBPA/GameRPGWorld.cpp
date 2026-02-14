@@ -234,7 +234,7 @@ void GameRPGWorld::Tick(float DeltaTime)
 	//---------------
 	//PLAYER MOVEMENT:
 	//---------------
-	PlayerMovement->ApplyMovement(DeltaTime, MyScratch);
+	PlayerMovement->UpdateMovement(DeltaTime, MyScratch);
 	PlayerMovement->ApplyGroundSnap(TerrrainMeshCollider, MyScratch, vec3d{ 0,-1.3f,0 });
 	//animate
 	vec3d PlayerOffset = vec3d{ 0,abs(sin(totalTime * 12.0f)) * -0.2f,0.0f };
@@ -779,20 +779,13 @@ void GameRPGWorld::CreateRandomWalkComp(int OnSceneObjectID)
 
 void GameRPGWorld::ProcessWalkComps(float DeltaTime)
 {
-	/*struct RandomWalkComp {
-		int scene_obj_id = -1;
-		vec3d direction = { 1.0f,0.0f,0.0f };
-		float speed = 1.0f;
-		float walkForTimeMin = 0.5f;
-		float walkForTimeMax = 1.25f;
-		float curWalkForTimer = 0.0f;
-	};*/
+	//make all NPCs walk.
 	for (int i = 0; i < MaxComponentCount; ++i)
 	{
 		
 		if(RandomWalkComponents[i].scene_obj_id == -1)
 		{
-			// end of components once a "null" is found.
+			// end of components once a -1 "null" is found.
 			return;
 		}
 
@@ -801,6 +794,7 @@ void GameRPGWorld::ProcessWalkComps(float DeltaTime)
 
 		if (RandomWalkComponents[i].curWalkForTimer <= 0.0f)
 		{
+
 			//Starting fresh, set timer, and pick direction
 			RandomWalkComponents[i].curWalkForTimer =0.2f + MyScratch->GetRandomFloat(
 				RandomWalkComponents[i].walkForTimeMin,
@@ -810,8 +804,6 @@ void GameRPGWorld::ProcessWalkComps(float DeltaTime)
 			/*float dirX = (float)MyScratch->GetRandom(-1, 1);
 			float dirZ = (float)MyScratch->GetRandom(-1, 1);*/
 
-
-
 			float angle = MyScratch->GetRandomFloat(0.0f, 6.283185f);
 			if (angle < 0.0f) angle = 0.0f;
 			if (angle > 6.283185f) angle = 6.283185f;
@@ -820,23 +812,19 @@ void GameRPGWorld::ProcessWalkComps(float DeltaTime)
 			RandomWalkComponents[i].direction.x = dirX;
 			RandomWalkComponents[i].direction.z = dirZ;
 			
-
-			int r = MyScratch->GetRandom(0, 3);
-			
-			//vec3d dir = { 0.0f, 0.0f,  1.0f };
-			//switch (r)
-			//{
-			//	case 0: dir = { 0.0f, 0.0f,  1.0f }; break; // up
-			//	case 1: dir = { 0.0f, 0.0f, -1.0f }; break; // down
-			//	case 2: dir = { 1.0f, 0.0f,  0.0f }; break; // right
-			//	case 3: dir = { -1.0f, 0.0f,  0.0f }; break; // left
-			//}
-			//RandomWalkComponents[i].direction = dir;
-			
 			RandomWalkComponents[i].direction = MyScratch->Normalize(RandomWalkComponents[i].direction);
+			RandomWalkComponents[i].waitTimer = MyScratch->GetRandomFloat(
+				RandomWalkComponents[i].walkForTimeMin*0.5f,
+				RandomWalkComponents[i].walkForTimeMax * 0.5f
+			);
 			
 		}
 		RandomWalkComponents[i].curWalkForTimer -= DeltaTime;
+		if (RandomWalkComponents[i].waitTimer > 0.0f)
+		{
+			RandomWalkComponents[i].waitTimer -= DeltaTime;
+			continue;
+		}
 		//--- ROTATION UPDATE
 		if (RandomWalkComponents[i].followRotation)
 		{

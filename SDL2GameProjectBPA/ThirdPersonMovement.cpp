@@ -1,7 +1,8 @@
 #include "ThirdPersonMovement.h"
 
-void ThirdPersonMovement::ApplyMovement(float DeltaTime, DrawScratchSpace* MyScratch)
+void ThirdPersonMovement::UpdateMovement(float DeltaTime, DrawScratchSpace* MyScratch)
 {
+    //Reanme this function? UpdateMovement?
     //Auto tick input:
     LastSafePos = Pos;
     MyScratch->Input->Tick(DeltaTime);

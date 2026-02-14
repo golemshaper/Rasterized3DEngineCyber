@@ -29,6 +29,13 @@ public:
 	void MusicAndFadeIn(float DeltaTime);
 	void RenderMovie();
 	void DrawBasics(float DeltaTime);
+	//Game State
+	/*
+	StateMachine sm;
+	void StateOverworldUpdate();
+	void StateBattleUpdate();
+
+	*/
 
 	//Scene
 	std::string SceneLink = "RPG_WorldMap.txt";
@@ -118,6 +125,7 @@ public:
 		float walkForTimeMin = 0.25f;
 		float walkForTimeMax = 2.0f;
 		float curWalkForTimer = 0.0f;
+		float waitTimer = 0.0f;
 		bool followRotation = true;
 	};
 	int CurrentWalkomponentIndex = 0;
