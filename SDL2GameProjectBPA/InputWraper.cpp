@@ -19,14 +19,36 @@ void InputWraper::Tick(float DeltaTime)
 
     int numkeys = 0;
     const bool* keyboard = SDL_GetKeyboardState(&numkeys);
-    float x, y;
-    SDL_MouseButtonFlags mouse = SDL_GetMouseState(&x, &y);
+    //float x, y;
+    SDL_MouseButtonFlags mouse = SDL_GetMouseState(&mouseX, &mouseY);
     bool LeftClick = false;
     if (mouse & SDL_BUTTON_MASK(SDL_BUTTON_LEFT)) {
         // left mouse button is held
         LeftClick = true;
     }
+    
 
+    //touch is movement:
+    if (LeftClick)
+    {
+        mouseJoystickX = (mouseX - previousMouseX) * 0.01f;
+        mouseJoystickY = (previousMouseY - mouseY) * 0.01f;
+        if (mouseJoystickX > 1.0f) mouseJoystickX = 1.0f;
+        if (mouseJoystickX <= -1.0f) mouseJoystickX = -1.0f;
+        if (mouseJoystickY > 1.0f) mouseJoystickY = 1.0f;
+        if (mouseJoystickY <= -1.0f) mouseJoystickY = -1.0f;
+    }
+    else
+    {
+        previousMouseX = mouseX;
+        previousMouseY = mouseY;
+        mouseJoystickX = 0.0f;
+        mouseJoystickY = 0.0f;
+    }
+    
+
+    
+ 
 
     if (keyboard[SDL_SCANCODE_W]) {
         // W is held
@@ -50,24 +72,24 @@ void InputWraper::Tick(float DeltaTime)
     //Walking input
     if (keyboard[SDL_SCANCODE_A] || keyboard[SDL_SCANCODE_LEFT] )
     {
-        //lx = -1.0f;
+        mouseJoystickX = 0.0f;
         lx = Lerp(lx, -1.0f, grow * DeltaTime);
     }
     
     if (keyboard[SDL_SCANCODE_D] || keyboard[SDL_SCANCODE_RIGHT])
     {
-        //lx = 1.0f;
+        mouseJoystickX = 0.0f;
         lx = Lerp(lx, 1.0f, grow * DeltaTime);
     }
     
     if (keyboard[SDL_SCANCODE_W] || keyboard[SDL_SCANCODE_UP])
     {
-       // ly = 1.0f;
+        mouseJoystickY = 0.0f;
         ly = Lerp(ly, 1.0f, grow * DeltaTime);
     }
     if (keyboard[SDL_SCANCODE_S] || keyboard[SDL_SCANCODE_DOWN])
     {
-        //ly = -1.0f;
+        mouseJoystickY = 0.0f;
         ly = Lerp(ly, -1.0f, grow * DeltaTime);
     }
 
@@ -108,12 +130,12 @@ void InputWraper::Tick(float DeltaTime)
 
 float InputWraper::GetMovementX()
 {
-    return lx;
+    return lx + mouseJoystickX;
 }
 
 float InputWraper::GetMovementY()
 {
-    return ly;
+    return ly + mouseJoystickY;
 }
 
 float InputWraper::GetCameraXAxis()
@@ -142,6 +164,7 @@ bool InputWraper::GetFireOneHold()
 {
     return inputFireOneHeld;
 }
+
 
 float InputWraper::Lerp(float a, float b, float c)
 {

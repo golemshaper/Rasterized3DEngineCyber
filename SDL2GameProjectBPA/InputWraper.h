@@ -15,12 +15,27 @@ public:
 	bool GetToggleDepthKey();
 	void ResetToggleDepthKey();
 	bool GetFireOneHold();
+
 private:
 	float lx = 0.0f;
 	float ly = 0.0f;
 
 	float cx = 0.0f;
 	float cy = 0.0f;
+
+
+	float previousMouseX;
+	float previousMouseY;
+
+	float mouseX;
+	float mouseY;
+
+	float mouseJoystickX;
+	float mouseJoystickY;
+
+
+	
+
 
 	float toggleCooldown = 0.0f;
 	bool zDepthDrawOn = false;

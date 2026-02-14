@@ -865,8 +865,7 @@ void GameRPGWorld::ProcessWalkComps(float DeltaTime)
 			{
 				CurrentScene.scene_objects[objId].pos = safe_pos;
 			}
-			//WE NEED TO GET THIS COLOR DATA BACK TO THE MESH NOW THAT WE DO COLLISION HERE!
-			//JUST STICK A COLOR ON A SCENE OBJECT?
+			
 			RGB NColor = CurrentScene.scene_objects[objId].color; //larger brightness then player, it's further away...
 			NColor = MyScratch->Lerp(NColor, (MyScratch->SnapToMeshTriColor * 4.5f), 6.0f * DeltaTime);
 			CurrentScene.scene_objects[objId].color = NColor;
