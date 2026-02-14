@@ -130,10 +130,14 @@ public:
 	RandomWalkComp RandomWalkComponents[MaxComponentCount];
 
 
-
+	float StepsUntilEncounter = 3.0f;
+	
 	
 	void ProcessAnimations(float DeltaTime);
 	
+	void WipeFX(float DeltaTime);
+	
+
 
 	//Game State
 
@@ -151,7 +155,7 @@ public:
 	void StateBattleTransitionStart();
 	void StateBattleTransitionUpdate();
 	void StateBattleUpdate();
-
+	RGB CopyOfPreviousFrame[TOTAL_PIXELS];
 
 
 

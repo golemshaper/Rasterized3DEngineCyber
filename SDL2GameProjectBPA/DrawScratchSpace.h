@@ -286,7 +286,6 @@ public:
     void DrawLine(int x0, int y0, int x1, int y1, RGB color);
     void Draw3DLine(vec3d a, vec3d b, RGB c);
     int GetRandom(int a,int b);
-    float GetRandomFloat(float a, float b);
     float Clamp(float value, float min, float max);
     RGB AlphaBlend(const RGB& dst, const RGB& src);
     int Lerp(int a, int b, int c);
@@ -308,6 +307,7 @@ public:
     unsigned int seed = 123456789;
     unsigned int GetNext();
     int GetNext(int min, int max);
+    float GetRandomFloat(float a, float b);
 
 //DRAW MODE:
     RGB MeshColor = { 255,255,255,255 };

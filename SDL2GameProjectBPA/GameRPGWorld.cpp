@@ -16,6 +16,7 @@ void GameRPGWorld::Initialize()
 {
 	SetupStateMachine();
 	MyScratch = new DrawScratchSpace();
+	MyScratch->seed = 6942067; //Give it a new seed, or the same number sequence will aways generate. (WHICH WOULD BE GREAT FOR TESTING)
 	MyScratch->Initialize();
 	MyScratch->UseGouraudShading = true;
 	MyScratch->UseFogHackyShading = false;
@@ -690,16 +691,76 @@ void GameRPGWorld::ProcessAnimations(float DeltaTime)
 
 	}
 }
+void GameRPGWorld::WipeFX(float DeltaTime)
+{
+	for (int i = TOTAL_PIXELS - 1; i > 0; --i)
+	{
+		if(MyScratch->GetRandom(0, 10)<4)
+		{
+			continue;
+		}
 
+		MyScratch->MainSpace[i] = MyScratch->MainSpace[i - 1];
+	}
+	// Clear the first pixel
+	MyScratch->MainSpace[0] = RGB_Black;
+}
+void GameRPGWorld::LightningFX(int phase, float progress)
+{
+	if (progress <= 0.02f)
+	{
+		MyScratch->DrawRectangle(0, 0, SCREEN_X, (int)SCREEN_Y * 0.15f, RGB{ 255,255,0,64 }, RGB{ 255,255,255,64 }, RGB{ 255,255,255,0 }, RGB{ 255,255,0,0 });
+	}
+	const int total_verts = 23;
+	//const int total_rand = 16;
+	/*const int pseudo_random[16] =
+	{
+		1, -1, 4, -9, 12, -19, 17, -5,1, -5, 9, -3, 3, -1, 4, -15
+	};*/
+
+	int offset = (phase % total_verts) * 3;
+	vec3d start = { SCREEN_X * 0.5f + offset, 0, 0 };
+	vec3d end = { (SCREEN_X * 0.25f + offset + 2), SCREEN_Y, 0 };
+	vec3d prev = start;
+	vec3d camera_offset = { CameraSmoothRotation.y,0,0 };
+	float additional_progress_time = 0.0f;
+
+	int mult = 2; //make color brighter
+	RGB StartColor = { 255 * mult,0,255 * mult,(int)(255 * (1 - progress)) };
+	RGB EndColor = { 255 * mult,255 * mult,0,0 };
+
+
+	for (int i = 0; i < total_verts; i++)
+	{
+		float t0 = (float)(i + 1) / (float)total_verts;
+
+		// Step toward the end point
+		vec3d halfway = MyScratch->Lerp(start, end, t0);
+
+		// Apply horizontal offset
+		//halfway.x += pseudo_random[(int)(i + phase) % total_rand];
+		halfway.x += MyScratch->GetNext(-8, 8);
+
+		// Draw segment
+		MyScratch->DrawLine(prev.x, prev.y, halfway.x, halfway.y, MyScratch->Lerp(StartColor, EndColor, t0 * 2.0f));
+
+		prev = halfway;
+	}
+}
+
+//STATE MACHINE
 void GameRPGWorld::SetupStateMachine()
 {
 	sm = new StateMachine();
 	sm->MapState(State::WorldMap, [this]() { StateOverworldUpdate(); });
+	sm->MapState(State::BattleTransition, [this]() { StateBattleTransitionUpdate(); }, [this]() { StateBattleTransitionStart(); });
 
 	//INIT
 	sm->SetState(State::WorldMap);
 }
 
+
+//UPDATE STATES
 void GameRPGWorld::StateOverworldUpdate()
 {
 	float DeltaTime = sm->StateDeltaTime;
@@ -724,6 +785,7 @@ void GameRPGWorld::StateOverworldUpdate()
 	//MyScratch->LightDir = { sin(totalTime),cos(totalTime),sin(totalTime) };
 
 	MyScratch->ZWriteOn = false;
+	MyScratch->CopyBufferToBuffer(MyScratch->MainSpace, CopyOfPreviousFrame);
 	MyScratch->Clear();
 	MyScratch->ClearZBufffer();
 	MyScratch->TextureDrawOn = false;
@@ -741,6 +803,20 @@ void GameRPGWorld::StateOverworldUpdate()
 	//PLAYER MOVEMENT:
 	//---------------
 	PlayerMovement->UpdateMovement(DeltaTime, MyScratch);
+	if (PlayerMovement->IsMoving())
+	{
+		//printf("%f", StepsUntilEncounter);
+
+		StepsUntilEncounter -= DeltaTime;
+		if (StepsUntilEncounter <= 0.0f)
+		{
+			//BATTLE!
+			if (StepsUntilEncounter <= 0.0f);
+			sm->SetState(State::BattleTransition);
+			return;
+		}
+		
+	}
 	PlayerMovement->ApplyGroundSnap(TerrrainMeshCollider, MyScratch, vec3d{ 0,-1.3f,0 });
 	//animate
 	vec3d PlayerOffset = vec3d{ 0,abs(sin(totalTime * 12.0f)) * -0.2f,0.0f };
@@ -917,15 +993,28 @@ void GameRPGWorld::StateOverworldUpdate()
 
 void GameRPGWorld::StateBattleTransitionStart()
 {
+	//reset encoutner rate!
+	StepsUntilEncounter = MyScratch->GetRandomFloat(2.0f, 10.0f);
+	MyScratch->CopyBufferToBuffer(CopyOfPreviousFrame, MyScratch->MainSpace);
+	MyScratch->CopyBufferToBuffer(CopyOfPreviousFrame, MyScratch->ExtraBuffer);
+	MyScratch->ZWriteOn = false;
 }
 
 void GameRPGWorld::StateBattleTransitionUpdate()
 {
+	WipeFX(sm->StateDeltaTime);
+	MyScratch->MoveMainspaceToExtraBuffer();
+	MyScratch->Clear(RGB_Black);//wipe to black
+	MyScratch->BlendBuffers(sm->StateDeltaTime); //blend black with previous frame!
+
+	MyScratch->DrawTextAtPos(3, 3, RGB_Blue, "ENCOUNTER STARTED", MyTextSprites);
+	
+	
+
 }
 
 void GameRPGWorld::StateBattleUpdate()
 {
-
 }
 
 GameRPGWorld::~GameRPGWorld()
@@ -945,46 +1034,4 @@ GameRPGWorld::~GameRPGWorld()
 }
 
 
-void GameRPGWorld::LightningFX(int phase, float progress)
-{
-	if (progress <= 0.02f)
-	{
-		MyScratch->DrawRectangle(0, 0, SCREEN_X, (int)SCREEN_Y * 0.15f, RGB{ 255,255,0,64 }, RGB{ 255,255,255,64 }, RGB{ 255,255,255,0 }, RGB{ 255,255,0,0 });
-	}
-	const int total_verts = 23;
-	//const int total_rand = 16;
-	/*const int pseudo_random[16] =
-	{
-		1, -1, 4, -9, 12, -19, 17, -5,1, -5, 9, -3, 3, -1, 4, -15
-	};*/
-
-	int offset = (phase % total_verts) * 3;
-	vec3d start = { SCREEN_X * 0.5f + offset, 0, 0 };
-	vec3d end = {(SCREEN_X * 0.25f + offset + 2), SCREEN_Y, 0 };
-	vec3d prev = start;
-	vec3d camera_offset = {CameraSmoothRotation.y,0,0};
-	float additional_progress_time = 0.0f;
-
-	int mult = 2; //make color brighter
-	RGB StartColor = { 255 * mult,0,255 * mult,(int)(255 * (1 - progress)) };
-	RGB EndColor = { 255 * mult,255 * mult,0,0 };
-
-
-	for (int i = 0; i < total_verts; i++)
-	{
-		float t0 = (float)(i + 1) / (float)total_verts;
-
-		// Step toward the end point
-		vec3d halfway = MyScratch->Lerp(start, end, t0);
-
-		// Apply horizontal offset
-		//halfway.x += pseudo_random[(int)(i + phase) % total_rand];
-		halfway.x += MyScratch->GetNext(-8, 8);
-
-		// Draw segment
-		MyScratch->DrawLine(prev.x, prev.y, halfway.x, halfway.y, MyScratch->Lerp(StartColor, EndColor, t0 * 2.0f));
-
-		prev = halfway;
-	}
-}
 

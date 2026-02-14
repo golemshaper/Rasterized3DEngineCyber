@@ -1080,6 +1080,20 @@ float DrawScratchSpace::GetRandomFloat(float a, float b)
     float t = (float)r / 4294967295.0f; // UINT32_MAX
     return a + t * (b - a);
 }
+unsigned int DrawScratchSpace::GetNext()
+{
+    //https://en.wikipedia.org/wiki/Linear_congruential_generator
+    seed = 1103515245u * seed + 12345u;
+    return seed;
+}
+
+int DrawScratchSpace::GetNext(int min, int max)
+{
+    unsigned int raw = GetNext(); // no cast needed
+    int span = max - min + 1;
+    return min + (raw % span);
+}
+
 
 float DrawScratchSpace::Clamp(float value, float min, float max)
 {
@@ -1211,19 +1225,7 @@ vec3d DrawScratchSpace::GetMovementInput()
     };
 }
 
-unsigned int DrawScratchSpace::GetNext()
-{
-    //https://en.wikipedia.org/wiki/Linear_congruential_generator
-    seed = 1103515245u * seed + 12345u;
-    return seed;
-}
 
-int DrawScratchSpace::GetNext(int min, int max)
-{
-    unsigned int raw = GetNext(); // no cast needed
-    int span = max - min + 1;
-    return min + (raw % span);
-}
 
 void DrawScratchSpace::MultiplyMatrixVector(vec3d& i, vec3d& o, mat4x4& m)
 {
