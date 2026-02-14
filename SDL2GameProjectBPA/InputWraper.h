@@ -15,7 +15,7 @@ public:
 	bool GetToggleDepthKey();
 	void ResetToggleDepthKey();
 	bool GetFireOneHold();
-
+	int GetMouseXYAsValue();
 private:
 	float lx = 0.0f;
 	float ly = 0.0f;

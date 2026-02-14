@@ -26,7 +26,7 @@ void InputWraper::Tick(float DeltaTime)
         // left mouse button is held
         LeftClick = true;
     }
-    
+   
 
     //touch is movement:
     if (LeftClick)
@@ -163,6 +163,11 @@ void InputWraper::ResetToggleDepthKey()
 bool InputWraper::GetFireOneHold()
 {
     return inputFireOneHeld;
+}
+
+int InputWraper::GetMouseXYAsValue()
+{
+    return mouseX+ mouseY * 2;
 }
 
 

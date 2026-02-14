@@ -17,8 +17,12 @@ void GameRPGWorld::Initialize()
 	SetupStateMachine();
 	
 	MyScratch = new DrawScratchSpace();
-	MyScratch->seed = 6942067; //Give it a new seed, or the same number sequence will aways generate. (WHICH WOULD BE GREAT FOR TESTING)
 	MyScratch->Initialize();
+	MyScratch->Input->Tick(0.1f);
+	MyScratch->seed = 16942067 + MyScratch->Input->GetMouseXYAsValue(); //Give it a new seed, or the same number sequence will aways generate. (WHICH WOULD BE GREAT FOR TESTING)
+	printf("mouse GetMouseXYAsValue() value %i", MyScratch->Input->GetMouseXYAsValue()); //WARNING ITS RETURN 0 IN INIT FOR SOME REASON! DO WE NEED TO DEFER IT A FRAME?
+
+
 	MyScratch->UseGouraudShading = true;
 	MyScratch->UseFogHackyShading = false;
 	MyScratch->UseDepthFog = true;
@@ -243,6 +247,7 @@ void GameRPGWorld::DrawSingleSceneObject(int objId,vec3d CustomOffsetPos, Mesh C
 {
 
 	//Render modifications
+	
 	MyScratch->MeshColor = RGB_White;
 	bool UnlitState = MyScratch->DrawUnlit;
 	bool FogState = MyScratch->UseDepthFog;
