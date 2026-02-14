@@ -10,18 +10,39 @@ Positions:
  -124.598 -5.714 166.530
  116.684 -5.497 146.604
  116.689 -5.714 136.104
+ -13.737 -7.200 -82.839
+ 143.522 -10.391 28.772
+ 88.250 -0.580 62.466
+ 97.868 -2.182 63.348
+ 65.159 -5.470 48.037
+ 47.407 1.774 54.561
+ 70.496 -1.502 101.742
+ 86.199 2.660 118.489
+ 68.614 3.668 119.464
+ 164.169 -6.961 81.483
+ 139.933 -6.977 144.623
+ 135.359 -6.943 204.071
+ 118.727 -7.167 199.753
+ 22.106 -6.879 148.594
+ -7.470 -1.687 48.594
+ -42.045 -7.036 -50.899
+ -18.021 -7.107 -27.972
+ 56.775 -7.094 -46.204
+ 24.207 -1.460 -24.594
+ -75.604 -15.995 -88.570
 
 Rotations:
  0.000 0.000 0.000
 
 Scales:
  1.000,1.000,1.000
+ 2.500,2.500,2.500
 
 Objects:
 TownOne,Overworld,0,0,0,true,Town,Hildaberg
 RPG_World,Overworld,1,0,0,true,Terrain,B
 SpawnPoint,Overworld,2,0,0,true,PlayerSpawn,Hidden
-RPG_World_Collider,Overworld,1,0,0,true,TerrainCollider
+RPG_World_Collider,Overworld,1,0,0,false,TerrainCollider
 TownTwo,Overworld,3,0,0,true,Town,Brom-Vale
 ForestA,Overworld,4,0,0,true,
 ForestB,Overworld,5,0,0,true,
@@ -32,5 +53,25 @@ CastleA,Overworld,9,0,0,true,Town,Castle-Otenia
 Point,Overworld,10,0,0,true,Hidden,Town,Castle-Otenia
 CastleWindowGlow,Overworld,9,0,0,true,Unlit
 TowerLights,Overworld,1,0,0,true,Unlit
+Anna,BasicPalette,11,0,1,true,Character,Anna,RandomWalk,SnapToGround,Animation,Anna_WalkF1
+TownThree,Overworld,12,0,0,true,Town,Hinten-Vale
+SingleTree,Overworld,13,0,0,true,None
+SingleTree,Overworld,14,0,0,true,None
+SingleTree,Overworld,15,0,0,true,None
+SingleTree,Overworld,16,0,0,true,None
+SingleTree,Overworld,17,0,0,true,None
+SingleTree,Overworld,18,0,0,true,None
+SingleTree,Overworld,19,0,0,true,None
+SingleTree,Overworld,20,0,0,true,None
+SingleTree,Overworld,21,0,0,true,None
+SingleTree,Overworld,22,0,0,true,None
+SingleTree,Overworld,23,0,0,true,None
+SingleTree,Overworld,24,0,0,true,None
+SingleTree,Overworld,25,0,0,true,None
+SingleTree,Overworld,26,0,0,true,None
+SingleTree,Overworld,27,0,0,true,None
+SingleTree,Overworld,28,0,0,true,None
+SingleTree,Overworld,29,0,0,true,None
+BridgeReflection,Overworld,30,0,0,true,None
 
 DialogueTriggers:
