@@ -3,6 +3,7 @@
 #include "miniaudio.h"
 #include "SceneFileParser.h"
 #include "StateMachine.h"
+#include "GameRPGBattleMode.h"
 class ThirdPersonMovement;
 class TextSprites;
 class TextFileReader;
@@ -11,12 +12,13 @@ class TextFileReader;
 class GameRPGWorld : public Game
 {
 public:
-
+	GameRPGBattleMode BattleMode;
 	ma_engine audioEngine;   // <— audio playback
 	ma_sound music;
 	bool loadPositionOnce = true;
 	bool MusicLimitOnce = false;
-	float fStartMusicTimer = 1.9f;
+	float FadeInToOverworldTimer = 1.9f;
+	bool DoFadeAnotherTime = false;
 	bool EnableTextbox = false;
 
 	void Initialize();
@@ -154,6 +156,7 @@ public:
 	void StateOverworldUpdate();
 	void StateBattleTransitionStart();
 	void StateBattleTransitionUpdate();
+	void StateBattleStart();
 	void StateBattleUpdate();
 	RGB CopyOfPreviousFrame[TOTAL_PIXELS];
 

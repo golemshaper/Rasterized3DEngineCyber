@@ -142,6 +142,7 @@
     <ClCompile Include="GameAthenaSlashEmUp.cpp" />
     <ClCompile Include="GameModelViewer.cpp" />
     <ClCompile Include="GameOne.cpp" />
+    <ClCompile Include="GameRPGBattleMode.cpp" />
     <ClCompile Include="GameRPGWorld.cpp" />
     <ClCompile Include="HelloSceneFile.cpp" />
     <ClCompile Include="InputWraper.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="GameAthenaSlashEmUp.h" />
     <ClInclude Include="GameModelViewer.h" />
     <ClInclude Include="GameOne.h" />
+    <ClInclude Include="GameRPGBattleMode.h" />
     <ClInclude Include="GameRPGWorld.h" />
     <ClInclude Include="HelloSceneFile.h" />
     <ClInclude Include="InputWraper.h" />

@@ -15,6 +15,7 @@
 void GameRPGWorld::Initialize()
 {
 	SetupStateMachine();
+	
 	MyScratch = new DrawScratchSpace();
 	MyScratch->seed = 6942067; //Give it a new seed, or the same number sequence will aways generate. (WHICH WOULD BE GREAT FOR TESTING)
 	MyScratch->Initialize();
@@ -87,6 +88,8 @@ void GameRPGWorld::Initialize()
 	//TODO Call LoadSceneFiles()
 	LoadSceneFiles();
 
+	//init battlemode "Game". This is a game, just like this file, but we will drive it from our state machine. (By we, I mean me)
+	BattleMode.Setup(MyScratch, Reader, MyTextSprites);
 	
 	
 }
@@ -181,7 +184,7 @@ void GameRPGWorld::LoadSceneFiles(std::string SceneFileName)
 
 void GameRPGWorld::MusicAndFadeIn(float DeltaTime)
 {
-	if (!MusicLimitOnce && fStartMusicTimer <= 0.0f)
+	if (!MusicLimitOnce && FadeInToOverworldTimer <= 0.0f)
 	{
 		MusicLimitOnce = true;
 		//ma_sound_init_from_file(&audioEngine, "Assets/e-thena.wav", 0, NULL, NULL, &music);
@@ -192,9 +195,20 @@ void GameRPGWorld::MusicAndFadeIn(float DeltaTime)
 	}
 	else if (MusicLimitOnce==false)
 	{
-		fStartMusicTimer -= DeltaTime;
-		float fade = (fStartMusicTimer) / 1.5f;
+		FadeInToOverworldTimer -= DeltaTime;
+		float fade = (FadeInToOverworldTimer) / 1.5f;
 		MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, RGB{ 0,0,0,(int)(255 * fade) });
+	}
+	else if(DoFadeAnotherTime)
+	{
+		FadeInToOverworldTimer -= DeltaTime;
+		if (FadeInToOverworldTimer <= 0.0f)
+		{
+			DoFadeAnotherTime = false;
+		}
+		float fade = (FadeInToOverworldTimer) / 1.5f;
+		MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, RGB{ 0,0,0,(int)(255 * fade) });
+		
 	}
 }
 void GameRPGWorld::Tick(float DeltaTime)
@@ -753,6 +767,7 @@ void GameRPGWorld::SetupStateMachine()
 	sm = new StateMachine();
 	sm->MapState(State::WorldMap, [this]() { StateOverworldUpdate(); });
 	sm->MapState(State::BattleTransition, [this]() { StateBattleTransitionUpdate(); }, [this]() { StateBattleTransitionStart(); });
+	sm->MapState(State::Battle, [this]() { StateBattleUpdate(); }, [this]() { StateBattleStart(); });
 
 	//INIT
 	sm->SetState(State::WorldMap);
@@ -993,7 +1008,7 @@ void GameRPGWorld::StateOverworldUpdate()
 void GameRPGWorld::StateBattleTransitionStart()
 {
 	//reset encoutner rate!
-	StepsUntilEncounter = MyScratch->GetRandomFloat(2.0f, 10.0f);
+	StepsUntilEncounter = MyScratch->GetRandomFloat(4.0f, 10.0f);
 	MyScratch->CopyBufferToBuffer(CopyOfPreviousFrame, MyScratch->MainSpace);
 	MyScratch->CopyBufferToBuffer(CopyOfPreviousFrame, MyScratch->ExtraBuffer);
 	MyScratch->ZWriteOn = false;
@@ -1012,13 +1027,28 @@ void GameRPGWorld::StateBattleTransitionUpdate()
 	
 	if (sm->TimeInState >= 1.5f)
 	{
-		sm->SetState(State::WorldMap);
+		sm->SetState(State::Battle);
 	}
+
+}
+
+void GameRPGWorld::StateBattleStart()
+{
+	BattleMode.battleFinished = false;
+	//TODO: Load enemies here
+	BattleMode.StartBattle();
 
 }
 
 void GameRPGWorld::StateBattleUpdate()
 {
+	BattleMode.Tick(sm->StateDeltaTime);
+	if (BattleMode.battleFinished)
+	{
+		FadeInToOverworldTimer = 1.0f;
+		DoFadeAnotherTime = true;
+		sm->SetState(State::WorldMap);
+	}
 }
 
 GameRPGWorld::~GameRPGWorld()
