@@ -39,8 +39,8 @@ Uint64 lastTicks = SDL_GetTicks();  // Store this at the end of your previous fr
 
 const int PIXEL_SCALE = 8;
 //CHANGE HERE TO MATCH SCRATCH SIZE
-const int SCREEN_NATIVE_X = 240;
-const int SCREEN_NATIVE_Y = 240;// 160;
+const int SCREEN_NATIVE_X = SCREEN_X;
+const int SCREEN_NATIVE_Y = SCREEN_Y;// 160;
 
 //const int SCREEN_NATIVE_X = 135; //youtube shorts aspect
 //const int SCREEN_NATIVE_Y = 240;// 160;
