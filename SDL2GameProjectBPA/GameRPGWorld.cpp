@@ -931,7 +931,8 @@ void GameRPGWorld::StateOverworldUpdate()
 	//---------------
 	//terrain:
 	//---------------
-	MyScratch->PushBackDepthBuffer(20000); //Give us pleanty of space to draw the terrain!
+	//MyScratch->PushBackDepthBuffer(20000); //Give us pleanty of space to draw the terrain!
+	MyScratch->PushBackDepthBuffer(675); //mobile draw dist
 	MyScratch->ZWriteOn = true;
 	MyScratch->UvOffsetGlobal = vec2d{ 0.0f,0.0f };
 	MyScratch->SetTexture(overworldTexture, w256, h256);

@@ -3,7 +3,7 @@
 //#define SCREEN_X 240
 //#define SCREEN_Y 240//160
 //SCREEN SIZES: 240,240  or 240,160 or 160,240
-#define SCREEN_X 160
+#define SCREEN_X 140
 #define SCREEN_Y 240//160
 #define TOTAL_PIXELS (SCREEN_X * SCREEN_Y)
 
