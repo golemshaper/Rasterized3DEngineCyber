@@ -1761,7 +1761,8 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
     {
         DrawHighlightEdgeOnly = false; //turn this off in case we culled a special mesh
         //mesh not in camera view!
-       // printf("MESH NOT IN VIEW!\n");
+       if(print_culled_msg)printf("MESH NOT IN VIEW!\n");
+        
         return; 
     }
 

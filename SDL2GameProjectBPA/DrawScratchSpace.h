@@ -324,6 +324,8 @@ public:
     bool UseFrustumCulling = true;
     float NearClip = 3.1f;
     float FarClip = 10000;
+    bool print_culled_msg = false;
+
 
     bool MultiplyInTextureMode = true;
     bool DrawEdges = false;

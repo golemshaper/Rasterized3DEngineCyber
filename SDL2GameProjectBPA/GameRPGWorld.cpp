@@ -269,8 +269,14 @@ void GameRPGWorld::DrawSingleSceneObject(int objId,vec3d CustomOffsetPos, Mesh C
 		MyScratch->UseDepthFog = false;
 		MyScratch->UseGouraudShading = false;
 	}
+	MyScratch->print_culled_msg = false;
 	if (CurrentScene.scene_objects[objId].HasTagByID(Tag_Character))
 	{
+		//MyScratch->print_culled_msg = true;
+		// 
+		// 
+		// 
+		// 
 		//TODO: Move this to a function please
 		//---------------
 		//character rendering
