@@ -220,7 +220,7 @@ void DrawScratchSpace::Initialize(RGB wipe)
 
 
     // Projection Matrix
-    float fNear = 0.1f;
+    float fNear = NearClip; //0.1f
     float fFar = 1000.0f;
     float fFov = 90.0f;
     float fAspectRatio = (float)SCREEN_Y / (float)SCREEN_X;
@@ -1286,7 +1286,7 @@ void DrawScratchSpace::SetCamera(vec3d loc, vec3d target)
 void DrawScratchSpace::SetCameraFOV(float nFov)
 {
     // Projection Matrix
-    float fNear = 0.1f;
+    float fNear = NearClip; //0.1f
     float fFar = 1000.0f;
     float fFov = nFov;
     float fAspectRatio = (float)SCREEN_Y / (float)SCREEN_X;
@@ -1763,11 +1763,14 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         if (DotProduct(normal, triViewed.p[0]) >= 0.0f)
             continue;
 
-        // Near-plane cull
-        if (triViewed.p[0].z <= 0.1f ||
-            triViewed.p[1].z <= 0.1f ||
-            triViewed.p[2].z <= 0.1f)
+        
+        // Near-plane cull (THROW THE WHOLE TRIANGLE AWAY! SUPER AGRESSIVE)
+        if (triViewed.p[0].z <= NearClip ||
+            triViewed.p[1].z <= NearClip ||
+            triViewed.p[2].z <= NearClip)
             continue;
+
+
 
         // Apply PROJECTION transform
         MultiplyMatrixVector(triViewed.p[0], triProjected.p[0], MatrixProj);
@@ -2204,7 +2207,7 @@ void DrawScratchSpace::DrawSprite3D(Sprite s, vec3d loc, vec3d rot, vec3d scale)
     MultiplyMatrixVector(pWorld, pView, matView);
 
     // Cull if behind camera
-    if (pView.z <= 0.1f)
+    if (pView.z <= NearClip)
         return;
 
     // Project
@@ -2320,7 +2323,7 @@ vec3d DrawScratchSpace::Get2DPointInFromSpace(vec3d loc)
 
 
     // Cull if behind camera
-    if (pView.z <= 0.1f)
+    if (pView.z <= NearClip)
         return vec3d{ -32, -32, 0 };
 
 

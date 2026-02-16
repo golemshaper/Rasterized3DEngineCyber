@@ -320,6 +320,9 @@ public:
     bool TextureDrawOn = false;
     bool TextureOnForEdgelight = true;
 
+    float NearClip = 0.1f;
+    
+
     bool MultiplyInTextureMode = true;
     bool DrawEdges = false;
     bool DrawHighlightEdgeOnly = false;
