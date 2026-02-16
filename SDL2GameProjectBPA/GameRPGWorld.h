@@ -132,7 +132,7 @@ public:
 	RandomWalkComp RandomWalkComponents[MaxComponentCount];
 
 
-	float StepsUntilEncounter = 3.0f;
+	float StepsUntilEncounter = 9.0f;
 	
 	
 	void ProcessAnimations(float DeltaTime);

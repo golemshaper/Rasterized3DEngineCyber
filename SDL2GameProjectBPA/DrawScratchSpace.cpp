@@ -1487,6 +1487,7 @@ vec3d DrawScratchSpace::SnapToMesh(const vec3d& worldPos, const Mesh& mesh, cons
 
     float bestY = NAN;
     int i = 0;
+   
     for (const auto& tri : mesh.Tris)
     {
        

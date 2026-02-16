@@ -219,11 +219,11 @@ void GameRPGWorld::MusicAndFadeIn(float DeltaTime)
 }
 void GameRPGWorld::Tick(float DeltaTime)
 {
-	/*if (DeltaTime > 0.15f)
+	if (DeltaTime > 0.05f)
 	{
-		DeltaTime = 0.15f;
+		DeltaTime = 0.05f;
 		printf("LAG SPIKE\n");
-	}*/
+	}
 	sm->Tick(DeltaTime);
 	
 }
@@ -1021,7 +1021,7 @@ void GameRPGWorld::StateOverworldUpdate()
 void GameRPGWorld::StateBattleTransitionStart()
 {
 	//reset encoutner rate!
-	StepsUntilEncounter = MyScratch->GetRandomFloat(4.0f, 10.0f);
+	StepsUntilEncounter = MyScratch->GetRandomFloat(8.0f, 17.0f);
 	MyScratch->CopyBufferToBuffer(CopyOfPreviousFrame, MyScratch->MainSpace);
 	MyScratch->CopyBufferToBuffer(CopyOfPreviousFrame, MyScratch->ExtraBuffer);
 	MyScratch->ZWriteOn = false;
