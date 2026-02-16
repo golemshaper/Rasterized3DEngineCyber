@@ -547,11 +547,8 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
             float tX = (vb.x == va.x) ? 0.0f : float(x - va.x) / float(vb.x - va.x);
             float u = Lerp((float)va.u, (float)vb.u, tX);
             float v = Lerp((float)va.v, (float)vb.v, tX);
-           
+            RGB textured = SampleTexture(CurrentTexture, TextureBufferW, TextureBufferH, u, v);
 
-            //RGB textured = SampleTexture(TestTexture, 32, 32, u, v);
-             RGB textured = SampleTexture(CurrentTexture, TextureBufferW, TextureBufferH, u, v);
-            //RGB textured = SampleTexture(TestTexture, 8, 8, u, v);
             if (DrawHighlightEdgeOnly == true && TextureOnForEdgelight == false)
             {
                 textured = RGB_White;

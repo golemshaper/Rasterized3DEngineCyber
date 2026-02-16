@@ -201,6 +201,7 @@ void GameRPGWorld::MusicAndFadeIn(float DeltaTime)
 	{
 		FadeInToOverworldTimer -= DeltaTime;
 		float fade = (FadeInToOverworldTimer) / 1.5f;
+		if (fade > 1.0f)fade = 1.0f;
 		MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, RGB{ 0,0,0,(int)(255 * fade) });
 	}
 	else if(DoFadeAnotherTime)
@@ -211,6 +212,7 @@ void GameRPGWorld::MusicAndFadeIn(float DeltaTime)
 			DoFadeAnotherTime = false;
 		}
 		float fade = (FadeInToOverworldTimer) / 1.5f;
+		if (fade > 1.0f)fade = 1.0f;
 		MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, RGB{ 0,0,0,(int)(255 * fade) });
 		
 	}
