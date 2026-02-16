@@ -1757,7 +1757,7 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
     float tanHalfFovX = 1.0f / MatrixProj.m[0][0];
     float tanHalfFovY = 1.0f / MatrixProj.m[1][1];
     //Make TangentHalfX/Y smaller for debugging
-    if (!IsInView(centerView, m.cullingRadius, NearClip, 10000,tanHalfFovX, tanHalfFovY))
+    if (!IsInView(centerView, m.cullingRadius, NearClip, FarClip,tanHalfFovX, tanHalfFovY))
     {
         DrawHighlightEdgeOnly = false; //turn this off in case we culled a special mesh
         //mesh not in camera view!

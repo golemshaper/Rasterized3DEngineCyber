@@ -323,7 +323,7 @@ public:
     bool TextureOnForEdgelight = true;
     bool UseFrustumCulling = true;
     float NearClip = 3.1f;
-    
+    float FarClip = 10000;
 
     bool MultiplyInTextureMode = true;
     bool DrawEdges = false;
