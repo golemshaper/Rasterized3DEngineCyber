@@ -11,6 +11,8 @@
 void GameAthenaSlashEmUp::Initialize()
 {
     //ENGINE
+
+    //IF GRAPHICS ARE NOT VISIBLE, TURN OFF useFrustumCulling!!!! MonkeyMesh's have no radius.
     MyScratch = new DrawScratchSpace();
     MyScratch->Initialize();
     MyScratch->CopyBufferToBuffer(MyScratch->MainSpace, BlurBuffer);

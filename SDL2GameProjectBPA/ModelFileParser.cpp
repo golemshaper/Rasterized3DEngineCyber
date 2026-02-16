@@ -29,7 +29,10 @@ Mesh ModelFileParser::ParseModelFromFile(const std::string path)
 	}
 	return ParseModelFromStr(file_contents);
 }
-
+float ModelFileParser::Length(const vec3d& v)
+{
+	return std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+}
 Mesh ModelFileParser::ParseModelFromStr(const std::string str)
 {
 
@@ -52,7 +55,7 @@ Mesh ModelFileParser::ParseModelFromStr(const std::string str)
 	bool hasColors = false;
 	//elements to build vectors from
 	//Vectors and tris
-	std::vector<vec3d> postion_vectors;
+	std::vector<vec3d> position_vectors;
 	std::vector<vec3d> id_holder_not_real_vectors;
 	std::map<int, vec3d > id_vector_map;
 
@@ -117,7 +120,7 @@ Mesh ModelFileParser::ParseModelFromStr(const std::string str)
 			sb = trim(sb); //Trim this string on both sides.
 			std::vector<std::string>  results = SplitByChar(sb, ' ');
 			int colorLineIndex = color_palette.size();
-			int lineIndex = postion_vectors.size();
+			int lineIndex = position_vectors.size();
 			int triIndex = id_holder_not_real_vectors.size();
 			RGB color = RGB{ 0,0,0 };
 			std::string data = sb;
@@ -145,7 +148,7 @@ Mesh ModelFileParser::ParseModelFromStr(const std::string str)
 				//pray trim is enough to get rid of the newline character we probably have.... lol
 				
 				vec = vec3d{ std::stof((results[0])), std::stof((results[1])), std::stof((results[2])) };
-				postion_vectors.push_back(vec);
+				position_vectors.push_back(vec);
 				id_vector_map[lineIndex] = vec; //map the ID to a vector for later
 
 				break;
@@ -215,6 +218,16 @@ Mesh ModelFileParser::ParseModelFromStr(const std::string str)
 	}
 	Mesh result;
 
+	float maxDist = 0.0f;
+	for (const auto& v : position_vectors)
+	{
+		float d = Length(v); // distance from origin
+		if (d > maxDist)
+			maxDist = d;
+	}
+	result.cullingRadius = maxDist;
+
+
 	for (std::size_t i = 0; i < id_holder_not_real_vectors.size(); ++i)
 	{
 		//construct tri
@@ -223,9 +236,9 @@ Mesh ModelFileParser::ParseModelFromStr(const std::string str)
 		int zID = (int)id_holder_not_real_vectors[i].z;
 
 
-		vec3d v1 = postion_vectors[xID];
-		vec3d v2 = postion_vectors[yID];
-		vec3d v3 = postion_vectors[zID];
+		vec3d v1 = position_vectors[xID];
+		vec3d v2 = position_vectors[yID];
+		vec3d v3 = position_vectors[zID];
 
 		triangle tri = triangle{ v1.x, v1.y,  v1.z,   v2.x, v2.y, v2.z,   v3.x,  v3.y, v3.z };
 		
@@ -280,6 +293,7 @@ Mesh ModelFileParser::ParseModelFromStr(const std::string str)
 		}
 		result.Tris.push_back(tri);
 	}
+
 
 	//Todo construct a mesh
 	return result;

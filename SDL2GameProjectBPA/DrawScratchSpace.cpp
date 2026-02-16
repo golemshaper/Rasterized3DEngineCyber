@@ -1631,7 +1631,30 @@ mat4x4 DrawScratchSpace::Matrix_PointAt(vec3d pos, vec3d target, vec3d up)
 
     return matrix;
 }
+bool DrawScratchSpace::IsInView(const vec3d& c, float r,float NearClip, float FarClip,float tanHalfFovX, float tanHalfFovY)
+{
+    if (UseFrustumCulling == false)
+    {
+        return true; //lie to ourselves
+    }
+    // Behind camera entirely
+    if (c.z + r < NearClip)
+        return false;
 
+    // Too far
+    if (c.z - r > FarClip)
+        return false;
+
+    // Left/right
+    if (fabs(c.x) > c.z * tanHalfFovX + r) //tangent half fov
+        return false;
+
+    // Top/bottom
+    if (fabs(c.y) > c.z * tanHalfFovY + r) //tangent half fov
+        return false;
+
+    return true;
+}
 void DrawScratchSpace::DrawMesh(Mesh m)
 {
     DrawMesh(m, { 0,0,0 }, { 1,0,0 });
@@ -1721,6 +1744,29 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
     // Point the CAMERA
     // -----------------------------
     matView = CalculateViewMatrix();
+
+
+    //------------------------------
+    //FRUSTRUM CULLING
+    //------------------------------
+    vec3d centerWorld;
+    vec3d centerMesh = vec3d{ 0,0,0 };
+    MultiplyMatrixVector(centerMesh, centerWorld, matWorld);
+    vec3d centerView;
+    MultiplyMatrixVector(centerWorld, centerView, matView);
+    float tanHalfFovX = 1.0f / MatrixProj.m[0][0];
+    float tanHalfFovY = 1.0f / MatrixProj.m[1][1];
+    //Make TangentHalfX/Y smaller for debugging
+    if (!IsInView(centerView, m.cullingRadius, NearClip, 10000,tanHalfFovX, tanHalfFovY))
+    {
+        DrawHighlightEdgeOnly = false; //turn this off in case we culled a special mesh
+        //mesh not in camera view!
+       // printf("MESH NOT IN VIEW!\n");
+        return; 
+    }
+
+
+
     //vec3d newForward;
     //vec3d up = { 0.0f, 1.0f, 0.0f };
     //vec3d a = newForward * DotProduct(up, newForward);

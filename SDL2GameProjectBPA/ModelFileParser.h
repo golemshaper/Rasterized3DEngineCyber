@@ -10,6 +10,7 @@ public:
 	//HOW TO BAKE VERTEX COLORS: https://victorkarp.com/how-to-bake-textures-to-vertex-colors-in-blender/
 	Mesh ParseModelFromFile(const std::string path);
 	Mesh ParseModelFromStr(const std::string str);
+	float Length(const vec3d& v);
 	//vector<std::string> SplitByChar(const std::string& str, char c);
 	std::vector<std::string> SplitByChar(const std::string& str, char c);
 	std::string trim(const std::string& s);

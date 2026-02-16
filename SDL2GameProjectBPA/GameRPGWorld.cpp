@@ -409,6 +409,7 @@ void GameRPGWorld::DrawBasics(float DeltaTime)
 {
 	//Basic example of drawing model to the screen
 	MyScratch->ZWriteOn = false;
+	
 	MyScratch->Clear();
 	MyScratch->ClearZBufffer();
 	totalTime += DeltaTime;
@@ -790,6 +791,7 @@ void GameRPGWorld::SetupStateMachine()
 void GameRPGWorld::StateOverworldUpdate()
 {
 	float DeltaTime = sm->StateDeltaTime;
+	MyScratch->UseFrustumCulling = false; //don't cull large mesh
 	//Instead of ticking directly, we will have a state machine for the game modes. The scene file itself will tell the engine what mode the scene should be in.
 	//A battle scene file, will change to the battle mode state, and when the battle scene load, the game will be in battle mode!
 
@@ -922,9 +924,11 @@ void GameRPGWorld::StateOverworldUpdate()
 	MyScratch->UvOffsetGlobal = vec2d{ (totalTime * 0.25f) + (WaterLocation.x * 0.05f),(totalTime * 0.25f) - (WaterLocation.z * 0.05f) }; //Scrolling UV effect. Use this for water later!
 	//Wave mesh:
 	Mesh wave = MyScratch->WaveMesh(WaterPlaneMesh, totalTime * 12.0f, 0.25f);
+	MyScratch->UseFrustumCulling = false;
 	MyScratch->DrawMesh(wave, WaterLocation, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
 	//Water second layerFX overlay:
 	MyScratch->MoveMainspaceToExtraBuffer();
+	MyScratch->UseFrustumCulling = false;
 	MyScratch->UvOffsetGlobal = vec2d{ (totalTime * -0.25f) + (WaterLocation.x * 0.05f),(totalTime * -0.25f) - (WaterLocation.z * 0.05f) }; //Scrolling UV effect. Use this for water later!
 	MyScratch->DrawMesh(wave, WaterLocation, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
 
@@ -945,6 +949,11 @@ void GameRPGWorld::StateOverworldUpdate()
 	MyScratch->SetTexture(overworldTexture, w256, h256);
 	MyScratch->TextureDrawOn = true;
 	MyScratch->DrawMesh(TerrrainMesh, vec3d{ 0,0,0 }, vec3d{ 0,0,0 }, vec3d{ 1.0f,1.0f,1.0f });
+
+
+	MyScratch->UseFrustumCulling = true;//Now cull like normal
+
+
 	//AccumulatedBlur(0.75f); //Blur only BKG if called here!
 	//---------------
 	//player's shadow:

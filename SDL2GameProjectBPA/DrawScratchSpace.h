@@ -195,6 +195,7 @@ struct triangle{
 
 struct Mesh {
     std::vector<triangle> Tris;
+    float cullingRadius = 100.0f;
 };
 struct mat4x4
 {
@@ -209,6 +210,7 @@ struct SortedMeshRecipe {
     vec3d scale;
     bool edge_light;
     RGB MeshColor;
+   
 };
 
 //CLASS
@@ -319,7 +321,7 @@ public:
     float HighlightBrightness = 2.0f;
     bool TextureDrawOn = false;
     bool TextureOnForEdgelight = true;
-
+    bool UseFrustumCulling = true;
     float NearClip = 3.1f;
     
 
@@ -357,6 +359,8 @@ public:
     void SetCamera(vec3d loc, vec3d target);
     void SetCameraFOV(float nFov);
    
+    bool IsInView(const vec3d& c, float r,float NearClip, float FarClip,float tanHalfFovX, float tanHalfFovY);
+
     void DrawMesh(Mesh m);
     void DrawMesh(Mesh m,vec3d loc);
     void DrawMesh(Mesh m, vec3d loc, vec3d rot);
