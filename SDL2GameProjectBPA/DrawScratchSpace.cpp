@@ -1763,12 +1763,29 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         if (DotProduct(normal, triViewed.p[0]) >= 0.0f)
             continue;
 
-        
-        // Near-plane cull (THROW THE WHOLE TRIANGLE AWAY! SUPER AGRESSIVE)
-        if (triViewed.p[0].z <= NearClip ||
+        //OLD BUT GOOD CULLING 02-15-2026//OLD CULLING 02-15-2026//OLD CULLING 02-15-2026
+// Near-plane cull (THROW THE WHOLE TRIANGLE AWAY! SUPER AGRESSIVE, FASTER)
+       if (triViewed.p[0].z <= NearClip ||
             triViewed.p[1].z <= NearClip ||
             triViewed.p[2].z <= NearClip)
             continue;
+//OLD CULLING 02-15-2026//OLD CULLING 02-15-2026//OLD CULLING 02-15-2026
+
+//NEW CULLING SHOULD LET ME HAVE A LOWER POLYGON WORLD IN THEORY. NEEDS TESTING
+    // Skip triangles with ANY vertex behind the camera
+        //if (triViewed.p[0].z <= 0.0f ||
+        //    triViewed.p[1].z <= 0.0f ||
+        //    triViewed.p[2].z <= 0.0f)
+        //    continue;
+
+        //// Skip triangles where ALL vertices are behind the near plane
+        //if (triViewed.p[0].z <= NearClip &&
+        //    triViewed.p[1].z <= NearClip &&
+        //    triViewed.p[2].z <= NearClip)
+        //    continue;
+ //NEW CULLING SHOULD LET ME HAVE A LOWER POLYGON WORLD IN THEORY. NEEDS TESTING
+
+
 
 
 
