@@ -217,6 +217,11 @@ void GameRPGWorld::MusicAndFadeIn(float DeltaTime)
 }
 void GameRPGWorld::Tick(float DeltaTime)
 {
+	if (DeltaTime > 0.15f)
+	{
+		DeltaTime = 0.15f;
+		printf("LAG SPIKE\n");
+	}
 	sm->Tick(DeltaTime);
 	
 }

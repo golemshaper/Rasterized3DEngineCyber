@@ -2,9 +2,9 @@
 
 //#define SCREEN_X 240
 //#define SCREEN_Y 240//160
-//SCREEN SIZES: 240,240  or 240,160 or 160,240
-#define SCREEN_X 140
-#define SCREEN_Y 240//160
+//SCREEN SIZES: 240,240  or 240,160 or 160,240  (256 x 224 is a ps1 res)
+#define SCREEN_X 256
+#define SCREEN_Y 224//160
 #define TOTAL_PIXELS (SCREEN_X * SCREEN_Y)
 
 
