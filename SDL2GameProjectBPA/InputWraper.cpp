@@ -31,8 +31,8 @@ void InputWraper::Tick(float DeltaTime)
     //touch is movement:
     if (LeftClick)
     {
-        mouseJoystickX = (mouseX - previousMouseX) * 0.01f;
-        mouseJoystickY = (previousMouseY - mouseY) * 0.01f;
+        mouseJoystickX = (mouseX - previousMouseX) * 0.005f;
+        mouseJoystickY = (previousMouseY - mouseY) * 0.005f;
         if (mouseJoystickX > 1.0f) mouseJoystickX = 1.0f;
         if (mouseJoystickX <= -1.0f) mouseJoystickX = -1.0f;
         if (mouseJoystickY > 1.0f) mouseJoystickY = 1.0f;
@@ -72,24 +72,36 @@ void InputWraper::Tick(float DeltaTime)
     //Walking input
     if (keyboard[SDL_SCANCODE_A] || keyboard[SDL_SCANCODE_LEFT] )
     {
-        mouseJoystickX = 0.0f;
+        if (mode_mouse_controls_camera == false)
+        {
+            mouseJoystickX = 0.0f;
+        }
         lx = Lerp(lx, -1.0f, grow * DeltaTime);
     }
     
     if (keyboard[SDL_SCANCODE_D] || keyboard[SDL_SCANCODE_RIGHT])
     {
-        mouseJoystickX = 0.0f;
+        if (mode_mouse_controls_camera == false)
+        {
+            mouseJoystickX = 0.0f;
+        }
         lx = Lerp(lx, 1.0f, grow * DeltaTime);
     }
     
     if (keyboard[SDL_SCANCODE_W] || keyboard[SDL_SCANCODE_UP])
     {
-        mouseJoystickY = 0.0f;
+        if (mode_mouse_controls_camera == false)
+        {
+            mouseJoystickY = 0.0f;
+        }
         ly = Lerp(ly, 1.0f, grow * DeltaTime);
     }
     if (keyboard[SDL_SCANCODE_S] || keyboard[SDL_SCANCODE_DOWN])
     {
-        mouseJoystickY = 0.0f;
+        if (mode_mouse_controls_camera == false)
+        {
+            mouseJoystickY = 0.0f;
+        }
         ly = Lerp(ly, -1.0f, grow * DeltaTime);
     }
 
@@ -100,11 +112,19 @@ void InputWraper::Tick(float DeltaTime)
     //X axis camera
     if (keyboard[SDL_SCANCODE_Q])  //TODO Also read Horizontal mouse movement
     {
+        if (!mode_mouse_controls_camera == false)
+        {
+            mouseJoystickX = 0.0f;
+        }
         //lx = -1.0f;
         cx = Lerp(cx, -1.0f, grow * DeltaTime);
     }
     if (keyboard[SDL_SCANCODE_E])  //TODO Also read Horizontal mouse movement
     {
+        if (!mode_mouse_controls_camera == false)
+        {
+            mouseJoystickX = 0.0f;
+        }
         //lx = -1.0f;
         cx = Lerp(cx, 1.0f, grow * DeltaTime);
     }
@@ -130,22 +150,39 @@ void InputWraper::Tick(float DeltaTime)
 
 float InputWraper::GetMovementX()
 {
-    return lx + mouseJoystickX;
+    if (mode_mouse_controls_camera == false)
+    {
+        return lx + mouseJoystickX;
+    }
+
+    return lx;
 }
 
 float InputWraper::GetMovementY()
 {
-    return ly + mouseJoystickY;
+    if (mode_mouse_controls_camera == false)
+    {
+        return ly + mouseJoystickY;
+    }
+    return ly;
 }
 
 float InputWraper::GetCameraXAxis()
 {
+    if (mode_mouse_controls_camera == true)
+    {
+        return cx + mouseJoystickX;
+    }
     //todo: Do camera stuff
     return cx;
 }
 
 float InputWraper::GetCameraYAxis()
 {
+    if (mode_mouse_controls_camera == true)
+    {
+        return cy + mouseJoystickY;
+    }
     //todo: Do camera stuff
     return cy;
 }

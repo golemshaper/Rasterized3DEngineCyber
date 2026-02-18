@@ -16,6 +16,11 @@ public:
 	void ResetToggleDepthKey();
 	bool GetFireOneHold();
 	int GetMouseXYAsValue();
+public:
+	float mouseX;
+	float mouseY;
+	bool mode_mouse_controls_camera = false;
+
 private:
 	float lx = 0.0f;
 	float ly = 0.0f;
@@ -27,8 +32,7 @@ private:
 	float previousMouseX;
 	float previousMouseY;
 
-	float mouseX;
-	float mouseY;
+	
 
 	float mouseJoystickX;
 	float mouseJoystickY;
