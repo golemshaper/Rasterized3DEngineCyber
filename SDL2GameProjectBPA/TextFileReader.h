@@ -21,6 +21,8 @@ public:
 	int LastRequest = 1;
 	void ReadText();
 	bool limit_once = false;
+	std::string Trim(const std::string& s);
+	void PrintBytes(const char* label, const std::string& s);
 	const char* GetStringFromSheetTag(const char* input);
 	const char* GetStringFromSheetIndex(int index);
 	int GetSheetIndexFromString(const char* input);

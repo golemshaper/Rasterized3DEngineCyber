@@ -2199,7 +2199,9 @@ RGB DrawScratchSpace::GouraudShade(const vec3d& normal, const RGB& base)
     // 
     // 
     // Simple directional light
+
     vec3d lightDir = Normalize(LightDir);
+    
 
     // Lambert term
     //float ndotl = std::max(0.0f, DotProduct(normal, lightDir));

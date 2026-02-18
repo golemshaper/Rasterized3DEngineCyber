@@ -117,6 +117,7 @@ void GameRPGWorld::LoadSceneFiles(std::string SceneFileName)
 	Tag_Hidden = CurrentScene.GetTagID("Hidden");
 	Tag_Unlit = CurrentScene.GetTagID("Unlit");
 	Tag_Character = CurrentScene.GetTagID("Character");
+	Tag_Dialogue = CurrentScene.GetTagID("Dialogue");
 	Tag_Animation = CurrentScene.GetTagID("Animation");
 	Tag_SnapToGround = CurrentScene.GetTagID("SnapToGround");
 	Tag_RandomWalk = CurrentScene.GetTagID("RandomWalk");
@@ -229,7 +230,7 @@ void GameRPGWorld::Tick(float DeltaTime)
 }
 void GameRPGWorld::DrawSceneObjects(float DeltaTime)
 {
-	//Draw Props
+	DidACollision = false;
 	for (int i = 0; i < MeshPropIDs.size(); ++i)
 	{
 		//ID
@@ -242,7 +243,17 @@ void GameRPGWorld::DrawSceneObjects(float DeltaTime)
 		CollisionProcess(objId);
 		DrawSingleSceneObject(objId);
 	}
-	//Draw Characters
+	for (int i = 0; i < CharacterNPCIDs.size(); ++i)
+	{
+		int objId = CharacterNPCIDs[i];
+		//collision check on NPCs
+		CollisionProcess(objId);
+	}
+	if (DidACollision == false)
+	{
+		OnDialogueCollisonFirstEnter = true;
+	}
+	//Draw Characters via animation update
 	ProcessAnimations(DeltaTime);
 }
 void GameRPGWorld::DrawSingleSceneObject(int objId)
@@ -355,20 +366,51 @@ void GameRPGWorld::CollisionProcess(int objId)
 	float StandardTownSize = 12.0f;
 	float LargeCastleSize = 32.0f;
 	std::string TownNameDisplay;
+	std::string NPCDialogue;
 
 
 
 	if (MyScratch->SquaredDistance2D(PlayerMovement->Pos, CurrentScene.scene_objects[objId].pos) > StandardTownSize)
 	{
+		
 		//no collision
 		return;
 	}
+	DidACollision = true;
+
 	if (CurrentScene.GetTagArgument(CurrentScene.scene_objects[objId], Tag_Town, TownNameDisplay))
 	{
 		MyScratch->DrawTextAtPos(3, 3, RGB_Yellow, TownNameDisplay.c_str(), MyTextSprites);
 	}
-	//Other collision types:
+	if (CurrentScene.GetTagArgument(CurrentScene.scene_objects[objId], Tag_Dialogue, NPCDialogue))
+	{
+		RequestedText = NPCDialogue.c_str();
+		if (OnDialogueCollisonFirstEnter)
+		{
+			OnDialogueCollisonFirstEnter = false;
 
+			textBoxProgressTick = 0.0f;
+			//Allow text to re-trigger
+		}
+		//PrintBytes("NPCDialogue", RequestedText);
+		//printf("NPC FOUND!|%s|\n", RequestedText);
+
+
+	}
+
+
+	
+	//Other collision types:
+	
+}
+
+
+void GameRPGWorld::PrintBytes(const char* label, const std::string& s)
+{
+	printf("%s (size=%zu): ", label, s.size());
+	for (unsigned char c : s)
+		printf("[%u]", c);
+	printf("\n");
 }
 
 
@@ -479,7 +521,7 @@ void GameRPGWorld::TextUpdateTick(float DeltaTime)
 		return;
 	}
 	textBoxProgressTick += 2.5f * DeltaTime;
-	TextBoxDraw(Reader->GetStringFromSheetTag(RequestedText));
+	TextBoxDraw(Reader->GetStringFromSheetTag(RequestedText.c_str()));
 }
 
 void GameRPGWorld::TextBoxDraw(const char* input)
@@ -720,7 +762,7 @@ void GameRPGWorld::ProcessAnimations(float DeltaTime)
 			MyScratch->MorphMesh(AnimationComponents[i].Idle, AnimationComponents[i].Walk, sin(totalTime * 12.0f) * 0.5f),
 			true
 			);
-
+			
 	}
 }
 void GameRPGWorld::WipeFX(float DeltaTime)

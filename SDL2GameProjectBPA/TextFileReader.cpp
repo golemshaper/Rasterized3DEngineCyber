@@ -67,10 +67,34 @@ void TextFileReader::FileToSpreadsheet()
 
 
 }
+std::string TextFileReader::Trim(const std::string& s)
+{
+    size_t start = 0;
+    while (start < s.size() && std::isspace(static_cast<unsigned char>(s[start])))
+        ++start;
+
+    size_t end = s.size();
+    while (end > start && std::isspace(static_cast<unsigned char>(s[end - 1])))
+        --end;
+
+    return s.substr(start, end - start);
+}
+void TextFileReader::PrintBytes(const char* label, const std::string& s)
+{
+    printf("%s (size=%zu): ", label, s.size());
+    for (unsigned char c : s)
+        printf("[%u]", c);
+    printf("\n");
+}
 const char* TextFileReader::GetStringFromSheetTag(const char* input)
 {
     ReadText();
-    std::string key = input;
+   // std::string key = (input);
+
+
+   /* PrintBytes("Input inside GetStringFromSheetTag", input);
+    printf("Input inside GetStringFromSheetTag: |%s|\n", input);*/
+
 
     if (!hasReadFile) {
         return "Tag not found! (File not found)";
@@ -83,7 +107,7 @@ const char* TextFileReader::GetStringFromSheetTag(const char* input)
     for (int i = 0; i < (int)StoredRowData.size(); ++i)
     {
         //The tag index  is (int) i 
-        if (StoredRowData[i].Tag == key)
+        if (strcmp(StoredRowData[i].Tag.c_str(), input) == 0)
         {
             if (LastRequest == i)
             {

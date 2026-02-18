@@ -20,6 +20,8 @@ public:
 	float FadeInToOverworldTimer = 1.9f;
 	bool DoFadeAnotherTime = false;
 	bool EnableTextbox = false;
+	bool OnDialogueCollisonFirstEnter = false;
+	bool DidACollision = false;
 
 	void Initialize();
 	void LoadSceneFiles();
@@ -48,6 +50,7 @@ public:
 	//Scene Tags
 	int Tag_Town = -1;
 	int Tag_Hidden = -1;
+	int Tag_Dialogue = -1;
 	int Tag_Unlit = -1;
 	int Tag_Character = -1;
 	int Tag_Animation = -1;
@@ -90,7 +93,8 @@ public:
 	RGB* water;
 	RGB* Palette;
 
-	const char* RequestedText = "RpgIntro";
+	//const char* RequestedText = "RpgIntro";
+	std::string RequestedText = "RpgIntro";
 	float typingEffect = -1.0f;
 	float textBoxProgressTick = 0.0f;
 	const char* previous_text = "";
@@ -161,7 +165,7 @@ public:
 	RGB CopyOfPreviousFrame[TOTAL_PIXELS];
 
 
-
+	void PrintBytes(const char* label, const std::string& s);
 
 
 	~GameRPGWorld();
