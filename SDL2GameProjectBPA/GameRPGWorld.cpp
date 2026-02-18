@@ -919,7 +919,7 @@ void GameRPGWorld::StateOverworldUpdate()
 	{
 		MyScratch->Input->mode_mouse_controls_camera = false;
 	}
-	printf("MOUSE Y:%f\n", MyScratch->Input->mouseY);
+	//printf("MOUSE Y:%f\n", MyScratch->Input->mouseY);
 	//Camera code should move in to the ThridPersonMovement function once I get a chance!
 	PlayerMovement->CameraOrientation.x += PlayerMovement->CameraRotationSpeed * DeltaTime * MyScratch->Input->GetCameraXAxis();
 	float orbitAngle = PlayerMovement->CameraOrientation.x;
