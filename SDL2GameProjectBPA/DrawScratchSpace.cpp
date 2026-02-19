@@ -2209,7 +2209,7 @@ RGB DrawScratchSpace::GouraudShade(const vec3d& normal, const RGB& base)
     //Half Lamber term instead
     float ndotl = DotProduct(normal, lightDir);
     //ndotl = ndotl * 0.5f + 0.5f;   //using Half-Lambert instead...changed my mind. 
-    ndotl = Clamp(ndotl, 0.25f, 1.0f); //changed clamp so it can't go super dark. Better results then the half lambert?
+    ndotl = Clamp(ndotl, MaxLambertDarkness, 1.0f); //changed clamp so it can't go super dark. Better results then the half lambert?
 
     // Apply to color
     RGB out;

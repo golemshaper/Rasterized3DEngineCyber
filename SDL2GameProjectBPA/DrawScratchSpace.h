@@ -325,7 +325,7 @@ public:
     float NearClip = 3.1f;
     float FarClip = 10000;
     bool print_culled_msg = false;
-
+    
 
     bool MultiplyInTextureMode = true;
     bool DrawEdges = false;
@@ -346,6 +346,7 @@ public:
     vec3d CameraLoc;
     vec3d CameraTargetLoc;
     vec3d LightDir = { 0.0f, -1.0f, -1.0f };
+    float MaxLambertDarkness = 0.25f;
 //3D Functions:
     void MultiplyMatrixVector(vec3d& i, vec3d& o, mat4x4& m);
 

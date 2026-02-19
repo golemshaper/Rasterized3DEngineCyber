@@ -1,0 +1,36 @@
+Positions:
+ 0.000 1.112 0.000
+ -7.682 5.552 -11.120
+ 0.000 0.000 0.000
+ -2.000 0.000 -5.300
+ -2.000 0.000 -5.295
+ -6.000 0.000 -5.300
+ 2.000 0.000 -5.300
+ 6.000 0.000 -5.300
+ -6.000 0.000 4.700
+ -2.000 0.000 4.700
+ 2.000 0.000 4.700
+ 6.000 0.000 4.700
+
+Rotations:
+ 0.000 0.000 0.000
+
+Scales:
+ 1.000,1.000,1.000
+ 2.500,2.500,2.500
+
+Objects:
+CameraTarget,None,0,0,0,true,Hidden,CameraAim
+CameraLocation,None,1,0,0,true,Hidden,CamLoc
+BattleFloorOne,Overworld,2,0,0,true,
+SpawnPoint,Overworld,3,0,0,true,PlayerSpawn,Hidden
+Anna,BasicPalette,4,0,1,false,Character,Anna,RandomWalk,SnapToGround,Animation,Anna_WalkF1,Dialogue,NPCAnna
+SpawnPoint,Overworld,5,0,0,true,PlayerSpawn,Hidden
+SpawnPoint,Overworld,6,0,0,true,PlayerSpawn,Hidden
+SpawnPoint,Overworld,7,0,0,true,PlayerSpawn,Hidden
+SpawnPoint,Overworld,8,0,0,true,EnemySpawn,Hidden
+SpawnPoint,Overworld,9,0,0,true,EnemySpawn,Hidden
+SpawnPoint,Overworld,10,0,0,true,EnemySpawn,Hidden
+SpawnPoint,Overworld,11,0,0,true,EnemySpawn,Hidden
+
+DialogueTriggers:

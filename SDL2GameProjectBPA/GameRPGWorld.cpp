@@ -94,7 +94,14 @@ void GameRPGWorld::Initialize()
 
 	//init battlemode "Game". This is a game, just like this file, but we will drive it from our state machine. (By we, I mean me)
 	BattleMode.Setup(MyScratch, Reader, MyTextSprites);
-	
+	BattleMode.Palette = Palette; //pass common texture file.
+	//SETUP MESH IN BATTLE MODE FOR PARTY MEMBERS
+	BattleMode.PlayerParty[0].Idle = PlayerMesh_Idle;
+	BattleMode.PlayerParty[0].Attack = PlayerMesh_Walk;
+	//Add player to the party
+	BattleMode.PlayerParty[0].inParty = true;
+	BattleMode.PlayerParty[0].alive = true;
+
 	
 }
 void GameRPGWorld::LoadSceneFiles()
