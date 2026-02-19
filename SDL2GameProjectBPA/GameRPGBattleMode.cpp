@@ -98,7 +98,7 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 	MyScratch->ClearZBufffer();
 	MyScratch->PushBackDepthBuffer(100);
 	//EXIT BATTLE TEMP TIMER
-	if (totalTime >= 1.0f)
+	if (totalTime >= 2.0f)
 	{
 		battleFinished = true;
 	}
@@ -156,17 +156,22 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 			continue;
 		}
 		//shadow (CONSIDER DOING A SHADOW PASS ON ALL AGENTS AND FADING IT LATER)
-		MyScratch->MeshColor = RGB_Black;
+		MyScratch->MeshColor = { 1,1,1,255 };
 		MyScratch->TextureDrawOn = false;
+		MyScratch->DrawUnlit = true;
+		MyScratch->UseGouraudShading = false;
 		MyScratch->PushBackDepthBuffer(100);
 		PlayerParty[i].scale = vec3d{
 			PartyMemberScale + (abs(sin(i + totalTime * 12.0f) * 0.1f)),
 			0.1f,
 			PartyMemberScale + (abs(sin(i + totalTime * 12.0f) * 0.1f)),
 		};
-		MyScratch->DrawMesh(PlayerParty[i].Idle, PlayerParty[i].loc, PlayerParty[i].rot, PlayerParty[i].scale);
+		//draw shadow after fade to avoid visual bug until I fix it
+		if(FadeIn<=0.0f)MyScratch->DrawMesh(PlayerParty[i].Idle, PlayerParty[i].loc, PlayerParty[i].rot, PlayerParty[i].scale);
 		MyScratch->PushBackDepthBuffer(100);
 		MyScratch->MeshColor = RGB_White;
+		MyScratch->DrawUnlit = false;
+		MyScratch->UseGouraudShading = true;
 		MyScratch->TextureDrawOn = true;
 		//Squash and stretch
 		PlayerParty[i].scale = vec3d{
@@ -194,12 +199,17 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 		};
 		MyScratch->DrawMesh(EnemyParty[i].Idle, EnemyParty[i].loc, EnemyParty[i].rot, EnemyParty[i].scale);
 	}
-	
+	MyScratch->ClearZBufffer();
 	//FADE FX
 	if (FadeIn > 0.0f)
 	{
 		FadeIn -= 125.0f * DeltaTime;
-		MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, RGB{ 0,0,0,(int)FadeIn});
+		int FadeAsInt = (int)FadeIn;
+		
+		/*if (FadeAsInt > 1)FadeIn = 1;
+		if (FadeAsInt < 0)FadeIn = 0;*/
+		MyScratch->ZWriteOn = false;
+		MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, RGB{ 1,1,1,abs(FadeAsInt)});
 	}
 	MyScratch->DrawTextAtPos(3, 3, RGB_Yellow, "Battle mode is running", MyTextSprites);
 
