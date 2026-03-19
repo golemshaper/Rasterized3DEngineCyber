@@ -29,7 +29,7 @@ void GroupKeyValueDataExchange::ParseFromString(const std::string str)
 				{
 					//BUILD NEW GROUP AND NAME IT, PUSH IT
 					Group nGroup;
-					nGroup.groupName = string_builder;
+					nGroup.groupName = Trim(string_builder);
 					groups.push_back(nGroup);
 					string_builder.clear();
 					parseState = DataBuildKey;
@@ -47,7 +47,7 @@ void GroupKeyValueDataExchange::ParseFromString(const std::string str)
 				if (str[i] == '=')
 				{
 					Key nKey;
-					nKey.keyName = string_builder;
+					nKey.keyName = Trim(string_builder);
 					groups[groups.size() - 1].keys.push_back(nKey);
 					string_builder.clear();
 					parseState = DataBuildValue;
@@ -59,10 +59,9 @@ void GroupKeyValueDataExchange::ParseFromString(const std::string str)
 				{
 					int group = groups.size() - 1;
 					int key = groups[group].keys.size() - 1;
-					groups[group].keys[key].dataStr = string_builder;
+					groups[group].keys[key].dataStr = Trim(string_builder);
 					string_builder = groups[group].keys[key].dataStr;
-					groups[group].keys[key].dataVal = std::stoi(string_builder);
-					//TODO: assign a int value if it's can be converted to an int.
+					groups[group].keys[key].dataVal = std::stoi(groups[group].keys[key].dataStr);
 					string_builder.clear();
 					parseState = DataBuildKey;
 					continue;
@@ -75,4 +74,17 @@ void GroupKeyValueDataExchange::ParseFromString(const std::string str)
 std::string GroupKeyValueDataExchange::ToDataString()
 {
 	return std::string();
+}
+
+std::string GroupKeyValueDataExchange::Trim(const std::string& s)
+{
+	size_t start = 0;
+	while (start < s.size() && std::isspace(static_cast<unsigned char>(s[start])))
+		++start;
+
+	size_t end = s.size();
+	while (end > start && std::isspace(static_cast<unsigned char>(s[end - 1])))
+		--end;
+
+	return s.substr(start, end - start);
 }

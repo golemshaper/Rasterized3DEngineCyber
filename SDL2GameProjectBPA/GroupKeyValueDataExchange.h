@@ -17,5 +17,6 @@ public:
 	std::vector<Group> groups;
 	void ParseFromString(const std::string str);
 	std::string ToDataString();
+	std::string Trim(const std::string& s);
 };
 
