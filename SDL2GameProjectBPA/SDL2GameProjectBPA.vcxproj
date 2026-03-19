@@ -144,6 +144,7 @@
     <ClCompile Include="GameOne.cpp" />
     <ClCompile Include="GameRPGBattleMode.cpp" />
     <ClCompile Include="GameRPGWorld.cpp" />
+    <ClCompile Include="GroupKeyValueDataExchange.cpp" />
     <ClCompile Include="HelloSceneFile.cpp" />
     <ClCompile Include="InputWraper.cpp" />
     <ClCompile Include="main.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="GameOne.h" />
     <ClInclude Include="GameRPGBattleMode.h" />
     <ClInclude Include="GameRPGWorld.h" />
+    <ClInclude Include="GroupKeyValueDataExchange.h" />
     <ClInclude Include="HelloSceneFile.h" />
     <ClInclude Include="InputWraper.h" />
     <ClInclude Include="miniaudio.h" />

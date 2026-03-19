@@ -93,6 +93,7 @@ void GameRPGBattleMode::LoadScene(std::string SceneFileName)
 void GameRPGBattleMode::Tick(float DeltaTime)
 {
 	//BEGIN FRAME
+	MyScratch->MaxLambertDarkness = 0.0f;
 	totalTime += DeltaTime;
 	MyScratch->Clear();
 	MyScratch->ClearZBufffer();
@@ -106,7 +107,7 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 	MyScratch->SetCamera(CameraStart, CameraEnd);
 	for (int i = 0; i < SceneParserObject.scene_objects.size(); i++)
 	{
-		MyScratch->MaxLambertDarkness = abs(sin(i+totalTime) * 0.5f);
+		//////MyScratch->MaxLambertDarkness = abs(sin(i+totalTime) * 0.5f);
 		//MODEL
 		if (SceneParserObject.scene_objects[i].visible == false)
 		{
@@ -150,7 +151,7 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 	//HERO
 	for (int i = 0; i < PartySize; i++)
 	{
-		MyScratch->MaxLambertDarkness = abs(sin((SceneParserObject.scene_objects.size()+i)+totalTime)*0.5f);
+		//MyScratch->MaxLambertDarkness = abs(sin((SceneParserObject.scene_objects.size()+i)+totalTime)*0.5f);
 		if (PlayerParty[i].inParty == false)
 		{
 			continue;
@@ -186,7 +187,7 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 	//ENEMY (Merge with hero?)
 	for (int i = 0; i < PartySize; i++)
 	{
-		MyScratch->MaxLambertDarkness = abs(sin((SceneParserObject.scene_objects.size() + i) + totalTime) * 0.5f);
+		//MyScratch->MaxLambertDarkness = abs(sin((SceneParserObject.scene_objects.size() + i) + totalTime) * 0.5f);
 		if (EnemyParty[i].inParty == false)
 		{
 			continue;

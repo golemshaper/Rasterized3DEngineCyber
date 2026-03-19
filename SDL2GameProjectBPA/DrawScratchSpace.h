@@ -347,6 +347,7 @@ public:
     vec3d CameraTargetLoc;
     vec3d LightDir = { 0.0f, -1.0f, -1.0f };
     float MaxLambertDarkness = 0.25f;
+
 //3D Functions:
     void MultiplyMatrixVector(vec3d& i, vec3d& o, mat4x4& m);
 

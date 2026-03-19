@@ -1985,6 +1985,11 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
             RGB color0 = GouraudShade(triProjected.normal[0], p0.color);
             RGB color1 = GouraudShade(triProjected.normal[1], p1.color);
             RGB color2 = GouraudShade(triProjected.normal[2], p2.color);
+
+           /* vec3d spherical_normals =  LastLocation - triProjected.p[0];
+            spherical_normals = Normalize(spherical_normals);*/
+
+
             p0.color = color0;
             p1.color = color1;
             p2.color = color2;

@@ -60,6 +60,9 @@
     <ClCompile Include="GameRPGBattleMode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GroupKeyValueDataExchange.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DrawScratchSpace.h">
@@ -120,6 +123,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameRPGBattleMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GroupKeyValueDataExchange.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
