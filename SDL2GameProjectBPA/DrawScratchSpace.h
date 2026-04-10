@@ -90,6 +90,7 @@ const RGB RGB_Yellow{ 255,   255,   0, 255 };
 const RGB RGB_White{ 255, 255, 255, 255 };
 const RGB RGB_Grey{ 128, 128, 128, 255 };
 const RGB RGB_Black{ 0,   0,   0,   255 };
+const RGB RGB_NearBlack{ 1,   1,   1,   255 };
 
 
 
@@ -263,6 +264,10 @@ public:
         RGB topRight,
         RGB bottomLeft,
         RGB bottomRight);
+    void DrawRectangleOutline(int x, int y, int width, int height, RGB color);
+    void DrawRectangleOutline(
+        int x, int y, int width, int height, 
+        RGB topColor, RGB bottomColor, RGB leftColor, RGB rightColor);
 
     void DrawSquare(int x, int y, int size, RGB color);
     void DrawSquareMultiply(int x, int y, int size, RGB color);

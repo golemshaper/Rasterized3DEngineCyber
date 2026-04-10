@@ -30,6 +30,7 @@ Positions:
  56.775 -7.094 -46.204
  24.207 -1.460 -24.594
  -75.604 -15.995 -88.570
+ -50.404 -7.256 -72.032
 
 Rotations:
  0.000 0.000 0.000
@@ -37,6 +38,7 @@ Rotations:
 Scales:
  1.000,1.000,1.000
  2.500,2.500,2.500
+ 8.190,8.190,8.190
 
 Objects:
 TownOne,Overworld,0,0,0,true,Town,Hildaberg
@@ -73,5 +75,6 @@ SingleTree,Overworld,27,0,0,true,None
 SingleTree,Overworld,28,0,0,true,None
 SingleTree,Overworld,29,0,0,true,None
 BridgeReflection,Overworld,30,0,0,true,None
+Temp,Overworld,31,0,2,true,
 
 DialogueTriggers:

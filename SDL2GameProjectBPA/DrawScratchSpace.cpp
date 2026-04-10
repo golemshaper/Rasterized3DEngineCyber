@@ -403,6 +403,46 @@ void DrawScratchSpace::DrawRectangle(
     }
 }
 
+void DrawScratchSpace::DrawRectangleOutline(int x, int y, int width, int height, RGB color)
+{
+    int x0 = x;
+    int y0 = y;
+    int x1 = x + width - 1;
+    int y1 = y + height - 1;
+
+    // Top edge
+    DrawLine(x0, y0, x1, y0, color);
+
+    // Bottom edge
+    DrawLine(x0, y1, x1, y1, color);
+
+    // Left edge
+    DrawLine(x0, y0, x0, y1, color);
+
+    // Right edge
+    DrawLine(x1, y0, x1, y1, color);
+}
+
+void DrawScratchSpace::DrawRectangleOutline(int x, int y, int width, int height, RGB topColor, RGB bottomColor, RGB leftColor, RGB rightColor)
+{
+    int x0 = x;
+    int y0 = y;
+    int x1 = x + width - 1;
+    int y1 = y + height - 1;
+
+    // Top edge
+    DrawLine(x0, y0, x1, y0, topColor);
+
+    // Bottom edge
+    DrawLine(x0, y1, x1, y1, bottomColor);
+
+    // Left edge
+    DrawLine(x0, y0, x0, y1, leftColor);
+
+    // Right edge
+    DrawLine(x1, y0, x1, y1, rightColor);
+}
+
 void DrawScratchSpace::DrawSquare(int x, int y, int size, RGB color) {
     for (int dy = 0; dy < size; ++dy) {
         for (int dx = 0; dx < size; ++dx) {

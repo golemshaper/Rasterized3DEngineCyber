@@ -36,6 +36,15 @@ public:
 	int w64 = 64;
 	int h64 = 64;
 
+	struct RPGStats
+	{
+		int HP = 10;
+		int MAX_HP = 10;
+		int ATK = 1;
+		int INT = 1;
+		int SPD = 1;
+
+	};
 	struct BattleAgent
 	{
 		bool inParty = false;
@@ -46,8 +55,8 @@ public:
 		vec3d rot = vec3d{ 0,0,0 };
 		vec3d scale = vec3d{ 2.5f,2.5f,2.5f };
 
-		//Stats here?
-
+		//Stats here
+		RPGStats Stats;
 		//-----------
 		Mesh Idle;
 		Mesh Attack;
@@ -59,5 +68,8 @@ public:
 	BattleAgent PlayerParty[PartySize];
 	BattleAgent EnemyParty[PartySize];
 
+
+	void DrawBattleMenu();
+	void DrawWindow(int x, int y, int w, int h);
 };
 

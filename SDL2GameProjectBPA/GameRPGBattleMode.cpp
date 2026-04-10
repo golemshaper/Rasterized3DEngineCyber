@@ -101,7 +101,8 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 	//EXIT BATTLE TEMP TIMER
 	if (totalTime >= 2.0f)
 	{
-		battleFinished = true;
+		//setting battleFinished to true will end the battle mode screen
+		//	battleFinished = true;
 	}
 	MyScratch->ZWriteOn = true;
 	MyScratch->SetCamera(CameraStart, CameraEnd);
@@ -213,5 +214,45 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 		MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, RGB{ 1,1,1,abs(FadeAsInt)});
 	}
 	MyScratch->DrawTextAtPos(3, 3, RGB_Yellow, "Battle mode is running", MyTextSprites);
+
+	//UI
+	DrawBattleMenu();
+}
+
+void GameRPGBattleMode::DrawBattleMenu()
+{
+	int startX = 16;
+	int startY = 16;
+	int width = 55;
+	int height = 16;
+	
+	//TODO: For each menu item, draw a new window box, and populate the center with text label
+	int num = 4;
+	const char* Names[] = {
+	"Attack",
+	"Skill",
+	"Item",
+	"Fuse",
+	"Guard"
+	};
+	for (int i = 0; i < num; i++)
+	{
+		DrawWindow(startX, startY + (i * height), width, height);
+		MyScratch->DrawTextAtPos(startX + 5, startY + 5 + (height * i), RGB_NearBlack, "Label", MyTextSprites);
+		MyScratch->DrawTextAtPos(startX+4, startY + 4 + (height*i), RGB_White, "Label", MyTextSprites);
+	}
+}
+
+void GameRPGBattleMode::DrawWindow(int x, int y, int w, int h)
+{
+	MyScratch->DrawRectangle(
+		x, y, w, h, 
+		RGB{ 0,0,255,128 },
+		RGB{ 0,222,0,128 },
+		RGB{ 0,0,255,0 },
+		RGB{ 0,0,111,0 }
+	);
+	MyScratch->DrawRectangleOutline(x, y, w, h, RGB_White, RGB_Grey, RGB_White, RGB_Grey);
+	MyScratch->DrawRectangleOutline(x+2, y+2, w-4, h-4, RGB_White/2, RGB_Grey/2, RGB_White/2, RGB_Grey/2);
 
 }
