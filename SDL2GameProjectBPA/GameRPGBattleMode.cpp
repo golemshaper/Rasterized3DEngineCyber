@@ -93,6 +93,7 @@ void GameRPGBattleMode::LoadScene(std::string SceneFileName)
 void GameRPGBattleMode::Tick(float DeltaTime)
 {
 	//BEGIN FRAME
+	MyScratch->SetCameraFOV(90+ (sin(totalTime*10)*10));
 	MyScratch->MaxLambertDarkness = 0.0f;
 	totalTime += DeltaTime;
 	MyScratch->Clear();
@@ -238,8 +239,8 @@ void GameRPGBattleMode::DrawBattleMenu()
 	for (int i = 0; i < num; i++)
 	{
 		DrawWindow(startX, startY + (i * height), width, height);
-		MyScratch->DrawTextAtPos(startX + 5, startY + 5 + (height * i), RGB_NearBlack, "Label", MyTextSprites);
-		MyScratch->DrawTextAtPos(startX+4, startY + 4 + (height*i), RGB_White, "Label", MyTextSprites);
+		MyScratch->DrawTextAtPos(startX + 5, startY + 5 + (height * i), RGB_NearBlack, Names[i], MyTextSprites);
+		MyScratch->DrawTextAtPos(startX+4, startY + 4 + (height*i), RGB_White, Names[i], MyTextSprites);
 	}
 }
 
