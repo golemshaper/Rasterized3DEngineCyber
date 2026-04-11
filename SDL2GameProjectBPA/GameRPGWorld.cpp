@@ -891,6 +891,19 @@ void GameRPGWorld::StateOverworldUpdate()
 	{
 		//printf("%f", StepsUntilEncounter);
 
+		//REMOVE ME!
+		//REMOVE ME!
+		//REMOVE ME!
+		//REMOVE ME!
+		//REMOVE ME!
+		StepsUntilEncounter = 0.0f;
+		//REMOVE ME!
+		//REMOVE ME!
+		//REMOVE ME!
+		//REMOVE ME!
+		//REMOVE ME!
+		//REMOVE ME!
+
 		StepsUntilEncounter -= DeltaTime;
 		if (StepsUntilEncounter <= 0.0f)
 		{

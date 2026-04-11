@@ -10,4 +10,5 @@ EndOfFile,End,End...?!
 RpgIntro,End,In the land Varuin.
 NPCAnna,End,Anna:\Many monsters live in \the forest to the north!
 RpgNpcBox,End,You are weak.\Drink from the river \to get stronger.
+RPGBattleHypeTxt,End,No turning back fight for your life!
 EndOfFileSafeBuffer,End,End...?!

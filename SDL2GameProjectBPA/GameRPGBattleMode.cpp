@@ -1,6 +1,6 @@
 #include "GameRPGBattleMode.h"
 #include "TextSprites.h"
-
+#include "TextFileReader.h"
 
 void GameRPGBattleMode::Initialize()
 {
@@ -16,7 +16,8 @@ void GameRPGBattleMode::Setup(DrawScratchSpace* scratchspace, TextFileReader* tx
 	battleFinished = false;
 
 	PlayerParty[0].name = "Hero";
-	
+	Reader = new TextFileReader();
+	Reader->ReadText();
 }
 
 void GameRPGBattleMode::StartBattle()
@@ -82,6 +83,8 @@ void GameRPGBattleMode::LoadScene(std::string SceneFileName)
 		if (PlayerParty[i].inParty==false)continue;
 		//loc
 		PlayerParty[i].loc = SceneParserObject.scene_objects[PartySpawnPoints[i]].pos;
+		PlayerParty[i].home_loc = SceneParserObject.scene_objects[PartySpawnPoints[i]].pos;
+		PlayerParty[i].target_loc = SceneParserObject.scene_objects[EnemySpawnPoints[0]].pos; //example only!
 		
 		//rot
 		vec3d dir = MyScratch->LookAtRotation(PlayerParty[i].loc, vec3d{ 0,0,0 });
@@ -92,16 +95,21 @@ void GameRPGBattleMode::LoadScene(std::string SceneFileName)
 
 void GameRPGBattleMode::Tick(float DeltaTime)
 {
+	
+
 	//BEGIN FRAME
-	MyScratch->SetCameraFOV(90+ (sin(totalTime*10)*10));
+	MyScratch->SetCameraFOV(90+ (sin(totalTime*2)*10)); //CAMERA FOV PULSE TEST
 	MyScratch->MaxLambertDarkness = 0.0f;
 	totalTime += DeltaTime;
 	MyScratch->Clear();
 	MyScratch->ClearZBufffer();
 	MyScratch->PushBackDepthBuffer(100);
 	//EXIT BATTLE TEMP TIMER
+	
 	if (totalTime >= 2.0f)
 	{
+		//TEST ONLY
+		
 		//setting battleFinished to true will end the battle mode screen
 		//	battleFinished = true;
 	}
@@ -183,6 +191,7 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 			PartyMemberScale + (abs(sin(i + totalTime * 12.0f) * 0.1f)),
 		};
 		MyScratch->DrawMesh(PlayerParty[i].Idle, PlayerParty[i].loc, PlayerParty[i].rot, PlayerParty[i].scale);
+
 	}
 
 
@@ -214,10 +223,29 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 		MyScratch->ZWriteOn = false;
 		MyScratch->DrawRectangle(0, 0, SCREEN_X, SCREEN_Y, RGB{ 1,1,1,abs(FadeAsInt)});
 	}
-	MyScratch->DrawTextAtPos(3, 3, RGB_Yellow, "Battle mode is running", MyTextSprites);
+	//Load text: RPGBattleHypeTxt
+	RequestedText = "RPGBattleHypeTxt";
+	MyScratch->DrawTextAtPos(3, 3, RGB_Yellow, Reader->GetStringFromSheetTag(RequestedText.c_str()), MyTextSprites,1.0f);
 
 	//UI
 	DrawBattleMenu();
+	menu_timer += DeltaTime;
+	if (menu_timer >= 0.25f)
+	{
+		menu_timer = 0.0f;
+		selected_menu_index++;
+		selected_menu_index = selected_menu_index % 4;
+	}
+
+	//RELOAD
+	MyScratch->Input->Tick(DeltaTime);
+	if (MyScratch->Input->GetToggleDepthKey())
+	{
+		MyScratch->Input->ResetToggleDepthKey();
+		LoadScene(SceneLink);
+		return;
+	}
+	
 }
 
 void GameRPGBattleMode::DrawBattleMenu()
@@ -238,22 +266,67 @@ void GameRPGBattleMode::DrawBattleMenu()
 	};
 	for (int i = 0; i < num; i++)
 	{
+		if (i == 0) { DrawWindowStartSection(); }
+		if (i == num-1) { DrawWindowEndSection(); }
+		if (i == selected_menu_index) { DrawWindowHighlight(); }//example of highlight button. Use selected index IRL
+
 		DrawWindow(startX, startY + (i * height), width, height);
 		MyScratch->DrawTextAtPos(startX + 5, startY + 5 + (height * i), RGB_NearBlack, Names[i], MyTextSprites);
-		MyScratch->DrawTextAtPos(startX+4, startY + 4 + (height*i), RGB_White, Names[i], MyTextSprites);
+		RGB HighlightColor = RGB_Grey;
+		if (do_highlight_menu_item)
+		{
+			HighlightColor = RGB_White;
+		}
+		MyScratch->DrawTextAtPos(startX+4, startY + 4 + (height*i), HighlightColor, Names[i], MyTextSprites);
+		do_highlight_menu_item = false;
 	}
+}
+
+void GameRPGBattleMode::DrawWindowStartSection()
+{
+	window_draw_start = true;
+}
+
+void GameRPGBattleMode::DrawWindowHighlight()
+{
+	do_highlight_menu_item = true;
 }
 
 void GameRPGBattleMode::DrawWindow(int x, int y, int w, int h)
 {
+	RGB u = RGB{ 0,0,245,128 };
+	RGB d = RGB{ 0,222,0,128 };
+	RGB l = RGB{ 0,0,245,0 };
+	RGB r = RGB{ 0,0,111,0 };
+	if (!do_highlight_menu_item)
+	{
+		u = u * 0.5f;
+		d = d * 0.5f;
+		l = l * 0.5f;
+		r = r * 0.5f;
+	}
 	MyScratch->DrawRectangle(
 		x, y, w, h, 
-		RGB{ 0,0,255,128 },
-		RGB{ 0,222,0,128 },
-		RGB{ 0,0,255,0 },
-		RGB{ 0,0,111,0 }
+		u,d,l,r
 	);
-	MyScratch->DrawRectangleOutline(x, y, w, h, RGB_White, RGB_Grey, RGB_White, RGB_Grey);
-	MyScratch->DrawRectangleOutline(x+2, y+2, w-4, h-4, RGB_White/2, RGB_Grey/2, RGB_White/2, RGB_Grey/2);
+	RGB TopColor = RGB_White;
+	RGB BottomColor = RGB_Grey;
+	if (!window_draw_start)
+	{
+		TopColor = { 0,0,0,0 };
+	}
+	if (!window_draw_end)
+	{
+		BottomColor = { 0,0,0,0 };
+	}
+	MyScratch->DrawRectangleOutline(x, y, w, h, TopColor, BottomColor, RGB_White, RGB_Grey);
+	MyScratch->DrawRectangleOutline(x+2, y+2, w-4, h-4, TopColor /2, BottomColor /2, RGB_White/2, RGB_Grey/2);
+	window_draw_start = false;
+	window_draw_end = false;
+	
+}
 
+void GameRPGBattleMode::DrawWindowEndSection()
+{
+	window_draw_end = true;
 }

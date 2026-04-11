@@ -15,11 +15,13 @@ public:
 	void StartBattle();
 	void LoadScene(std::string SceneFileName);
 	SceneFileParser* SceneParser;
+	TextFileReader* Reader;
 	Scene SceneParserObject;
 	int Tag_Hidden = -1;
 	
 	std::string SceneLink = "RPG_BattleMode.txt";
 	std::string ScenePath = "Assets/Scenes/";
+	std::string RequestedText = "...";
 	vec3d CameraStart;
 	vec3d CameraEnd;
 	float FadeIn = 255;
@@ -54,11 +56,14 @@ public:
 		vec3d loc = vec3d{ 0,0,0 };
 		vec3d rot = vec3d{ 0,0,0 };
 		vec3d scale = vec3d{ 2.5f,2.5f,2.5f };
+		vec3d home_loc = vec3d{ 0,0,0 };
+		vec3d target_loc = vec3d{ 0,0,0 };
 
+		float travel = 0.0f;
 		//Stats here
 		RPGStats Stats;
 		//-----------
-		Mesh Idle;
+		Mesh Idle; //set in the overworld for the player at start of game by default I think...
 		Mesh Attack;
 		Mesh Dead;
 		Mesh Victory;
@@ -69,7 +74,18 @@ public:
 	BattleAgent EnemyParty[PartySize];
 
 
+	//BATTLE MENU
 	void DrawBattleMenu();
+	void DrawWindowStartSection();
+	void DrawWindowHighlight();
+	bool window_draw_start = false;
+	bool window_draw_end = false;
+	bool do_highlight_menu_item = false;
+	int selected_menu_index = 0;
+	float menu_timer = 0.0f;
 	void DrawWindow(int x, int y, int w, int h);
+	void DrawWindowEndSection();
+
+
 };
 
