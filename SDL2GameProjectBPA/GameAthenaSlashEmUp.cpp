@@ -20,6 +20,7 @@ void GameAthenaSlashEmUp::Initialize()
     Reader = new TextFileReader();
     Reader->ReadText();
     ModelFileParser parser;
+    MyScratch->NearClip = 0.001f;
     //STATES (on stack)
     sm.MapState(FirstStateId, [this] {StateMachineHelloWorldTick(); });
    

@@ -74,6 +74,13 @@ public:
 	BattleAgent EnemyParty[PartySize];
 
 
+	void MoveBattleAgentToTarget(int MoveAgentID, BattleAgent(&MoveAgentPool)[PartySize], int AgentTargetID, BattleAgent(&TargetAgentPool)[PartySize], float amount);
+	
+
+
+
+	void SetEncounterDummyData();
+
 	//BATTLE MENU
 	void DrawBattleMenu();
 	void DrawWindowStartSection();

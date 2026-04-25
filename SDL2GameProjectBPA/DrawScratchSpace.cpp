@@ -1139,6 +1139,11 @@ float DrawScratchSpace::Clamp(float value, float min, float max)
     return value;
 }
 
+float DrawScratchSpace::Modulous(float value)
+{
+    return fmod(value,1.0f);
+}
+
 RGB DrawScratchSpace::AlphaBlend(const RGB& dst, const RGB& src)
 {
     float a = src.a / 255.0f;       // incoming alpha

@@ -1,19 +1,20 @@
 Positions:
- 0.000 1.112 0.000
- -10.482 6.817 -13.884
+ 0.000 2.885 0.000
+ -9.644 4.418 -11.715
  0.000 0.000 0.000
- 0.033 0.000 -9.408
- -2.000 0.000 -5.295
- -3.967 0.000 -8.392
- 4.033 0.000 -8.392
- 6.000 0.000 -8.392
- -6.000 0.000 7.641
- -2.000 0.000 7.641
- 2.000 0.000 7.641
- 6.000 0.000 7.641
+ -1.724 0.000 -6.500
+ -1.659 -0.071 -6.362
+ -5.167 0.000 -6.500
+ 1.889 0.000 -6.500
+ 5.274 0.000 -6.500
+ -1.706 0.000 6.500
+ -5.298 0.000 6.500
+ 2.381 0.000 6.500
+ 5.824 0.000 6.500
 
 Rotations:
  0.000 0.000 0.000
+ 0.000 180.000 -0.000
 
 Scales:
  1.000,1.000,1.000
@@ -24,7 +25,7 @@ CameraTarget,None,0,0,0,true,Hidden,CameraAim
 CameraLocation,None,1,0,0,true,Hidden,CamLoc
 BattleFloorOne,Overworld,2,0,0,true,
 SpawnPoint,Overworld,3,0,0,true,PlayerSpawn,Hidden
-Anna,BasicPalette,4,0,1,false,Character,Anna,RandomWalk,SnapToGround,Animation,Anna_WalkF1,Dialogue,NPCAnna
+Anna,BasicPalette,4,1,1,false,Character,Anna,RandomWalk,SnapToGround,Animation,Anna_WalkF1,Dialogue,NPCAnna
 SpawnPoint,Overworld,5,0,0,true,PlayerSpawn,Hidden
 SpawnPoint,Overworld,6,0,0,true,PlayerSpawn,Hidden
 SpawnPoint,Overworld,7,0,0,true,PlayerSpawn,Hidden

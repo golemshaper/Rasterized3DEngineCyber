@@ -24,6 +24,7 @@ void GameRPGBattleMode::StartBattle()
 {
 	FadeIn = 255.0f;
 	totalTime = 0.0f;
+	SetEncounterDummyData();
 	LoadScene(SceneLink);
 }
 
@@ -91,6 +92,20 @@ void GameRPGBattleMode::LoadScene(std::string SceneFileName)
 		float yaw = atan2f(-dir.x, -dir.z);
 		PlayerParty[i].rot.y = yaw;
 	}
+	//load enemy encounter party
+	for (int i = 0; i < PartySize; i++)
+	{
+		if (EnemyParty[i].inParty == false)continue;
+		//loc
+		EnemyParty[i].loc = SceneParserObject.scene_objects[EnemySpawnPoints[i]].pos;
+		EnemyParty[i].home_loc = SceneParserObject.scene_objects[EnemySpawnPoints[i]].pos;
+		EnemyParty[i].target_loc = SceneParserObject.scene_objects[EnemySpawnPoints[0]].pos; //example only!
+
+		//rot
+		vec3d dir = MyScratch->LookAtRotation(EnemyParty[i].loc, vec3d{ 0,0,0 });
+		float yaw = atan2f(dir.x, dir.z);
+		EnemyParty[i].rot.y = yaw;
+	}
 }
 
 void GameRPGBattleMode::Tick(float DeltaTime)
@@ -157,6 +172,11 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 	MyScratch->TextureDrawOn = true;
 	MyScratch->SetTexture(Palette, w64, h64);
 
+
+	//MOVE AGENTS
+	
+	MoveBattleAgentToTarget(0,PlayerParty,1,EnemyParty,MyScratch->Modulous(totalTime));
+
 	//DRAW BATTLE AGENTS
 	//HERO
 	for (int i = 0; i < PartySize; i++)
@@ -178,7 +198,9 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 			PartyMemberScale + (abs(sin(i + totalTime * 12.0f) * 0.1f)),
 		};
 		//draw shadow after fade to avoid visual bug until I fix it
-		if(FadeIn<=0.0f)MyScratch->DrawMesh(PlayerParty[i].Idle, PlayerParty[i].loc, PlayerParty[i].rot, PlayerParty[i].scale);
+		vec3d shadowLoc = PlayerParty[i].loc;
+		shadowLoc.y = PlayerParty[i].home_loc.y;
+		if(FadeIn<=0.0f)MyScratch->DrawMesh(PlayerParty[i].Idle, shadowLoc, PlayerParty[i].rot, PlayerParty[i].scale);
 		MyScratch->PushBackDepthBuffer(100);
 		MyScratch->MeshColor = RGB_White;
 		MyScratch->DrawUnlit = false;
@@ -234,7 +256,7 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 	{
 		menu_timer = 0.0f;
 		selected_menu_index++;
-		selected_menu_index = selected_menu_index % 4;
+		selected_menu_index = selected_menu_index % 5;
 	}
 
 	//RELOAD
@@ -248,6 +270,33 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 	
 }
 
+
+
+void GameRPGBattleMode::MoveBattleAgentToTarget(int MoveAgentID, BattleAgent(&MoveAgentPool)[PartySize], int AgentTargetID, BattleAgent(&TargetAgentPool)[PartySize], float amount)
+{
+	vec3d a = MoveAgentPool[MoveAgentID].home_loc;
+	vec3d b = TargetAgentPool[AgentTargetID].loc;
+	MoveAgentPool[MoveAgentID].target_loc = b;
+	MoveAgentPool[MoveAgentID].loc = MyScratch->Arc(a,b,2.0f,amount);
+}
+
+void GameRPGBattleMode::SetEncounterDummyData()
+{
+	//For testing/experimenting on how encounters will be set
+	
+	//EnemyParty[0].Idle = PlayerParty[0].Idle; //copy player for now...
+	//EnemyParty[0].Attack = PlayerParty[0].Attack; //copy player for now...
+	//EnemyParty[0].inParty = PlayerParty[0].inParty; //copy player for now...
+	//EnemyParty[0].alive = PlayerParty[0].alive; //copy player for now...
+	for (int i = 0; i < PartySize; i++)
+	{
+		EnemyParty[i].Idle = PlayerParty[0].Idle; //copy player for now...
+		EnemyParty[i].Attack = PlayerParty[0].Attack; //copy player for now...
+		EnemyParty[i].inParty = PlayerParty[0].inParty; //copy player for now...
+		EnemyParty[i].alive = PlayerParty[0].alive; //copy player for now...
+	}
+}
+
 void GameRPGBattleMode::DrawBattleMenu()
 {
 	int startX = 16;
@@ -255,20 +304,20 @@ void GameRPGBattleMode::DrawBattleMenu()
 	int width = 55;
 	int height = 16;
 	
-	//TODO: For each menu item, draw a new window box, and populate the center with text label
-	int num = 4;
+	//For each menu item, draw a new window box, and populate the center with text label
+	int num = 5;
 	const char* Names[] = {
 	"Attack",
 	"Skill",
 	"Item",
-	"Fuse",
+	"Fuse", //fuse self to enemy, or fuse two enemies together to make that enemy stronger.
 	"Guard"
 	};
 	for (int i = 0; i < num; i++)
 	{
 		if (i == 0) { DrawWindowStartSection(); }
 		if (i == num-1) { DrawWindowEndSection(); }
-		if (i == selected_menu_index) { DrawWindowHighlight(); }//example of highlight button. Use selected index IRL
+		if (i == selected_menu_index) { DrawWindowHighlight(); }//Highlight selected
 
 		DrawWindow(startX, startY + (i * height), width, height);
 		MyScratch->DrawTextAtPos(startX + 5, startY + 5 + (height * i), RGB_NearBlack, Names[i], MyTextSprites);
