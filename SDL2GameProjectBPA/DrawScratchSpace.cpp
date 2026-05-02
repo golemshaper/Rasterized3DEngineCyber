@@ -672,6 +672,7 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
 }
 void DrawScratchSpace::DrawTriangleToZBuffer(Vertex v0, Vertex v1, Vertex v2, int z)
 {
+   
     //Double check, but I don't think we need this anymore
     if (ZWriteOn == false)
     {
@@ -1116,6 +1117,22 @@ float DrawScratchSpace::GetRandomFloat(float a, float b)
     // Normalize
     float t = (float)r / 4294967295.0f; // UINT32_MAX
     return a + t * (b - a);
+}
+void DrawScratchSpace::PrintFPS(float deltaTime, TextSprites* tSprites)
+{
+    fpsAccumulator += deltaTime;
+    frameCount++;
+   
+    if (fpsAccumulator >= 1.0f) {
+        fps = frameCount;
+        frameCount = 0;
+        fpsAccumulator = 0.0f;
+    }
+    char fpsText[32];
+    snprintf(fpsText, sizeof(fpsText), "FPS: %.1f", fps);
+
+    DrawScratchSpace::DrawTextAtPos(10, 10, RGB{ 255,255,255,255 }, fpsText, tSprites);
+
 }
 unsigned int DrawScratchSpace::GetNext()
 {
@@ -1716,6 +1733,7 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot)
 }
 void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
 {
+
     // -----------------------------
     // STORE DATA OTHER FUNCTIONS MAY NEED
     // -----------------------------
@@ -2150,6 +2168,7 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool 
 
 void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale, bool edge_light, bool texture_edge_light)
 {
+
     if (edge_light)
     {
         bool remember_light_setting = DrawUnlit;

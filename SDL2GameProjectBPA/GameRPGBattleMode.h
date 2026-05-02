@@ -83,6 +83,9 @@ public:
 
 	//BATTLE MENU
 	void DrawBattleMenu();
+	//Consider: Menu Tick and Menu Draw should be two different things
+	//Consider: Have some bit of data in a character to store the command they need to execute
+	
 	void DrawWindowStartSection();
 	void DrawWindowHighlight();
 	bool window_draw_start = false;

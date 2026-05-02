@@ -5,6 +5,8 @@
 //SCREEN SIZES: 240,240  or 240,160 or 160,240  (256 x 224 is a ps1 res)  
 #define SCREEN_X 256
 #define SCREEN_Y 224 //160
+
+
 #define TOTAL_PIXELS (SCREEN_X * SCREEN_Y)
 
 
@@ -316,6 +318,10 @@ public:
     unsigned int GetNext();
     int GetNext(int min, int max);
     float GetRandomFloat(float a, float b);
+    float fpsAccumulator = 0.0f;
+    int frameCount = 0;
+    float fps = 1.0f;
+    void PrintFPS(float deltaTime, TextSprites* tSprites);
 
 //DRAW MODE:
     RGB MeshColor = { 255,255,255,255 };

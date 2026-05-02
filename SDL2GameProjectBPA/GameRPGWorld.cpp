@@ -233,7 +233,7 @@ void GameRPGWorld::Tick(float DeltaTime)
 		printf("LAG SPIKE\n");
 	}
 	sm->Tick(DeltaTime);
-	
+	MyScratch->PrintFPS(DeltaTime, MyTextSprites);
 }
 void GameRPGWorld::DrawSceneObjects(float DeltaTime)
 {
@@ -845,6 +845,7 @@ void GameRPGWorld::SetupStateMachine()
 //UPDATE STATES
 void GameRPGWorld::StateOverworldUpdate()
 {
+
 	float DeltaTime = sm->StateDeltaTime;
 	MyScratch->MaxLambertDarkness = 0.25f;
 	MyScratch->UseFrustumCulling = false; //don't cull large mesh
@@ -1016,7 +1017,7 @@ void GameRPGWorld::StateOverworldUpdate()
 	MyScratch->BlendBuffers(0.25f + abs(sin(totalTime)) * 0.5f); //blend two water layers
 	MyScratch->ClearZBufffer();//don't need this
 
-
+	//TODO: Try drawing the water at half resolution by rendering it to a temporary buffer somehow.
 
 	//---------------
 	//terrain:

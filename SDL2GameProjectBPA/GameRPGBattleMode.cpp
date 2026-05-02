@@ -113,6 +113,7 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 	
 
 	//BEGIN FRAME
+
 	MyScratch->SetCameraFOV(90+ (sin(totalTime*2)*10)); //CAMERA FOV PULSE TEST
 	MyScratch->MaxLambertDarkness = 0.0f;
 	totalTime += DeltaTime;

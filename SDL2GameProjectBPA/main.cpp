@@ -27,8 +27,8 @@
 //GameOne* TheGame = new GameOne();
 //GameModelViewer* TheGame = new GameModelViewer();
 //HelloSceneFile* TheGame = new HelloSceneFile();
-GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
-//GameRPGWorld* TheGame = new GameRPGWorld();
+//GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
+GameRPGWorld* TheGame = new GameRPGWorld();
 
 
 //For another game example, inherit the base class, and override the Tick function. GameTwo* TheGame = new GameTwo();
@@ -37,7 +37,7 @@ GameAthenaSlashEmUp* TheGame = new GameAthenaSlashEmUp();
 Uint64 lastTicks = SDL_GetTicks();  // Store this at the end of your previous frame
 
 
-const int PIXEL_SCALE = 8;
+const int PIXEL_SCALE = 6;
 //CHANGE HERE TO MATCH SCRATCH SIZE
 const int SCREEN_NATIVE_X = SCREEN_X;
 const int SCREEN_NATIVE_Y = SCREEN_Y;// 160;
@@ -146,7 +146,8 @@ bool run(SDL_Renderer* renderer) {
 
     // update the screen
     SDL_RenderPresent(renderer);
-    SDL_Delay(16); // ~60 FPS cap
+   // SDL_Delay(16); // ~30 FPS cap
+    SDL_Delay(4); // ~60 FPS cap
 
     return true;
 }
