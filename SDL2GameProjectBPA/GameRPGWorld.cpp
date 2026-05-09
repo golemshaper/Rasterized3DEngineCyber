@@ -897,7 +897,7 @@ void GameRPGWorld::StateOverworldUpdate()
 		//REMOVE ME!
 		//REMOVE ME!
 		//REMOVE ME!
-		StepsUntilEncounter = 0.0f;
+		//StepsUntilEncounter = 0.0f;
 		//REMOVE ME!
 		//REMOVE ME!
 		//REMOVE ME!

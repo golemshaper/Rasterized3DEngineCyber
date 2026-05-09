@@ -68,11 +68,26 @@ public:
 		Mesh Dead;
 		Mesh Victory;
 	};
+	struct RPGAction
+	{
+		//Data:
+		bool ActionIsQueued = false;
+		int HurtTargetAmount = 0;
+		int HealTargetAmount = 0;
+		int HurtDefenseAmount = 0;
+		int HurtAttackAmount = 0;
+		bool TargetAllOnTeam = false;
+		//move in, wait, play attack animation, exit back to starting value
+		//Animation:
+		float moveInTimer;
+		float actionTime;
+		float moveOutTimer;
+	};
 	const float PartyMemberScale = 2.5f;
 	const static int PartySize = 4;
 	BattleAgent PlayerParty[PartySize];
 	BattleAgent EnemyParty[PartySize];
-
+	RPGAction RPGActionsList[8];//all actions get queued
 
 	void MoveBattleAgentToTarget(int MoveAgentID, BattleAgent(&MoveAgentPool)[PartySize], int AgentTargetID, BattleAgent(&TargetAgentPool)[PartySize], float amount);
 	
