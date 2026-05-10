@@ -147,6 +147,15 @@ void DrawScratchSpace::CopyBufferToBuffer(RGB* from, RGB* to)
     }
 }
 
+void DrawScratchSpace::ClearBuffer(RGB* clearMe)
+{
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+        clearMe[i] = RGB_Black;
+        clearMe[i].a = 0.0f;
+    }
+}
+
 RGB DrawScratchSpace::SampleTexture(const RGB* tex, int texW, int texH, float u, float v)
 {
     //clamp
@@ -605,12 +614,16 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
                 {
                     MainSpace[y * SCREEN_X + x] = (color * textured) / 255;
 
+
                 }
             }
             else
             {
                 MainSpace[y * SCREEN_X + x] = color;
+                
+
             }
+            LastAlphaCopy[y * SCREEN_X + x] = RGB_White;
         }
     }
 
@@ -667,6 +680,7 @@ void DrawScratchSpace::DrawTriangle(Vertex v0, Vertex v1, Vertex v2, int z)
             {
                 MainSpace[y * SCREEN_X + x] = color;
             }
+            LastAlphaCopy[y * SCREEN_X + x] = RGB_White;
         }
     }
 }
@@ -1734,6 +1748,9 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot)
 void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
 {
 
+//THIS IS THE MAIN ONE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //Clear Last Alpha buffer
+    ClearBuffer(LastAlphaCopy);
     // -----------------------------
     // STORE DATA OTHER FUNCTIONS MAY NEED
     // -----------------------------
@@ -1830,22 +1847,6 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
     }
 
 
-
-    //vec3d newForward;
-    //vec3d up = { 0.0f, 1.0f, 0.0f };
-    //vec3d a = newForward * DotProduct(up, newForward);
-    //vec3d newUp = up - a;
-    //vec3d vCamera = CameraLoc;
-    //vec3d vLookDir = CameraTargetLoc;
-    //vec3d vTarget = vCamera + vLookDir;
-    //mat4x4 matCamera = Matrix_PointAt(vCamera, vTarget, { 2,1,0 });
-    //matView = Matrix_QuickInverse(matCamera);
-    //matView = Matrix_PointAt(vCamera, vCamera + vLookDir, up);
-    //matView = Matrix_QuickInverse(matView); //flip it upside down!
-    //StoredCameraMatView = matView;
-//leaving the old camera stuff here but commented out. I like it in this function, and I thought I needed it in another, but it turns out I do not...
-//Will decide if I want to keep  CalculateViewMatrix() or not soon...
-
     // -----------------------------
     //DRAW
     //-----------------------------
@@ -1895,10 +1896,6 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         //    triViewed.p[2].z <= NearClip)
         //    continue;
  //NEW CULLING SHOULD LET ME HAVE A LOWER POLYGON WORLD IN THEORY. NEEDS TESTING
-
-
-
-
 
         // Apply PROJECTION transform
         MultiplyMatrixVector(triViewed.p[0], triProjected.p[0], MatrixProj);
@@ -1951,8 +1948,17 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
 
 
 
-       
-
+        if (UsePillowShadeNormals)
+        {
+            //Hijack the normals, calculating a spherical alternative to real normal calculation
+            vec3d nVec1 = Normalize(triWorld.p[0] - loc);
+            vec3d nVec2 = Normalize(triWorld.p[1] - loc);
+            vec3d nVec3 = Normalize(triWorld.p[2] - loc);
+            //lerp so we can mix with real normals
+            triProjected.normal[0] = Lerp(triProjected.normal[0],nVec1, PillowShadeAmount);
+            triProjected.normal[1] = Lerp(triProjected.normal[1], nVec2, PillowShadeAmount);
+            triProjected.normal[2] = Lerp(triProjected.normal[2], nVec3, PillowShadeAmount);
+        }
 
 
 
@@ -2042,6 +2048,7 @@ void DrawScratchSpace::DrawMesh(Mesh m, vec3d loc, vec3d rot, vec3d scale)
         Vertex p2 = { static_cast<int>(triProjected.p[2].x), static_cast<int>(triProjected.p[2].y), RGB{R,G,1*B}};
         
 
+       
         //lighting
         if (UseGouraudShading && !DrawUnlit)
         {
@@ -2264,6 +2271,7 @@ vec3d DrawScratchSpace::ComputeTriangleNormal(const vec3d& p0, const vec3d& p1, 
 }
 RGB DrawScratchSpace::GouraudShade(const vec3d& normal, const RGB& base)
 {
+    /**/
     //Search Helper: Lambert Phong Shading Lighting 
     // 
     // 

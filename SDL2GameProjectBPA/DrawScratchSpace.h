@@ -225,6 +225,7 @@ public:
     RGB MainSpace[TOTAL_PIXELS]; //Screen X * Screen Y size
     RGB ExtraBuffer[TOTAL_PIXELS]; //Screen X * Screen Y size
     RGB ZBuffer[TOTAL_PIXELS]; //Screen X * Screen Y size
+    RGB LastAlphaCopy[TOTAL_PIXELS]; //Screen X * Screen Y size (TODO: Make a copy of the last Alpha of a drawn model, and use this for lighting FX)
 
     RGB* TextureBuffer;
     int TextureBufferW;
@@ -246,6 +247,7 @@ public:
     void BlendBuffers(float amount);
     void BlendBuffers(RGB* from,float amount);
     void CopyBufferToBuffer(RGB* from, RGB* to);
+    void ClearBuffer(RGB* clearMe);
 
     RGB SampleTexture(const RGB* tex, int texW, int texH, float u, float v);
 
@@ -327,6 +329,8 @@ public:
     RGB MeshColor = { 255,255,255,255 };
     bool UseFogHackyShading = true;
     bool UseGouraudShading = false;
+    bool UsePillowShadeNormals = false;
+    float PillowShadeAmount = 0.85f;
     bool UseDepthFog = false;
     bool DrawVerticies = false;
     int EdgeBrightness = 255;

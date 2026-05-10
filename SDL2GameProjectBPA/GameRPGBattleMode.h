@@ -72,6 +72,7 @@ public:
 	{
 		//Data:
 		bool ActionIsQueued = false;
+		int actorID = 0;
 		int HurtTargetAmount = 0;
 		int HealTargetAmount = 0;
 		int HurtDefenseAmount = 0;
@@ -83,11 +84,15 @@ public:
 		float actionTime;
 		float moveOutTimer;
 	};
+	RPGAction RPGActionsList[8];//all actions get queued
+	int CurrentRPGAction = 0;
+
 	const float PartyMemberScale = 2.5f;
 	const static int PartySize = 4;
 	BattleAgent PlayerParty[PartySize];
 	BattleAgent EnemyParty[PartySize];
-	RPGAction RPGActionsList[8];//all actions get queued
+	BattleAgent AllActors[PartySize + PartySize]; //Thinking of combining all actors in to a single AllActors list to make Actions easier to reason about.
+	
 
 	void MoveBattleAgentToTarget(int MoveAgentID, BattleAgent(&MoveAgentPool)[PartySize], int AgentTargetID, BattleAgent(&TargetAgentPool)[PartySize], float amount);
 	

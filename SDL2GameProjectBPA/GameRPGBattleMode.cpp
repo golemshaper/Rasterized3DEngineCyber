@@ -110,9 +110,9 @@ void GameRPGBattleMode::LoadScene(std::string SceneFileName)
 
 void GameRPGBattleMode::Tick(float DeltaTime)
 {
-	
-
 	//BEGIN FRAME
+	MyScratch->UsePillowShadeNormals = false;
+	MyScratch->PillowShadeAmount = 0.85f;
 
 	MyScratch->SetCameraFOV(90+ (sin(totalTime*2)*10)); //CAMERA FOV PULSE TEST
 	MyScratch->MaxLambertDarkness = 0.0f;
@@ -179,6 +179,7 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 	MoveBattleAgentToTarget(0,PlayerParty,1,EnemyParty,MyScratch->Modulous(totalTime));
 
 	//DRAW BATTLE AGENTS
+	MyScratch->UsePillowShadeNormals = true;
 	//HERO
 	for (int i = 0; i < PartySize; i++)
 	{
@@ -215,6 +216,10 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 		};
 		MyScratch->DrawMesh(PlayerParty[i].Idle, PlayerParty[i].loc, PlayerParty[i].rot, PlayerParty[i].scale);
 
+
+		//MyScratch->CopyBufferToBuffer( MyScratch->LastAlphaCopy,MyScratch->MainSpace); //DEBUG LAST ALPHA DRAW
+		//TODO: Make a function that takes the alpha buffer, and shifts it over in space,
+		// and then multiplies the result by a color on top of the model, masked out by the original alpha location!
 	}
 
 
