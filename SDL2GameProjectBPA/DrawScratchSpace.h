@@ -235,15 +235,20 @@ public:
 
     void MoveMainspaceToExtraBuffer();
     void MultiplyBuffers();
+    void ColorizeBuffer(RGB* buffer, const RGB& color);
     void AddBuffers();
     void AddBuffers(RGB* from);
+    void ShiftBufferXY(const RGB* src, RGB* dst, int width, int height, int offX, int offY);
+    
     void AverageBuffers();
     void InvertBuffer();
     void ClearZBufffer();
+    void FloodAplha(int a);
     void DrawZBufffer(); //Depth Buffer
     void DrawZBuffferMaskSky(); //Depth Buffer
     void PushBackDepthBuffer(int amount);
     void ApplyMask();
+    void ApplyMaskTypeTwo();
     void BlendBuffers(float amount);
     void BlendBuffers(RGB* from,float amount);
     void CopyBufferToBuffer(RGB* from, RGB* to);

@@ -27,6 +27,13 @@ public:
 	float FadeIn = 255;
 
 	void Tick(float DeltaTime);
+
+	//FX
+	RGB OriginalMeshAlpha[TOTAL_PIXELS];
+	RGB OriginalPixels[TOTAL_PIXELS];
+	void DFShdow();
+
+	//BATTLE
 	bool battleFinished = false;
 
 	int curPartySP = 0;
@@ -37,6 +44,9 @@ public:
 	RGB* Palette;
 	int w64 = 64;
 	int h64 = 64;
+
+
+	
 
 	struct RPGStats
 	{

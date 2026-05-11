@@ -27,6 +27,21 @@ void DrawScratchSpace::MultiplyBuffers()
    
 }
 
+void DrawScratchSpace::ColorizeBuffer(RGB* buffer, const RGB& color)
+{
+    const int total = SCREEN_X * SCREEN_Y;
+
+    for (int i = 0; i < total; ++i)
+    {
+        buffer[i].r = (buffer[i].r * color.r) / 255;
+        buffer[i].g = (buffer[i].g * color.g) / 255;
+        buffer[i].b = (buffer[i].b * color.b) / 255;
+        if (buffer[i].r > 255)buffer[i].r = 255;
+        if (buffer[i].g > 255)buffer[i].g = 255;
+        if (buffer[i].b > 255)buffer[i].b = 255;
+    }
+}
+
 void DrawScratchSpace::AddBuffers()
 {
     for (int i = 0; i < TOTAL_PIXELS; ++i)
@@ -40,6 +55,31 @@ void DrawScratchSpace::AddBuffers(RGB* from)
     for (int i = 0; i < TOTAL_PIXELS; ++i)
     {
         MainSpace[i] = MainSpace[i] + from[i];
+    }
+}
+
+void DrawScratchSpace::ShiftBufferXY(const RGB* src, RGB* dst, int width, int height, int offX, int offY)
+{
+    for (int y = 0; y < height; ++y)
+    {
+        int srcY = y - offY;
+
+        for (int x = 0; x < width; ++x)
+        {
+            int srcX = x - offX;
+
+            int dstIndex = y * width + x;
+
+            // If source pixel is outside bounds, clear it
+            if (srcX < 0 || srcX >= width || srcY < 0 || srcY >= height)
+            {
+                dst[dstIndex] = RGB_Black;
+                continue;
+            }
+
+            int srcIndex = srcY * width + srcX;
+            dst[dstIndex] = src[srcIndex];
+        }
     }
 }
 
@@ -66,6 +106,14 @@ void DrawScratchSpace::ClearZBufffer()
         //255 is "max color, but we can go over that. set to 1024 so we have pleanty of depth to work with. Z is actually the inverse of how it draws.
         //higher values are deeper
         ZBuffer[i] = RGB{ 1024, 1024, 1024 ,255 };
+    }
+}
+
+void DrawScratchSpace::FloodAplha(int a)
+{
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+        MainSpace[i].a = a;
     }
 }
 
@@ -118,6 +166,17 @@ void DrawScratchSpace::ApplyMask()
 
 }
 
+void DrawScratchSpace::ApplyMaskTypeTwo()
+{
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+        if (MainSpace[i].r <= 50)
+        {
+            ExtraBuffer[i] = RGB_Black;
+        }
+    }
+}
+
 void DrawScratchSpace::BlendBuffers(float amount)
 {
     amount = 1.0f - amount;
@@ -152,7 +211,7 @@ void DrawScratchSpace::ClearBuffer(RGB* clearMe)
     for (int i = 0; i < TOTAL_PIXELS; ++i)
     {
         clearMe[i] = RGB_Black;
-        clearMe[i].a = 0.0f;
+        clearMe[i].a = 0;
     }
 }
 

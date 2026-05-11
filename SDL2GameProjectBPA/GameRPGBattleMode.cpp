@@ -215,9 +215,13 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 			PartyMemberScale + (abs(sin(i + totalTime * 12.0f) * 0.1f)),
 		};
 		MyScratch->DrawMesh(PlayerParty[i].Idle, PlayerParty[i].loc, PlayerParty[i].rot, PlayerParty[i].scale);
-
+		DFShdow();
 
 		//MyScratch->CopyBufferToBuffer( MyScratch->LastAlphaCopy,MyScratch->MainSpace); //DEBUG LAST ALPHA DRAW
+		
+		
+		
+		
 		//TODO: Make a function that takes the alpha buffer, and shifts it over in space,
 		// and then multiplies the result by a color on top of the model, masked out by the original alpha location!
 	}
@@ -238,6 +242,7 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 			PartyMemberScale + (abs(sin(i + totalTime * 12.0f) * 0.1f)),
 		};
 		MyScratch->DrawMesh(EnemyParty[i].Idle, EnemyParty[i].loc, EnemyParty[i].rot, EnemyParty[i].scale);
+		DFShdow();
 	}
 	MyScratch->ClearZBufffer();
 	//FADE FX
@@ -274,6 +279,30 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 		return;
 	}
 	
+}
+
+
+void GameRPGBattleMode::DFShdow()
+{
+	MyScratch->CopyBufferToBuffer(MyScratch->LastAlphaCopy, OriginalMeshAlpha);
+	MyScratch->CopyBufferToBuffer(MyScratch->MainSpace, OriginalPixels);
+	////Offset alpha is in the extra buffer
+	MyScratch->ClearBuffer(MyScratch->ExtraBuffer);
+	MyScratch->ShiftBufferXY(MyScratch->LastAlphaCopy, MyScratch->ExtraBuffer, SCREEN_X, SCREEN_Y, -3, 3);
+	////Original alpha is in the main space
+	MyScratch->CopyBufferToBuffer(OriginalMeshAlpha, MyScratch->MainSpace);
+	MyScratch->ApplyMaskTypeTwo();
+	
+	MyScratch->CopyBufferToBuffer(MyScratch->ExtraBuffer, MyScratch->MainSpace);
+	MyScratch->ColorizeBuffer(MyScratch->MainSpace, RGB{ 400,400,400,255 });
+	MyScratch->MoveMainspaceToExtraBuffer();
+	MyScratch->CopyBufferToBuffer(OriginalPixels, MyScratch->MainSpace);
+	for (int i = 0; i < TOTAL_PIXELS; ++i)
+	{
+		if (MyScratch->ExtraBuffer[i].r <= 12) { continue; }
+
+		MyScratch->MainSpace[i] = ( MyScratch->MainSpace[i]*(MyScratch->ExtraBuffer[i]))/1024;
+	}
 }
 
 
