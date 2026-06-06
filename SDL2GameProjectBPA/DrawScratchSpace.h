@@ -248,7 +248,10 @@ public:
     void DrawZBuffferMaskSky(); //Depth Buffer
     void PushBackDepthBuffer(int amount);
     void ApplyMask();
-    void ApplyMaskTypeTwo();
+    void ApplyMask(const RGB* mask, const RGB* src, RGB* dst);
+
+
+
     void BlendBuffers(float amount);
     void BlendBuffers(RGB* from,float amount);
     void CopyBufferToBuffer(RGB* from, RGB* to);

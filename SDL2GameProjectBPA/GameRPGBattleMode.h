@@ -31,6 +31,7 @@ public:
 	//FX
 	RGB OriginalMeshAlpha[TOTAL_PIXELS];
 	RGB OriginalPixels[TOTAL_PIXELS];
+	RGB NewAlphaCopy[TOTAL_PIXELS];
 	void DFShdow();
 
 	//BATTLE

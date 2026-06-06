@@ -166,16 +166,22 @@ void DrawScratchSpace::ApplyMask()
 
 }
 
-void DrawScratchSpace::ApplyMaskTypeTwo()
+void DrawScratchSpace::ApplyMask(const RGB* mask, const RGB* src, RGB* dst)
 {
     for (int i = 0; i < TOTAL_PIXELS; ++i)
     {
-        if (MainSpace[i].r <= 50)
+        // If mask pixel is zero, kill it
+        if (mask[i].r == 0)
         {
-            ExtraBuffer[i] = RGB_Black;
+            dst[i] = RGB_Black;
+        }
+        else
+        {
+            dst[i] = src[i];
         }
     }
 }
+
 
 void DrawScratchSpace::BlendBuffers(float amount)
 {

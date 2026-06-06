@@ -284,26 +284,36 @@ void GameRPGBattleMode::Tick(float DeltaTime)
 
 void GameRPGBattleMode::DFShdow()
 {
-	MyScratch->CopyBufferToBuffer(MyScratch->LastAlphaCopy, OriginalMeshAlpha);
+	//Store the current pixels for later
 	MyScratch->CopyBufferToBuffer(MyScratch->MainSpace, OriginalPixels);
-	////Offset alpha is in the extra buffer
+	
+	//Copy the alpha of the last model drawn
+	MyScratch->CopyBufferToBuffer(MyScratch->LastAlphaCopy, OriginalMeshAlpha);
+
+	// Shift mask
 	MyScratch->ClearBuffer(MyScratch->ExtraBuffer);
 	MyScratch->ShiftBufferXY(MyScratch->LastAlphaCopy, MyScratch->ExtraBuffer, SCREEN_X, SCREEN_Y, -3, 3);
-	////Original alpha is in the main space
-	MyScratch->CopyBufferToBuffer(OriginalMeshAlpha, MyScratch->MainSpace);
-	MyScratch->ApplyMaskTypeTwo();
-	
-	MyScratch->CopyBufferToBuffer(MyScratch->ExtraBuffer, MyScratch->MainSpace);
-	MyScratch->ColorizeBuffer(MyScratch->MainSpace, RGB{ 400,400,400,255 });
-	MyScratch->MoveMainspaceToExtraBuffer();
+
+	//Clip the offset mask against the original mask, so it stays inside
+	MyScratch->ApplyMask(OriginalMeshAlpha, MyScratch->ExtraBuffer, MyScratch->ExtraBuffer);
+
+	// Colorize the clipped shifted mask
+	MyScratch->ColorizeBuffer(MyScratch->ExtraBuffer, RGB{ 225,225,225,255 }); 
+
+	// Restore original pixels
 	MyScratch->CopyBufferToBuffer(OriginalPixels, MyScratch->MainSpace);
+
+	//Combine results
 	for (int i = 0; i < TOTAL_PIXELS; ++i)
 	{
-		if (MyScratch->ExtraBuffer[i].r <= 12) { continue; }
-
-		MyScratch->MainSpace[i] = ( MyScratch->MainSpace[i]*(MyScratch->ExtraBuffer[i]))/1024;
+		if (MyScratch->ExtraBuffer[i].r <= 12) continue;
+		int A = MyScratch->MainSpace[i].a;
+		MyScratch->MainSpace[i] = (MyScratch->MainSpace[i] * MyScratch->ExtraBuffer[i]) / 1024;
+		MyScratch->MainSpace[i].a = A;
 	}
 }
+
+
 
 
 
