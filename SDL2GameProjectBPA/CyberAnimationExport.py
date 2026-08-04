@@ -1,6 +1,8 @@
 import bpy
 import os
 
+#TODO: Replace the object string name with an object index!
+
 # ------------------------------------------------------------
 # Unified vector table + lookup
 # ------------------------------------------------------------
