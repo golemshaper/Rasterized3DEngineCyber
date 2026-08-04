@@ -1,7 +1,7 @@
 import bpy
 import os
 
-#TODO: Replace the object string name with an object index!
+
 
 # ------------------------------------------------------------
 # Unified vector table + lookup
@@ -18,6 +18,15 @@ def get_vec_id(vec):
         vector_lookup[key] = len(vector_table)
         vector_table.append(key)
     return vector_lookup[key]
+
+def get_obj_id(obj_name,objs):
+    #get the name and a list of objects, and return the index of that name
+    index  = -1
+    for obj in objs:
+        index = index +1
+        if obj.name == obj_name:
+            return index
+    return index
 
 # ------------------------------------------------------------
 # Modern Blender 5.x API: safely extract fcurves
@@ -109,7 +118,7 @@ def export_animation_data(filepath, bake=False):
         # Animation rows: indices into the single table
         for obj in objs:
             for frame, pid, rid, sid in keyframes[obj.name]:
-                f.write(f"{obj.name},{frame},{pid},{rid},{sid}\n")
+                f.write(f"{get_obj_id(obj.name,objs)},{frame},{pid},{rid},{sid}\n")
 
     print("\nExport complete:", filepath)
 
