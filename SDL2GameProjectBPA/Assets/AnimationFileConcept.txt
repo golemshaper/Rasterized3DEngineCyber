@@ -1,0 +1,39 @@
+//FPS
+24
+
+//OBJ IDS
+Cube
+Sphere
+
+//VECTORS
+//vectors, hold positions and rotations, makes no distinction
+0,0,0
+1,1,1
+0,1,0
+2,2,2
+
+//KEYFRAMES PER OBJECT. 
+//ObjectID, Keyframe, POS, ROT, SCALE
+//Keyframe identified by the current frame first, then location, //rotation, and scale vectors.
+
+//Cube
+0,0,0,0,1
+0,24,1,0,1
+//Sphere
+1,0,1,0,1
+1,50,3,0,1  //moves to vector 2,2,2 from vector 1,1,1
+
+
+====================================================
+//File looks like:
+24
+Cube
+Sphere
+0,0,0
+1,1,1
+0,1,0
+2,2,2
+0,0,0,0,1
+0,24,1,0,1
+1,0,1,0,1
+1,50,3,0,1
