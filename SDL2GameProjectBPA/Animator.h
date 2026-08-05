@@ -27,9 +27,14 @@ struct AnimatedObject
 //lvl 0 deep
 class Animator
 {
+	
 	AnimatedObject* animatedObjects;
+	float totalTime = 0.0f;
+public:
 	void Tick(float DeltaTime);
 	void LoadAnimationFromString(const std::string& str, const std::string& animName);
-	float totalTime = 0.0f;
+private:
+	std::vector<std::string> SplitByChar(const std::string& str, char c);
+	std::string trim(const std::string& s);
 };
 

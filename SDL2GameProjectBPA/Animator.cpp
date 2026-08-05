@@ -1,4 +1,7 @@
 #include "Animator.h"
+#include <string>
+#include <iostream>
+#include <sstream>
 
 void Animator::Tick(float DeltaTime)
 {
@@ -31,7 +34,8 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
 
     //final animation data container:
     AnimatedObject CreatedAnimation;
-
+    //vectors container:
+    vec3d* vectors;
     //name
     CreatedAnimation.animName = animName;
 
@@ -46,6 +50,7 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
     //parse
     for (std::size_t i = 0; i < str.size(); ++i)
     {
+        std::vector<std::string>  csv = SplitByChar(sb, ',');
         char c = str[i];
         switch (mode)
         {
@@ -54,7 +59,24 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
             {
                 int fps = std::stoi(sb);
                 sb.clear();//clearing data
+                mode = m_fps;
+                continue;
             }
+            break;
+        case m_objects:
+            //build object list to generate ID index.
+
+            break;
+        case m_vectors:
+            if (csv.size() > 3)
+            {
+                //we finished the vector list, since csv has more then 3 elements
+                mode = m_frames;
+            }
+            break;
+        case m_frames:
+            //build frames here.
+
             break;
 
         default:
@@ -62,4 +84,29 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
         }
         sb += c;
     }
+}
+
+
+//String helpers:
+std::vector<std::string> Animator::SplitByChar(const std::string& str, char c)
+{
+    std::vector<std::string> strings;
+    std::istringstream f(str);
+    std::string s;
+    while (std::getline(f, s, c)) {
+        strings.push_back(s);
+    }
+    return strings;
+}
+std::string Animator::trim(const std::string& s)
+{
+    size_t start = 0;
+    while (start < s.size() && std::isspace(static_cast<unsigned char>(s[start])))
+        ++start;
+
+    size_t end = s.size();
+    while (end > start && std::isspace(static_cast<unsigned char>(s[end - 1])))
+        --end;
+
+    return s.substr(start, end - start);
 }
