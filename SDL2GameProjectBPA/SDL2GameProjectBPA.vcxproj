@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animator.cpp" />
     <ClCompile Include="DrawScratchSpace.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameAthenaSlashEmUp.cpp" />
@@ -155,6 +156,7 @@
     <ClCompile Include="ThirdPersonMovement.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animator.h" />
     <ClInclude Include="BMPReader.hpp" />
     <ClInclude Include="BMPWriter.hpp" />
     <ClInclude Include="DrawScratchSpace.h" />
