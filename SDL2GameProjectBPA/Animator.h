@@ -1,18 +1,29 @@
 #pragma once
 #include "DrawScratchSpace.h"
 #include <string>
+#include <unordered_map>
 
 //lvl 2
 struct Frame
 {
+	int objId;
 	int frame;
-	vec3d loc;
+	/*vec3d loc;
 	vec3d rot;
-	vec3d scale;
+	vec3d scale;*/
+	int locId;
+	int rotId;
+	int scaleId;
+
+
 };
 //lvl 3
 struct Animation
 {
+	//animation contains frames for all objects that are part of the animation. Needs to be filtered by the ID.
+	//object frames should be stored together, so don't worry about it too much.
+
+	vec3d* vectors;
 	Frame* frames;
 };
 //lvl 1
@@ -21,14 +32,18 @@ struct AnimatedObject
 	int objID;
 	std::string animName;
 	Animation* animation;
+	std::vector<std::string> objectNames;
+	std::unordered_map<std::string, int> objectMap;
+
+
 	int currentFrame;
 	int fps = 24;
 };
 //lvl 0 deep
 class Animator
 {
-	
 	AnimatedObject* animatedObjects;
+
 	float totalTime = 0.0f;
 public:
 	void Tick(float DeltaTime);

@@ -30,6 +30,7 @@ Cone
 void Animator::LoadAnimationFromString(const std::string& str, const std::string& animName)
 {
     std::string sb;
+
     sb.reserve(1024);
 
     //final animation data container:
@@ -58,13 +59,30 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
             if (c == '\n')
             {
                 int fps = std::stoi(sb);
+                mode = m_objects;
+                //set data
+                CreatedAnimation.fps = fps;
                 sb.clear();//clearing data
-                mode = m_fps;
                 continue;
             }
             break;
         case m_objects:
             //build object list to generate ID index.
+            if (c == '\n') 
+            {
+                if (csv.size() >= 3)
+                {
+                    //switch to vectors!
+                    CreatedAnimation.fps = m_vectors;
+                    continue;
+                }
+                //build name data
+                CreatedAnimation.objectNames.push_back(sb);
+                CreatedAnimation.objectMap[sb] = CreatedAnimation.objectNames.size() -1; //minus one, right?
+
+                sb.clear();//clearing data
+                continue;
+            }
 
             break;
         case m_vectors:
@@ -72,11 +90,23 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
             {
                 //we finished the vector list, since csv has more then 3 elements
                 mode = m_frames;
+                continue;
             }
             break;
         case m_frames:
             //build frames here.
+            if (c == '\n')
+            {
+                Frame nFrame;
+                nFrame.objId = std::stoi(csv[0]);
+                nFrame.frame = std::stoi(csv[1]);
+                nFrame.locId = std::stoi(csv[2]);
+                nFrame.rotId = std::stoi(csv[3]);
+                nFrame.scaleId = std::stoi(csv[4]);
 
+                sb.clear();//clearing data
+                continue;
+            }
             break;
 
         default:
