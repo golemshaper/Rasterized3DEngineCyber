@@ -56,5 +56,7 @@ public:
 private:
 	std::vector<std::string> SplitByChar(const std::string& str, char c);
 	std::string trim(const std::string& s);
+
+	vec3d InterpolatedVectorByID(Animation anim, int a, int b, float c);
 };
 

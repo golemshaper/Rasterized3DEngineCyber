@@ -156,6 +156,14 @@ std::string Animator::trim(const std::string& s)
     return s.substr(start, end - start);
 }
 
+vec3d Animator::InterpolatedVectorByID(Animation anim, int a, int b, float c)
+{
+    vec3d va = anim.vectors[a];
+    vec3d vb = anim.vectors[b];
+    vec3d result = va + (vb - va) * c; //lerp
+    return result;
+}
+
 void Animator::InitializeAnim()
 {
     if (animatedObjects.size()<=0)
@@ -176,5 +184,8 @@ void Animator::Tick(float DeltaTime)
 
         float totalTime = animatedObjects[i].totalTime += effectiveDT;
         animatedObjects[i].currentFrame = (int)(totalTime * fps);
+
+
+
     }
 }
