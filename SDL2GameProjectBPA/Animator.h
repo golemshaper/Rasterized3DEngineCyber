@@ -29,25 +29,30 @@ struct Animation
 //lvl 1
 struct AnimatedObject
 {
-	int objID;
+
+	int objID=0;
 	std::string animName;
 	Animation* animation;
 	std::vector<std::string> objectNames;
 	std::unordered_map<std::string, int> objectMap;
 
-
-	int currentFrame;
+	float totalTime = 0.0f;
+	float accumulator = 0.0f;
+	int currentFrame=0;
 	int fps = 24;
 };
 //lvl 0 deep
 class Animator
 {
-	AnimatedObject* animatedObjects;
-
-	float totalTime = 0.0f;
 public:
+	std::vector<AnimatedObject> animatedObjects;
+
+	
+public:
+	void InitializeAnim();
 	void Tick(float DeltaTime);
 	void LoadAnimationFromString(const std::string& str, const std::string& animName);
+	void LoadAnimationFromFile(const std::string path, const std::string& animName);
 private:
 	std::vector<std::string> SplitByChar(const std::string& str, char c);
 	std::string trim(const std::string& s);

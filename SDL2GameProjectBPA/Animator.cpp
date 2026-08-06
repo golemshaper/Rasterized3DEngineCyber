@@ -2,12 +2,9 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
-void Animator::Tick(float DeltaTime)
-{
-    totalTime += DeltaTime;
 
-}
 /*
 * Animation example file:
 24
@@ -27,6 +24,23 @@ Cone
 1,-17,4,5,6
 1,91,7,8,1
 */
+void Animator::LoadAnimationFromFile(const std::string path, const std::string& animName)
+{
+    std::ifstream file(path);
+    std::string str;
+    std::string file_contents;
+
+    if (!file.is_open()) {
+        file_contents = "F:" + path;
+    }
+
+    while (std::getline(file, str))
+    {
+        file_contents += str;
+        file_contents.push_back('\n');
+    }
+    LoadAnimationFromString(file_contents,animName);
+}
 void Animator::LoadAnimationFromString(const std::string& str, const std::string& animName)
 {
     std::string sb;
@@ -114,6 +128,7 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
         }
         sb += c;
     }
+    //todo: Add to the list of animated objects 
 }
 
 
@@ -139,4 +154,27 @@ std::string Animator::trim(const std::string& s)
         --end;
 
     return s.substr(start, end - start);
+}
+
+void Animator::InitializeAnim()
+{
+    if (animatedObjects.size()<=0)
+    {
+        AnimatedObject animObj;
+        animatedObjects.push_back(animObj);
+    }
+}
+
+void Animator::Tick(float DeltaTime)
+{
+    for (int i = 0; i < animatedObjects.size(); i++)
+    {
+        float fps = animatedObjects[i].fps;
+
+        float currentFPS = 1.0f / DeltaTime;
+        float effectiveDT = DeltaTime * (currentFPS / fps);
+
+        float totalTime = animatedObjects[i].totalTime += effectiveDT;
+        animatedObjects[i].currentFrame = (int)(totalTime * fps);
+    }
 }
