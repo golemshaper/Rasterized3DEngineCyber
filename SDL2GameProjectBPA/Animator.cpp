@@ -49,11 +49,14 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
 
     //final animation data container:
     AnimatedObject CreatedAnimation;
+
     //vectors container:
     vec3d* vectors;
     //name
     CreatedAnimation.animName = animName;
 
+    Animation* anim = new Animation();
+    CreatedAnimation.animation = anim;
     //parse modes
     int mode = 0;
 
@@ -62,16 +65,20 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
     const int m_vectors = 2;
     const int m_frames = 3;
     
+    std::vector<std::string>   csv = SplitByChar("", ',');
     //parse
     for (std::size_t i = 0; i < str.size(); ++i)
     {
-        std::vector<std::string>  csv = SplitByChar(sb, ',');
+      
+       
         char c = str[i];
+
         switch (mode)
         {
         case m_fps:
             if (c == '\n')
             {
+                csv = SplitByChar(sb, ',');
                 int fps = std::stoi(sb);
                 mode = m_objects;
                 //set data
@@ -82,12 +89,16 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
             break;
         case m_objects:
             //build object list to generate ID index.
+           
             if (c == '\n') 
             {
+                csv = SplitByChar(sb, ',');
                 if (csv.size() >= 3)
                 {
+                    //PROBLEM, WE ARE SKIPPING DATA BY DOING THIS! WE NEED TO LOOK AHEAD!
                     //switch to vectors!
-                    CreatedAnimation.fps = m_vectors;
+                    mode = m_vectors;
+                    sb.clear();
                     continue;
                 }
                 //build name data
@@ -100,10 +111,31 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
 
             break;
         case m_vectors:
-            if (csv.size() > 3)
+           
+            if (c == '\n')
             {
+                csv = SplitByChar(sb, ',');
+                if (csv.size() > 3)
+                {
+                    //PROBLEM, WE ARE SKIPPING DATA BY DOING THIS! WE NEED TO LOOK AHEAD!
+                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
+                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
+                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
+                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
+                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
+                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
+                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
+                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
+                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
+                    mode = m_frames;
+                    sb.clear();
+                    continue;
+                }
                 //we finished the vector list, since csv has more then 3 elements
-                mode = m_frames;
+               
+                vec3d nVector = vec3d{ std::stof(csv[0]) ,std::stof(csv[1]) ,std::stof(csv[2]) };
+                CreatedAnimation.animation->vectors.push_back(nVector);
+                sb.clear();//clearing data
                 continue;
             }
             break;
@@ -111,13 +143,14 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
             //build frames here.
             if (c == '\n')
             {
+                //PROBLEM, WE ARE SKIPPING DATA BY DOING THIS! WE NEED TO LOOK AHEAD!
                 Frame nFrame;
                 nFrame.objId = std::stoi(csv[0]);
                 nFrame.frame = std::stoi(csv[1]);
                 nFrame.locId = std::stoi(csv[2]);
                 nFrame.rotId = std::stoi(csv[3]);
                 nFrame.scaleId = std::stoi(csv[4]);
-
+                CreatedAnimation.animation->frames.push_back(nFrame);
                 sb.clear();//clearing data
                 continue;
             }
@@ -129,12 +162,15 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
         sb += c;
     }
     //todo: Add to the list of animated objects 
+    animatedObjects.push_back(CreatedAnimation);
 }
 
 
 //String helpers:
 std::vector<std::string> Animator::SplitByChar(const std::string& str, char c)
 {
+   // std::cout << "SplitByChar called with: [" << str << "]\n";
+
     std::vector<std::string> strings;
     std::istringstream f(str);
     std::string s;
@@ -161,7 +197,27 @@ vec3d Animator::InterpolatedVectorByID(Animation anim, int a, int b, float c)
     vec3d va = anim.vectors[a];
     vec3d vb = anim.vectors[b];
     vec3d result = va + (vb - va) * c; //lerp
+     
     return result;
+}
+
+std::string Animator::VectorIdToString(Animation anim, int a)
+{
+    std::string sb =
+        std::to_string((int)anim.vectors[a].x) + "," +
+        std::to_string((int)anim.vectors[a].y) + "," +
+        std::to_string((int)anim.vectors[a].z);
+
+    return sb;
+}
+
+std::string Animator::VectorToString( vec3d a)
+{
+    std::string sb = 
+        std::to_string((int)a.x) + "," +
+        std::to_string((int)a.y) + "," +
+        std::to_string((int)a.z);
+    return sb;
 }
 
 void Animator::InitializeAnim()

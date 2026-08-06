@@ -23,8 +23,10 @@ struct Animation
 	//animation contains frames for all objects that are part of the animation. Needs to be filtered by the ID.
 	//object frames should be stored together, so don't worry about it too much.
 
-	vec3d* vectors;
-	Frame* frames;
+	//vec3d* vectors;
+	std::vector<vec3d> vectors;
+	std::vector<Frame> frames;
+
 };
 //lvl 1
 struct AnimatedObject
@@ -53,10 +55,14 @@ public:
 	void Tick(float DeltaTime);
 	void LoadAnimationFromString(const std::string& str, const std::string& animName);
 	void LoadAnimationFromFile(const std::string path, const std::string& animName);
+
+	vec3d InterpolatedVectorByID(Animation anim, int a, int b, float c);
+	std::string VectorIdToString(Animation anim, int a);
+	std::string VectorToString(vec3d a);
 private:
 	std::vector<std::string> SplitByChar(const std::string& str, char c);
 	std::string trim(const std::string& s);
 
-	vec3d InterpolatedVectorByID(Animation anim, int a, int b, float c);
+	
 };
 
