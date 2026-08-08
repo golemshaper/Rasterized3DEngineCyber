@@ -43,107 +43,75 @@ void Animator::LoadAnimationFromFile(const std::string path, const std::string& 
 }
 void Animator::LoadAnimationFromString(const std::string& str, const std::string& animName)
 {
-    std::string sb;
-
-    sb.reserve(1024);
-
+    //data holders
+    std::vector<std::string> csv = SplitByChar("", ',');
+    std::vector<std::string> next_csv = SplitByChar("", ',');
+    std::vector<std::string> animation_data = SplitByChar(str, '\n');
+    std::string sb = "";
     //final animation data container:
     AnimatedObject CreatedAnimation;
-
-    //vectors container:
-    vec3d* vectors;
-    //name
-    CreatedAnimation.animName = animName;
-
     Animation* anim = new Animation();
     CreatedAnimation.animation = anim;
     //parse modes
     int mode = 0;
-
-    const int m_fps = 0; 
+    const int m_fps = 0;
     const int m_objects = 1;
     const int m_vectors = 2;
     const int m_frames = 3;
-    
-    std::vector<std::string>   csv = SplitByChar("", ',');
-    //parse
-    for (std::size_t i = 0; i < str.size(); ++i)
+
+    for (std::size_t i = 0; i < animation_data.size(); ++i)
     {
-      
-       
-        char c = str[i];
+        //current data
+        sb = animation_data[i];
+        csv = SplitByChar(sb, ',');
+
+        //look ahead:
+        if (i + 1 < animation_data.size())
+        {
+            next_csv = SplitByChar(animation_data[i + 1], ',');
+        }
+        else
+        {
+            next_csv.clear();
+        }
 
         switch (mode)
         {
-        case m_fps:
-            if (c == '\n')
-            {
+            case m_fps:
                 csv = SplitByChar(sb, ',');
-                int fps = std::stoi(sb);
                 mode = m_objects;
                 //set data
-                CreatedAnimation.fps = fps;
+                CreatedAnimation.fps = std::stoi(sb);;
                 sb.clear();//clearing data
                 continue;
-            }
-            break;
-        case m_objects:
-            //build object list to generate ID index.
+            case m_objects:
+                //build object list to generate ID index.
            
-            if (c == '\n') 
-            {
-                csv = SplitByChar(sb, ',');
-                if (csv.size() >= 3)
+                if (next_csv.size() >= 3)
                 {
-                    //PROBLEM, WE ARE SKIPPING DATA BY DOING THIS! WE NEED TO LOOK AHEAD!
                     //switch to vectors!
                     mode = m_vectors;
-                    sb.clear();
                     continue;
                 }
                 //build name data
                 CreatedAnimation.objectNames.push_back(sb);
-                CreatedAnimation.objectMap[sb] = CreatedAnimation.objectNames.size() -1; //minus one, right?
+                CreatedAnimation.objectMap[sb] = CreatedAnimation.objectNames.size() - 1; //minus one, right?
 
-                sb.clear();//clearing data
                 continue;
-            }
-
-            break;
-        case m_vectors:
-           
-            if (c == '\n')
-            {
-                csv = SplitByChar(sb, ',');
-                if (csv.size() > 3)
+            case m_vectors:
+                if (next_csv.size() > 3)
                 {
-                    //PROBLEM, WE ARE SKIPPING DATA BY DOING THIS! WE NEED TO LOOK AHEAD!
-                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
-                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
-                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
-                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
-                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
-                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
-                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
-                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
-                    //parsing work continues. Some data is being skipped, so I need see what the next lines data type will be, or find a way to change modes, and go back to the start of the line in the loop
                     mode = m_frames;
                     sb.clear();
                     continue;
                 }
                 //we finished the vector list, since csv has more then 3 elements
-               
                 vec3d nVector = vec3d{ std::stof(csv[0]) ,std::stof(csv[1]) ,std::stof(csv[2]) };
                 CreatedAnimation.animation->vectors.push_back(nVector);
-                sb.clear();//clearing data
                 continue;
-            }
-            break;
-        case m_frames:
-            //build frames here.
-            if (c == '\n')
-            {
-                //PROBLEM, WE ARE SKIPPING DATA BY DOING THIS! WE NEED TO LOOK AHEAD!
+            case m_frames:
+                //build frames here.
+            
                 Frame nFrame;
                 nFrame.objId = std::stoi(csv[0]);
                 nFrame.frame = std::stoi(csv[1]);
@@ -153,17 +121,16 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
                 CreatedAnimation.animation->frames.push_back(nFrame);
                 sb.clear();//clearing data
                 continue;
-            }
-            break;
 
-        default:
-            break;
+            default:
+                break;
         }
-        sb += c;
+       
     }
-    //todo: Add to the list of animated objects 
     animatedObjects.push_back(CreatedAnimation);
+    
 }
+
 
 
 //String helpers:
