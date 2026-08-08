@@ -24,17 +24,21 @@ struct Animation
 	//object frames should be stored together, so don't worry about it too much.
 
 	//vec3d* vectors;
+
+	//pre-alocated arrays would probably be nicer
+
 	std::vector<vec3d> vectors;
 	std::vector<Frame> frames;
 
 };
 //lvl 1
-struct AnimatedObject
+struct AnimationSource
 {
 
 	int objID=0;
 	std::string animName;
 	Animation* animation;
+	//pre-alocated arrays would probably be nicer
 	std::vector<std::string> objectNames;
 	std::unordered_map<std::string, int> objectMap;
 
@@ -47,8 +51,8 @@ struct AnimatedObject
 class Animator
 {
 public:
-	std::vector<AnimatedObject> animatedObjects;
-
+	//pre-alocated arrays would probably be nicer
+	std::vector<AnimationSource> animationSources;
 	
 public:
 	void InitializeAnim();
@@ -57,6 +61,7 @@ public:
 	void LoadAnimationFromFile(const std::string path, const std::string& animName);
 
 	vec3d InterpolatedVectorByID(Animation anim, int a, int b, float c);
+	Frame RawFrameDataByFrameValue(int sourceIndex,int curObj,int curFrame);
 	std::string VectorIdToString(Animation anim, int a);
 	std::string VectorToString(vec3d a);
 private:

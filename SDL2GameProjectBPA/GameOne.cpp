@@ -42,14 +42,22 @@ void GameOne::Tick(float DeltaTime)
 void GameOne::AnimationTest(float DeltaTime)
 {
 	animator->Tick(DeltaTime);
-	int curFrame = animator->animatedObjects[0].currentFrame;
+	int curFrame = animator->animationSources[0].currentFrame;
+	if (curFrame > 247)
+	{
+		curFrame = 0;
+		animator->animationSources[0].totalTime = 0;
+		animator->animationSources[0].currentFrame = 0;
+	}
 	std::string str = std::to_string(curFrame);
 	MyScratch->DrawTextAtPos(4, 4, RGB_White, "ANIM:", MyTextSprites, 1.0f);
 	MyScratch->DrawTextAtPos(22, 12, RGB_White, str.c_str(), MyTextSprites, 1.0f);
 
 
-	int frameID = animator->animatedObjects[0].animation[0].frames[0].locId;
-	vec3d debug_vector = animator->InterpolatedVectorByID(animator->animatedObjects[0].animation[0], 0,1,0.0f);
+	int frameID = animator->animationSources[0].animation[0].frames[0].locId;
+	//vec3d debug_vector = animator->InterpolatedVectorByID(animator->animationSources[0].animation[0], 0, 1, 0.0f);
+	int vectorIndex = animator->RawFrameDataByFrameValue(0, 1, curFrame).locId;
+	vec3d debug_vector = animator->animationSources[0].animation[0].vectors[vectorIndex];
 	MyScratch->DrawTextAtPos(22, 24, RGB_White, animator->VectorToString(debug_vector).c_str(), MyTextSprites, 1.0f);
 
 }

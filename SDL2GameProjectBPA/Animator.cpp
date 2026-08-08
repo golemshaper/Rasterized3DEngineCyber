@@ -44,12 +44,13 @@ void Animator::LoadAnimationFromFile(const std::string path, const std::string& 
 void Animator::LoadAnimationFromString(const std::string& str, const std::string& animName)
 {
     //data holders
+   
     std::vector<std::string> csv = SplitByChar("", ',');
     std::vector<std::string> next_csv = SplitByChar("", ',');
     std::vector<std::string> animation_data = SplitByChar(str, '\n');
     std::string sb = "";
     //final animation data container:
-    AnimatedObject CreatedAnimation;
+    AnimationSource CreatedAnimation;
     Animation* anim = new Animation();
     CreatedAnimation.animation = anim;
     //parse modes
@@ -87,27 +88,32 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
             case m_objects:
                 //build object list to generate ID index.
            
+               
+                //build name data
+                CreatedAnimation.objectNames.push_back(sb);
+                CreatedAnimation.objectMap[sb] = CreatedAnimation.objectNames.size() - 1; //minus one, right?
+
                 if (next_csv.size() >= 3)
                 {
                     //switch to vectors!
                     mode = m_vectors;
                     continue;
                 }
-                //build name data
-                CreatedAnimation.objectNames.push_back(sb);
-                CreatedAnimation.objectMap[sb] = CreatedAnimation.objectNames.size() - 1; //minus one, right?
 
                 continue;
             case m_vectors:
+                
+                //we finished the vector list, since csv has more then 3 elements
+                vec3d nVector = vec3d{ std::stof(csv[0]) ,std::stof(csv[1]) ,std::stof(csv[2]) };
+                CreatedAnimation.animation->vectors.push_back(nVector);
+
                 if (next_csv.size() > 3)
                 {
                     mode = m_frames;
                     sb.clear();
                     continue;
                 }
-                //we finished the vector list, since csv has more then 3 elements
-                vec3d nVector = vec3d{ std::stof(csv[0]) ,std::stof(csv[1]) ,std::stof(csv[2]) };
-                CreatedAnimation.animation->vectors.push_back(nVector);
+
                 continue;
             case m_frames:
                 //build frames here.
@@ -127,7 +133,7 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
         }
        
     }
-    animatedObjects.push_back(CreatedAnimation);
+    animationSources.push_back(CreatedAnimation);
     
 }
 
@@ -168,6 +174,24 @@ vec3d Animator::InterpolatedVectorByID(Animation anim, int a, int b, float c)
     return result;
 }
 
+Frame Animator::RawFrameDataByFrameValue(int sourceIndex, int curObj, int curFrame)
+{
+    //slow probably, do better please...
+    int resultIndex = 0;
+    for (int i = 0; i < animationSources[sourceIndex].animation->frames.size(); i++)
+    {
+       Frame f = animationSources[sourceIndex].animation->frames[i];
+       if (f.objId != curObj) { continue; }
+       if (f.frame >  curFrame) { continue; }
+
+       resultIndex = i;
+    }
+    return animationSources[sourceIndex].animation->frames[resultIndex];
+}
+
+
+
+
 std::string Animator::VectorIdToString(Animation anim, int a)
 {
     std::string sb =
@@ -181,32 +205,32 @@ std::string Animator::VectorIdToString(Animation anim, int a)
 std::string Animator::VectorToString( vec3d a)
 {
     std::string sb = 
-        std::to_string((int)a.x) + "," +
-        std::to_string((int)a.y) + "," +
-        std::to_string((int)a.z);
+        std::to_string((float)a.x) + "," +
+        std::to_string((float)a.y) + "," +
+        std::to_string((float)a.z);
     return sb;
 }
 
 void Animator::InitializeAnim()
 {
-    if (animatedObjects.size()<=0)
+    if (animationSources.size()<=0)
     {
-        AnimatedObject animObj;
-        animatedObjects.push_back(animObj);
+        AnimationSource animObj;
+        animationSources.push_back(animObj);
     }
 }
 
 void Animator::Tick(float DeltaTime)
 {
-    for (int i = 0; i < animatedObjects.size(); i++)
+    for (int i = 0; i < animationSources.size(); i++)
     {
-        float fps = animatedObjects[i].fps;
+        float fps = animationSources[i].fps;
 
         float currentFPS = 1.0f / DeltaTime;
         float effectiveDT = DeltaTime * (currentFPS / fps);
 
-        float totalTime = animatedObjects[i].totalTime += effectiveDT;
-        animatedObjects[i].currentFrame = (int)(totalTime * fps);
+        float totalTime = animationSources[i].totalTime += effectiveDT;
+        animationSources[i].currentFrame = (int)(totalTime * fps);
 
 
 
