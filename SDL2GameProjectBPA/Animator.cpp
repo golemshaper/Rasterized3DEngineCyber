@@ -189,6 +189,20 @@ Frame Animator::RawFrameDataByFrameValue(int sourceIndex, int curObj, int curFra
     return animationSources[sourceIndex].animation->frames[resultIndex];
 }
 
+int Animator::GetNextFrameWithAnimationData(int sourceIndex, int curObj, int curFrame)
+{
+    for (int i = 0; i < animationSources[sourceIndex].animation->frames.size(); i++)
+    {
+        Frame f = animationSources[sourceIndex].animation->frames[i];
+        if (f.objId != curObj) { continue; }
+        if (f.frame > curFrame)
+        {
+            return f.frame;
+        }
+    }
+    return 0;
+}
+
 
 
 

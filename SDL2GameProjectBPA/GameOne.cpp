@@ -52,12 +52,29 @@ void GameOne::AnimationTest(float DeltaTime)
 	std::string str = std::to_string(curFrame);
 	MyScratch->DrawTextAtPos(4, 4, RGB_White, "ANIM:", MyTextSprites, 1.0f);
 	MyScratch->DrawTextAtPos(22, 12, RGB_White, str.c_str(), MyTextSprites, 1.0f);
+	int nextFrame = animator->GetNextFrameWithAnimationData(0, 1, curFrame);
+	str = std::to_string(nextFrame);
+	MyScratch->DrawTextAtPos(82, 12, RGB_White, str.c_str(), MyTextSprites, 1.0f);
 
 
-	int frameID = animator->animationSources[0].animation[0].frames[0].locId;
+
+
 	//vec3d debug_vector = animator->InterpolatedVectorByID(animator->animationSources[0].animation[0], 0, 1, 0.0f);
 	int vectorIndex = animator->RawFrameDataByFrameValue(0, 1, curFrame).locId;
+	int vector2Index = animator->RawFrameDataByFrameValue(0, 1, curFrame+1).locId;
 	vec3d debug_vector = animator->animationSources[0].animation[0].vectors[vectorIndex];
-	MyScratch->DrawTextAtPos(22, 24, RGB_White, animator->VectorToString(debug_vector).c_str(), MyTextSprites, 1.0f);
+	vec3d debug_vector2 = animator->animationSources[0].animation[0].vectors[vector2Index];
+
+	float interpolate_by = (((float)nextFrame * (float)curFrame) / 100.0f) * 0.01f;
+	str = std::to_string(interpolate_by);
+	MyScratch->DrawTextAtPos(102, 50, RGB_White, str.c_str(), MyTextSprites, 1.0f);
+
+	vec3d debug_vector3 = MyScratch->Lerp(debug_vector, debug_vector2, interpolate_by);
+	MyScratch->DrawTextAtPos(22, 24, RGB_White, animator->VectorToString(debug_vector3).c_str(), MyTextSprites, 1.0f);
+
+	//we know know what the current frame is, so we know the next frame.
+	//and we know the total time. Work out the in-between value and lerp using that. 
+	//the tricky thing is each frame is not individually spaced in the array, but it might not matter...?
+
 
 }
