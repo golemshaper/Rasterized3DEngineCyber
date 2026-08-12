@@ -33,7 +33,7 @@ void GameOne::Tick(float DeltaTime)
 	MyScratch->DrawVerticies = sin(totalTime*8) < 0; // the result of the < 0 is used to produce a true or false, so it changes every few frames
 	
 	MyScratch->SetCameraFOV(50);
-	MyScratch->SetCamera_Legacy(vec3d{ 0.0f, -0.25f, -4.0f }, vec3d{ 0.0f,-0.1f, 1.0f });
+	MyScratch->SetCamera_Legacy(vec3d{ 0.0f, -0.95f, -4.0f }, vec3d{ 0.0f,-0.1f, 1.0f });
 	MyScratch->DrawMesh(LoadedMesh,vec3d{ 0,0,0 },vec3d{ 1.5, 1.0, totalTime},vec3d{ 3,3,3 },true);
 	MyScratch->DrawMesh(LoadedMesh2, vec3d{ 0.25f,-1.25f,-0.92f }, vec3d{ 1.5, 1.0, totalTime }, vec3d{ 0.15f,0.15f,0.15f }, true);
 	AnimationTest(DeltaTime);
@@ -41,6 +41,15 @@ void GameOne::Tick(float DeltaTime)
 
 void GameOne::AnimationTest(float DeltaTime)
 {
+	if (delay > 0.0f)
+	{
+		MyScratch->Clear();
+		delay -= DeltaTime;
+		MyScratch->DrawTextAtPos(102, 50, RGB_White, std::to_string(delay).c_str(), MyTextSprites, 1.0f);
+		return;
+	}
+	MyScratch->Clear();
+	MyScratch->ClearZBufffer();
 	animator->Tick(DeltaTime);
 	int curFrame = animator->animationSources[0].currentFrame;
 	if (curFrame > 247)
@@ -48,14 +57,16 @@ void GameOne::AnimationTest(float DeltaTime)
 		curFrame = 0;
 		animator->animationSources[0].totalTime = 0;
 		animator->animationSources[0].currentFrame = 0;
+		prevFrameRatched = 0;
 	}
 	std::string str = std::to_string(curFrame);
 	MyScratch->DrawTextAtPos(4, 4, RGB_White, "ANIM:", MyTextSprites, 1.0f);
 	MyScratch->DrawTextAtPos(22, 12, RGB_White, str.c_str(), MyTextSprites, 1.0f);
 
 	//get vector of previous and next keyframe (slow)
-	int prevFrame = animator->GetPrevFrameWithAnimationData(0, 1, curFrame);
-	int nextFrame = animator->GetNextFrameWithAnimationData(0, 1, curFrame);
+	int objId = 0;
+	prevFrameRatched = animator->GetPrevFrameWithAnimationData(0, objId, curFrame, prevFrameRatched);
+	int nextFrame = animator->GetNextFrameWithAnimationData(0, objId, curFrame);
 	str = std::to_string(nextFrame);
 	MyScratch->DrawTextAtPos(82, 12, RGB_White, str.c_str(), MyTextSprites, 1.0f);
 
@@ -63,26 +74,42 @@ void GameOne::AnimationTest(float DeltaTime)
 
 
 	//LOC: vector of each keyframe for location:
-	int vectorIndex = animator->RawFrameDataByFrameValue(0, 1, prevFrame).locId;
-	int vector2Index = animator->RawFrameDataByFrameValue(0, 1, nextFrame).locId;
+	int vectorIndex = animator->RawFrameDataByFrameValue(0, objId, prevFrameRatched).locId;
+	int vector2Index = animator->RawFrameDataByFrameValue(0, objId, nextFrame).locId;
 	vec3d debug_vector = animator->animationSources[0].animation[0].vectors[vectorIndex];
 	vec3d debug_vector2 = animator->animationSources[0].animation[0].vectors[vector2Index];
+	float interpolate_by = animator->GetBetweenFrameTime(curFrame, prevFrameRatched, nextFrame, 247);
+	vec3d debug_vector3 = MyScratch->Lerp(debug_vector, debug_vector2, interpolate_by);
 
-	//float interpolate_by = (((float)nextFrame * (float)curFrame) / 100.0f) * 0.01f;
-	float interpolate_by = animator->GetBetweenFrameTime(curFrame, prevFrame, nextFrame,247);
+	//ROT:
+	//LOC: vector of each keyframe for location:
+	int scaleIndex1 = animator->RawFrameDataByFrameValue(0, objId, prevFrameRatched).scaleId;
+	int scaleIndex2 = animator->RawFrameDataByFrameValue(0, objId, nextFrame).scaleId;
+	vec3d scale_vector1 = animator->animationSources[0].animation[0].vectors[scaleIndex1];
+	vec3d scale_vector2 = animator->animationSources[0].animation[0].vectors[scaleIndex2];
+	vec3d scale_vector3 = MyScratch->Lerp(scale_vector1, scale_vector2, interpolate_by);
 
-	
 
 
 	str = std::to_string(interpolate_by);
 	MyScratch->DrawTextAtPos(102, 50, RGB_White, str.c_str(), MyTextSprites, 1.0f);
 
-	vec3d debug_vector3 = MyScratch->Lerp(debug_vector, debug_vector2, interpolate_by);
-	MyScratch->DrawTextAtPos(22, 24, RGB_White, animator->VectorToString(debug_vector3).c_str(), MyTextSprites, 1.0f);
+
+
+
+
+	MyScratch->DrawTextAtPos(22, 24, RGB_White, animator->VectorToString(scale_vector3).c_str(), MyTextSprites, 1.0f);
+
+	MyScratch->DrawMesh(LoadedMesh2, debug_vector3, vec3d{ 1.5, 1.0, totalTime }, scale_vector3* vec3d{1.25,-1.25,1.25}, true);
 
 	//we know know what the current frame is, so we know the next frame.
 	//and we know the total time. Work out the in-between value and lerp using that. 
 	//the tricky thing is each frame is not individually spaced in the array, but it might not matter...?
 
+		//data
+	str = std::to_string(prevFrameRatched);
+	MyScratch->DrawTextAtPos(100, 100, RGB_White, str.c_str(), MyTextSprites, 1.0f);
+	str = std::to_string(nextFrame);
+	MyScratch->DrawTextAtPos(100, 150, RGB_White, str.c_str(), MyTextSprites, 1.0f);
 
 }

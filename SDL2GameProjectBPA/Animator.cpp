@@ -104,7 +104,7 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
             case m_vectors:
                 
                 //we finished the vector list, since csv has more then 3 elements
-                vec3d nVector = vec3d{ std::stof(csv[0]) ,std::stof(csv[1]) ,std::stof(csv[2]) };
+                vec3d nVector = vec3d{ std::stof(csv[0]) ,std::stof(csv[2]) * -1 ,std::stof(csv[1]) };
                 CreatedAnimation.animation->vectors.push_back(nVector);
 
                 if (next_csv.size() > 3)
@@ -203,18 +203,22 @@ int Animator::GetNextFrameWithAnimationData(int sourceIndex, int curObj, int cur
     return 0;
 }
 
-int Animator::GetPrevFrameWithAnimationData(int sourceIndex, int curObj, int curFrame)
+int Animator::GetPrevFrameWithAnimationData(int sourceIndex, int curObj, int curFrame, int prevFrameRatchet)
 {
     for (int i = 0; i < animationSources[sourceIndex].animation->frames.size(); i++)
     {
         Frame f = animationSources[sourceIndex].animation->frames[i];
         if (f.objId != curObj) { continue; }
-        if (f.frame < curFrame)
+        if (f.frame > prevFrameRatchet)
         {
-            return f.frame;
+            if (f.frame <= curFrame)
+            {
+                return f.frame;
+            }
         }
+        
     }
-    return GetNextFrameWithAnimationData(sourceIndex, curObj, curFrame);
+    return prevFrameRatchet;
 }
 
 float Animator::GetBetweenFrameTime(float currentFrame, float lastKey, float nextKey, float totalFrames)

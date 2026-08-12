@@ -63,7 +63,7 @@ public:
 	vec3d InterpolatedVectorByID(Animation anim, int a, int b, float c);
 	Frame RawFrameDataByFrameValue(int sourceIndex,int curObj,int curFrame);
 	int GetNextFrameWithAnimationData(int sourceIndex, int curObj, int curFrame);
-	int GetPrevFrameWithAnimationData(int sourceIndex, int curObj, int curFrame);
+	int GetPrevFrameWithAnimationData(int sourceIndex, int curObj, int curFrame, int prevFrameRatchet);
 	float GetBetweenFrameTime(float currentFrame, float lastKey, float nextKey, float totalFrames);
 	std::string VectorIdToString(Animation anim, int a);
 	std::string VectorToString(vec3d a);
