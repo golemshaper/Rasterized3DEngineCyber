@@ -203,6 +203,35 @@ int Animator::GetNextFrameWithAnimationData(int sourceIndex, int curObj, int cur
     return 0;
 }
 
+int Animator::GetPrevFrameWithAnimationData(int sourceIndex, int curObj, int curFrame)
+{
+    for (int i = 0; i < animationSources[sourceIndex].animation->frames.size(); i++)
+    {
+        Frame f = animationSources[sourceIndex].animation->frames[i];
+        if (f.objId != curObj) { continue; }
+        if (f.frame < curFrame)
+        {
+            return f.frame;
+        }
+    }
+    return GetNextFrameWithAnimationData(sourceIndex, curObj, curFrame);
+}
+
+float Animator::GetBetweenFrameTime(float currentFrame, float lastKey, float nextKey, float totalFrames)
+{
+    //kind of hate this one.
+    float tGlobal = currentFrame / totalFrames;
+    float tStart = lastKey / totalFrames;
+    float tEnd = nextKey / totalFrames;
+
+    float t = (tGlobal - tStart) / (tEnd - tStart);
+    float result = t;
+    //sad mans clamp:
+    if (result < 0.0f)result = 0.0f;
+    if (result > 1.0f)result = 1.0f;
+    return result;
+}
+
 
 
 

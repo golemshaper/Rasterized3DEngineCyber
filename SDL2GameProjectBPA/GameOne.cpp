@@ -52,6 +52,9 @@ void GameOne::AnimationTest(float DeltaTime)
 	std::string str = std::to_string(curFrame);
 	MyScratch->DrawTextAtPos(4, 4, RGB_White, "ANIM:", MyTextSprites, 1.0f);
 	MyScratch->DrawTextAtPos(22, 12, RGB_White, str.c_str(), MyTextSprites, 1.0f);
+
+	//get vector of previous and next keyframe (slow)
+	int prevFrame = animator->GetPrevFrameWithAnimationData(0, 1, curFrame);
 	int nextFrame = animator->GetNextFrameWithAnimationData(0, 1, curFrame);
 	str = std::to_string(nextFrame);
 	MyScratch->DrawTextAtPos(82, 12, RGB_White, str.c_str(), MyTextSprites, 1.0f);
@@ -59,13 +62,18 @@ void GameOne::AnimationTest(float DeltaTime)
 
 
 
-	//vec3d debug_vector = animator->InterpolatedVectorByID(animator->animationSources[0].animation[0], 0, 1, 0.0f);
-	int vectorIndex = animator->RawFrameDataByFrameValue(0, 1, curFrame).locId;
-	int vector2Index = animator->RawFrameDataByFrameValue(0, 1, curFrame+1).locId;
+	//LOC: vector of each keyframe for location:
+	int vectorIndex = animator->RawFrameDataByFrameValue(0, 1, prevFrame).locId;
+	int vector2Index = animator->RawFrameDataByFrameValue(0, 1, nextFrame).locId;
 	vec3d debug_vector = animator->animationSources[0].animation[0].vectors[vectorIndex];
 	vec3d debug_vector2 = animator->animationSources[0].animation[0].vectors[vector2Index];
 
-	float interpolate_by = (((float)nextFrame * (float)curFrame) / 100.0f) * 0.01f;
+	//float interpolate_by = (((float)nextFrame * (float)curFrame) / 100.0f) * 0.01f;
+	float interpolate_by = animator->GetBetweenFrameTime(curFrame, prevFrame, nextFrame,247);
+
+	
+
+
 	str = std::to_string(interpolate_by);
 	MyScratch->DrawTextAtPos(102, 50, RGB_White, str.c_str(), MyTextSprites, 1.0f);
 
