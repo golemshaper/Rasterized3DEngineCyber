@@ -51,21 +51,25 @@ void GameOne::AnimationTest(float DeltaTime)
 	MyScratch->Clear();
 	MyScratch->ClearZBufffer();
 	animator->Tick(DeltaTime);
+
+	int objId = 0;
 	int curFrame = animator->animationSources[0].currentFrame;
+	int prevFrameRatchet = animator->LastFrameRatchetPool[objId];
 	if (curFrame > 247)
 	{
 		curFrame = 0;
 		animator->animationSources[0].totalTime = 0;
 		animator->animationSources[0].currentFrame = 0;
-		prevFrameRatched = 0;
+		animator->LastFrameRatchetPool[objId] = 0;
 	}
 	std::string str = std::to_string(curFrame);
 	MyScratch->DrawTextAtPos(4, 4, RGB_White, "ANIM:", MyTextSprites, 1.0f);
 	MyScratch->DrawTextAtPos(22, 12, RGB_White, str.c_str(), MyTextSprites, 1.0f);
 
 	//get vector of previous and next keyframe (slow)
-	int objId = 0;
-	prevFrameRatched = animator->GetPrevFrameWithAnimationData(0, objId, curFrame, prevFrameRatched);
+	animator->LastFrameRatchetPool[objId] = animator->GetPrevFrameWithAnimationData(0, objId, curFrame, prevFrameRatchet);
+	prevFrameRatchet = animator->LastFrameRatchetPool[objId];
+	
 	int nextFrame = animator->GetNextFrameWithAnimationData(0, objId, curFrame);
 	str = std::to_string(nextFrame);
 	MyScratch->DrawTextAtPos(82, 12, RGB_White, str.c_str(), MyTextSprites, 1.0f);
@@ -74,16 +78,16 @@ void GameOne::AnimationTest(float DeltaTime)
 
 
 	//LOC: vector of each keyframe for location:
-	int vectorIndex = animator->RawFrameDataByFrameValue(0, objId, prevFrameRatched).locId;
+	int vectorIndex = animator->RawFrameDataByFrameValue(0, objId, prevFrameRatchet).locId;
 	int vector2Index = animator->RawFrameDataByFrameValue(0, objId, nextFrame).locId;
 	vec3d debug_vector = animator->animationSources[0].animation[0].vectors[vectorIndex];
 	vec3d debug_vector2 = animator->animationSources[0].animation[0].vectors[vector2Index];
-	float interpolate_by = animator->GetBetweenFrameTime(curFrame, prevFrameRatched, nextFrame, 247);
+	float interpolate_by = animator->GetBetweenFrameTime(curFrame, prevFrameRatchet, nextFrame, 247);
 	vec3d debug_vector3 = MyScratch->Lerp(debug_vector, debug_vector2, interpolate_by);
 
 	//ROT:
 	//LOC: vector of each keyframe for location:
-	int scaleIndex1 = animator->RawFrameDataByFrameValue(0, objId, prevFrameRatched).scaleId;
+	int scaleIndex1 = animator->RawFrameDataByFrameValue(0, objId, prevFrameRatchet).scaleId;
 	int scaleIndex2 = animator->RawFrameDataByFrameValue(0, objId, nextFrame).scaleId;
 	vec3d scale_vector1 = animator->animationSources[0].animation[0].vectors[scaleIndex1];
 	vec3d scale_vector2 = animator->animationSources[0].animation[0].vectors[scaleIndex2];
@@ -107,7 +111,7 @@ void GameOne::AnimationTest(float DeltaTime)
 	//the tricky thing is each frame is not individually spaced in the array, but it might not matter...?
 
 		//data
-	str = std::to_string(prevFrameRatched);
+	str = std::to_string(prevFrameRatchet);
 	MyScratch->DrawTextAtPos(100, 100, RGB_White, str.c_str(), MyTextSprites, 1.0f);
 	str = std::to_string(nextFrame);
 	MyScratch->DrawTextAtPos(100, 150, RGB_White, str.c_str(), MyTextSprites, 1.0f);

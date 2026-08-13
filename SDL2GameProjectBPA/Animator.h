@@ -57,9 +57,11 @@ public:
 public:
 	void InitializeAnim();
 	void Tick(float DeltaTime);
+	int LastFrameRatchetPool[256]; //max number of animated objects!
+
+
 	void LoadAnimationFromString(const std::string& str, const std::string& animName);
 	void LoadAnimationFromFile(const std::string path, const std::string& animName);
-
 	vec3d InterpolatedVectorByID(Animation anim, int a, int b, float c);
 	Frame RawFrameDataByFrameValue(int sourceIndex,int curObj,int curFrame);
 	int GetNextFrameWithAnimationData(int sourceIndex, int curObj, int curFrame);

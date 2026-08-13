@@ -13,7 +13,7 @@ public:
 	Mesh LoadedMesh;
 	Mesh LoadedMesh2;
 	Animator* animator;
-	int prevFrameRatched = 0;
-	float delay = 12.0f;
+	
+	float delay = 1.0f;
 };
 
