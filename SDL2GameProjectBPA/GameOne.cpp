@@ -36,7 +36,7 @@ void GameOne::Tick(float DeltaTime)
 	MyScratch->SetCamera_Legacy(vec3d{ 0.0f, -0.95f, -4.0f }, vec3d{ 0.0f,-0.1f, 1.0f });
 	MyScratch->DrawMesh(LoadedMesh,vec3d{ 0,0,0 },vec3d{ 1.5, 1.0, totalTime},vec3d{ 3,3,3 },true);
 	MyScratch->DrawMesh(LoadedMesh2, vec3d{ 0.25f,-1.25f,-0.92f }, vec3d{ 1.5, 1.0, totalTime }, vec3d{ 0.15f,0.15f,0.15f }, true);
-	AnimationTest(DeltaTime);
+	AnimationTest2(DeltaTime);
 }
 
 void GameOne::AnimationTest(float DeltaTime)
@@ -115,5 +115,29 @@ void GameOne::AnimationTest(float DeltaTime)
 	MyScratch->DrawTextAtPos(100, 100, RGB_White, str.c_str(), MyTextSprites, 1.0f);
 	str = std::to_string(nextFrame);
 	MyScratch->DrawTextAtPos(100, 150, RGB_White, str.c_str(), MyTextSprites, 1.0f);
+
+}
+
+void GameOne::AnimationTest2(float DeltaTime)
+{
+	MyScratch->Clear();
+	MyScratch->ClearZBufffer();
+	animator->Tick(DeltaTime);
+	
+	int curFrame = animator->animationSources[0].currentFrame;
+	//obj 1
+	AnimTransform animData = animator->GetAnimatedTransform(0,0, curFrame,247);
+	MyScratch->DrawMesh(LoadedMesh2, animData.loc, vec3d{ 1.5, 1.0, totalTime }, animData.scale, true);
+
+	//obj 2
+	AnimTransform animData2 = animator->GetAnimatedTransform(0, 1, curFrame, 247);
+	MyScratch->DrawMesh(LoadedMesh, animData2.loc, vec3d{ 1.5, 1.0, totalTime }, animData2.scale, true);
+
+
+
+
+
+
+
 
 }

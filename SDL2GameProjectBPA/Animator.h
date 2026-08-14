@@ -2,7 +2,13 @@
 #include "DrawScratchSpace.h"
 #include <string>
 #include <unordered_map>
-
+//not part of the level, just a way to bridge for drawing
+struct AnimTransform
+{
+	vec3d loc;
+	vec3d rot;
+	vec3d scale;
+};
 //lvl 2
 struct Frame
 {
@@ -14,7 +20,6 @@ struct Frame
 	int locId;
 	int rotId;
 	int scaleId;
-
 
 };
 //lvl 3
@@ -37,7 +42,8 @@ struct AnimationSource
 
 	int objID=0;
 	std::string animName;
-	Animation* animation;
+	Animation* animation;  //remove the pointer, make this a single animation per animation source please!
+
 	//pre-alocated arrays would probably be nicer
 	std::vector<std::string> objectNames;
 	std::unordered_map<std::string, int> objectMap;
@@ -69,10 +75,16 @@ public:
 	float GetBetweenFrameTime(float currentFrame, float lastKey, float nextKey, float totalFrames);
 	std::string VectorIdToString(Animation anim, int a);
 	std::string VectorToString(vec3d a);
+
+	AnimTransform GetAnimatedTransform(int animSource, int objId, int& curFrame, int maxFrame);
+
 private:
 	std::vector<std::string> SplitByChar(const std::string& str, char c);
 	std::string trim(const std::string& s);
-
+	vec3d Lerp(vec3d a, vec3d b, float c)
+	{
+		return a + (b - a) * c;
+	}
 	
 };
 

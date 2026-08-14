@@ -258,6 +258,65 @@ std::string Animator::VectorToString( vec3d a)
     return sb;
 }
 
+
+
+//PER OBJECT ID ANIMATION RESULTS
+AnimTransform Animator::GetAnimatedTransform(int animSource, int objId, int& curFrame, int maxFrame)
+{
+    AnimTransform result = AnimTransform();
+
+    
+
+    //frame data gather
+    int prevFrameRatchet = LastFrameRatchetPool[objId];
+    int nextFrame = GetNextFrameWithAnimationData(animSource, objId, curFrame);
+
+    //loop
+    if (curFrame > maxFrame)
+    {
+        curFrame = 0;
+        animationSources[animSource].totalTime = 0;
+        animationSources[animSource].currentFrame = 0;
+        LastFrameRatchetPool[objId] = maxFrame;
+    }
+
+    //current frame gather
+    LastFrameRatchetPool[objId] = GetPrevFrameWithAnimationData(animSource, objId, curFrame, prevFrameRatchet);
+    prevFrameRatchet = LastFrameRatchetPool[objId]; //<important to update this!
+    //time
+    float interpolate_by = GetBetweenFrameTime(curFrame, prevFrameRatchet, nextFrame, maxFrame);
+    //key frames
+    Frame localFrame = RawFrameDataByFrameValue(animSource, objId, prevFrameRatchet);
+    Frame next_localFrame = RawFrameDataByFrameValue(animSource, objId, nextFrame);
+    //loc
+
+    int loc_vec_index1 = localFrame.locId;
+    int loc_vec_index2 = next_localFrame.locId;
+    vec3d l1 = animationSources[animSource].animation[0].vectors[loc_vec_index1];
+    vec3d l2 = animationSources[animSource].animation[0].vectors[loc_vec_index2];
+    vec3d l3 = Lerp(l1, l2, interpolate_by);
+
+    //rot
+    int rot_vec_index1 = localFrame.rotId;
+    int rot_vec_index2 = next_localFrame.rotId;
+    vec3d r1 = animationSources[animSource].animation[0].vectors[rot_vec_index1];
+    vec3d r2 = animationSources[animSource].animation[0].vectors[rot_vec_index2];
+    vec3d r3 = Lerp(r1, r2, interpolate_by);
+
+    //scale
+    int scale_vec_index1 = localFrame.scaleId;
+    int scale_vec_index2 = next_localFrame.scaleId;
+    vec3d s1 = animationSources[animSource].animation[0].vectors[scale_vec_index1];
+    vec3d s2 = animationSources[animSource].animation[0].vectors[scale_vec_index2];
+    vec3d s3 = Lerp(s1, s2, interpolate_by);
+
+    result.loc = l3;
+    result.rot = r3;
+    result.scale = s3;
+
+    return result;
+}
+
 void Animator::InitializeAnim()
 {
     if (animationSources.size()<=0)
@@ -278,8 +337,5 @@ void Animator::Tick(float DeltaTime)
 
         float totalTime = animationSources[i].totalTime += effectiveDT;
         animationSources[i].currentFrame = (int)(totalTime * fps);
-
-
-
     }
 }

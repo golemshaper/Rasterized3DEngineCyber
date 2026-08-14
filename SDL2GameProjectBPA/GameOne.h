@@ -10,6 +10,7 @@ public:
 	void Initialize();
 	void Tick(float DeltaTime);
 	void AnimationTest(float DeltaTime);
+	void AnimationTest2(float DeltaTime);
 	Mesh LoadedMesh;
 	Mesh LoadedMesh2;
 	Animator* animator;
