@@ -277,8 +277,10 @@ AnimTransform Animator::GetAnimatedTransform(int animSource, int objId, int& cur
         curFrame = 0;
         animationSources[animSource].totalTime = 0;
         animationSources[animSource].currentFrame = 0;
-        LastFrameRatchetPool[objId] = maxFrame;
+        prevFrameRatchet = RawFrameDataByFrameValue(animSource, objId, 1).frame;
+        LastFrameRatchetPool[objId] = prevFrameRatchet;
     }
+
 
     //current frame gather
     LastFrameRatchetPool[objId] = GetPrevFrameWithAnimationData(animSource, objId, curFrame, prevFrameRatchet);

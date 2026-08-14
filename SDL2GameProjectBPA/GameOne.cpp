@@ -41,6 +41,11 @@ void GameOne::Tick(float DeltaTime)
 
 void GameOne::AnimationTest(float DeltaTime)
 {
+	//OLD ROUGH TEST. NOT IN USE.
+	//OLD ROUGH TEST. NOT IN USE.
+	//OLD ROUGH TEST. NOT IN USE.
+	//OLD ROUGH TEST. NOT IN USE.
+
 	if (delay > 0.0f)
 	{
 		MyScratch->Clear();
@@ -61,6 +66,7 @@ void GameOne::AnimationTest(float DeltaTime)
 		animator->animationSources[0].totalTime = 0;
 		animator->animationSources[0].currentFrame = 0;
 		animator->LastFrameRatchetPool[objId] = 0;
+		prevFrameRatchet = 0;
 	}
 	std::string str = std::to_string(curFrame);
 	MyScratch->DrawTextAtPos(4, 4, RGB_White, "ANIM:", MyTextSprites, 1.0f);
@@ -120,18 +126,21 @@ void GameOne::AnimationTest(float DeltaTime)
 
 void GameOne::AnimationTest2(float DeltaTime)
 {
+	//plays back animation loaded in the animator, and returns each objects results as an AnimTransform bundle.
+	//use data inside of AnimTransform to draw objects at the correct position and scale (rotation does not yet work, as the data is mismatched)
+	//but for camera rotation, we use look targets, so cameras will just be two object positions anyway. Perfect for cutscene or rail camera behavior already.
 	MyScratch->Clear();
 	MyScratch->ClearZBufffer();
 	animator->Tick(DeltaTime);
-	
+
 	int curFrame = animator->animationSources[0].currentFrame;
 	//obj 1
-	AnimTransform animData = animator->GetAnimatedTransform(0,0, curFrame,247);
+	AnimTransform animData = animator->GetAnimatedTransform(0, 0, curFrame, 247);
 	MyScratch->DrawMesh(LoadedMesh2, animData.loc, vec3d{ 1.5, 1.0, totalTime }, animData.scale, true);
 
 	//obj 2
 	AnimTransform animData2 = animator->GetAnimatedTransform(0, 1, curFrame, 247);
-	MyScratch->DrawMesh(LoadedMesh, animData2.loc, vec3d{ 1.5, 1.0, totalTime }, animData2.scale, true);
+	MyScratch->DrawMesh(LoadedMesh, animData2.loc , vec3d{ 1.5, 1.0, totalTime }, animData2.scale * vec3d{1, -1, 1}, true);
 
 
 
