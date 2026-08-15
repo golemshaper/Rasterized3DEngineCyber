@@ -2,6 +2,7 @@
 #include "GameOne.h"
 #include "ModelFileParser.h"
 #include "Animator.h"
+#include "BMPReader.hpp"
 void GameOne::Initialize()
 {
 	//Do not add any more complexity to this example project. Make a new one
@@ -16,13 +17,28 @@ void GameOne::Initialize()
 
 
 	//------------------------------
+	//ANIM
 	animator = new Animator();
-	
 	animator->LoadAnimationFromFile("Assets/hello_animation.txt","MyAnimation");
 	animator->InitializeAnim();
+	//CameraAnim
+	EnvironmentMesh = parser.ParseModelFromFile("Assets/Models/RailShooterMazeDaggerZone.txt");
+	int texWidth = 16; int texHeight = 16;
+	Texture = ReadBMP("Assets/grass.bmp", texWidth, texWidth);
+
+	CameraAnimator = new Animator();
+	CameraAnimator->LoadAnimationFromFile("Assets/Animations/CameraAnim_Maze_DaggerZone.txt", "CamDggrZne");
+	CameraAnimator->InitializeAnim();
+
 }
 void GameOne::Tick(float DeltaTime)
 {
+
+	if (true)
+	{
+		CameraAnimTest3(DeltaTime);
+		return;
+	}
 	MyScratch->Clear();
 	MyScratch->ClearZBufffer();
 	totalTime += DeltaTime;
@@ -37,6 +53,7 @@ void GameOne::Tick(float DeltaTime)
 	MyScratch->DrawMesh(LoadedMesh,vec3d{ 0,0,0 },vec3d{ 1.5, 1.0, totalTime},vec3d{ 3,3,3 },true);
 	MyScratch->DrawMesh(LoadedMesh2, vec3d{ 0.25f,-1.25f,-0.92f }, vec3d{ 1.5, 1.0, totalTime }, vec3d{ 0.15f,0.15f,0.15f }, true);
 	AnimationTest2(DeltaTime);
+	
 }
 
 void GameOne::AnimationTest(float DeltaTime)
@@ -132,8 +149,12 @@ void GameOne::AnimationTest2(float DeltaTime)
 	MyScratch->Clear();
 	MyScratch->ClearZBufffer();
 	animator->Tick(DeltaTime);
+	MyScratch->ZWriteOn = true;
+	MyScratch->NearClip = 0.0001f;
 
 	int curFrame = animator->animationSources[0].currentFrame;
+
+	
 	//obj 1
 	AnimTransform animData = animator->GetAnimatedTransform(0, 0, curFrame, 247);
 	MyScratch->DrawMesh(LoadedMesh2, animData.loc, vec3d{ 1.5, 1.0, totalTime }, animData.scale, true);
@@ -148,5 +169,42 @@ void GameOne::AnimationTest2(float DeltaTime)
 
 
 
+
+}
+
+void GameOne::CameraAnimTest3(float DeltaTime)
+{
+	/*if (delay > 0.0f)
+	{
+		MyScratch->Clear();
+		delay -= DeltaTime;
+		MyScratch->DrawTextAtPos(102, 50, RGB_White, std::to_string(delay).c_str(), MyTextSprites, 1.0f);
+		return;
+	}*/
+	MyScratch->Clear();
+	MyScratch->ClearZBufffer();
+	MyScratch->FarClip = 10.0f;
+	MyScratch->NearClip = 0.5f;
+	MyScratch->SetTexture(Texture, 16, 16);
+	MyScratch->TextureDrawOn = true;
+	CameraAnimator->Tick(DeltaTime);
+
+	MyScratch->UseGouraudShading = false;
+	
+
+	int curFrame = CameraAnimator->animationSources[0].currentFrame;
+	//obj 1
+	AnimTransform camLoc = CameraAnimator->GetAnimatedTransform(0, 1, curFrame, 250);
+	//obj 2
+	AnimTransform camTarget = CameraAnimator->GetAnimatedTransform(0, 2, curFrame, 250);
+	MyScratch->SetCameraFOV(75);
+	//MyScratch->SetCamera(camLoc.loc * vec3d{ 1,-1,1 }, camTarget.loc * vec3d{ 1,-1,1 });
+	MyScratch->SetCamera(camLoc.loc + vec3d{ 0,0,0 }, camTarget.loc * vec3d{ 1,-1,1 });
+	//MyScratch->SetCamera(camLoc.loc + vec3d{0,0,-5},vec3d{0,0,0});
+	MyScratch->LightDir = MyScratch->LookAtRotation(camLoc.loc + vec3d{ 0,0,0 }, camTarget.loc * vec3d{ 1,-1,1 });
+	RGB GI_Lighting = { 1024,1024,1024,1024 };
+	MyScratch->MeshColor = GI_Lighting; //psudo lighting
+	MyScratch->DrawMesh(EnvironmentMesh, vec3d{ 0,0,0 }, vec3d{ 0,0,0 }, vec3d{ 1,1,1 }, true);
+	
 
 }

@@ -265,8 +265,6 @@ AnimTransform Animator::GetAnimatedTransform(int animSource, int objId, int& cur
 {
     AnimTransform result = AnimTransform();
 
-    
-
     //frame data gather
     int prevFrameRatchet = LastFrameRatchetPool[objId];
     int nextFrame = GetNextFrameWithAnimationData(animSource, objId, curFrame);
@@ -290,8 +288,8 @@ AnimTransform Animator::GetAnimatedTransform(int animSource, int objId, int& cur
     //key frames
     Frame localFrame = RawFrameDataByFrameValue(animSource, objId, prevFrameRatchet);
     Frame next_localFrame = RawFrameDataByFrameValue(animSource, objId, nextFrame);
+    
     //loc
-
     int loc_vec_index1 = localFrame.locId;
     int loc_vec_index2 = next_localFrame.locId;
     vec3d l1 = animationSources[animSource].animation[0].vectors[loc_vec_index1];

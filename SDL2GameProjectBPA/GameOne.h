@@ -11,10 +11,13 @@ public:
 	void Tick(float DeltaTime);
 	void AnimationTest(float DeltaTime);
 	void AnimationTest2(float DeltaTime);
+	void CameraAnimTest3(float DeltaTime);
 	Mesh LoadedMesh;
 	Mesh LoadedMesh2;
+	Mesh EnvironmentMesh;
 	Animator* animator;
-	
-	float delay = 1.0f;
+	Animator* CameraAnimator;
+	RGB* Texture;
+	float delay = 9.0f;
 };
 
