@@ -1,0 +1,25 @@
+Positions:
+ 0.000 2.523 -7.614
+ 0.000 2.523 -3.891
+ 0.000 0.000 0.000
+ 0.000 0.000 88.000
+ 0.000 0.000 176.000
+ 0.000 0.000 264.000
+ 0.000 0.000 352.000
+
+Rotations:
+ 0.000 0.000 0.000
+
+Scales:
+ 1.000,1.000,1.000
+
+Objects:
+CameraLocation,None,0,0,0,false,
+CameraTarget,None,1,0,0,false,
+RailShooterTerrain_Lv1Sec1,Material,2,0,0,true,
+RailShooterTerrain_Lv1Sec1,Material,3,0,0,true,
+RailShooterTerrain_Lv1Sec1,Material,4,0,0,true,
+RailShooterTerrain_Lv1Sec1,Material,5,0,0,true,
+RailShooterTerrain_Lv1Sec1,Material,6,0,0,true,
+
+DialogueTriggers:
