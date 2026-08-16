@@ -189,7 +189,7 @@ void GameOne::CameraAnimTest3(float DeltaTime)
 	MyScratch->TextureDrawOn = true;
 	CameraAnimator->Tick(DeltaTime);
 
-	MyScratch->UseGouraudShading = false;
+	MyScratch->UseGouraudShading = true;
 	
 
 	int curFrame = CameraAnimator->animationSources[0].currentFrame;
@@ -201,7 +201,8 @@ void GameOne::CameraAnimTest3(float DeltaTime)
 	//MyScratch->SetCamera(camLoc.loc * vec3d{ 1,-1,1 }, camTarget.loc * vec3d{ 1,-1,1 });
 	MyScratch->SetCamera(camLoc.loc + vec3d{ 0,0,0 }, camTarget.loc * vec3d{ 1,-1,1 });
 	//MyScratch->SetCamera(camLoc.loc + vec3d{0,0,-5},vec3d{0,0,0});
-	MyScratch->LightDir = MyScratch->LookAtRotation(camLoc.loc + vec3d{ 0,0,0 }, camTarget.loc * vec3d{ 1,-1,1 });
+	MyScratch->LightDir = MyScratch->LookAtRotation(camLoc.loc + vec3d{ 0,50,0 }, camTarget.loc * vec3d{ 32,-200,32 });
+	MyScratch->LightDir = MyScratch->LightDir * -1.0f;
 	RGB GI_Lighting = { 1024,1024,1024,1024 };
 	MyScratch->MeshColor = GI_Lighting; //psudo lighting
 	MyScratch->DrawMesh(EnvironmentMesh, vec3d{ 0,0,0 }, vec3d{ 0,0,0 }, vec3d{ 1,1,1 }, true);
