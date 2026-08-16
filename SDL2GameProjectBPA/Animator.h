@@ -31,8 +31,9 @@ struct Animation
 	//vec3d* vectors;
 
 	//pre-alocated arrays would probably be nicer
-
+	//we'll want about a 4000-5000 vector capacity (Far less if we don't bake all data, like only bake every x frame)
 	std::vector<vec3d> vectors;
+	//if we bake every frame, we'll need 4334 for 3:00 minutes of camera frame data
 	std::vector<Frame> frames;
 
 };
