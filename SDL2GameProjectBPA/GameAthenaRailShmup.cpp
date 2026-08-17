@@ -117,6 +117,7 @@ void GameAthenaRailShmup::Rail_BKG_Draw(float DeltaTime)
 			false
 		);
 	}
+	//Draw fog FX:
 	MyScratch->MoveMainspaceToExtraBuffer();
 	MyScratch->DrawZBuffferMaskSky();
 	MyScratch->InvertBuffer();
