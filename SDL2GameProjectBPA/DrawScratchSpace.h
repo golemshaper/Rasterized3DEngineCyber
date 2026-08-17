@@ -266,6 +266,8 @@ public:
     void Clear(RGB wipe);
     inline int SinglePixelBrightContrast(int c, float brightness, float contrast);
     void BrightnessContrastOnBuffer(RGB* buffer, float brightness, float contrast);
+    void FilterScreenColor(RGB color);
+    void FilterScreenColorAdd(RGB color);
     void RandomScreenFill();
     void RandomScreenFill(RGB* buffer);
     void DrawRectangle(int x, int y, int width, int height, RGB color);

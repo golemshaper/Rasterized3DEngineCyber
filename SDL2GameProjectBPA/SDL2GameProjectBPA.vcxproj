@@ -140,6 +140,7 @@
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="DrawScratchSpace.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameAthenaRailShmup.cpp" />
     <ClCompile Include="GameAthenaSlashEmUp.cpp" />
     <ClCompile Include="GameModelViewer.cpp" />
     <ClCompile Include="GameOne.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="BMPWriter.hpp" />
     <ClInclude Include="DrawScratchSpace.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameAthenaRailShmup.h" />
     <ClInclude Include="GameAthenaSlashEmUp.h" />
     <ClInclude Include="GameModelViewer.h" />
     <ClInclude Include="GameOne.h" />

@@ -1,11 +1,18 @@
 Positions:
- 0.000 2.523 -7.614
- 0.000 2.523 -3.891
+ 0.032 8.915 -4.485
+ 0.034 2.523 -0.762
  0.000 0.000 0.000
  0.000 0.000 88.000
  0.000 0.000 176.000
  0.000 0.000 264.000
  0.000 0.000 352.000
+ 0.769 2.364 40.803
+ 0.769 2.364 47.099
+ 0.769 2.364 53.454
+ -4.885 -0.370 68.205
+ 2.297 -0.296 73.742
+ -7.446 2.750 91.925
+ 7.225 2.618 102.840
 
 Rotations:
  0.000 0.000 0.000
@@ -16,10 +23,17 @@ Scales:
 Objects:
 CameraLocation,None,0,0,0,false,
 CameraTarget,None,1,0,0,false,
-RailShooterTerrain_Lv1Sec1,Material,2,0,0,true,
-RailShooterTerrain_Lv1Sec1,Material,3,0,0,true,
-RailShooterTerrain_Lv1Sec1,Material,4,0,0,true,
-RailShooterTerrain_Lv1Sec1,Material,5,0,0,true,
-RailShooterTerrain_Lv1Sec1,Material,6,0,0,true,
+RailShooterTerrain_Lv1Sec1,grass,2,0,0,true,Spawn,0,Despawn,386,SkyboxMesh
+RailShooterTerrain_Lv1Sec1,grass,3,0,0,true,Spawn,316,Despawn780
+RailShooterTerrain_Lv1Sec1,grass,4,0,0,true,
+RailShooterTerrain_Lv1Sec1,grass,5,0,0,true,
+RailShooterTerrain_Lv1Sec1,grass,6,0,0,true,
+Gear,grass,7,0,0,true,
+Gear,grass,8,0,0,true,
+Gear,grass,9,0,0,true,
+Gear,grass,10,0,0,true,
+Gear,grass,11,0,0,true,
+Gear,grass,12,0,0,true,
+Gear,grass,13,0,0,true,
 
 DialogueTriggers:

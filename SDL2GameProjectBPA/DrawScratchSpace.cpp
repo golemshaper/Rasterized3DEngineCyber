@@ -382,6 +382,22 @@ void DrawScratchSpace::BrightnessContrastOnBuffer(RGB* buffer, float brightness,
     }
 }
 
+void DrawScratchSpace::FilterScreenColor(RGB color)
+{
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+        MainSpace[i] = (MainSpace[i] * color )/255;
+    }
+}
+
+void DrawScratchSpace::FilterScreenColorAdd(RGB color)
+{
+    for (int i = 0; i < TOTAL_PIXELS; ++i)
+    {
+        MainSpace[i] = (MainSpace[i] + color);
+    }
+}
+
 void DrawScratchSpace::RandomScreenFill()
 {
     //replace with random function?
