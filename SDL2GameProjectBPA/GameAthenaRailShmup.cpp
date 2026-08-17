@@ -18,30 +18,39 @@ void GameAthenaRailShmup::Initialize()
 };
 void GameAthenaRailShmup::Tick(float DeltaTime)
 {
-	if (wait > 0.0f)
+	/*if (wait > 0.0f)
 	{
 		wait -= DeltaTime;
 		return;
-	}
+	}*/
+	MyScratch->Input->Tick(DeltaTime);
+	MouseX = MyScratch->Input->mouseX * 0.0001f;
+	MouseY = MyScratch->Input->mouseY * -0.0001f;
+
+
 	MyScratch->Clear(RGB_Blue);
 	MyScratch->ClearZBufffer();
 	MyScratch->DrawVerticies = false;
 	DrawSkyboxMesh();
-	//totalTime += DeltaTime;
+	totalTime += DeltaTime;
 	//MyScratch->DrawVerticies = sin(totalTime * 8.0f) < 0.0f;
+	//MyScratch->DrawEdges = true;
 	Rail_BKG_Draw(DeltaTime);
-	
+//	DrawBlackBars();
 };
 
 void GameAthenaRailShmup::DrawSkyboxMesh()
 {
 	int firstFrame=138;
-
+	
 	AnimTransform camLoc = CameraAnimator->GetAnimatedTransform(0, 0, firstFrame, 222);
 	//obj 2
 	AnimTransform camTarget = CameraAnimator->GetAnimatedTransform(0, 1, firstFrame, 222);
 	MyScratch->SetCameraFOV(75);
-	MyScratch->SetCamera(camLoc.loc * vec3d{ 1,1,1 }, camTarget.loc * vec3d{ 1,1,1 });
+
+	
+	
+	MyScratch->SetCamera((camLoc.loc * vec3d{ 1,1 + (0.02f * sin(totalTime)),1 })- vec3d{ MouseX ,MouseY,0 }, (camTarget.loc * vec3d{ 1,1,1 }) + vec3d{ MouseX ,MouseY,0});
 
 
 	MyScratch->DrawMesh(SkyboxMesh, SkyboxLOC, vec3d{ 0,0,0 });
@@ -56,7 +65,6 @@ void GameAthenaRailShmup::Rail_BKG_Draw(float DeltaTime)
 	int EndOfAnimation = 1918;
 	
 
-	
 	CameraAnimator->Tick(DeltaTime);
 
 	MyScratch->UseGouraudShading = true;
@@ -70,7 +78,9 @@ void GameAthenaRailShmup::Rail_BKG_Draw(float DeltaTime)
 	//obj 2
 	AnimTransform camTarget = CameraAnimator->GetAnimatedTransform(0, 1, curFrame, EndOfAnimation);
 	MyScratch->SetCameraFOV(75);
-	MyScratch->SetCamera(camLoc.loc * vec3d{ 1,1,1 },camTarget.loc * vec3d{ 1,1,1 });
+
+	
+	MyScratch->SetCamera((camLoc.loc * vec3d{ 1,1,1 }) - vec3d{ MouseX ,MouseY,0 },(camTarget.loc * vec3d{ 1,1,1 }) + vec3d{ MouseX ,MouseY,0 });
 	
 
 	//TODO Animate the light in the scene file instead
@@ -125,6 +135,11 @@ void GameAthenaRailShmup::Rail_BKG_Draw(float DeltaTime)
 	MyScratch->FilterScreenColor(RGB_Blue);
 	MyScratch->AddBuffers();
 
+}
+void GameAthenaRailShmup::DrawBlackBars()
+{
+	MyScratch->DrawRectangle(0, SCREEN_Y - 16, SCREEN_X, 16, RGB_Black);
+	//used to hide popping triangles
 };
 void GameAthenaRailShmup::LoadScene(std::string SceneFileName)
 {

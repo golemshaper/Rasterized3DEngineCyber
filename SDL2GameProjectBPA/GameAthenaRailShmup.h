@@ -13,6 +13,7 @@ public:
 
 	void DrawSkyboxMesh();
 	void Rail_BKG_Draw(float DeltaTime);
+	void DrawBlackBars();
 	void LoadScene(std::string SceneFileName);
 
 	std::string SceneLink = "RailCameraEnvironmentThreeMinutes.txt";
@@ -24,6 +25,10 @@ public:
 	Mesh SkyboxMesh;
 	vec3d SkyboxLOC;
 	RGB* Texture;
+
+	float MouseX=0.0f;
+	float MouseY = 0.0f;
+
 
 	float wait = 3.0f;
 	//Tags

@@ -1,6 +1,6 @@
 Positions:
- 0.032 8.915 -4.485
- 0.034 2.523 -0.762
+ 0.422 4.367 6.914
+ 0.458 2.523 10.637
  0.000 0.000 0.000
  0.000 0.000 88.000
  0.000 0.000 176.000
@@ -13,27 +13,39 @@ Positions:
  2.297 -0.296 73.742
  -7.446 2.750 91.925
  7.225 2.618 102.840
+ 0.769 2.364 155.089
+ 0.769 2.364 243.468
+ 0.769 2.364 258.265
+ 0.769 2.364 291.558
+ 0.769 2.364 274.498
 
 Rotations:
  0.000 0.000 0.000
 
 Scales:
  1.000,1.000,1.000
+ 8.303,8.303,8.303
 
 Objects:
 CameraLocation,None,0,0,0,false,
 CameraTarget,None,1,0,0,false,
-RailShooterTerrain_Lv1Sec1,grass,2,0,0,true,Spawn,0,Despawn,386,SkyboxMesh
-RailShooterTerrain_Lv1Sec1,grass,3,0,0,true,Spawn,316,Despawn780
-RailShooterTerrain_Lv1Sec1,grass,4,0,0,true,
-RailShooterTerrain_Lv1Sec1,grass,5,0,0,true,
-RailShooterTerrain_Lv1Sec1,grass,6,0,0,true,
-Gear,grass,7,0,0,true,
-Gear,grass,8,0,0,true,
-Gear,grass,9,0,0,true,
-Gear,grass,10,0,0,true,
-Gear,grass,11,0,0,true,
-Gear,grass,12,0,0,true,
-Gear,grass,13,0,0,true,
+RailShooterTerrain_Lv1Sec1,uv_test,2,0,0,true,Spawn,0,Despawn,386,SkyboxMesh
+RailShooterTerrain_Lv1Sec1,uv_test,3,0,0,true,Spawn,316,Despawn780
+RailShooterTerrain_Lv1Sec1,uv_test,4,0,0,true,
+RailShooterTerrain_Lv1Sec1,uv_test,5,0,0,true,
+RailShooterTerrain_Lv1Sec1,uv_test,6,0,0,true,
+Gear,uv_test,7,0,0,true,
+Gear,uv_test,8,0,0,true,
+Gear,uv_test,9,0,0,true,
+Gear,uv_test,10,0,0,true,
+Gear,uv_test,11,0,0,true,
+Gear,uv_test,12,0,0,true,
+Gear,uv_test,13,0,0,true,
+Gear,uv_test,7,0,1,true,
+Gear,uv_test,14,0,1,true,
+Gear,uv_test,15,0,1,true,
+Gear,uv_test,16,0,1,true,
+Gear,uv_test,17,0,1,true,
+Gear,uv_test,18,0,1,true,
 
 DialogueTriggers:
