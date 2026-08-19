@@ -339,3 +339,17 @@ void Animator::Tick(float DeltaTime)
         animationSources[i].currentFrame = (int)(totalTime * fps);
     }
 }
+
+void Animator::ResetAnimation(int atFrame)
+{
+    for (int i = 0; i < animationSources.size(); i++)
+    {
+        float nTime = (float)atFrame / (float)animationSources[i].fps;
+        animationSources[i].totalTime = nTime;
+        animationSources[i].currentFrame = atFrame;
+    }
+    for (int i = 0; i < 256; i++)
+    {
+        LastFrameRatchetPool[i] = -1;
+    }
+}

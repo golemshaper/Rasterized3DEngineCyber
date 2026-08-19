@@ -64,6 +64,7 @@ public:
 public:
 	void InitializeAnim();
 	void Tick(float DeltaTime);
+	void ResetAnimation(int atFrame);
 	int LastFrameRatchetPool[256]; //max number of animated objects!
 
 

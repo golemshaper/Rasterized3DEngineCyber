@@ -4,13 +4,14 @@
 class Animator;
 class Scene;
 class Mesh;
+
 class GameAthenaRailShmup : public Game
 {
 public:
 
 	void Initialize();
 	void Tick(float DeltaTime);
-
+	void Reload();
 	void DrawSkyboxMesh();
 	void Rail_BKG_Draw(float DeltaTime);
 	void DrawBlackBars();
@@ -33,6 +34,19 @@ public:
 	float wait = 3.0f;
 	//Tags
 	int Tag_Hidden = -1;
+	int Tag_Player = -1;
 	int Tag_SkyboxMesh = -1;
+
+
+
+	//Structs:
+	struct Player
+	{
+		vec3d local_position;
+		Mesh Mesh_PlayerIdle;
+		std::vector<Mesh> AttackMeshSequence;
+
+	};
+	Player player;
 };
 

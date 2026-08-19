@@ -15,14 +15,25 @@ void GameAthenaRailShmup::Initialize()
 	CameraAnimator->InitializeAnim();
 	LoadScene(SceneLink);
 
+	
+
 };
 void GameAthenaRailShmup::Tick(float DeltaTime)
 {
+	//-------------------------------------------------
+	if (MyScratch->Input->GetToggleDepthKey())
+	{
+		MyScratch->Input->ResetToggleDepthKey();
+		Reload();
+		return;
+	}
+	//-------------------------------------------------
 	/*if (wait > 0.0f)
 	{
 		wait -= DeltaTime;
 		return;
 	}*/
+	//-------------------------------------------------
 	MyScratch->Input->Tick(DeltaTime);
 	MouseX = MyScratch->Input->mouseX * 0.0001f;
 	MouseY = MyScratch->Input->mouseY * -0.0001f;
@@ -36,7 +47,19 @@ void GameAthenaRailShmup::Tick(float DeltaTime)
 	//MyScratch->DrawVerticies = sin(totalTime * 8.0f) < 0.0f;
 	//MyScratch->DrawEdges = true;
 	Rail_BKG_Draw(DeltaTime);
+
+
+	
 //	DrawBlackBars();
+}
+void GameAthenaRailShmup::Reload()
+{
+	//TODO: Add a button in the engine tools that writes the current frame of the Blender playhead to a file.
+	//when reloading get the data from that file, and pass it to ResetAnimation
+
+
+	CameraAnimator->ResetAnimation(0);
+	CameraAnimator->LoadAnimationFromFile("Assets/Animations/CameraAnim_RailShmup_LvlOne.txt", "lvl1");
 };
 
 void GameAthenaRailShmup::DrawSkyboxMesh()
@@ -145,13 +168,13 @@ void GameAthenaRailShmup::LoadScene(std::string SceneFileName)
 {
 	SceneParserObject = SceneParser->ParseSceneFromFile(ScenePath + SceneFileName, "Assets/Models/RailShooter/", "Assets/");
 	Tag_Hidden = SceneParserObject.GetTagID("Hidden");
+	Tag_Player = SceneParserObject.GetTagID("Player");
 	Tag_SkyboxMesh = SceneParserObject.GetTagID("SkyboxMesh");
 	
 
-	Tag_Hidden = SceneParserObject.GetTagID("Hidden");
 	for (int i = 0; i < SceneParserObject.scene_objects.size(); i++)
 	{
-		if (SceneParserObject.scene_objects[i].HasTagStringCompare("Hidden"))
+		if (SceneParserObject.scene_objects[i].HasTagByID(Tag_Hidden))
 		{
 			SceneParserObject.scene_objects[i].visible = false;
 		}
@@ -160,6 +183,10 @@ void GameAthenaRailShmup::LoadScene(std::string SceneFileName)
 			//for now I have the first terrain chunk loaded as the skybox mesh
 			SkyboxMesh = SceneParserObject.Meshes[SceneParserObject.scene_objects[i].model_id];
 			SkyboxLOC = SceneParserObject.scene_objects[i].pos;
+		}
+		if (SceneParserObject.scene_objects[i].HasTagByID(Tag_SkyboxMesh))
+		{
+			player.Mesh_PlayerIdle = SceneParserObject.Meshes[SceneParserObject.scene_objects[i].model_id];
 		}
 	}
 };
