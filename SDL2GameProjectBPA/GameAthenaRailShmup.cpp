@@ -56,8 +56,9 @@ void GameAthenaRailShmup::Reload()
 {
 	//TODO: Add a button in the engine tools that writes the current frame of the Blender playhead to a file.
 	//when reloading get the data from that file, and pass it to ResetAnimation
-
-
+	
+	//TODO: Reparse the animation before reloading it, so that we can reload any keyframes that were tweaked.
+	
 	CameraAnimator->ResetAnimation(0);
 	CameraAnimator->LoadAnimationFromFile("Assets/Animations/CameraAnim_RailShmup_LvlOne.txt", "lvl1");
 };
