@@ -12,8 +12,11 @@ public:
 	void Initialize();
 	void Tick(float DeltaTime);
 	void Reload();
+	
 	void DrawSkyboxMesh();
 	void Rail_BKG_Draw(float DeltaTime);
+	void PlayerMovement(float DeltaTime);
+	void DrawPlayer(float DeltaTime);
 	void DrawBlackBars();
 	void LoadScene(std::string SceneFileName);
 
@@ -42,7 +45,12 @@ public:
 	//Structs:
 	struct Player
 	{
+		bool firstRun = true;
 		vec3d local_position;
+		vec3d perceptual_location; //use for collision. has hard offset
+		float speed = 2.0f;
+		float maxDist = 2.5f;
+		vec3d cameraLoc;
 		Mesh Mesh_PlayerIdle;
 		std::vector<Mesh> AttackMeshSequence;
 

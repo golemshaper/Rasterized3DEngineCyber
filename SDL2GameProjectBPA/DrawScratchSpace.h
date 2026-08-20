@@ -422,8 +422,10 @@ public:
 
     float Distance(const vec3d& a, const vec3d& b);
     float Distance2D(const vec3d& a, const vec3d& b);
+    float Distance2D2(const vec3d& a, const vec3d& b);
     float SquaredDistance(const vec3d& a, const vec3d& b);
     float SquaredDistance2D(const vec3d& a, const vec3d& b);
+    float SquaredDistance2D2(const vec3d& a, const vec3d& b);
 //Collision
     bool PointInTriangle(const vec3d& p, const vec3d& a, const vec3d& b, const vec3d& c);
     float SolveTriangleY(const vec3d& a, const vec3d& b, const vec3d& c, float px, float pz);

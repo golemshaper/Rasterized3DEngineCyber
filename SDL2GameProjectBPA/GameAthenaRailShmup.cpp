@@ -37,7 +37,7 @@ void GameAthenaRailShmup::Tick(float DeltaTime)
 	MyScratch->Input->Tick(DeltaTime);
 	MouseX = MyScratch->Input->mouseX * 0.0001f;
 	MouseY = MyScratch->Input->mouseY * -0.0001f;
-
+	PlayerMovement(DeltaTime);
 
 	MyScratch->Clear(RGB_Blue);
 	MyScratch->ClearZBufffer();
@@ -47,7 +47,7 @@ void GameAthenaRailShmup::Tick(float DeltaTime)
 	//MyScratch->DrawVerticies = sin(totalTime * 8.0f) < 0.0f;
 	//MyScratch->DrawEdges = true;
 	Rail_BKG_Draw(DeltaTime);
-
+	DrawPlayer(DeltaTime);
 
 	
 //	DrawBlackBars();
@@ -58,7 +58,7 @@ void GameAthenaRailShmup::Reload()
 	//when reloading get the data from that file, and pass it to ResetAnimation
 	
 	//TODO: Reparse the animation before reloading it, so that we can reload any keyframes that were tweaked.
-	
+	player.firstRun = true;
 	CameraAnimator->ResetAnimation(0);
 	CameraAnimator->LoadAnimationFromFile("Assets/Animations/CameraAnim_RailShmup_LvlOne.txt", "lvl1");
 };
@@ -72,9 +72,12 @@ void GameAthenaRailShmup::DrawSkyboxMesh()
 	AnimTransform camTarget = CameraAnimator->GetAnimatedTransform(0, 1, firstFrame, 222);
 	MyScratch->SetCameraFOV(75);
 
-	
-	
-	MyScratch->SetCamera((camLoc.loc * vec3d{ 1,1 + (0.02f * sin(totalTime)),1 })- vec3d{ MouseX ,MouseY,0 }, (camTarget.loc * vec3d{ 1,1,1 }) + vec3d{ MouseX ,MouseY,0});
+	vec3d modCameraBase = camLoc.loc * vec3d{ 1,1 + (0.02f * sin(totalTime)),1 };
+	vec3d playerLocMod = vec3d{ player.local_position.x,player.local_position.y,0.0f };
+	modCameraBase = MyScratch->Lerp(modCameraBase, modCameraBase - player.local_position, 0.25f);
+
+
+	MyScratch->SetCamera(modCameraBase - vec3d{ MouseX ,MouseY,0 }, (camTarget.loc * vec3d{ 1,1,1 }) + vec3d{ MouseX ,MouseY,0});
 
 
 	MyScratch->DrawMesh(SkyboxMesh, SkyboxLOC, vec3d{ 0,0,0 });
@@ -103,8 +106,18 @@ void GameAthenaRailShmup::Rail_BKG_Draw(float DeltaTime)
 	AnimTransform camTarget = CameraAnimator->GetAnimatedTransform(0, 1, curFrame, EndOfAnimation);
 	MyScratch->SetCameraFOV(75);
 
-	
-	MyScratch->SetCamera((camLoc.loc * vec3d{ 1,1,1 }) - vec3d{ MouseX ,MouseY,0 },(camTarget.loc * vec3d{ 1,1,1 }) + vec3d{ MouseX ,MouseY,0 });
+	player.cameraLoc = camTarget.loc; //store camera location info in the player.
+	vec3d modTarget = camTarget.loc;
+	vec3d modCameraBase = camLoc.loc;
+
+	/*modCameraBase = (modCameraBase+(modCameraBase - player.local_position))/2;
+	modTarget = modTarget + player.local_position;*/
+	//modCameraBase = (((modCameraBase - player.local_position) + modCameraBase) + modCameraBase) / 3.0f;
+	modCameraBase = MyScratch->Lerp(modCameraBase, modCameraBase - player.local_position, 0.25f);
+	/*modTarget = modTarget + player.local_position;*/
+
+
+	MyScratch->SetCamera((modCameraBase * vec3d{ 1,1,1 }) - vec3d{ MouseX ,MouseY,0 },(modTarget * vec3d{ 1,1,1 }) + vec3d{ MouseX ,MouseY,0 });
 	
 
 	//TODO Animate the light in the scene file instead
@@ -160,6 +173,32 @@ void GameAthenaRailShmup::Rail_BKG_Draw(float DeltaTime)
 	MyScratch->AddBuffers();
 
 }
+void GameAthenaRailShmup::PlayerMovement(float DeltaTime)
+{
+	//get input
+	vec3d inputData = MyScratch->GetMovementInput();
+	vec3d inputData2 = vec3d{ inputData.x,inputData.z,inputData.y };
+	vec3d prevPos = player.local_position;
+	//movement
+	player.local_position = player.local_position + (inputData2 * player.speed * DeltaTime);
+	//restrict zone
+	if ((MyScratch->SquaredDistance2D2(player.cameraLoc, player.local_position)) > player.maxDist * player.maxDist)
+	{
+		player.local_position = prevPos;
+		if (player.firstRun)
+		{
+			player.firstRun = false;
+			player.local_position = vec3d{ player.cameraLoc.x,player.cameraLoc.y,player.local_position.z };
+		}
+	}
+	//display location/collision location
+	player.perceptual_location = player.cameraLoc + player.local_position + vec3d{ -1.5f,2.5f,0.0f };
+
+}
+void GameAthenaRailShmup::DrawPlayer(float DeltaTime)
+{
+	MyScratch->DrawMesh(player.Mesh_PlayerIdle, player.perceptual_location, vec3d{0,0,0});
+}
 void GameAthenaRailShmup::DrawBlackBars()
 {
 	MyScratch->DrawRectangle(0, SCREEN_Y - 16, SCREEN_X, 16, RGB_Black);
@@ -185,8 +224,11 @@ void GameAthenaRailShmup::LoadScene(std::string SceneFileName)
 			SkyboxMesh = SceneParserObject.Meshes[SceneParserObject.scene_objects[i].model_id];
 			SkyboxLOC = SceneParserObject.scene_objects[i].pos;
 		}
-		if (SceneParserObject.scene_objects[i].HasTagByID(Tag_SkyboxMesh))
+		if (SceneParserObject.scene_objects[i].HasTagByID(Tag_Player))
 		{
+			//hide this player placeholder. Now that it's loaded in the player, we'll use that to draw the data.
+			//do the same for any other player frames we load in
+			SceneParserObject.scene_objects[i].visible = false;
 			player.Mesh_PlayerIdle = SceneParserObject.Meshes[SceneParserObject.scene_objects[i].model_id];
 		}
 	}

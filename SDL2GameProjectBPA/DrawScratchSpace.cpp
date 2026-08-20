@@ -1587,6 +1587,11 @@ float DrawScratchSpace::SquaredDistance2D(const vec3d& a, const vec3d& b)
     return SquaredDistance(vec3d{ a.x,0.0f,a.z }, vec3d{ b.x,0.0f,b.z });
 }
 
+float DrawScratchSpace::SquaredDistance2D2(const vec3d& a, const vec3d& b)
+{
+    return SquaredDistance(vec3d{ a.x,a.y,0.0f }, vec3d{ b.x,b.y,0.0f });
+}
+
 bool DrawScratchSpace::PointInTriangle(const vec3d& p, const vec3d& a, const vec3d& b, const vec3d& c)
 {
     vec3d v0 = b - a;
@@ -1742,6 +1747,10 @@ triangle DrawScratchSpace::GetNearestTriangleInMeshRaw(const Mesh& m, vec3d p)
 float DrawScratchSpace::Distance2D(const vec3d& a, const vec3d& b)
 {
     return Distance(vec3d{a.x,0.0f,a.z}, vec3d{b.x,0.0f,b.z});
+}
+float DrawScratchSpace::Distance2D2(const vec3d& a, const vec3d& b)
+{
+    return Distance(vec3d{ a.x,a.y,0.0f }, vec3d{ b.x,b.y,0.0f });
 }
 vec3d Normalize(const vec3d& v)
 {
