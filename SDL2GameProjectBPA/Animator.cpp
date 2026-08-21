@@ -82,7 +82,15 @@ void Animator::LoadAnimationFromString(const std::string& str, const std::string
                 csv = SplitByChar(sb, ',');
                 mode = m_objects;
                 //set data
-                CreatedAnimation.fps = std::stoi(sb);;
+               
+                CreatedAnimation.fps = std::stoi(csv[0]);
+                //----------------PLAYHEAD HACK---------------------
+                if (csv.size() > 1)
+                {
+                    //I've added another field for the current blender playhead. If I end up reading that data from its own file, remove this field!
+                    CreatedAnimation.blenderPlayhead = std::stoi(csv[0]);
+                }
+                //-------------------------------------
                 sb.clear();//clearing data
                 continue;
             case m_objects:

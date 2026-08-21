@@ -65,6 +65,7 @@ void GameAthenaRailShmup::Reload()
 
 void GameAthenaRailShmup::DrawSkyboxMesh()
 {
+	//TODO: Draw correct texture here! We overwrode it when drawing the cursor! 
 	int firstFrame=138;
 	
 	AnimTransform camLoc = CameraAnimator->GetAnimatedTransform(0, 0, firstFrame, 222);
@@ -101,6 +102,7 @@ void GameAthenaRailShmup::Rail_BKG_Draw(float DeltaTime)
 
 	int curFrame = CameraAnimator->animationSources[0].currentFrame;
 	//obj 1
+	
 	AnimTransform camLoc = CameraAnimator->GetAnimatedTransform(0, 0, curFrame, EndOfAnimation);
 	//obj 2
 	AnimTransform camTarget = CameraAnimator->GetAnimatedTransform(0, 1, curFrame, EndOfAnimation);

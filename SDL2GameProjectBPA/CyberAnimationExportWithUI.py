@@ -15,10 +15,11 @@ class BPACE_OT_SelectAnimPath(bpy.types.Operator):
     bl_idname = "bpacyber.select_path"
     bl_label = "Select Export Path"
 
-    filepath: bpy.props.StringProperty(subtype='FILE_PATH')
+    filepath: bpy.props.StringProperty(subtype='DIR_PATH')
 
     def execute(self, context):
         context.scene.bpace_anim_path = self.filepath
+        
         return {'FINISHED'}
 
     def invoke(self, context, event):
@@ -34,8 +35,11 @@ class BPACE_OT_SendToEngine(bpy.types.Operator):
     def execute(self, context):
         print("Anim export action triggered with path:", context.scene.bpace_anim_path)
         base = bpy.path.abspath(context.scene.bpace_anim_path)
+        
+        
         if os.path.isfile(base):
             base = os.path.dirname(base)
+        
         filename = context.scene.bpace_textbox + ".txt"
         full_path = os.path.join(base, filename)
         export_animation_data(full_path)
@@ -57,7 +61,7 @@ def extra_buttons(self, context):
     layout.prop(context.scene, "bpace_textbox", text="Anim Name")
     # Action button
     layout.operator("bpacyber.extra_action", icon='FILE_TICK')
-
+    #TODO: IMPLEMENT A SET PLAYHEAD BUTTON THAT CHANGES THE FRAME THE GAME IS ON WHEN RELOADING! (Save frame to file, load data)
 
 def register():
     bpy.utils.register_class(BPACE_OT_SelectAnimPath)
@@ -95,9 +99,10 @@ import bpy
 import os
 
 #FILE ANATOMY:
+
 '''
-~~FPS~~
-24 
+~~FPS,BlenderPlayeheadFrame(WE MIGHT HAVE REMOVED THIS FIELD)~~
+24,200
 ~~OBJ NAMES~~
 Sphere 
 Cone
@@ -186,6 +191,10 @@ def export_animation_data(filepath, bake=False):
     keyframes = {}
 
     for obj in objs:
+         #Skip objects with no animation
+        
+    
+    
         print(f"\nExporting {obj.name}")
 
         keyframes[obj.name] = []
@@ -195,7 +204,10 @@ def export_animation_data(filepath, bake=False):
         action = anim.action if anim else None
 
         fcurves = get_modern_fcurves(action)
-
+        if not fcurves:
+            print(f"  Skipping {obj.name} (no animation)")
+            continue
+        
         # Collect keyframe frames
         for fc in fcurves:
             for kp in fc.keyframe_points:

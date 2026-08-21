@@ -53,6 +53,7 @@ struct AnimationSource
 	float accumulator = 0.0f;
 	int currentFrame=0;
 	int fps = 24;
+	int blenderPlayhead = 0;
 };
 //lvl 0 deep
 class Animator
