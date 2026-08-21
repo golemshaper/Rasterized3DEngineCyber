@@ -29,11 +29,16 @@ class BPACE_OT_SelectAnimPath(bpy.types.Operator):
 # Operator: some action button
 class BPACE_OT_SendToEngine(bpy.types.Operator):
     bl_idname = "bpacyber.extra_action"
-    bl_label = "Run Extra Action"
+    bl_label = "Save Animation"
 
     def execute(self, context):
         print("Anim export action triggered with path:", context.scene.bpace_anim_path)
-        export_animation_data(context.scene.bpace_anim_path+"unnamedAnimation.txt")
+        base = bpy.path.abspath(context.scene.bpace_anim_path)
+        if os.path.isfile(base):
+            base = os.path.dirname(base)
+        filename = context.scene.bpace_textbox + ".txt"
+        full_path = os.path.join(base, filename)
+        export_animation_data(full_path)
 
         return {'FINISHED'}
 
@@ -46,10 +51,10 @@ def extra_buttons(self, context):
 
     # Show the selected path
     layout.prop(context.scene, "bpace_anim_path", text="AnimPath")
-
     # File browser button
     layout.operator("bpacyber.select_path", icon='FILE_FOLDER')
-
+    # File Name
+    layout.prop(context.scene, "bpace_textbox", text="Anim Name")
     # Action button
     layout.operator("bpacyber.extra_action", icon='FILE_TICK')
 
@@ -60,6 +65,12 @@ def register():
 
     bpy.types.Scene.bpace_anim_path = bpy.props.StringProperty(name="Anim Path")
 
+
+    bpy.types.Scene.bpace_textbox = bpy.props.StringProperty(
+        name="MyAnimation",
+        description="Animation Name"
+    )
+
     bpy.types.VIEW3D_PT_bpa_cyber_engine_tools.append(extra_buttons)
 
 
@@ -67,7 +78,7 @@ def unregister():
     bpy.types.VIEW3D_PT_bpa_cyber_engine_tools.remove(extra_buttons)
 
     del bpy.types.Scene.bpace_anim_path
-
+    del bpy.types.Scene.bpace_textbox
     bpy.utils.unregister_class(BPACE_OT_SendToEngine)
     bpy.utils.unregister_class(BPACE_OT_SelectAnimPath)
 
