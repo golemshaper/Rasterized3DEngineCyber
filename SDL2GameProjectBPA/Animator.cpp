@@ -325,6 +325,11 @@ AnimTransform Animator::GetAnimatedTransform(int animSource, int objId, int& cur
     return result;
 }
 
+int Animator::GetActorObjAnimID(int sourceIndex, const std::string& target)
+{
+    return FindStringIndex(target, animationSources[sourceIndex].objectNames);
+}
+
 void Animator::InitializeAnim()
 {
     if (animationSources.size()<=0)
@@ -360,4 +365,15 @@ void Animator::ResetAnimation(int atFrame)
     {
         LastFrameRatchetPool[i] = -1;
     }
+}
+
+int Animator::FindStringIndex(const std::string& target, const std::vector<std::string>& list)
+{
+    for (int i = 0; i < (int)list.size(); ++i)
+    {
+        if (list[i] == target)
+            return i;
+    }
+    return -1; // not found
+
 }

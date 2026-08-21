@@ -81,7 +81,12 @@ public:
 
 	AnimTransform GetAnimatedTransform(int animSource, int objId, int& curFrame, int maxFrame);
 
+	int GetActorObjAnimID(int sourceIndex,const std::string& target);
+
 private:
+	int FindStringIndex(const std::string& target, const std::vector<std::string>& list);
+
+	
 	std::vector<std::string> SplitByChar(const std::string& str, char c);
 	std::string trim(const std::string& s);
 	vec3d Lerp(vec3d a, vec3d b, float c)

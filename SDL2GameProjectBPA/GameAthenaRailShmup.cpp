@@ -66,11 +66,22 @@ void GameAthenaRailShmup::Reload()
 void GameAthenaRailShmup::DrawSkyboxMesh()
 {
 	//TODO: Draw correct texture here! We overwrode it when drawing the cursor! 
+	
+	int textureID = SceneParserObject.scene_objects[3].texture_id; //don't hardcode this!
+	MyScratch->SetTexture(
+		SceneParserObject.TexturePacks[textureID].TextureData,
+		SceneParserObject.TexturePacks[textureID].width,
+		SceneParserObject.TexturePacks[textureID].height
+	);
+
+
 	int firstFrame=138;
 	
-	AnimTransform camLoc = CameraAnimator->GetAnimatedTransform(0, 0, firstFrame, 222);
+	int CameraLocationId = CameraAnimator->GetActorObjAnimID(0, "CameraLocation");
+	AnimTransform camLoc = CameraAnimator->GetAnimatedTransform(0, CameraLocationId, firstFrame, 222);
 	//obj 2
-	AnimTransform camTarget = CameraAnimator->GetAnimatedTransform(0, 1, firstFrame, 222);
+	int CameraTargetId = CameraAnimator->GetActorObjAnimID(0, "CameraTarget");
+	AnimTransform camTarget = CameraAnimator->GetAnimatedTransform(0, CameraTargetId, firstFrame, 222);
 	MyScratch->SetCameraFOV(75);
 
 	vec3d modCameraBase = camLoc.loc * vec3d{ 1,1 + (0.02f * sin(totalTime)),1 };
@@ -102,10 +113,11 @@ void GameAthenaRailShmup::Rail_BKG_Draw(float DeltaTime)
 
 	int curFrame = CameraAnimator->animationSources[0].currentFrame;
 	//obj 1
-	
-	AnimTransform camLoc = CameraAnimator->GetAnimatedTransform(0, 0, curFrame, EndOfAnimation);
+	int CameraLocationId = CameraAnimator->GetActorObjAnimID(0, "CameraLocation");
+	AnimTransform camLoc = CameraAnimator->GetAnimatedTransform(0, CameraLocationId, curFrame, EndOfAnimation);
 	//obj 2
-	AnimTransform camTarget = CameraAnimator->GetAnimatedTransform(0, 1, curFrame, EndOfAnimation);
+	int CameraTargetId = CameraAnimator->GetActorObjAnimID(0, "CameraTarget");
+	AnimTransform camTarget = CameraAnimator->GetAnimatedTransform(0, CameraTargetId, curFrame, EndOfAnimation);
 	MyScratch->SetCameraFOV(75);
 
 	player.cameraLoc = camTarget.loc; //store camera location info in the player.
