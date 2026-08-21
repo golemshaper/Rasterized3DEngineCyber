@@ -1,6 +1,6 @@
 Positions:
- 0.422 4.367 6.914
- 0.458 2.523 10.637
+ 0.537 2.523 36.864
+ 0.627 2.725 40.587
  0.000 0.000 0.000
  0.000 0.000 88.000
  0.000 0.000 176.000
@@ -19,6 +19,7 @@ Positions:
  0.769 2.364 291.558
  0.769 2.364 274.498
  0.752 1.525 9.576
+ 0.767 2.015 10.527
 
 Rotations:
  0.000 0.000 0.000
@@ -49,5 +50,6 @@ Gear,uv_test,16,0,1,true,
 Gear,uv_test,17,0,1,true,
 Gear,uv_test,18,0,1,true,
 AthenaUnarmed,uv_test,19,0,0,true,Player
+StgCursor,BasicPalette,20,0,0,true,Cursor
 
 DialogueTriggers:

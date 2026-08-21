@@ -48,7 +48,7 @@ void GameAthenaRailShmup::Tick(float DeltaTime)
 	//MyScratch->DrawEdges = true;
 	Rail_BKG_Draw(DeltaTime);
 	DrawPlayer(DeltaTime);
-
+	DrawReticle(DeltaTime);
 	
 //	DrawBlackBars();
 }
@@ -178,6 +178,7 @@ void GameAthenaRailShmup::PlayerMovement(float DeltaTime)
 	//get input
 	vec3d inputData = MyScratch->GetMovementInput();
 	vec3d inputData2 = vec3d{ inputData.x,inputData.z,inputData.y };
+	player.storeInputVector = inputData2;
 	vec3d prevPos = player.local_position;
 	//movement
 	player.local_position = player.local_position + (inputData2 * player.speed * DeltaTime);
@@ -199,6 +200,44 @@ void GameAthenaRailShmup::DrawPlayer(float DeltaTime)
 {
 	MyScratch->DrawMesh(player.Mesh_PlayerIdle, player.perceptual_location, vec3d{0,0,0});
 }
+void GameAthenaRailShmup::DrawReticle(float DeltaTime)
+{
+	MyScratch->ClearZBufffer();
+
+	vec3d cursorInput = vec3d{ (float)(int)player.storeInputVector.x,	(float)(int)player.storeInputVector.y,(float)(int)player.storeInputVector .z};
+	cursorInput.x = cursorInput.x * 4.10f;
+	cursorInput.y = cursorInput.y * 3.65f;
+	cursorInput.y = cursorInput.y * -1;
+	MyScratch->SetCameraFOV(100.0f);
+	MyScratch->SetCamera(vec3d{ 0,0,-4 } + cursorInput, vec3d{ 0,0,100 });
+	MyScratch->SetTexture(
+		SceneParserObject.TexturePacks[player.CursorTextureId].TextureData,
+		SceneParserObject.TexturePacks[player.CursorTextureId].width,
+		SceneParserObject.TexturePacks[player.CursorTextureId].height
+	);
+	MyScratch->DrawMesh(player.Mesh_Cursor, vec3d{ 0,0,0 }, vec3d{ 0,0,0 });
+
+	//MyScratch->Draw3DLine(player.perceptual_location, player.cameraLoc, RGB_White);
+	//Draw grid:
+	if (sin(totalTime*12.0f) > 0.5f)
+	{
+		const int divisions = 3;
+		const int spacingY = SCREEN_Y / divisions;
+		const int spacingX = SCREEN_X / divisions;
+
+		for (int i = 1; i < divisions; ++i)
+		{
+			// Horizontal lines
+			int y = spacingY * i;
+			MyScratch->DrawLine(0, y, SCREEN_X - 1, y, RGB{ 255,64,255,100 });
+			// Vertical lines
+			int x = spacingX * i;
+			MyScratch->DrawLine(x, 0, x, SCREEN_Y - 1, RGB{ 255,64,255,100 });
+		}
+	}
+	
+
+}
 void GameAthenaRailShmup::DrawBlackBars()
 {
 	MyScratch->DrawRectangle(0, SCREEN_Y - 16, SCREEN_X, 16, RGB_Black);
@@ -209,6 +248,7 @@ void GameAthenaRailShmup::LoadScene(std::string SceneFileName)
 	SceneParserObject = SceneParser->ParseSceneFromFile(ScenePath + SceneFileName, "Assets/Models/RailShooter/", "Assets/");
 	Tag_Hidden = SceneParserObject.GetTagID("Hidden");
 	Tag_Player = SceneParserObject.GetTagID("Player");
+	Tag_Cursor = SceneParserObject.GetTagID("Cursor");
 	Tag_SkyboxMesh = SceneParserObject.GetTagID("SkyboxMesh");
 	
 
@@ -230,6 +270,13 @@ void GameAthenaRailShmup::LoadScene(std::string SceneFileName)
 			//do the same for any other player frames we load in
 			SceneParserObject.scene_objects[i].visible = false;
 			player.Mesh_PlayerIdle = SceneParserObject.Meshes[SceneParserObject.scene_objects[i].model_id];
+		}
+		if (SceneParserObject.scene_objects[i].HasTagByID(Tag_Cursor))
+		{
+			//store and hide cursor mesh
+			SceneParserObject.scene_objects[i].visible = false;
+			player.CursorTextureId = SceneParserObject.scene_objects[i].texture_id;
+			player.Mesh_Cursor = SceneParserObject.Meshes[SceneParserObject.scene_objects[i].model_id];
 		}
 	}
 };
