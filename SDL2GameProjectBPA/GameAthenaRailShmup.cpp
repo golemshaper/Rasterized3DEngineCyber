@@ -215,7 +215,7 @@ void GameAthenaRailShmup::DrawReticle(float DeltaTime)
 		SceneParserObject.TexturePacks[player.CursorTextureId].width,
 		SceneParserObject.TexturePacks[player.CursorTextureId].height
 	);
-	MyScratch->DrawMesh(player.Mesh_Cursor, vec3d{ 0,0,0 }, vec3d{ 0,0,0 });
+	MyScratch->DrawMesh(player.Mesh_Cursor, vec3d{ 0,0,0 }, vec3d{ 0,0,totalTime*2.0f});
 
 	//MyScratch->Draw3DLine(player.perceptual_location, player.cameraLoc, RGB_White);
 	//Draw grid:
