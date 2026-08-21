@@ -42,7 +42,7 @@ class BPACE_OT_SendToEngine(bpy.types.Operator):
         
         filename = context.scene.bpace_textbox + ".txt"
         full_path = os.path.join(base, filename)
-        export_animation_data(full_path)
+        export_animation_data(full_path,True)
 
         return {'FINISHED'}
 
