@@ -42,7 +42,7 @@ class BPACE_OT_SendToEngine(bpy.types.Operator):
         
         filename = context.scene.bpace_textbox + ".txt"
         full_path = os.path.join(base, filename)
-        export_animation_data(full_path,True)
+        export_animation_data(full_path,True,4)
 
         return {'FINISHED'}
 
@@ -181,7 +181,7 @@ def get_modern_fcurves(action):
 # ------------------------------------------------------------
 # Animation Export Function
 # ------------------------------------------------------------
-def export_animation_data(filepath, bake=False):
+def export_animation_data(filepath, bake=False,bake_step=1):
     scene = bpy.context.scene
     fps = scene.render.fps
     depsgraph = bpy.context.evaluated_depsgraph_get()
@@ -217,7 +217,7 @@ def export_animation_data(filepath, bake=False):
         if bake and frames:
             start = min(frames)
             end = max(frames)
-            frames = set(range(start, end + 1))
+            frames = set(range(start, end + 1,bake_step))
 
         # Evaluate transforms
         for frame in sorted(frames):

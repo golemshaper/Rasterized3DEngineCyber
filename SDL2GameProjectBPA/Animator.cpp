@@ -231,17 +231,21 @@ int Animator::GetPrevFrameWithAnimationData(int sourceIndex, int curObj, int cur
 
 float Animator::GetBetweenFrameTime(float currentFrame, float lastKey, float nextKey, float totalFrames)
 {
-    //kind of hate this one.
-    float tGlobal = currentFrame / totalFrames;
-    float tStart = lastKey / totalFrames;
-    float tEnd = nextKey / totalFrames;
+    ////kind of hate this one.
+    //float tGlobal = currentFrame / totalFrames;
+    //float tStart = lastKey / totalFrames;
+    //float tEnd = nextKey / totalFrames;
 
-    float t = (tGlobal - tStart) / (tEnd - tStart);
-    float result = t;
-    //sad mans clamp:
-    if (result < 0.0f)result = 0.0f;
-    if (result > 1.0f)result = 1.0f;
-    return result;
+    //float t = (tGlobal - tStart) / (tEnd - tStart);
+    //float result = t;
+    ////sad mans clamp:
+    //if (result < 0.0f)result = 0.0f;
+    //if (result > 1.0f)result = 1.0f;
+    //return result;
+    float t = (currentFrame - lastKey) / (nextKey - lastKey);
+    if (t < 0.0f)t = 0.0f;
+    if (t > 1.0f)t = 1.0f;
+    return t;
 }
 
 
@@ -285,6 +289,7 @@ AnimTransform Animator::GetAnimatedTransform(int animSource, int objId, int& cur
         animationSources[animSource].currentFrame = 0;
         prevFrameRatchet = RawFrameDataByFrameValue(animSource, objId, 1).frame;
         LastFrameRatchetPool[objId] = prevFrameRatchet;
+
     }
 
 
@@ -337,6 +342,10 @@ void Animator::InitializeAnim()
         AnimationSource animObj;
         animationSources.push_back(animObj);
     }
+    for (int i = 0; i < 256; i++)
+    {
+        LastFrameRatchetPool[i] = 0; //not sure
+    }
 }
 
 void Animator::Tick(float DeltaTime)
@@ -350,6 +359,8 @@ void Animator::Tick(float DeltaTime)
 
         float totalTime = animationSources[i].totalTime += effectiveDT;
         animationSources[i].currentFrame = (int)(totalTime * fps);
+
+
     }
 }
 
