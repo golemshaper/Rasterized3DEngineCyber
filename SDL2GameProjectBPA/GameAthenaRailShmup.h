@@ -15,7 +15,10 @@ public:
 	
 	void DrawSkyboxMesh();
 	void Rail_BKG_Draw(float DeltaTime);
+	void DrawEnemy(float DeltaTime);
+	void DrawSingleEnemyShipRoutine(std::string ShipAnimTag,int sceneObjId);
 	void PlayerMovement(float DeltaTime);
+	
 	void DrawPlayer(float DeltaTime);
 	void DrawReticle(float DeltaTime);
 	void DrawBlackBars();
@@ -42,7 +45,19 @@ public:
 	int Tag_Cursor = -1;
 	int Tag_SkyboxMesh = -1;
 
+	int Tag_EnemyShip0 = -1;
+	int Tag_EnemyShip1 = -1;
+	int Tag_EnemyShip2 = -1;
+	int Tag_EnemyShip3 = -1;
+	int Tag_EnemyShip4 = -1;
+	int Tag_EnemyShip5 = -1;
 
+	int SceneID_EnemyShip0 = -1;
+	int SceneID_EnemyShip1 = -1;
+	int SceneID_EnemyShip2 = -1;
+	int SceneID_EnemyShip3 = -1;
+	int SceneID_EnemyShip4 = -1;
+	int SceneID_EnemyShip5 = -1;
 
 	//Structs:
 	struct Player

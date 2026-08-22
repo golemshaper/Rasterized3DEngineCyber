@@ -1,6 +1,6 @@
 Positions:
- 0.537 2.523 36.864
- 0.627 2.725 40.587
+ 0.000 9.282 -7.614
+ 0.000 2.523 -3.891
  0.000 0.000 0.000
  0.000 0.000 88.000
  0.000 0.000 176.000
@@ -20,6 +20,12 @@ Positions:
  0.769 2.364 274.498
  0.752 1.525 9.576
  0.767 2.015 10.527
+ -18.952 -7.830 34.048
+ -23.058 -9.066 34.048
+ -26.545 -10.744 34.048
+ 21.222 -6.506 34.048
+ 25.283 -8.272 34.048
+ 28.418 -11.097 34.048
 
 Rotations:
  0.000 0.000 0.000
@@ -29,7 +35,7 @@ Scales:
  8.303,8.303,8.303
 
 Objects:
-CameraLocation,None,0,0,0,false,
+CameraLocation,None,0,0,0,true,
 CameraTarget,None,1,0,0,false,
 RailShooterTerrain_Lv1Sec1,uv_test,2,0,0,true,Spawn,0,Despawn,386,SkyboxMesh
 RailShooterTerrain_Lv1Sec1,uv_test,3,0,0,true,Spawn,316,Despawn780
@@ -51,5 +57,11 @@ Gear,uv_test,17,0,1,true,
 Gear,uv_test,18,0,1,true,
 AthenaUnarmed,uv_test,19,0,0,true,Player
 StgCursor,BasicPalette,20,0,0,true,Cursor
+EnemyShip,BasicPalette,21,0,0,true,EnemyShip0
+EnemyShip,BasicPalette,22,0,0,true,EnemyShip1
+EnemyShip,BasicPalette,23,0,0,true,EnemyShip2
+EnemyShip,BasicPalette,24,0,0,true,EnemyShip3
+EnemyShip,BasicPalette,25,0,0,true,EnemyShip4
+EnemyShip,BasicPalette,26,0,0,true,EnemyShip5
 
 DialogueTriggers:

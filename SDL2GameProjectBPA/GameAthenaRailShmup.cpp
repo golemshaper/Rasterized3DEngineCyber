@@ -27,6 +27,7 @@ void GameAthenaRailShmup::Tick(float DeltaTime)
 		Reload();
 		return;
 	}
+
 	//-------------------------------------------------
 	/*if (wait > 0.0f)
 	{
@@ -43,13 +44,14 @@ void GameAthenaRailShmup::Tick(float DeltaTime)
 	MyScratch->ClearZBufffer();
 	MyScratch->DrawVerticies = false;
 	DrawSkyboxMesh();
-	totalTime += DeltaTime;
+	DrawEnemy(DeltaTime);
 	//MyScratch->DrawVerticies = sin(totalTime * 8.0f) < 0.0f;
 	//MyScratch->DrawEdges = true;
 	Rail_BKG_Draw(DeltaTime);
 	DrawPlayer(DeltaTime);
 	DrawReticle(DeltaTime);
-	
+	totalTime += DeltaTime;
+
 //	DrawBlackBars();
 }
 void GameAthenaRailShmup::Reload()
@@ -190,6 +192,26 @@ void GameAthenaRailShmup::Rail_BKG_Draw(float DeltaTime)
 	MyScratch->AddBuffers();
 
 }
+void GameAthenaRailShmup::DrawEnemy(float DeltaTime)
+{
+	//todo: cache ShipAnimTag string id instead
+	DrawSingleEnemyShipRoutine("EnemyShip", SceneID_EnemyShip0);
+	DrawSingleEnemyShipRoutine("EnemyShip.001", SceneID_EnemyShip1);
+	DrawSingleEnemyShipRoutine("EnemyShip.002", SceneID_EnemyShip2);
+	DrawSingleEnemyShipRoutine("EnemyShip.003", SceneID_EnemyShip3);
+	DrawSingleEnemyShipRoutine("EnemyShip.004", SceneID_EnemyShip4);
+	DrawSingleEnemyShipRoutine("EnemyShip.005", SceneID_EnemyShip5);
+}
+void GameAthenaRailShmup::DrawSingleEnemyShipRoutine(std::string ShipAnimTag, int sceneObjId)
+{
+	int EndOfAnimation = 1918;
+	//make this in to a draw enemy function and call for each of the enemies in the enemy pool.
+	int ID = CameraAnimator->GetActorObjAnimID(0, ShipAnimTag);
+	int curFrame = CameraAnimator->animationSources[0].currentFrame;
+	AnimTransform enemyLoc = CameraAnimator->GetAnimatedTransform(0, ID, curFrame, EndOfAnimation);
+
+	SceneParserObject.scene_objects[sceneObjId].pos = enemyLoc.loc;
+}
 void GameAthenaRailShmup::PlayerMovement(float DeltaTime)
 {
 	//get input
@@ -268,6 +290,12 @@ void GameAthenaRailShmup::LoadScene(std::string SceneFileName)
 	Tag_Cursor = SceneParserObject.GetTagID("Cursor");
 	Tag_SkyboxMesh = SceneParserObject.GetTagID("SkyboxMesh");
 	
+	Tag_EnemyShip0 = SceneParserObject.GetTagID("EnemyShip0");
+	Tag_EnemyShip1 = SceneParserObject.GetTagID("EnemyShip1");
+	Tag_EnemyShip2 = SceneParserObject.GetTagID("EnemyShip2");
+	Tag_EnemyShip3 = SceneParserObject.GetTagID("EnemyShip3");
+	Tag_EnemyShip4 = SceneParserObject.GetTagID("EnemyShip4");
+	Tag_EnemyShip5 = SceneParserObject.GetTagID("EnemyShip5");
 
 	for (int i = 0; i < SceneParserObject.scene_objects.size(); i++)
 	{
@@ -294,6 +322,30 @@ void GameAthenaRailShmup::LoadScene(std::string SceneFileName)
 			SceneParserObject.scene_objects[i].visible = false;
 			player.CursorTextureId = SceneParserObject.scene_objects[i].texture_id;
 			player.Mesh_Cursor = SceneParserObject.Meshes[SceneParserObject.scene_objects[i].model_id];
+		}
+		if (SceneParserObject.scene_objects[i].HasTagByID(Tag_EnemyShip0))
+		{
+			SceneID_EnemyShip0 = i;
+		}
+		if (SceneParserObject.scene_objects[i].HasTagByID(Tag_EnemyShip1))
+		{
+			SceneID_EnemyShip1 = i;
+		}
+		if (SceneParserObject.scene_objects[i].HasTagByID(Tag_EnemyShip2))
+		{
+			SceneID_EnemyShip2 = i;
+		}
+		if (SceneParserObject.scene_objects[i].HasTagByID(Tag_EnemyShip3))
+		{
+			SceneID_EnemyShip3 = i;
+		}
+		if (SceneParserObject.scene_objects[i].HasTagByID(Tag_EnemyShip4))
+		{
+			SceneID_EnemyShip4 = i;
+		}
+		if (SceneParserObject.scene_objects[i].HasTagByID(Tag_EnemyShip5))
+		{
+			SceneID_EnemyShip5 = i;
 		}
 	}
 };
